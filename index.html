@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Idle Heroes Battle Simulator</title>
+</head>
+
+<script type="text/javascript" src="heroes.js" />
+<script type="text/javascript" src="baseHeroStats.js" />
+<script type="text/javascript" src="equipment.js" />
+<script type="text/javascript" src="stone.js" />
+<script type="text/javascript" src="artifact.js" />
+<script type="text/javascript" src="guildTech.js" />
+<script type="text/javascript" src="monster.js" />
+<script type="text/javascript" src="team.js" />
+<script type="text/javascript" src="celestialIsland.js" />
+
+<script type="text/javascript">
+  var arrHeroes = [new hero("None")];
+  
+  function loadOptions() {
+    var option;
+    
+    for(var x in baseHeroStats) {
+      option = document.createElement("option");
+      option.text = x;
+      for(i=0; i<arrHeroes.length; i++) {
+        document.getElementById("myHero" + i + "Select").add(option);
+      }
+    }
+    document.getElementById("myHero" + i + "Select").value = "None";
+  }
+  
+  function updateHero(heroPos) {
+    var sHeroName = document.getElementById("myHero" + heroPos + "Select").value;
+    var oHeroSheet = document.getElementById("myHero" + heroPos + "Sheet");
+    var aHeroName = arrHeroes[heroPos]._baseStats["heroName"];
+    
+    if (sHeroName != aHeroName) {
+      if(sHeroName == "None") {
+        arrHeroes[heroPos] = new hero("None");
+        oHeroSheet.innerHTML = "";
+      } else {
+        arrHeroes[heroPos] = new baseHeroStats[sHeroName]["className"];
+        oHeroSheet.innerHTML = arrHeroes[heroPos].getHeroSheet();
+      }
+    } else if(sHeroName == aHeroName) {
+      // just update stats
+      oHeroSheet.innerHTML = "just update stats";
+    } else {
+      oHeroSheet.innerHTML = "Hero not found.";
+    }
+  }
+  
+</script>
+
+<body onload="loadOptions();">
+  <hr/>
+  
+  <div id="battleField">
+    Battle Field
+    
+    <div id="myHero0Field">
+      <span id="myHero0FieldName"></span>
+      <span id="myHero0FieldHP"></span>
+      <span id="myHero0FieldBuffDebuff"></span>
+    </div>
+    
+    <div id="enHero0Field">
+      <span id="enHero0FieldName"></span>
+      <span id="enHero0FieldHP"></span>
+      <span id="enHero0FieldBuffDebuff"></span>
+    </div>
+  </div>
+  
+  <hr/>
+  
+  <div>
+    Combat Log
+    <div id="combatLog">Hello World</div>
+  </div>
+  
+  <hr/>
+  
+  <div id="myHero0Setup">
+    <span>My Slot 1 Hero:</span><br/>
+    
+    <label for="myHero0Select">Select a Hero:</label>
+    <select id="myHero0Select" onchange="updateHero(0);">
+      
+    </select><br/>
+    
+    <label for="myHero0Skin">Skin:</label>
+    <select id="myHero0Skin" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Stone">Stone: </label>
+    <select id="myHero0Stone" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Artifact">Artifact: </label>
+    <select id="myHero0Artifact" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Weapon">Weapon: </label>
+    <select id="myHero0Weapon" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Accessory">Accessory: </label>
+    <select id="myHero0Accessory" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Armor">Armor: </label>
+    <select id="myHero0Armor" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Shoe">Shoe: </label>
+    <select id="myHero0Shoe" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Enable1">Enable 1: </label>
+    <select id="myHero0Enable1" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Enable2">Enable 2: </label>
+    <select id="myHero0Enable2" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Enable3">Enable 3: </label>
+    <select id="myHero0Enable3" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Enable4">Enable 4: </label>
+    <select id="myHero0Enable4" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <label for="myHero0Enable5">Enable 5: </label>
+    <select id="myHero0Enable5" onchange="updateHero(0);">
+      <option value="None">None</option>
+    </select><br />
+    
+    <div>
+      Hero Sheet:
+      <div id="myHero0Sheet"></div>
+    </div>
+  </div>
+  
+  <hr/>
+
+</body>
+
+</html>
