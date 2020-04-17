@@ -1,6 +1,8 @@
 // hero base stats dictionary
-baseHeroStats = {
-  None:{},
+var baseHeroStats = {
+  "None": {
+      className: hero
+  },
   
   "Foolish": {
     className: Foolish,

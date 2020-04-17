@@ -7,19 +7,12 @@
     <title>Idle Heroes Battle Simulator</title>
 </head>
 
-<script type="text/javascript" src="heroes.js" />
-<script type="text/javascript" src="baseHeroStats.js" />
-<script type="text/javascript" src="equipment.js" />
-<script type="text/javascript" src="stone.js" />
-<script type="text/javascript" src="artifact.js" />
-<script type="text/javascript" src="guildTech.js" />
-<script type="text/javascript" src="monster.js" />
-<script type="text/javascript" src="team.js" />
-<script type="text/javascript" src="celestialIsland.js" />
+<script src="heroes.js"></script>
+<script src="baseHeroStats.js"></script>
 
-<script type="text/javascript">
+<script>
   var arrHeroes = [new hero("None")];
-  
+    
   function loadOptions() {
     var option;
     
@@ -28,9 +21,9 @@
       option.text = x;
       for(i=0; i<arrHeroes.length; i++) {
         document.getElementById("myHero" + i + "Select").add(option);
+        document.getElementById("myHero" + i + "Select").value = "None";
       }
     }
-    document.getElementById("myHero" + i + "Select").value = "None";
   }
   
   function updateHero(heroPos) {

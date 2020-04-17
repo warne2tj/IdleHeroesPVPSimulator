@@ -46,7 +46,7 @@ class hero {
     // call any passives that adjust base stats
     // this.passive2();
     
-    this._buffDebuffs = {};
+    //this._buffDebuffs = {};
     
   }
   
