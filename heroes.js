@@ -1,13 +1,16 @@
 // base hero class, extend this class for each hero
 class hero {
-  constructor(sHeroName) {
+  constructor(sHeroName, iHeroPos) {
     this._heroName = sHeroName;
+    this._heroPos = iHeroPos
     this._heroFaction = baseHeroStats[sHeroName]["heroFaction"];
     this._starLevel = baseHeroStats[sHeroName]["starLevel"];
     this._heroLevel = baseHeroStats[sHeroName]["heroLevel"];
     this._heroClass = baseHeroStats[sHeroName]["heroClass"];
     
     this._baseStats = Object.assign({}, baseHeroStats[sHeroName]["stats"]);
+    this._baseStats["totalHP"] = this._baseStats["hp"];
+    this._baseStats["totalAttack"] = this._baseStats["attack"];
     this._baseStats["skillDamage"] = 0.0;
     this._baseStats["precision"] = 0.0;
     this._baseStats["block"] = 0.0;
@@ -59,10 +62,12 @@ class hero {
   }
   
   // a bunch of functions to override by hero subclasses as needed.
-  active() {
-    // override to hero's active
-    return;
-  }
+  doActive() { return;}
+  passive1() { return;}
+  passive2() { return;}
+  passive3() { return;}
+  allyDied() { return;}
+  enemyDied() { return;}
   
   
   applyStatChange(arrStats, strSource) {
@@ -83,44 +88,142 @@ class hero {
   
   
   // Update current stats based on user selections.
+  // The order in multipliers are applied seem to matter,
+  // They seem to be applied in a certain order with a floor in between.
   updateCurrentStats() {
+    var prefix = this._heroPos < 6 ? "att" : "def";
+    var arrLimits = [this._heroClass, this._heroFaction];
+    var keySet = "";
+    
     console.log("Update current stats for " + this._heroName + " - " + this._heroClass);
+    
     // start with base stats
     this._currentStats = Object.assign({}, this._baseStats);
     this._attackMultipliers = {};
     this._hpMultipliers = {};
     
-    // get and apply guild tech
-    var tech = guildTech[this._heroClass];
     
-    for (var techName in tech){
-      var techLevel = document.getElementById("tech" + this._heroClass + techName).value;
-      
-      for (var statToBuff in tech[techName]){
-        var techStatsToBuff = {};
-        var buffAmount = tech[techName][statToBuff]*techLevel;
-        techStatsToBuff[statToBuff] = buffAmount;
-        this.applyStatChange(techStatsToBuff, techName);
+    // apply passives
+    this.passive1();
+    this.passive2();
+    this.passive3();
+    
+    
+    // apply equipment and set bonus
+    var sets = {};
+    
+    this.applyStatChange(weapons[this._weapon]["stats"], "weapon");
+    keySet = weapons[this._weapon]["set"];
+    if (keySet != "") {
+      if (keySet in sets) {
+        sets[keySet] += 1;
+      } else {
+        sets[keySet] = 1;
       }
     }
+    if (arrLimits.includes(weapons[this._weapon]["limit"])) {
+      this.applyStatChange(weapons[this._weapon]["limitStats"], "weaponLimit");
+    }
+    
+    this.applyStatChange(armors[this._armor]["stats"], "armor");
+    keySet = armors[this._armor]["set"];
+    if (keySet != "") {
+      if (keySet in sets) {
+        sets[keySet] += 1;
+      } else {
+        sets[keySet] = 1;
+      }
+    }
+    if (arrLimits.includes(armors[this._armor]["limit"])) {
+      this.applyStatChange(armors[this._armor]["limitStats"], "armorLimit");
+    }
+    
+    this.applyStatChange(shoes[this._shoe]["stats"], "shoe");
+    keySet = shoes[this._shoe]["set"];
+    if (keySet != "") {
+      if (keySet in sets) {
+        sets[keySet] += 1;
+      } else {
+        sets[keySet] = 1;
+      }
+    }
+    if (arrLimits.includes(shoes[this._shoe]["limit"])) {
+      this.applyStatChange(shoes[this._shoe]["limitStats"], "shoeLimit");
+    }
+    
+    this.applyStatChange(accessories[this._accessory]["stats"], "accessory");
+    keySet = accessories[this._accessory]["set"];
+    if (keySet != "") {
+      if (keySet in sets) {
+        sets[keySet] += 1;
+      } else {
+        sets[keySet] = 1;
+      }
+    }
+    if (arrLimits.includes(accessories[this._accessory]["limit"])) {
+      this.applyStatChange(accessories[this._accessory]["limitStats"], "accessoryLimit");
+    }
+    
+    
+    // Must do it this way because set bonus multipliers seem to be applied in a specific order
+    for (var x in setBonus) {
+      if (x in sets) {
+        if (sets[x] >= 2) {
+          this.applyStatChange(setBonus[x][2], "Two piece " + x);
+        }
+        if (sets[x] >= 3) {
+          this.applyStatChange(setBonus[x][3], "Three piece " + x);
+        }
+        if (sets[x] >= 4) {
+          this.applyStatChange(setBonus[x][4], "Four piece " + x);
+        }
+      }
+    }  
     
     
     // apply skin, stone, artifact
     this.applyStatChange(stones[this._stone], "stone");
     
-    // apply equipment and set bonus
-    this.applyStatChange(weapons[this._weapon]["stats"], "weapon");
-    this.applyStatChange(armors[this._armor]["stats"], "armor");
-    this.applyStatChange(shoes[this._shoe]["stats"], "shoe");
-    this.applyStatChange(accessories[this._accessory]["stats"], "accessory");
+    this.applyStatChange(artifacts[this._artifact]["stats"], "artifact");
+    if (arrLimits.includes(artifacts[this._artifact]["limit"])) {
+      this.applyStatChange(artifacts[this._artifact]["limitStats"], "artifactLimit");
+    }  
+    
+    
+    // get and apply guild tech
+    var tech = guildTech[this._heroClass];
+    var hpMultiplier = 1.0;
+    var attackMultiplier = 1.0;
+    
+    for (var techName in tech){
+      var techLevel = document.getElementById(prefix + "Tech" + this._heroClass + techName).value;
+      
+      for (var statToBuff in tech[techName]){
+        var techStatsToBuff = {};
+        var buffAmount = tech[techName][statToBuff]*techLevel;
+        
+        if (statToBuff == "hpPercent") {
+          hpMultiplier *= (1 + buffAmount);
+        } else if (statToBuff == "attackPercent") {
+          attackMultiplier *= (1 + buffAmount);
+        } else {
+          techStatsToBuff[statToBuff] = buffAmount;
+        }
+        
+        this.applyStatChange(techStatsToBuff, techName);
+      }
+    }
+    this.applyStatChange({hpPercent: hpMultiplier-1, attackPercent: attackMultiplier-1}, "techPercentages");
+    
     
     // apply enables
     
-    // apply avatar frame, aura
-    
-    // apply monster
+    // apply monster, aura, avatar frame
     
     // future: get and apply celestial island
+    
+    this._currentStats["totalHP"] = this.calcHP();
+    this._currentStats["totalAttack"] = this.calcAttack();
   }
   
   
@@ -145,7 +248,7 @@ class hero {
   }
   
   
-  // Should not need override. Get hero stat description for display.
+  // Get hero stats for display.
   getHeroSheet() {
     console.log("Get current stats for " + this._heroName);
     var heroSheet = "";
@@ -153,38 +256,14 @@ class hero {
     heroSheet += "Level " + this._heroLevel + " " + this._heroName + "<br/>";
     heroSheet += this._starLevel + "* " + this._heroFaction + " " + this._heroClass + "<br/>";
     
-    heroSheet += "<br/>Total HP: " + this.calcAttack();
-    heroSheet += "<br/>Total Attack: " + this.calcHP();
-    
     for (var statName in this._currentStats) {
-      heroSheet += "<br/>" + statName + ": " + this._currentStats[statName];
+      if (["hp", "attack", "speed", "armor", "totalHP", "totalAttack"].includes(statName)) {
+        heroSheet += "<br/>" + statName + ": " + this._currentStats[statName].toFixed();
+      } else {
+        heroSheet += "<br/>" + statName + ": " + this._currentStats[statName].toFixed(2);
+      }
     }
     
     return heroSheet;
-  }
-}
-
-
-// 1* Foolish
-class Foolish extends hero {
-  constructor() {
-    super("Foolish");
-  }
-}
-
-
-// 5* Baade
-class Baade extends hero {
-  constructor() {
-    super("Baade");
-  }
-  
-  updateCurrentStats() {
-    super.updateCurrentStats();
-    
-    // apply Will of Undead passive
-    this.applyStatChange("attackPercent", 0.1);
-    this.applyStatChange("hpPercent", 0.2);
-    this.applyStatChange("armorBreak", 0.2);
   }
 }

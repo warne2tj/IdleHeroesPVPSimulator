@@ -4,6 +4,10 @@
 var baseHeroStats = {
   "None": {
     className: hero,
+    heroFaction: "",
+    starLevel: 0,
+    heroLevel: 0,
+    heroClass: "",
     stats: {
       hp: 0,
       attack: 0,
@@ -33,10 +37,24 @@ var baseHeroStats = {
     heroLevel: 100,
     heroClass: "Warrior",
     stats: {
-      hp: 22235,
+      hp: 22234,
       attack: 2506,
       armor: 632,
       speed: 606
+    }
+  },
+  
+  "Tara": {
+    className: Tara,
+    heroFaction: "Light",
+    starLevel: 15,
+    heroLevel: 330,
+    heroClass: "Warrior",
+    stats: {
+      hp: 1142340,
+      attack: 38480,
+      armor: 2067,
+      speed: 1468
     }
   }
 };

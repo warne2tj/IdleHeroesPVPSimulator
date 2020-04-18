@@ -27,16 +27,19 @@
 </style>
 
 <script src="heroes.js"></script>
+<script src="heroSubclasses.js"></script>
 <script src="baseHeroStats.js"></script>
 <script src="guildTech.js"></script>
 <script src="equipment.js"></script>
 <script src="stone.js"></script>
+<script src="artifact.js"></script>
 
 <script>
-  var arrHeroes = [new hero("None")];
+  var attHeroes = [new hero("None")];
+  var defHeroes = [];
     
     
-  function loadOptions() {
+  function initialize() {
     var prefix;
     
     addOptions(baseHeroStats, "Name");
@@ -45,13 +48,17 @@
     addOptions(armors, "Armor");
     addOptions(shoes, "Shoe");
     addOptions(stones, "Stone");
+    addOptions(artifacts, "Artifact");
     
-    for(i=0; i<arrHeroes.length; i++) {
+    for(i=0; i<attHeroes.length; i++) {
       prefix = i < 6 ? "att" : "def";
       document.getElementById(prefix + "Hero" + i + "Name").value = "Foolish";
+      document.getElementById(prefix + "Hero" + i + "Stone").value = "T1 Attack";
+      document.getElementById(prefix + "Hero" + i + "Artifact").value = "The Kiss of Ghost";
       changeHero(i);
     }
   }
+  
   
   function addOptions(dictItems, strPostfix) {
     var option;
@@ -60,16 +67,17 @@
     for(var x in dictItems) {
       option = document.createElement("option");
       option.text = x;
-      for(i=0; i<arrHeroes.length; i++) {
+      for(i=0; i<attHeroes.length; i++) {
         prefix = i < 6 ? "att" : "def";
         document.getElementById(prefix + "Hero" + i + strPostfix).add(option);
       }
     }
   }
   
+  
   function changeHero(heroPos) {
     var prefix = heroPos < 6 ? "att" : "def";
-    var pHeroName = arrHeroes[heroPos]._heroName;
+    var pHeroName = attHeroes[heroPos]._heroName;
     var cHeroName = document.getElementById(prefix + "Hero" + heroPos + "Name").value;
     var cHeroSheet = document.getElementById(prefix + "Hero" + heroPos + "Sheet");
     var fHeroName = document.getElementById(prefix + "Hero" + heroPos + "FieldName");
@@ -80,17 +88,16 @@
     
     if (pHeroName != cHeroName) {
       if(cHeroName == "None") {
-        arrHeroes[heroPos] = new hero("None");
+        attHeroes[heroPos] = new hero("None", heroPos);
         cHeroSheet.innerHTML = "";
         fHeroName.innerHTML = "";
         fHeroHP.innerHTML = "";
         fHeroBuffDebuff.innerHTML = "";
       } else {
-        arrHeroes[heroPos] = new baseHeroStats[cHeroName]["className"];
-        cHeroSheet.innerHTML = arrHeroes[heroPos].getHeroSheet();
+        attHeroes[heroPos] = new baseHeroStats[cHeroName]["className"](cHeroName, heroPos);
         fHeroName.innerHTML = cHeroName;
-        fHeroHP.innerHTML = arrHeroes[heroPos].calcHP();
         fHeroBuffDebuff.innerHTML = "";
+        updateHero(heroPos);
       }
     } else if(cHeroName == pHeroName) {
       // do nothing
@@ -107,21 +114,39 @@
     var prefix = heroPos < 6 ? "att" : "def";
     var cHeroName = document.getElementById(prefix + "Hero" + heroPos + "Name").value;
     var cHeroSheet = document.getElementById(prefix + "Hero" + heroPos + "Sheet");
+    var fHeroHP = document.getElementById(prefix + "Hero" + heroPos + "FieldHP");
     console.log("updateHero " + heroPos + ": " + cHeroName);
     
     if (cHeroName != "None") {
-      arrHeroes[heroPos]._weapon = document.getElementById(prefix + "Hero" + heroPos + "Weapon").value;
-      arrHeroes[heroPos]._accessory = document.getElementById(prefix + "Hero" + heroPos + "Accessory").value;
-      arrHeroes[heroPos]._armor = document.getElementById(prefix + "Hero" + heroPos + "Armor").value;
-      arrHeroes[heroPos]._shoe = document.getElementById(prefix + "Hero" + heroPos + "Shoe").value;
-      arrHeroes[heroPos]._stone = document.getElementById(prefix + "Hero" + heroPos + "Stone").value;
-      arrHeroes[heroPos].updateCurrentStats();
-      cHeroSheet.innerHTML = arrHeroes[heroPos].getHeroSheet();
+      attHeroes[heroPos]._weapon = document.getElementById(prefix + "Hero" + heroPos + "Weapon").value;
+      attHeroes[heroPos]._accessory = document.getElementById(prefix + "Hero" + heroPos + "Accessory").value;
+      attHeroes[heroPos]._armor = document.getElementById(prefix + "Hero" + heroPos + "Armor").value;
+      attHeroes[heroPos]._shoe = document.getElementById(prefix + "Hero" + heroPos + "Shoe").value;
+      attHeroes[heroPos]._stone = document.getElementById(prefix + "Hero" + heroPos + "Stone").value;
+      attHeroes[heroPos]._artifact = document.getElementById(prefix + "Hero" + heroPos + "Artifact").value;
+      
+      attHeroes[heroPos].updateCurrentStats();
+      cHeroSheet.innerHTML = attHeroes[heroPos].getHeroSheet();
+      fHeroHP.innerHTML = attHeroes[heroPos]._currentStats["totalHP"];
+    }
+  }
+  
+  
+  function updateAttackers() {
+    for (var i = 0; i < attHeroes.length; i++) {
+      updateHero(i);
+    }
+  }
+  
+  
+  function updateDefenders() {
+    for (var i = 6; i < defHeroes.length + 6; i++) {
+      updateHero(i + 6);
     }
   }
 </script>
 
-<body onload="loadOptions();">
+<body onload="initialize();">
   <hr/>
   
   <span>Battle Field</span>
@@ -213,7 +238,7 @@
   <hr/>
   
   <div class="section">
-    <span>Player Config:</span><br/>
+    <span>Attacker Config:</span><br/>
     
     <label for="avatarFrame">Select an Avatar Frame:</label>
     <select id="avatarFrame">
@@ -222,53 +247,53 @@
     <div>
       <span>Warrior Tech</span><br/>
       
-      <label for="techWarriorhpPercent">HP: </label>
-      <input id="techWarriorhpPercent" onchange="updateHero(0);" value="60" /><br/>
+      <label for="attTechWarriorhpPercent">HP: </label>
+      <input id="attTechWarriorhpPercent" onchange="updateAttackers();" value="60" /><br/>
       
-      <label for="techWarriorattackPercent">Attack: </label>
-      <input id="techWarriorattackPercent" onchange="updateHero(0);" value="50" /><br/>
+      <label for="attTechWarriorattackPercent">Attack: </label>
+      <input id="attTechWarriorattackPercent" onchange="updateAttackers();" value="50" /><br/>
       
-      <label for="techWarriorcrit">Crit: </label>
-      <input id="techWarriorcrit" onchange="updateHero(0);" value="40" /><br/>
+      <label for="attTechWarriorcrit">Crit: </label>
+      <input id="attTechWarriorcrit" onchange="updateAttackers();" value="40" /><br/>
       
-      <label for="techWarriorblock">Block: </label>
-      <input id="techWarriorblock" onchange="updateHero(0);" value="30" /><br/>
+      <label for="attTechWarriorblock">Block: </label>
+      <input id="attTechWarriorblock" onchange="updateAttackers();" value="30" /><br/>
       
-      <label for="techWarriorskillDamage">Skill Damage: </label>
-      <input id="techWarriorskillDamage" onchange="updateHero(0);" value="20" /><br/>
+      <label for="attTechWarriorskillDamage">Skill Damage: </label>
+      <input id="attTechWarriorskillDamage" onchange="updateAttackers();" value="20" /><br/>
       
-      <label for="techWarriorspeed">Speed: </label>
-      <input id="techWarriorspeed" onchange="updateHero(0);" value="20" /><br/>
+      <label for="attTechWarriorspeed">Speed: </label>
+      <input id="attTechWarriorspeed" onchange="updateAttackers();" value="20" /><br/>
       
-      <label for="techWarriorconstitution">Constitution: </label>
-      <input id="techWarriorconstitution" onchange="updateHero(0);" value="20" /><br/>
+      <label for="attTechWarriorconstitution">Constitution: </label>
+      <input id="attTechWarriorconstitution" onchange="updateAttackers();" value="20" /><br/>
       
-      <label for="techWarriormind">Mind: </label>
-      <input id="techWarriormind" onchange="updateHero(0);" value="20" /><br/>
+      <label for="attTechWarriormind">Mind: </label>
+      <input id="attTechWarriormind" onchange="updateAttackers();" value="20" /><br/>
       
-      <label for="techWarriorantiMage">Anti Mage: </label>
-      <input id="techWarriorantiMage" onchange="updateHero(0);" value="20" /><br/>
+      <label for="attTechWarriorantiMage">Anti Mage: </label>
+      <input id="attTechWarriorantiMage" onchange="updateAttackers();" value="20" /><br/>
       
-      <label for="techWarriorantiRanger">Anti Ranger: </label>
-      <input id="techWarriorantiRanger" onchange="updateHero(0);" value="20" /><br/>
+      <label for="attTechWarriorantiRanger">Anti Ranger: </label>
+      <input id="attTechWarriorantiRanger" onchange="updateAttackers();" value="20" /><br/>
       
-      <label for="techWarriorantiAssassin">Anti Assassin: </label>
-      <input id="techWarriorantiAssassin" onchange="updateHero(0);" value="20" /><br/>
+      <label for="attTechWarriorantiAssassin">Anti Assassin: </label>
+      <input id="attTechWarriorantiAssassin" onchange="updateAttackers();" value="20" /><br/>
       
-      <label for="techWarriorantiPriest">Anti Priest: </label>
-      <input id="techWarriorantiPriest" onchange="updateHero(0);" value="20" /><br/>
+      <label for="attTechWarriorantiPriest">Anti Priest: </label>
+      <input id="attTechWarriorantiPriest" onchange="updateAttackers();" value="20" /><br/>
       
-      <label for="techWarriorstunImmune">Stun Immune: </label>
-      <input id="techWarriorstunImmune" onchange="updateHero(0);" value="10" /><br/>
+      <label for="attTechWarriorstunImmune">Stun Immune: </label>
+      <input id="attTechWarriorstunImmune" onchange="updateAttackers();" value="10" /><br/>
       
-      <label for="techWarriorfreezeImmune">Freeze Immune: </label>
-      <input id="techWarriorfreezeImmune" onchange="updateHero(0);" value="10" /><br/>
+      <label for="attTechWarriorfreezeImmune">Freeze Immune: </label>
+      <input id="attTechWarriorfreezeImmune" onchange="updateAttackers();" value="10" /><br/>
       
-      <label for="techWarriorpetrifyImmune">Petrify Immune: </label>
-      <input id="techWarriorpetrifyImmune" onchange="updateHero(0);" value="10" /><br/>
+      <label for="attTechWarriorpetrifyImmune">Petrify Immune: </label>
+      <input id="attTechWarriorpetrifyImmune" onchange="updateAttackers();" value="10" /><br/>
       
-      <label for="techWarriortwineImmune">Twine Immune: </label>
-      <input id="techWarriortwineImmune" onchange="updateHero(0);" value="10" /><br/>
+      <label for="attTechWarriortwineImmune">Twine Immune: </label>
+      <input id="attTechWarriortwineImmune" onchange="updateAttackers();" value="10" /><br/>
     </div>
   </div>
   
