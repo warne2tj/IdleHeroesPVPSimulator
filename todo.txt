@@ -1,0 +1,11 @@
+calculate set bonus of equipment
+calculate class gear bonus
+calculate faction gear bonus
+
+
+
+
+add heroes, subclass them
+add stones
+add equipment
+add rest of guild tech

@@ -7,64 +7,137 @@
     <title>Idle Heroes Battle Simulator</title>
 </head>
 
+<style>
+  .section {
+    column-count: 3;
+  }
+  
+  .subsection2 {
+    column-span: 2;
+  }
+  
+  .subsection1 {
+    column-span: 1;
+  }
+  
+  .log {
+    height: 200px;
+    overflow: scroll;
+  }
+</style>
+
 <script src="heroes.js"></script>
 <script src="baseHeroStats.js"></script>
+<script src="guildTech.js"></script>
+<script src="equipment.js"></script>
+<script src="stone.js"></script>
 
 <script>
   var arrHeroes = [new hero("None")];
     
-  function loadOptions() {
-    var option;
     
-    for(var x in baseHeroStats) {
+  function loadOptions() {
+    var prefix;
+    
+    addOptions(baseHeroStats, "Name");
+    addOptions(weapons, "Weapon");
+    addOptions(accessories, "Accessory");
+    addOptions(armors, "Armor");
+    addOptions(shoes, "Shoe");
+    addOptions(stones, "Stone");
+    
+    for(i=0; i<arrHeroes.length; i++) {
+      prefix = i < 6 ? "att" : "def";
+      document.getElementById(prefix + "Hero" + i + "Name").value = "Foolish";
+      changeHero(i);
+    }
+  }
+  
+  function addOptions(dictItems, strPostfix) {
+    var option;
+    var prefix;
+    
+    for(var x in dictItems) {
       option = document.createElement("option");
       option.text = x;
       for(i=0; i<arrHeroes.length; i++) {
-        document.getElementById("myHero" + i + "Select").add(option);
-        document.getElementById("myHero" + i + "Select").value = "None";
+        prefix = i < 6 ? "att" : "def";
+        document.getElementById(prefix + "Hero" + i + strPostfix).add(option);
       }
     }
   }
+  
+  function changeHero(heroPos) {
+    var prefix = heroPos < 6 ? "att" : "def";
+    var pHeroName = arrHeroes[heroPos]._heroName;
+    var cHeroName = document.getElementById(prefix + "Hero" + heroPos + "Name").value;
+    var cHeroSheet = document.getElementById(prefix + "Hero" + heroPos + "Sheet");
+    var fHeroName = document.getElementById(prefix + "Hero" + heroPos + "FieldName");
+    var fHeroHP = document.getElementById(prefix + "Hero" + heroPos + "FieldHP");
+    var fHeroBuffDebuff = document.getElementById(prefix + "Hero" + heroPos + "FieldBuffDebuff");
+    
+    console.log("Change Hero " + heroPos + ": " + pHeroName + " to " + cHeroName);
+    
+    if (pHeroName != cHeroName) {
+      if(cHeroName == "None") {
+        arrHeroes[heroPos] = new hero("None");
+        cHeroSheet.innerHTML = "";
+        fHeroName.innerHTML = "";
+        fHeroHP.innerHTML = "";
+        fHeroBuffDebuff.innerHTML = "";
+      } else {
+        arrHeroes[heroPos] = new baseHeroStats[cHeroName]["className"];
+        cHeroSheet.innerHTML = arrHeroes[heroPos].getHeroSheet();
+        fHeroName.innerHTML = cHeroName;
+        fHeroHP.innerHTML = arrHeroes[heroPos].calcHP();
+        fHeroBuffDebuff.innerHTML = "";
+      }
+    } else if(cHeroName == pHeroName) {
+      // do nothing
+    } else {
+      cHeroSheet.innerHTML = "Hero not found.";
+      fHeroName.innerHTML = "";
+      fHeroHP.innerHTML = "";
+      fHeroBuffDebuff.innerHTML = "";
+    }
+  }
+  
   
   function updateHero(heroPos) {
-    var sHeroName = document.getElementById("myHero" + heroPos + "Select").value;
-    var oHeroSheet = document.getElementById("myHero" + heroPos + "Sheet");
-    var aHeroName = arrHeroes[heroPos]._baseStats["heroName"];
+    var prefix = heroPos < 6 ? "att" : "def";
+    var cHeroName = document.getElementById(prefix + "Hero" + heroPos + "Name").value;
+    var cHeroSheet = document.getElementById(prefix + "Hero" + heroPos + "Sheet");
+    console.log("updateHero " + heroPos + ": " + cHeroName);
     
-    if (sHeroName != aHeroName) {
-      if(sHeroName == "None") {
-        arrHeroes[heroPos] = new hero("None");
-        oHeroSheet.innerHTML = "";
-      } else {
-        arrHeroes[heroPos] = new baseHeroStats[sHeroName]["className"];
-        oHeroSheet.innerHTML = arrHeroes[heroPos].getHeroSheet();
-      }
-    } else if(sHeroName == aHeroName) {
-      // just update stats
-      oHeroSheet.innerHTML = "just update stats";
-    } else {
-      oHeroSheet.innerHTML = "Hero not found.";
+    if (cHeroName != "None") {
+      arrHeroes[heroPos]._weapon = document.getElementById(prefix + "Hero" + heroPos + "Weapon").value;
+      arrHeroes[heroPos]._accessory = document.getElementById(prefix + "Hero" + heroPos + "Accessory").value;
+      arrHeroes[heroPos]._armor = document.getElementById(prefix + "Hero" + heroPos + "Armor").value;
+      arrHeroes[heroPos]._shoe = document.getElementById(prefix + "Hero" + heroPos + "Shoe").value;
+      arrHeroes[heroPos]._stone = document.getElementById(prefix + "Hero" + heroPos + "Stone").value;
+      arrHeroes[heroPos].updateCurrentStats();
+      cHeroSheet.innerHTML = arrHeroes[heroPos].getHeroSheet();
     }
   }
-  
 </script>
 
 <body onload="loadOptions();">
   <hr/>
   
-  <div id="battleField">
-    Battle Field
-    
-    <div id="myHero0Field">
-      <span id="myHero0FieldName"></span>
-      <span id="myHero0FieldHP"></span>
-      <span id="myHero0FieldBuffDebuff"></span>
+  <span>Battle Field</span>
+  <div class="section" id="battleField">
+    <div id="attHero0Field">
+      <span id="attHero0FieldName"></span>
+      <span id="attHero0FieldHP"></span>
+      <span id="attHero0FieldBuffDebuff"></span>
     </div>
     
-    <div id="enHero0Field">
-      <span id="enHero0FieldName"></span>
-      <span id="enHero0FieldHP"></span>
-      <span id="enHero0FieldBuffDebuff"></span>
+    <div id="battleFieldSpacer"></div>
+    
+    <div id="defHero0Field">
+      <span id="defHero0FieldName"></span>
+      <span id="defHero0FieldHP"></span>
+      <span id="defHero0FieldBuffDebuff"></span>
     </div>
   </div>
   
@@ -72,82 +145,130 @@
   
   <div>
     Combat Log
-    <div id="combatLog">Hello World</div>
+    <div class="log" id="combatLog">Hello World</div>
   </div>
   
   <hr/>
   
-  <div id="myHero0Setup">
-    <span>My Slot 1 Hero:</span><br/>
-    
-    <label for="myHero0Select">Select a Hero:</label>
-    <select id="myHero0Select" onchange="updateHero(0);">
+  <div class="section" id="attHero0Setup">
+    <div class="subsection2">
+      <span>Attacker Slot 1 Hero:</span><br/>
       
+      <label for="attHero0Name">Hero: </label>
+      <select id="attHero0Name" onchange="changeHero(0);"></select><br/>
+      
+      <label for="attHero0Skin">Skin: </label>
+      <select id="attHero0Skin" onchange="updateHero(0);"></select><br />
+      
+      <label for="attHero0Stone">Stone: </label>
+      <select id="attHero0Stone" onchange="updateHero(0);"></select><br />
+      
+      <label for="attHero0Artifact">Artifact: </label>
+      <select id="attHero0Artifact" onchange="updateHero(0);"></select><br />
+      
+      <label for="attHero0Weapon">Weapon: </label>
+      <select id="attHero0Weapon" onchange="updateHero(0);"></select><br />
+      
+      <label for="attHero0Accessory">Accessory: </label>
+      <select id="attHero0Accessory" onchange="updateHero(0);"></select><br />
+      
+      <label for="attHero0Armor">Armor: </label>
+      <select id="attHero0Armor" onchange="updateHero(0);"></select><br />
+      
+      <label for="attHero0Shoe">Shoe: </label>
+      <select id="attHero0Shoe" onchange="updateHero(0);"></select><br />
+      
+      <label for="attHero0Enable1">Enable 1: </label>
+      <select id="attHero0Enable1" onchange="updateHero(0);">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="attHero0Enable2">Enable 2: </label>
+      <select id="attHero0Enable2" onchange="updateHero(0);">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="attHero0Enable3">Enable 3: </label>
+      <select id="attHero0Enable3" onchange="updateHero(0);">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="attHero0Enable4">Enable 4: </label>
+      <select id="attHero0Enable4" onchange="updateHero(0);">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="attHero0Enable5">Enable 5: </label>
+      <select id="attHero0Enable5" onchange="updateHero(0);">
+        <option value="None">None</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="attHero0Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section">
+    <span>Player Config:</span><br/>
+    
+    <label for="avatarFrame">Select an Avatar Frame:</label>
+    <select id="avatarFrame">
     </select><br/>
     
-    <label for="myHero0Skin">Skin:</label>
-    <select id="myHero0Skin" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Stone">Stone: </label>
-    <select id="myHero0Stone" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Artifact">Artifact: </label>
-    <select id="myHero0Artifact" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Weapon">Weapon: </label>
-    <select id="myHero0Weapon" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Accessory">Accessory: </label>
-    <select id="myHero0Accessory" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Armor">Armor: </label>
-    <select id="myHero0Armor" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Shoe">Shoe: </label>
-    <select id="myHero0Shoe" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Enable1">Enable 1: </label>
-    <select id="myHero0Enable1" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Enable2">Enable 2: </label>
-    <select id="myHero0Enable2" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Enable3">Enable 3: </label>
-    <select id="myHero0Enable3" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Enable4">Enable 4: </label>
-    <select id="myHero0Enable4" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
-    <label for="myHero0Enable5">Enable 5: </label>
-    <select id="myHero0Enable5" onchange="updateHero(0);">
-      <option value="None">None</option>
-    </select><br />
-    
     <div>
-      Hero Sheet:
-      <div id="myHero0Sheet"></div>
+      <span>Warrior Tech</span><br/>
+      
+      <label for="techWarriorhpPercent">HP: </label>
+      <input id="techWarriorhpPercent" onchange="updateHero(0);" value="60" /><br/>
+      
+      <label for="techWarriorattackPercent">Attack: </label>
+      <input id="techWarriorattackPercent" onchange="updateHero(0);" value="50" /><br/>
+      
+      <label for="techWarriorcrit">Crit: </label>
+      <input id="techWarriorcrit" onchange="updateHero(0);" value="40" /><br/>
+      
+      <label for="techWarriorblock">Block: </label>
+      <input id="techWarriorblock" onchange="updateHero(0);" value="30" /><br/>
+      
+      <label for="techWarriorskillDamage">Skill Damage: </label>
+      <input id="techWarriorskillDamage" onchange="updateHero(0);" value="20" /><br/>
+      
+      <label for="techWarriorspeed">Speed: </label>
+      <input id="techWarriorspeed" onchange="updateHero(0);" value="20" /><br/>
+      
+      <label for="techWarriorconstitution">Constitution: </label>
+      <input id="techWarriorconstitution" onchange="updateHero(0);" value="20" /><br/>
+      
+      <label for="techWarriormind">Mind: </label>
+      <input id="techWarriormind" onchange="updateHero(0);" value="20" /><br/>
+      
+      <label for="techWarriorantiMage">Anti Mage: </label>
+      <input id="techWarriorantiMage" onchange="updateHero(0);" value="20" /><br/>
+      
+      <label for="techWarriorantiRanger">Anti Ranger: </label>
+      <input id="techWarriorantiRanger" onchange="updateHero(0);" value="20" /><br/>
+      
+      <label for="techWarriorantiAssassin">Anti Assassin: </label>
+      <input id="techWarriorantiAssassin" onchange="updateHero(0);" value="20" /><br/>
+      
+      <label for="techWarriorantiPriest">Anti Priest: </label>
+      <input id="techWarriorantiPriest" onchange="updateHero(0);" value="20" /><br/>
+      
+      <label for="techWarriorstunImmune">Stun Immune: </label>
+      <input id="techWarriorstunImmune" onchange="updateHero(0);" value="10" /><br/>
+      
+      <label for="techWarriorfreezeImmune">Freeze Immune: </label>
+      <input id="techWarriorfreezeImmune" onchange="updateHero(0);" value="10" /><br/>
+      
+      <label for="techWarriorpetrifyImmune">Petrify Immune: </label>
+      <input id="techWarriorpetrifyImmune" onchange="updateHero(0);" value="10" /><br/>
+      
+      <label for="techWarriortwineImmune">Twine Immune: </label>
+      <input id="techWarriortwineImmune" onchange="updateHero(0);" value="10" /><br/>
     </div>
   </div>
   
