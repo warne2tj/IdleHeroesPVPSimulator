@@ -11,7 +11,7 @@ Functionality:
   - implement monsters
 
 Combat mechanics:
-  - Exact method of applying attack and hp percent modifiers. 
+  - Exact method of applying attack and hp percent modifiers: 
     They seem to be applied by first adding all static modifers together
     Then applying percentage modifiers one source at a time in a specific order with a math.floor in between.
     Currently off by +/- 5 as displayed on Info screen
@@ -19,6 +19,7 @@ Combat mechanics:
   - How much does armor stat reduce damage?
       = def / (180 + 20*level)
   - Can a crit be blocked?
+      = Yes, see below
   - How much damage does a block reduce?
       = 30% normal, 44% crit, chance of crit and chance of block seem to use the same roll
   - How does global cc immunity interact with cc specific immunity?
@@ -32,6 +33,7 @@ Combat mechanics:
       = 1% holy damage = 0.7% damage ignoring armor
   - Energy
       = attack: 50, get hit: 10, get crit: 20
+  - Monster energy, how is it gained, does excess go into ability damage like hero energy does?
 
 Add data
   - hero base stats

@@ -1,15 +1,15 @@
 // 1* Foolish
 class Foolish extends hero {
-  constructor(sHeroName, iHeroPos) {
-    super(sHeroName, iHeroPos);
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
   }
 }
 
 
 // 5* Baade
 class Baade extends hero {
-  constructor(sHeroName, iHeroPos) {
-    super(sHeroName, iHeroPos);
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
   }
   
   passive1() {
@@ -21,8 +21,8 @@ class Baade extends hero {
 
 // E5 Tara
 class Tara extends hero {
-  constructor(sHeroName, iHeroPos) {
-    super(sHeroName, iHeroPos);
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
   }
   
   passive1() {

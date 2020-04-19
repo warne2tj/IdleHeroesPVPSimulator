@@ -17,11 +17,79 @@
 <script src="artifact.js"></script>
 <script src="skin.js"></script>
 <script src="initAndSync.js"></script>
+<script src="simulation.js"></script>
 
 <body onload="initialize();">
   <div>
     <span>Combat Log</span>
-    <div class="log" id="combatLog">Hello World</div>
+    <div class="log" id="combatLog"></div>
+    <div>
+      <label for="numSims">Number of Simulations to Run:</label>
+      <input id="numSims" size="3" value="1" />
+      <button type="button" onclick="runSim();">Run Simulation</button>
+    </div>
+  </div>
+  
+  <hr />
+  
+  <div class="section">
+    <span>Attacker Config:</span><br/>
+    
+    <label for="attAvatarFrame">Select an Avatar Frame:</label>
+    <select id="attAvatarFrame">
+    </select><br/>
+    
+    <div>
+      <span>Warrior Tech</span><br/>
+      
+      <label for="attTechWarriorhpPercent">HP: </label>
+      <input id="attTechWarriorhpPercent" onchange="updateAttackers();" value="60" size="3"/><br/>
+      
+      <label for="attTechWarriorattackPercent">Attack: </label>
+      <input id="attTechWarriorattackPercent" onchange="updateAttackers();" value="50" size="3" /><br/>
+      
+      <label for="attTechWarriorcrit">Crit: </label>
+      <input id="attTechWarriorcrit" onchange="updateAttackers();" value="40" size="3" /><br/>
+      
+      <label for="attTechWarriorblock">Block: </label>
+      <input id="attTechWarriorblock" onchange="updateAttackers();" value="30" size="3" /><br/>
+      
+      <label for="attTechWarriorskillDamage">Skill Damage: </label>
+      <input id="attTechWarriorskillDamage" onchange="updateAttackers();" value="20" size="3" /><br/>
+      
+      <label for="attTechWarriorspeed">Speed: </label>
+      <input id="attTechWarriorspeed" onchange="updateAttackers();" value="20" size="3" /><br/>
+      
+      <label for="attTechWarriorconstitution">Constitution: </label>
+      <input id="attTechWarriorconstitution" onchange="updateAttackers();" value="20" size="3" /><br/>
+      
+      <label for="attTechWarriormind">Mind: </label>
+      <input id="attTechWarriormind" onchange="updateAttackers();" value="20" size="3" /><br/>
+      
+      <label for="attTechWarriorantiMage">Anti Mage: </label>
+      <input id="attTechWarriorantiMage" onchange="updateAttackers();" value="20" size="3" /><br/>
+      
+      <label for="attTechWarriorantiRanger">Anti Ranger: </label>
+      <input id="attTechWarriorantiRanger" onchange="updateAttackers();" value="20" size="3" /><br/>
+      
+      <label for="attTechWarriorantiAssassin">Anti Assassin: </label>
+      <input id="attTechWarriorantiAssassin" onchange="updateAttackers();" value="20" size="3" /><br/>
+      
+      <label for="attTechWarriorantiPriest">Anti Priest: </label>
+      <input id="attTechWarriorantiPriest" onchange="updateAttackers();" value="20" size="3" /><br/>
+      
+      <label for="attTechWarriorstunImmune">Stun Immune: </label>
+      <input id="attTechWarriorstunImmune" onchange="updateAttackers();" value="10" size="3" /><br/>
+      
+      <label for="attTechWarriorfreezeImmune">Freeze Immune: </label>
+      <input id="attTechWarriorfreezeImmune" onchange="updateAttackers();" value="10" size="3" /><br/>
+      
+      <label for="attTechWarriorpetrifyImmune">Petrify Immune: </label>
+      <input id="attTechWarriorpetrifyImmune" onchange="updateAttackers();" value="10" size="3" /><br/>
+      
+      <label for="attTechWarriortwineImmune">Twine Immune: </label>
+      <input id="attTechWarriortwineImmune" onchange="updateAttackers();" value="10" size="3" /><br/>
+    </div>
   </div>
   
   <hr/>
@@ -104,70 +172,928 @@
   
   <hr/>
   
-  <div class="section">
-    <span>Attacker Config:</span><br/>
+  <div class="section" id="attHero1Setup">
+    <div class="subsection2">
+      <span>Attacker Slot 2 Hero:</span><br/>
+      
+      <label for="attHero1Name">Hero: </label>
+      <select id="attHero1Name" onchange="changeHero(1, 'att');"></select><br/>
+      
+      <label for="attHero1Skin">Skin: </label>
+      <select id="attHero1Skin" onchange="updateHero(1, 'att');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="attHero1Stone">Stone: </label>
+      <select id="attHero1Stone" onchange="updateHero(1, 'att');"></select><br />
+      
+      <label for="attHero1Artifact">Artifact: </label>
+      <select id="attHero1Artifact" onchange="updateHero(1, 'att');"></select><br />
+      
+      <label for="attHero1Weapon">Weapon: </label>
+      <select id="attHero1Weapon" onchange="updateHero(1, 'att');"></select><br />
+      
+      <label for="attHero1Accessory">Accessory: </label>
+      <select id="attHero1Accessory" onchange="updateHero(1, 'att');"></select><br />
+      
+      <label for="attHero1Armor">Armor: </label>
+      <select id="attHero1Armor" onchange="updateHero(1, 'att');"></select><br />
+      
+      <label for="attHero1Shoe">Shoe: </label>
+      <select id="attHero1Shoe" onchange="updateHero(1, 'att');"></select><br />
+      
+      <label for="attHero1Enable1">Enable 1: </label>
+      <select id="attHero1Enable1" onchange="updateHero(1, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero1Enable2">Enable 2: </label>
+      <select id="attHero1Enable2" onchange="updateHero(1, 'att');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="attHero1Enable3">Enable 3: </label>
+      <select id="attHero1Enable3" onchange="updateHero(1, 'att');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="attHero1Enable4">Enable 4: </label>
+      <select id="attHero1Enable4" onchange="updateHero(1, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero1Enable5">Enable 5: </label>
+      <select id="attHero1Enable5" onchange="updateHero(1, 'att');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
     
-    <label for="attAvatarFrame">Select an Avatar Frame:</label>
-    <select id="attAvatarFrame">
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="attHero1Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section" id="attHero2Setup">
+    <div class="subsection2">
+      <span>Attacker Slot 3 Hero:</span><br/>
+      
+      <label for="attHero2Name">Hero: </label>
+      <select id="attHero2Name" onchange="changeHero(2, 'att');"></select><br/>
+      
+      <label for="attHero2Skin">Skin: </label>
+      <select id="attHero2Skin" onchange="updateHero(2, 'att');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="attHero2Stone">Stone: </label>
+      <select id="attHero2Stone" onchange="updateHero(2, 'att');"></select><br />
+      
+      <label for="attHero2Artifact">Artifact: </label>
+      <select id="attHero2Artifact" onchange="updateHero(2, 'att');"></select><br />
+      
+      <label for="attHero2Weapon">Weapon: </label>
+      <select id="attHero2Weapon" onchange="updateHero(2, 'att');"></select><br />
+      
+      <label for="attHero2Accessory">Accessory: </label>
+      <select id="attHero2Accessory" onchange="updateHero(2, 'att');"></select><br />
+      
+      <label for="attHero2Armor">Armor: </label>
+      <select id="attHero2Armor" onchange="updateHero(2, 'att');"></select><br />
+      
+      <label for="attHero2Shoe">Shoe: </label>
+      <select id="attHero2Shoe" onchange="updateHero(2, 'att');"></select><br />
+      
+      <label for="attHero2Enable1">Enable 1: </label>
+      <select id="attHero2Enable1" onchange="updateHero(2, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero2Enable2">Enable 2: </label>
+      <select id="attHero2Enable2" onchange="updateHero(2, 'att');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="attHero2Enable3">Enable 3: </label>
+      <select id="attHero2Enable3" onchange="updateHero(2, 'att');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="attHero2Enable4">Enable 4: </label>
+      <select id="attHero2Enable4" onchange="updateHero(2, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero2Enable5">Enable 5: </label>
+      <select id="attHero2Enable5" onchange="updateHero(2, 'att');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="attHero2Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section" id="attHero3Setup">
+    <div class="subsection2">
+      <span>Attacker Slot 4 Hero:</span><br/>
+      
+      <label for="attHero3Name">Hero: </label>
+      <select id="attHero3Name" onchange="changeHero(3, 'att');"></select><br/>
+      
+      <label for="attHero3Skin">Skin: </label>
+      <select id="attHero3Skin" onchange="updateHero(3, 'att');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="attHero3Stone">Stone: </label>
+      <select id="attHero3Stone" onchange="updateHero(3, 'att');"></select><br />
+      
+      <label for="attHero3Artifact">Artifact: </label>
+      <select id="attHero3Artifact" onchange="updateHero(3, 'att');"></select><br />
+      
+      <label for="attHero3Weapon">Weapon: </label>
+      <select id="attHero3Weapon" onchange="updateHero(3, 'att');"></select><br />
+      
+      <label for="attHero3Accessory">Accessory: </label>
+      <select id="attHero3Accessory" onchange="updateHero(3, 'att');"></select><br />
+      
+      <label for="attHero3Armor">Armor: </label>
+      <select id="attHero3Armor" onchange="updateHero(3, 'att');"></select><br />
+      
+      <label for="attHero3Shoe">Shoe: </label>
+      <select id="attHero3Shoe" onchange="updateHero(3, 'att');"></select><br />
+      
+      <label for="attHero3Enable1">Enable 1: </label>
+      <select id="attHero3Enable1" onchange="updateHero(3, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero3Enable2">Enable 2: </label>
+      <select id="attHero3Enable2" onchange="updateHero(3, 'att');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="attHero3Enable3">Enable 3: </label>
+      <select id="attHero3Enable3" onchange="updateHero(3, 'att');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="attHero3Enable4">Enable 4: </label>
+      <select id="attHero3Enable4" onchange="updateHero(3, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero3Enable5">Enable 5: </label>
+      <select id="attHero3Enable5" onchange="updateHero(3, 'att');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="attHero3Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section" id="attHero4Setup">
+    <div class="subsection2">
+      <span>Attacker Slot 5 Hero:</span><br/>
+      
+      <label for="attHero4Name">Hero: </label>
+      <select id="attHero4Name" onchange="changeHero(4, 'att');"></select><br/>
+      
+      <label for="attHero4Skin">Skin: </label>
+      <select id="attHero4Skin" onchange="updateHero(4, 'att');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="attHero4Stone">Stone: </label>
+      <select id="attHero4Stone" onchange="updateHero(4, 'att');"></select><br />
+      
+      <label for="attHero4Artifact">Artifact: </label>
+      <select id="attHero4Artifact" onchange="updateHero(4, 'att');"></select><br />
+      
+      <label for="attHero4Weapon">Weapon: </label>
+      <select id="attHero4Weapon" onchange="updateHero(4, 'att');"></select><br />
+      
+      <label for="attHero4Accessory">Accessory: </label>
+      <select id="attHero4Accessory" onchange="updateHero(4, 'att');"></select><br />
+      
+      <label for="attHero4Armor">Armor: </label>
+      <select id="attHero4Armor" onchange="updateHero(4, 'att');"></select><br />
+      
+      <label for="attHero4Shoe">Shoe: </label>
+      <select id="attHero4Shoe" onchange="updateHero(4, 'att');"></select><br />
+      
+      <label for="attHero4Enable1">Enable 1: </label>
+      <select id="attHero4Enable1" onchange="updateHero(4, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero4Enable2">Enable 2: </label>
+      <select id="attHero4Enable2" onchange="updateHero(4, 'att');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="attHero4Enable3">Enable 3: </label>
+      <select id="attHero4Enable3" onchange="updateHero(4, 'att');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="attHero4Enable4">Enable 4: </label>
+      <select id="attHero4Enable4" onchange="updateHero(4, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero4Enable5">Enable 5: </label>
+      <select id="attHero4Enable5" onchange="updateHero(4, 'att');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="attHero4Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section" id="attHero5Setup">
+    <div class="subsection2">
+      <span>Attacker Slot 6 Hero:</span><br/>
+      
+      <label for="attHero5Name">Hero: </label>
+      <select id="attHero5Name" onchange="changeHero(5, 'att');"></select><br/>
+      
+      <label for="attHero5Skin">Skin: </label>
+      <select id="attHero5Skin" onchange="updateHero(5, 'att');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="attHero5Stone">Stone: </label>
+      <select id="attHero5Stone" onchange="updateHero(5, 'att');"></select><br />
+      
+      <label for="attHero5Artifact">Artifact: </label>
+      <select id="attHero5Artifact" onchange="updateHero(5, 'att');"></select><br />
+      
+      <label for="attHero5Weapon">Weapon: </label>
+      <select id="attHero5Weapon" onchange="updateHero(5, 'att');"></select><br />
+      
+      <label for="attHero5Accessory">Accessory: </label>
+      <select id="attHero5Accessory" onchange="updateHero(5, 'att');"></select><br />
+      
+      <label for="attHero5Armor">Armor: </label>
+      <select id="attHero5Armor" onchange="updateHero(5, 'att');"></select><br />
+      
+      <label for="attHero5Shoe">Shoe: </label>
+      <select id="attHero5Shoe" onchange="updateHero(5, 'att');"></select><br />
+      
+      <label for="attHero5Enable1">Enable 1: </label>
+      <select id="attHero5Enable1" onchange="updateHero(5, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero5Enable2">Enable 2: </label>
+      <select id="attHero5Enable2" onchange="updateHero(5, 'att');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="attHero5Enable3">Enable 3: </label>
+      <select id="attHero5Enable3" onchange="updateHero(5, 'att');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="attHero5Enable4">Enable 4: </label>
+      <select id="attHero5Enable4" onchange="updateHero(5, 'att');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="attHero5Enable5">Enable 5: </label>
+      <select id="attHero5Enable5" onchange="updateHero(5, 'att');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="attHero5Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section">
+    <span>Defender Config:</span><br/>
+    
+    <label for="defAvatarFrame">Select an Avatar Frame:</label>
+    <select id="defAvatarFrame">
     </select><br/>
     
     <div>
       <span>Warrior Tech</span><br/>
       
-      <label for="attTechWarriorhpPercent">HP: </label>
-      <input id="attTechWarriorhpPercent" onchange="updateAttackers();" value="60" /><br/>
+      <label for="defTechWarriorhpPercent">HP: </label>
+      <input id="defTechWarriorhpPercent" onchange="updateDefenders();" value="0" size="3"/><br/>
       
-      <label for="attTechWarriorattackPercent">Attack: </label>
-      <input id="attTechWarriorattackPercent" onchange="updateAttackers();" value="50" /><br/>
+      <label for="defTechWarriorattackPercent">Attack: </label>
+      <input id="defTechWarriorattackPercent" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorcrit">Crit: </label>
-      <input id="attTechWarriorcrit" onchange="updateAttackers();" value="40" /><br/>
+      <label for="defTechWarriorcrit">Crit: </label>
+      <input id="defTechWarriorcrit" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorblock">Block: </label>
-      <input id="attTechWarriorblock" onchange="updateAttackers();" value="30" /><br/>
+      <label for="defTechWarriorblock">Block: </label>
+      <input id="defTechWarriorblock" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorskillDamage">Skill Damage: </label>
-      <input id="attTechWarriorskillDamage" onchange="updateAttackers();" value="20" /><br/>
+      <label for="defTechWarriorskillDamage">Skill Damage: </label>
+      <input id="defTechWarriorskillDamage" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorspeed">Speed: </label>
-      <input id="attTechWarriorspeed" onchange="updateAttackers();" value="20" /><br/>
+      <label for="defTechWarriorspeed">Speed: </label>
+      <input id="defTechWarriorspeed" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorconstitution">Constitution: </label>
-      <input id="attTechWarriorconstitution" onchange="updateAttackers();" value="20" /><br/>
+      <label for="defTechWarriorconstitution">Constitution: </label>
+      <input id="defTechWarriorconstitution" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriormind">Mind: </label>
-      <input id="attTechWarriormind" onchange="updateAttackers();" value="20" /><br/>
+      <label for="defTechWarriormind">Mind: </label>
+      <input id="defTechWarriormind" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorantiMage">Anti Mage: </label>
-      <input id="attTechWarriorantiMage" onchange="updateAttackers();" value="20" /><br/>
+      <label for="defTechWarriorantiMage">Anti Mage: </label>
+      <input id="defTechWarriorantiMage" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorantiRanger">Anti Ranger: </label>
-      <input id="attTechWarriorantiRanger" onchange="updateAttackers();" value="20" /><br/>
+      <label for="defTechWarriorantiRanger">Anti Ranger: </label>
+      <input id="defTechWarriorantiRanger" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorantiAssassin">Anti Assassin: </label>
-      <input id="attTechWarriorantiAssassin" onchange="updateAttackers();" value="20" /><br/>
+      <label for="defTechWarriorantiAssassin">Anti Assassin: </label>
+      <input id="defTechWarriorantiAssassin" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorantiPriest">Anti Priest: </label>
-      <input id="attTechWarriorantiPriest" onchange="updateAttackers();" value="20" /><br/>
+      <label for="defTechWarriorantiPriest">Anti Priest: </label>
+      <input id="defTechWarriorantiPriest" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorstunImmune">Stun Immune: </label>
-      <input id="attTechWarriorstunImmune" onchange="updateAttackers();" value="10" /><br/>
+      <label for="defTechWarriorstunImmune">Stun Immune: </label>
+      <input id="defTechWarriorstunImmune" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorfreezeImmune">Freeze Immune: </label>
-      <input id="attTechWarriorfreezeImmune" onchange="updateAttackers();" value="10" /><br/>
+      <label for="defTechWarriorfreezeImmune">Freeze Immune: </label>
+      <input id="defTechWarriorfreezeImmune" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriorpetrifyImmune">Petrify Immune: </label>
-      <input id="attTechWarriorpetrifyImmune" onchange="updateAttackers();" value="10" /><br/>
+      <label for="defTechWarriorpetrifyImmune">Petrify Immune: </label>
+      <input id="defTechWarriorpetrifyImmune" onchange="updateDefenders();" value="0" size="3" /><br/>
       
-      <label for="attTechWarriortwineImmune">Twine Immune: </label>
-      <input id="attTechWarriortwineImmune" onchange="updateAttackers();" value="10" /><br/>
+      <label for="defTechWarriortwineImmune">Twine Immune: </label>
+      <input id="defTechWarriortwineImmune" onchange="updateDefenders();" value="0" size="3" /><br/>
     </div>
   </div>
   
-  <hr />
+  <hr/>
+  
+  <div class="section" id="defHero0Setup">
+    <div class="subsection2">
+      <span>Defender Slot 1 Hero:</span><br/>
+      
+      <label for="defHero0Name">Hero: </label>
+      <select id="defHero0Name" onchange="changeHero(0, 'def');"></select><br/>
+      
+      <label for="defHero0Skin">Skin: </label>
+      <select id="defHero0Skin" onchange="updateHero(0, 'def');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="defHero0Stone">Stone: </label>
+      <select id="defHero0Stone" onchange="updateHero(0, 'def');"></select><br />
+      
+      <label for="defHero0Artifact">Artifact: </label>
+      <select id="defHero0Artifact" onchange="updateHero(0, 'def');"></select><br />
+      
+      <label for="defHero0Weapon">Weapon: </label>
+      <select id="defHero0Weapon" onchange="updateHero(0, 'def');"></select><br />
+      
+      <label for="defHero0Accessory">Accessory: </label>
+      <select id="defHero0Accessory" onchange="updateHero(0, 'def');"></select><br />
+      
+      <label for="defHero0Armor">Armor: </label>
+      <select id="defHero0Armor" onchange="updateHero(0, 'def');"></select><br />
+      
+      <label for="defHero0Shoe">Shoe: </label>
+      <select id="defHero0Shoe" onchange="updateHero(0, 'def');"></select><br />
+      
+      <label for="defHero0Enable1">Enable 1: </label>
+      <select id="defHero0Enable1" onchange="updateHero(0, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero0Enable2">Enable 2: </label>
+      <select id="defHero0Enable2" onchange="updateHero(0, 'def');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="defHero0Enable3">Enable 3: </label>
+      <select id="defHero0Enable3" onchange="updateHero(0, 'def');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="defHero0Enable4">Enable 4: </label>
+      <select id="defHero0Enable4" onchange="updateHero(0, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero0Enable5">Enable 5: </label>
+      <select id="defHero0Enable5" onchange="updateHero(0, 'def');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="defHero0Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section" id="defHero1Setup">
+    <div class="subsection2">
+      <span>Defender Slot 2 Hero:</span><br/>
+      
+      <label for="defHero1Name">Hero: </label>
+      <select id="defHero1Name" onchange="changeHero(1, 'def');"></select><br/>
+      
+      <label for="defHero1Skin">Skin: </label>
+      <select id="defHero1Skin" onchange="updateHero(1, 'def');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="defHero1Stone">Stone: </label>
+      <select id="defHero1Stone" onchange="updateHero(1, 'def');"></select><br />
+      
+      <label for="defHero1Artifact">Artifact: </label>
+      <select id="defHero1Artifact" onchange="updateHero(1, 'def');"></select><br />
+      
+      <label for="defHero1Weapon">Weapon: </label>
+      <select id="defHero1Weapon" onchange="updateHero(1, 'def');"></select><br />
+      
+      <label for="defHero1Accessory">Accessory: </label>
+      <select id="defHero1Accessory" onchange="updateHero(1, 'def');"></select><br />
+      
+      <label for="defHero1Armor">Armor: </label>
+      <select id="defHero1Armor" onchange="updateHero(1, 'def');"></select><br />
+      
+      <label for="defHero1Shoe">Shoe: </label>
+      <select id="defHero1Shoe" onchange="updateHero(1, 'def');"></select><br />
+      
+      <label for="defHero1Enable1">Enable 1: </label>
+      <select id="defHero1Enable1" onchange="updateHero(1, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero1Enable2">Enable 2: </label>
+      <select id="defHero1Enable2" onchange="updateHero(1, 'def');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="defHero1Enable3">Enable 3: </label>
+      <select id="defHero1Enable3" onchange="updateHero(1, 'def');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="defHero1Enable4">Enable 4: </label>
+      <select id="defHero1Enable4" onchange="updateHero(1, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero1Enable5">Enable 5: </label>
+      <select id="defHero1Enable5" onchange="updateHero(1, 'def');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="defHero1Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section" id="defHero2Setup">
+    <div class="subsection2">
+      <span>Defender Slot 3 Hero:</span><br/>
+      
+      <label for="defHero2Name">Hero: </label>
+      <select id="defHero2Name" onchange="changeHero(2, 'def');"></select><br/>
+      
+      <label for="defHero2Skin">Skin: </label>
+      <select id="defHero2Skin" onchange="updateHero(2, 'def');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="defHero2Stone">Stone: </label>
+      <select id="defHero2Stone" onchange="updateHero(2, 'def');"></select><br />
+      
+      <label for="defHero2Artifact">Artifact: </label>
+      <select id="defHero2Artifact" onchange="updateHero(2, 'def');"></select><br />
+      
+      <label for="defHero2Weapon">Weapon: </label>
+      <select id="defHero2Weapon" onchange="updateHero(2, 'def');"></select><br />
+      
+      <label for="defHero2Accessory">Accessory: </label>
+      <select id="defHero2Accessory" onchange="updateHero(2, 'def');"></select><br />
+      
+      <label for="defHero2Armor">Armor: </label>
+      <select id="defHero2Armor" onchange="updateHero(2, 'def');"></select><br />
+      
+      <label for="defHero2Shoe">Shoe: </label>
+      <select id="defHero2Shoe" onchange="updateHero(2, 'def');"></select><br />
+      
+      <label for="defHero2Enable1">Enable 1: </label>
+      <select id="defHero2Enable1" onchange="updateHero(2, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero2Enable2">Enable 2: </label>
+      <select id="defHero2Enable2" onchange="updateHero(2, 'def');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="defHero2Enable3">Enable 3: </label>
+      <select id="defHero2Enable3" onchange="updateHero(2, 'def');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="defHero2Enable4">Enable 4: </label>
+      <select id="defHero2Enable4" onchange="updateHero(2, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero2Enable5">Enable 5: </label>
+      <select id="defHero2Enable5" onchange="updateHero(2, 'def');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="defHero2Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section" id="defHero3Setup">
+    <div class="subsection2">
+      <span>Defender Slot 4 Hero:</span><br/>
+      
+      <label for="defHero3Name">Hero: </label>
+      <select id="defHero3Name" onchange="changeHero(3, 'def');"></select><br/>
+      
+      <label for="defHero3Skin">Skin: </label>
+      <select id="defHero3Skin" onchange="updateHero(3, 'def');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="defHero3Stone">Stone: </label>
+      <select id="defHero3Stone" onchange="updateHero(3, 'def');"></select><br />
+      
+      <label for="defHero3Artifact">Artifact: </label>
+      <select id="defHero3Artifact" onchange="updateHero(3, 'def');"></select><br />
+      
+      <label for="defHero3Weapon">Weapon: </label>
+      <select id="defHero3Weapon" onchange="updateHero(3, 'def');"></select><br />
+      
+      <label for="defHero3Accessory">Accessory: </label>
+      <select id="defHero3Accessory" onchange="updateHero(3, 'def');"></select><br />
+      
+      <label for="defHero3Armor">Armor: </label>
+      <select id="defHero3Armor" onchange="updateHero(3, 'def');"></select><br />
+      
+      <label for="defHero3Shoe">Shoe: </label>
+      <select id="defHero3Shoe" onchange="updateHero(3, 'def');"></select><br />
+      
+      <label for="defHero3Enable1">Enable 1: </label>
+      <select id="defHero3Enable1" onchange="updateHero(3, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero3Enable2">Enable 2: </label>
+      <select id="defHero3Enable2" onchange="updateHero(3, 'def');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="defHero3Enable3">Enable 3: </label>
+      <select id="defHero3Enable3" onchange="updateHero(3, 'def');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="defHero3Enable4">Enable 4: </label>
+      <select id="defHero3Enable4" onchange="updateHero(3, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero3Enable5">Enable 5: </label>
+      <select id="defHero3Enable5" onchange="updateHero(3, 'def');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="defHero3Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section" id="defHero4Setup">
+    <div class="subsection2">
+      <span>Defender Slot 5 Hero:</span><br/>
+      
+      <label for="defHero4Name">Hero: </label>
+      <select id="defHero4Name" onchange="changeHero(4, 'def');"></select><br/>
+      
+      <label for="defHero4Skin">Skin: </label>
+      <select id="defHero4Skin" onchange="updateHero(4, 'def');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="defHero4Stone">Stone: </label>
+      <select id="defHero4Stone" onchange="updateHero(4, 'def');"></select><br />
+      
+      <label for="defHero4Artifact">Artifact: </label>
+      <select id="defHero4Artifact" onchange="updateHero(4, 'def');"></select><br />
+      
+      <label for="defHero4Weapon">Weapon: </label>
+      <select id="defHero4Weapon" onchange="updateHero(4, 'def');"></select><br />
+      
+      <label for="defHero4Accessory">Accessory: </label>
+      <select id="defHero4Accessory" onchange="updateHero(4, 'def');"></select><br />
+      
+      <label for="defHero4Armor">Armor: </label>
+      <select id="defHero4Armor" onchange="updateHero(4, 'def');"></select><br />
+      
+      <label for="defHero4Shoe">Shoe: </label>
+      <select id="defHero4Shoe" onchange="updateHero(4, 'def');"></select><br />
+      
+      <label for="defHero4Enable1">Enable 1: </label>
+      <select id="defHero4Enable1" onchange="updateHero(4, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero4Enable2">Enable 2: </label>
+      <select id="defHero4Enable2" onchange="updateHero(4, 'def');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="defHero4Enable3">Enable 3: </label>
+      <select id="defHero4Enable3" onchange="updateHero(4, 'def');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="defHero4Enable4">Enable 4: </label>
+      <select id="defHero4Enable4" onchange="updateHero(4, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero4Enable5">Enable 5: </label>
+      <select id="defHero4Enable5" onchange="updateHero(4, 'def');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="defHero4Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
+  
+  <div class="section" id="defHero5Setup">
+    <div class="subsection2">
+      <span>Defender Slot 6 Hero:</span><br/>
+      
+      <label for="defHero5Name">Hero: </label>
+      <select id="defHero5Name" onchange="changeHero(5, 'def');"></select><br/>
+      
+      <label for="defHero5Skin">Skin: </label>
+      <select id="defHero5Skin" onchange="updateHero(5, 'def');">
+        <option value="None">None</option>
+      </select><br />
+      
+      <label for="defHero5Stone">Stone: </label>
+      <select id="defHero5Stone" onchange="updateHero(5, 'def');"></select><br />
+      
+      <label for="defHero5Artifact">Artifact: </label>
+      <select id="defHero5Artifact" onchange="updateHero(5, 'def');"></select><br />
+      
+      <label for="defHero5Weapon">Weapon: </label>
+      <select id="defHero5Weapon" onchange="updateHero(5, 'def');"></select><br />
+      
+      <label for="defHero5Accessory">Accessory: </label>
+      <select id="defHero5Accessory" onchange="updateHero(5, 'def');"></select><br />
+      
+      <label for="defHero5Armor">Armor: </label>
+      <select id="defHero5Armor" onchange="updateHero(5, 'def');"></select><br />
+      
+      <label for="defHero5Shoe">Shoe: </label>
+      <select id="defHero5Shoe" onchange="updateHero(5, 'def');"></select><br />
+      
+      <label for="defHero5Enable1">Enable 1: </label>
+      <select id="defHero5Enable1" onchange="updateHero(5, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero5Enable2">Enable 2: </label>
+      <select id="defHero5Enable2" onchange="updateHero(5, 'def');">
+        <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
+      </select><br />
+      
+      <label for="defHero5Enable3">Enable 3: </label>
+      <select id="defHero5Enable3" onchange="updateHero(5, 'def');">
+        <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
+      </select><br />
+      
+      <label for="defHero5Enable4">Enable 4: </label>
+      <select id="defHero5Enable4" onchange="updateHero(5, 'def');">
+        <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
+      </select><br />
+      
+      <label for="defHero5Enable5">Enable 5: </label>
+      <select id="defHero5Enable5" onchange="updateHero(5, 'def');">
+        <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
+      </select><br />
+    </div>
+    
+    <p class="subsection1">
+      Hero Sheet:
+      <div class="log" id="defHero5Sheet"></div>
+    </p>
+  </div>
+  
+  <hr/>
   
   <div>
-    <span>Generate config text into area below or load config from area below.</span>
+    <span>Generate configuration into text below or load configuration from text below.</span>
     <div>
       <button type="button" onclick="createConfig();">Generate</button>
       <button type="button" onclick="loadConfig();">Load</button>
@@ -175,20 +1101,6 @@
     <div>
       <textarea id="configText" rows="20" cols="100">
 {
-	"attHero0Name": "Foolish",
-	"attHero0Skin": "None",
-	"attHero0Stone": "T1 Attack",
-	"attHero0Artifact": "The Kiss of Ghost",
-	"attHero0Weapon": "None",
-	"attHero0Accessory": "None",
-	"attHero0Armor": "None",
-	"attHero0Shoe": "None",
-	"attHero0Enable1": "None",
-	"attHero0Enable2": "None",
-	"attHero0Enable3": "None",
-	"attHero0Enable4": "None",
-	"attHero0Enable5": "None",
-	"attAvatarFrame": "",
 	"attTechWarriorhpPercent": "60",
 	"attTechWarriorattackPercent": "50",
 	"attTechWarriorcrit": "40",
@@ -204,7 +1116,181 @@
 	"attTechWarriorstunImmune": "10",
 	"attTechWarriorfreezeImmune": "10",
 	"attTechWarriorpetrifyImmune": "10",
-	"attTechWarriortwineImmune": "10"
+	"attTechWarriortwineImmune": "10",
+	"defTechWarriorhpPercent": "0",
+	"defTechWarriorattackPercent": "0",
+	"defTechWarriorcrit": "0",
+	"defTechWarriorblock": "0",
+	"defTechWarriorskillDamage": "0",
+	"defTechWarriorspeed": "0",
+	"defTechWarriorconstitution": "0",
+	"defTechWarriormind": "0",
+	"defTechWarriorantiMage": "0",
+	"defTechWarriorantiRanger": "0",
+	"defTechWarriorantiAssassin": "0",
+	"defTechWarriorantiPriest": "0",
+	"defTechWarriorstunImmune": "0",
+	"defTechWarriorfreezeImmune": "0",
+	"defTechWarriorpetrifyImmune": "0",
+	"defTechWarriortwineImmune": "0",
+	"attAvatarFrame": "",
+	"attHero0Name": "Foolish",
+	"attHero0Skin": "None",
+	"attHero0Stone": "T1 Attack",
+	"attHero0Artifact": "None",
+	"attHero0Weapon": "None",
+	"attHero0Accessory": "None",
+	"attHero0Armor": "None",
+	"attHero0Shoe": "None",
+	"attHero0Enable1": "None",
+	"attHero0Enable2": "None",
+	"attHero0Enable3": "None",
+	"attHero0Enable4": "None",
+	"attHero0Enable5": "None",
+	"attHero1Name": "Foolish",
+	"attHero1Skin": "None",
+	"attHero1Stone": "None",
+	"attHero1Artifact": "None",
+	"attHero1Weapon": "None",
+	"attHero1Accessory": "None",
+	"attHero1Armor": "None",
+	"attHero1Shoe": "None",
+	"attHero1Enable1": "None",
+	"attHero1Enable2": "None",
+	"attHero1Enable3": "None",
+	"attHero1Enable4": "None",
+	"attHero1Enable5": "None",
+	"attHero2Name": "Foolish",
+	"attHero2Skin": "None",
+	"attHero2Stone": "None",
+	"attHero2Artifact": "None",
+	"attHero2Weapon": "None",
+	"attHero2Accessory": "None",
+	"attHero2Armor": "None",
+	"attHero2Shoe": "None",
+	"attHero2Enable1": "None",
+	"attHero2Enable2": "None",
+	"attHero2Enable3": "None",
+	"attHero2Enable4": "None",
+	"attHero2Enable5": "None",
+	"attHero3Name": "Foolish",
+	"attHero3Skin": "None",
+	"attHero3Stone": "None",
+	"attHero3Artifact": "None",
+	"attHero3Weapon": "None",
+	"attHero3Accessory": "None",
+	"attHero3Armor": "None",
+	"attHero3Shoe": "None",
+	"attHero3Enable1": "None",
+	"attHero3Enable2": "None",
+	"attHero3Enable3": "None",
+	"attHero3Enable4": "None",
+	"attHero3Enable5": "None",
+	"attHero4Name": "Foolish",
+	"attHero4Skin": "None",
+	"attHero4Stone": "None",
+	"attHero4Artifact": "None",
+	"attHero4Weapon": "None",
+	"attHero4Accessory": "None",
+	"attHero4Armor": "None",
+	"attHero4Shoe": "None",
+	"attHero4Enable1": "None",
+	"attHero4Enable2": "None",
+	"attHero4Enable3": "None",
+	"attHero4Enable4": "None",
+	"attHero4Enable5": "None",
+	"attHero5Name": "Foolish",
+	"attHero5Skin": "None",
+	"attHero5Stone": "None",
+	"attHero5Artifact": "None",
+	"attHero5Weapon": "None",
+	"attHero5Accessory": "None",
+	"attHero5Armor": "None",
+	"attHero5Shoe": "None",
+	"attHero5Enable1": "None",
+	"attHero5Enable2": "None",
+	"attHero5Enable3": "None",
+	"attHero5Enable4": "None",
+	"attHero5Enable5": "None",
+	"defAvatarFrame": "",
+	"defHero0Name": "Foolish",
+	"defHero0Skin": "None",
+	"defHero0Stone": "None",
+	"defHero0Artifact": "None",
+	"defHero0Weapon": "None",
+	"defHero0Accessory": "None",
+	"defHero0Armor": "None",
+	"defHero0Shoe": "None",
+	"defHero0Enable1": "None",
+	"defHero0Enable2": "None",
+	"defHero0Enable3": "None",
+	"defHero0Enable4": "None",
+	"defHero0Enable5": "None",
+	"defHero1Name": "Foolish",
+	"defHero1Skin": "None",
+	"defHero1Stone": "None",
+	"defHero1Artifact": "None",
+	"defHero1Weapon": "None",
+	"defHero1Accessory": "None",
+	"defHero1Armor": "None",
+	"defHero1Shoe": "None",
+	"defHero1Enable1": "None",
+	"defHero1Enable2": "None",
+	"defHero1Enable3": "None",
+	"defHero1Enable4": "None",
+	"defHero1Enable5": "None",
+	"defHero2Name": "Foolish",
+	"defHero2Skin": "None",
+	"defHero2Stone": "None",
+	"defHero2Artifact": "None",
+	"defHero2Weapon": "None",
+	"defHero2Accessory": "None",
+	"defHero2Armor": "None",
+	"defHero2Shoe": "None",
+	"defHero2Enable1": "None",
+	"defHero2Enable2": "None",
+	"defHero2Enable3": "None",
+	"defHero2Enable4": "None",
+	"defHero2Enable5": "None",
+	"defHero3Name": "Foolish",
+	"defHero3Skin": "None",
+	"defHero3Stone": "None",
+	"defHero3Artifact": "None",
+	"defHero3Weapon": "None",
+	"defHero3Accessory": "None",
+	"defHero3Armor": "None",
+	"defHero3Shoe": "None",
+	"defHero3Enable1": "None",
+	"defHero3Enable2": "None",
+	"defHero3Enable3": "None",
+	"defHero3Enable4": "None",
+	"defHero3Enable5": "None",
+	"defHero4Name": "Foolish",
+	"defHero4Skin": "None",
+	"defHero4Stone": "None",
+	"defHero4Artifact": "None",
+	"defHero4Weapon": "None",
+	"defHero4Accessory": "None",
+	"defHero4Armor": "None",
+	"defHero4Shoe": "None",
+	"defHero4Enable1": "None",
+	"defHero4Enable2": "None",
+	"defHero4Enable3": "None",
+	"defHero4Enable4": "None",
+	"defHero4Enable5": "None",
+	"defHero5Name": "Foolish",
+	"defHero5Skin": "None",
+	"defHero5Stone": "None",
+	"defHero5Artifact": "None",
+	"defHero5Weapon": "None",
+	"defHero5Accessory": "None",
+	"defHero5Armor": "None",
+	"defHero5Shoe": "None",
+	"defHero5Enable1": "None",
+	"defHero5Enable2": "None",
+	"defHero5Enable3": "None",
+	"defHero5Enable4": "None",
+	"defHero5Enable5": "None"
 }
       </textarea>
     </div>

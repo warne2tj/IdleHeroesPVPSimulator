@@ -1,16 +1,21 @@
 // base hero class, extend this class for each hero
 class hero {
-  constructor(sHeroName, iHeroPos) {
+  constructor(sHeroName, iHeroPos, attOrDef) {
     this._heroName = sHeroName;
-    this._heroPos = iHeroPos
+    this._heroPos = iHeroPos;
+    this._attOrDef = attOrDef;
     this._heroFaction = baseHeroStats[sHeroName]["heroFaction"];
     this._starLevel = baseHeroStats[sHeroName]["starLevel"];
     this._heroLevel = baseHeroStats[sHeroName]["heroLevel"];
     this._heroClass = baseHeroStats[sHeroName]["heroClass"];
     
+    // Copy the 4 main variable base stats from baseHeroStats,
+    // add other stats tied to items, tech, buffs, etc.
     this._baseStats = Object.assign({}, baseHeroStats[sHeroName]["stats"]);
     this._baseStats["totalHP"] = this._baseStats["hp"];
     this._baseStats["totalAttack"] = this._baseStats["attack"];
+    this._baseStats["displayHP"] = this._baseStats["hp"];
+    this._baseStats["displayAttack"] = this._baseStats["attack"];
     this._baseStats["skillDamage"] = 0.0;
     this._baseStats["precision"] = 0.0;
     this._baseStats["block"] = 0.0;
@@ -37,7 +42,11 @@ class hero {
     
     this._currentStats = {};
     this._attackMultipliers = {};
-    this._hpMultipliers = {}
+    this._hpMultipliers = {};
+    // Non-displayed stat multipliers not reflected on info sheet
+    // e.g. Avatar Frame, Auras, and Monsters
+    this._ndAttackMultipliers = {};
+    this._npHPMultipliers = {};
     
     // set equipment
     this._stone = "None";
@@ -88,11 +97,8 @@ class hero {
   
   // Update current stats based on user selections.
   updateCurrentStats() {
-    var prefix = this._heroPos < 6 ? "att" : "def";
     var arrLimits = [this._heroClass, this._heroFaction];
     var keySet = "";
-    
-    console.log("Update current stats for " + this._heroName + " - " + this._heroClass);
     
     // start with base stats
     this._currentStats = Object.assign({}, this._baseStats);
@@ -208,7 +214,7 @@ class hero {
     }
     
     
-    // Must do it this way because set bonus multipliers seem to be applied in a specific order
+    // Set bonus multipliers seem to be applied in a specific order?
     for (var x in setBonus) {
       if (x in sets) {
         if (sets[x] >= 2) {
@@ -241,7 +247,7 @@ class hero {
     var tech = guildTech[this._heroClass];
     
     for (var techName in tech){
-      var techLevel = document.getElementById(prefix + "Tech" + this._heroClass + techName).value;
+      var techLevel = document.getElementById(this._attOrDef + "Tech" + this._heroClass + techName).value;
       
       for (var statToBuff in tech[techName]){
         var techStatsToBuff = {};
@@ -255,8 +261,10 @@ class hero {
     
     // future: get and apply celestial island
     
-    this._currentStats["totalHP"] = this.calcHP();
-    this._currentStats["totalAttack"] = this.calcAttack();
+    this._currentStats["displayHP"] = this.calcHP();
+    this._currentStats["displayAttack"] = this.calcAttack();
+    this._currentStats["totalHP"] = this.calcTotalHP();
+    this._currentStats["totalAttack"] = this.calcTotalAttack();
   }
   
   
@@ -281,16 +289,37 @@ class hero {
   }
   
   
+  calcTotalAttack() {
+    var att = this._currentStats["displayAttack"];
+    
+    for (var x in this._ndAttackMultipliers) {
+      att = Math.floor(att * this._ndAttackMultipliers[x]);
+    }
+    
+    return att;
+  }
+  
+  calcTotalHP() {
+    var ehp = this._currentStats["displayHP"];
+    
+    for (var x in this._ndHPMultipliers) {
+      ehp = Math.floor(ehp * this._ndHPMultipliers[x]);
+    }
+    
+    return ehp;
+  }
+  
+  
   // Get hero stats for display.
   getHeroSheet() {
-    console.log("Get current stats for " + this._heroName);
+    console.log("Get stats summary for " + this._heroName);
     var heroSheet = "";
     
     heroSheet += "Level " + this._heroLevel + " " + this._heroName + "<br/>";
     heroSheet += this._starLevel + "* " + this._heroFaction + " " + this._heroClass + "<br/>";
     
     for (var statName in this._currentStats) {
-      if (["hp", "attack", "speed", "armor", "totalHP", "totalAttack"].includes(statName)) {
+      if (["hp", "attack", "speed", "armor", "totalHP", "totalAttack", "displayHP", "displayAttack"].includes(statName)) {
         heroSheet += "<br/>" + statName + ": " + this._currentStats[statName].toFixed();
       } else {
         heroSheet += "<br/>" + statName + ": " + this._currentStats[statName].toFixed(2);
