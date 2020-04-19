@@ -37,7 +37,7 @@ var baseHeroStats = {
     heroLevel: 100,
     heroClass: "Warrior",
     stats: {
-      hp: 22234,
+      hp: 22235,
       attack: 2506,
       armor: 632,
       speed: 606
@@ -51,10 +51,10 @@ var baseHeroStats = {
     heroLevel: 330,
     heroClass: "Warrior",
     stats: {
-      hp: 1142340,
-      attack: 38480,
+      hp: 671965,
+      attack: 25352,
       armor: 2067,
-      speed: 1468
+      speed: 1428
     }
   }
 };

@@ -5,6 +5,12 @@ var artifacts = {
     limitStats: {}
   },
   
+  "Magic Stone Sword": {
+    stats: {attackPercent: 0.21, reduceDamage: 0.3, controlImmune: 0.25},
+    limit: "",
+    limitStats: {}
+  },
+  
   "The Kiss of Ghost": {
     stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
     limit: "",

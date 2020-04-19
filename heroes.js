@@ -29,6 +29,8 @@ class hero {
     this._baseStats["petrifyImmune"] = 0.0;
     this._baseStats["stunImmune"] = 0.0;
     this._baseStats["twineImmune"] = 0.0;
+    this._baseStats["critDamageReduce"] = 0.0;
+    this._baseStats["effectBeingHealed"] = 0.0;
     this._baseStats["dotReduce"] = 0.0;
     this._baseStats["energy"] = 50;
     this._baseStats["controlPrecision"] = 0.0;
@@ -61,7 +63,7 @@ class hero {
     this.updateCurrentStats();
   }
   
-  // a bunch of functions to override by hero subclasses as needed.
+  // a bunch of functions for override by hero subclasses as needed.
   doActive() { return;}
   passive1() { return;}
   passive2() { return;}
@@ -88,8 +90,10 @@ class hero {
   
   
   // Update current stats based on user selections.
-  // The order in multipliers are applied seem to matter,
-  // They seem to be applied in a certain order with a floor in between.
+  // The order in which multipliers are applied seem to matter,
+  // They seem to be applied in a certain order with a floor in between each multiplier.
+  // Currently off by +/- 5 as displayed on Info screen
+  // Could be the result of incorrect ordering below or base stats +/- 2
   updateCurrentStats() {
     var prefix = this._heroPos < 6 ? "att" : "def";
     var arrLimits = [this._heroClass, this._heroFaction];
@@ -103,10 +107,56 @@ class hero {
     this._hpMultipliers = {};
     
     
-    // apply passives
+    // apply passives, does nothing unless overridden in subclass
     this.passive1();
     this.passive2();
     this.passive3();
+    
+    
+    // apply enable bonus
+    if (this._starLevel > 10) {
+      this.applyStatChange({hpPercent: (this._starLevel - 10) * 0.14, attackPercent: (this._starLevel - 10) * 0.1}, "enableBonuses")
+    }
+    
+    
+    // apply enables
+    switch(this._enable1) {
+      case "Vitality":
+        this.applyStatChange({hpPercent: 0.12}, "enable1");
+        break;
+        
+      case "Mightiness":
+        this.applyStatChange({attackPercent: 0.08}, "enable1");
+        break;
+        
+      case "Growth":
+        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable1");
+        break;
+    }
+    
+    switch(this._enable2) {
+      case "Shelter":
+        this.applyStatChange({critDamageReduce: 0.15}, "enable2");
+        break;
+        
+      case "Vitality2":
+        this.applyStatChange({effectBeingHealed: 0.15}, "enable2");
+        break;
+    }
+    
+    switch(this._enable4) {
+      case "Vitality":
+        this.applyStatChange({hpPercent: 0.12}, "enable4");
+        break;
+        
+      case "Mightiness":
+        this.applyStatChange({attackPercent: 0.08}, "enable4");
+        break;
+        
+      case "Growth":
+        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable4");
+        break;
+    }
     
     
     // apply equipment and set bonus
@@ -187,13 +237,15 @@ class hero {
     this.applyStatChange(artifacts[this._artifact]["stats"], "artifact");
     if (arrLimits.includes(artifacts[this._artifact]["limit"])) {
       this.applyStatChange(artifacts[this._artifact]["limitStats"], "artifactLimit");
-    }  
+    }
+    
+    if (this._skin != "None") {
+      this.applyStatChange(skins[this._heroName][this._skin], "skin");
+    }
     
     
     // get and apply guild tech
     var tech = guildTech[this._heroClass];
-    var hpMultiplier = 1.0;
-    var attackMultiplier = 1.0;
     
     for (var techName in tech){
       var techLevel = document.getElementById(prefix + "Tech" + this._heroClass + techName).value;
@@ -201,22 +253,10 @@ class hero {
       for (var statToBuff in tech[techName]){
         var techStatsToBuff = {};
         var buffAmount = tech[techName][statToBuff]*techLevel;
-        
-        if (statToBuff == "hpPercent") {
-          hpMultiplier *= (1 + buffAmount);
-        } else if (statToBuff == "attackPercent") {
-          attackMultiplier *= (1 + buffAmount);
-        } else {
-          techStatsToBuff[statToBuff] = buffAmount;
-        }
-        
+        techStatsToBuff[statToBuff] = buffAmount;
         this.applyStatChange(techStatsToBuff, techName);
       }
     }
-    this.applyStatChange({hpPercent: hpMultiplier-1, attackPercent: attackMultiplier-1}, "techPercentages");
-    
-    
-    // apply enables
     
     // apply monster, aura, avatar frame
     

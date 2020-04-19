@@ -33,6 +33,7 @@
 <script src="equipment.js"></script>
 <script src="stone.js"></script>
 <script src="artifact.js"></script>
+<script src="skin.js"></script>
 
 <script>
   var attHeroes = [new hero("None")];
@@ -83,29 +84,36 @@
     var fHeroName = document.getElementById(prefix + "Hero" + heroPos + "FieldName");
     var fHeroHP = document.getElementById(prefix + "Hero" + heroPos + "FieldHP");
     var fHeroBuffDebuff = document.getElementById(prefix + "Hero" + heroPos + "FieldBuffDebuff");
+    var cHeroSkins = document.getElementById(prefix + "Hero" + heroPos + "Skin");
     
     console.log("Change Hero " + heroPos + ": " + pHeroName + " to " + cHeroName);
     
-    if (pHeroName != cHeroName) {
-      if(cHeroName == "None") {
-        attHeroes[heroPos] = new hero("None", heroPos);
-        cHeroSheet.innerHTML = "";
-        fHeroName.innerHTML = "";
-        fHeroHP.innerHTML = "";
-        fHeroBuffDebuff.innerHTML = "";
-      } else {
-        attHeroes[heroPos] = new baseHeroStats[cHeroName]["className"](cHeroName, heroPos);
-        fHeroName.innerHTML = cHeroName;
-        fHeroBuffDebuff.innerHTML = "";
-        updateHero(heroPos);
-      }
-    } else if(cHeroName == pHeroName) {
-      // do nothing
-    } else {
-      cHeroSheet.innerHTML = "Hero not found.";
+    fHeroBuffDebuff.innerHTML = "";
+    cHeroSkins.value = "None";
+    var skinLen = cHeroSkins.options.length -1;
+    for (var i = skinLen; i > 0; i--){
+      cHeroSkins.remove(i);
+    }
+    
+    if(cHeroName == "None") {
+      attHeroes[heroPos] = new hero("None", heroPos);
+      cHeroSheet.innerHTML = "";
       fHeroName.innerHTML = "";
       fHeroHP.innerHTML = "";
+    } else {
+      attHeroes[heroPos] = new baseHeroStats[cHeroName]["className"](cHeroName, heroPos);
+      fHeroName.innerHTML = cHeroName;
       fHeroBuffDebuff.innerHTML = "";
+      updateHero(heroPos);
+      
+      if ([cHeroName] in skins) {
+        var option;
+        for(var x in skins[cHeroName]) {
+          option = document.createElement("option");
+          option.text = x;
+          cHeroSkins.add(option);
+        }
+      }
     }
   }
   
@@ -124,6 +132,13 @@
       attHeroes[heroPos]._shoe = document.getElementById(prefix + "Hero" + heroPos + "Shoe").value;
       attHeroes[heroPos]._stone = document.getElementById(prefix + "Hero" + heroPos + "Stone").value;
       attHeroes[heroPos]._artifact = document.getElementById(prefix + "Hero" + heroPos + "Artifact").value;
+      attHeroes[heroPos]._skin = document.getElementById(prefix + "Hero" + heroPos + "Skin").value;
+      
+      attHeroes[heroPos]._enable1 = document.getElementById(prefix + "Hero" + heroPos + "Enable1").value;
+      attHeroes[heroPos]._enable2 = document.getElementById(prefix + "Hero" + heroPos + "Enable2").value;
+      attHeroes[heroPos]._enable3 = document.getElementById(prefix + "Hero" + heroPos + "Enable3").value;
+      attHeroes[heroPos]._enable4 = document.getElementById(prefix + "Hero" + heroPos + "Enable4").value;
+      attHeroes[heroPos]._enable5 = document.getElementById(prefix + "Hero" + heroPos + "Enable5").value;
       
       attHeroes[heroPos].updateCurrentStats();
       cHeroSheet.innerHTML = attHeroes[heroPos].getHeroSheet();
@@ -183,7 +198,9 @@
       <select id="attHero0Name" onchange="changeHero(0);"></select><br/>
       
       <label for="attHero0Skin">Skin: </label>
-      <select id="attHero0Skin" onchange="updateHero(0);"></select><br />
+      <select id="attHero0Skin" onchange="updateHero(0);">
+        <option value="None">None</option>
+      </select><br />
       
       <label for="attHero0Stone">Stone: </label>
       <select id="attHero0Stone" onchange="updateHero(0);"></select><br />
@@ -206,26 +223,40 @@
       <label for="attHero0Enable1">Enable 1: </label>
       <select id="attHero0Enable1" onchange="updateHero(0);">
         <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
       </select><br />
       
       <label for="attHero0Enable2">Enable 2: </label>
       <select id="attHero0Enable2" onchange="updateHero(0);">
         <option value="None">None</option>
+        <option value="Shelter">Shelter</option>
+        <option value="LethalFightback">Lethal Fightback</option>
+        <option value="Vitality2">Vitality</option>
       </select><br />
       
       <label for="attHero0Enable3">Enable 3: </label>
       <select id="attHero0Enable3" onchange="updateHero(0);">
         <option value="None">None</option>
+        <option value="Resilience">Resilience</option>
+        <option value="SharedFate">Shared Fate</option>
+        <option value="Purify">Purify</option>
       </select><br />
       
       <label for="attHero0Enable4">Enable 4: </label>
       <select id="attHero0Enable4" onchange="updateHero(0);">
         <option value="None">None</option>
+        <option value="Vitality">Vitality</option>
+        <option value="Mightiness">Mightiness</option>
+        <option value="Growth">Growth</option>
       </select><br />
       
       <label for="attHero0Enable5">Enable 5: </label>
       <select id="attHero0Enable5" onchange="updateHero(0);">
         <option value="None">None</option>
+        <option value="BalancedStrike">Balanced Strike</option>
+        <option value="UnbendingWill">Unbending Will</option>
       </select><br />
     </div>
     
