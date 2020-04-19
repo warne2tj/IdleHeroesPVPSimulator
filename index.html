@@ -5,26 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Idle Heroes Battle Simulator</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-
-<style>
-  .section {
-    column-count: 3;
-  }
-  
-  .subsection2 {
-    column-span: 2;
-  }
-  
-  .subsection1 {
-    column-span: 1;
-  }
-  
-  .log {
-    height: 200px;
-    overflow: scroll;
-  }
-</style>
 
 <script src="heroes.js"></script>
 <script src="heroSubclasses.js"></script>
@@ -34,157 +16,11 @@
 <script src="stone.js"></script>
 <script src="artifact.js"></script>
 <script src="skin.js"></script>
-
-<script>
-  var attHeroes = [new hero("None")];
-  var defHeroes = [];
-    
-    
-  function initialize() {
-    var prefix;
-    
-    addOptions(baseHeroStats, "Name");
-    addOptions(weapons, "Weapon");
-    addOptions(accessories, "Accessory");
-    addOptions(armors, "Armor");
-    addOptions(shoes, "Shoe");
-    addOptions(stones, "Stone");
-    addOptions(artifacts, "Artifact");
-    
-    for(i=0; i<attHeroes.length; i++) {
-      prefix = i < 6 ? "att" : "def";
-      document.getElementById(prefix + "Hero" + i + "Name").value = "Foolish";
-      document.getElementById(prefix + "Hero" + i + "Stone").value = "T1 Attack";
-      document.getElementById(prefix + "Hero" + i + "Artifact").value = "The Kiss of Ghost";
-      changeHero(i);
-    }
-  }
-  
-  
-  function addOptions(dictItems, strPostfix) {
-    var option;
-    var prefix;
-    
-    for(var x in dictItems) {
-      option = document.createElement("option");
-      option.text = x;
-      for(i=0; i<attHeroes.length; i++) {
-        prefix = i < 6 ? "att" : "def";
-        document.getElementById(prefix + "Hero" + i + strPostfix).add(option);
-      }
-    }
-  }
-  
-  
-  function changeHero(heroPos) {
-    var prefix = heroPos < 6 ? "att" : "def";
-    var pHeroName = attHeroes[heroPos]._heroName;
-    var cHeroName = document.getElementById(prefix + "Hero" + heroPos + "Name").value;
-    var cHeroSheet = document.getElementById(prefix + "Hero" + heroPos + "Sheet");
-    var fHeroName = document.getElementById(prefix + "Hero" + heroPos + "FieldName");
-    var fHeroHP = document.getElementById(prefix + "Hero" + heroPos + "FieldHP");
-    var fHeroBuffDebuff = document.getElementById(prefix + "Hero" + heroPos + "FieldBuffDebuff");
-    var cHeroSkins = document.getElementById(prefix + "Hero" + heroPos + "Skin");
-    
-    console.log("Change Hero " + heroPos + ": " + pHeroName + " to " + cHeroName);
-    
-    fHeroBuffDebuff.innerHTML = "";
-    cHeroSkins.value = "None";
-    var skinLen = cHeroSkins.options.length -1;
-    for (var i = skinLen; i > 0; i--){
-      cHeroSkins.remove(i);
-    }
-    
-    if(cHeroName == "None") {
-      attHeroes[heroPos] = new hero("None", heroPos);
-      cHeroSheet.innerHTML = "";
-      fHeroName.innerHTML = "";
-      fHeroHP.innerHTML = "";
-    } else {
-      attHeroes[heroPos] = new baseHeroStats[cHeroName]["className"](cHeroName, heroPos);
-      fHeroName.innerHTML = cHeroName;
-      fHeroBuffDebuff.innerHTML = "";
-      updateHero(heroPos);
-      
-      if ([cHeroName] in skins) {
-        var option;
-        for(var x in skins[cHeroName]) {
-          option = document.createElement("option");
-          option.text = x;
-          cHeroSkins.add(option);
-        }
-      }
-    }
-  }
-  
-  
-  function updateHero(heroPos) {
-    var prefix = heroPos < 6 ? "att" : "def";
-    var cHeroName = document.getElementById(prefix + "Hero" + heroPos + "Name").value;
-    var cHeroSheet = document.getElementById(prefix + "Hero" + heroPos + "Sheet");
-    var fHeroHP = document.getElementById(prefix + "Hero" + heroPos + "FieldHP");
-    console.log("updateHero " + heroPos + ": " + cHeroName);
-    
-    if (cHeroName != "None") {
-      attHeroes[heroPos]._weapon = document.getElementById(prefix + "Hero" + heroPos + "Weapon").value;
-      attHeroes[heroPos]._accessory = document.getElementById(prefix + "Hero" + heroPos + "Accessory").value;
-      attHeroes[heroPos]._armor = document.getElementById(prefix + "Hero" + heroPos + "Armor").value;
-      attHeroes[heroPos]._shoe = document.getElementById(prefix + "Hero" + heroPos + "Shoe").value;
-      attHeroes[heroPos]._stone = document.getElementById(prefix + "Hero" + heroPos + "Stone").value;
-      attHeroes[heroPos]._artifact = document.getElementById(prefix + "Hero" + heroPos + "Artifact").value;
-      attHeroes[heroPos]._skin = document.getElementById(prefix + "Hero" + heroPos + "Skin").value;
-      
-      attHeroes[heroPos]._enable1 = document.getElementById(prefix + "Hero" + heroPos + "Enable1").value;
-      attHeroes[heroPos]._enable2 = document.getElementById(prefix + "Hero" + heroPos + "Enable2").value;
-      attHeroes[heroPos]._enable3 = document.getElementById(prefix + "Hero" + heroPos + "Enable3").value;
-      attHeroes[heroPos]._enable4 = document.getElementById(prefix + "Hero" + heroPos + "Enable4").value;
-      attHeroes[heroPos]._enable5 = document.getElementById(prefix + "Hero" + heroPos + "Enable5").value;
-      
-      attHeroes[heroPos].updateCurrentStats();
-      cHeroSheet.innerHTML = attHeroes[heroPos].getHeroSheet();
-      fHeroHP.innerHTML = attHeroes[heroPos]._currentStats["totalHP"];
-    }
-  }
-  
-  
-  function updateAttackers() {
-    for (var i = 0; i < attHeroes.length; i++) {
-      updateHero(i);
-    }
-  }
-  
-  
-  function updateDefenders() {
-    for (var i = 6; i < defHeroes.length + 6; i++) {
-      updateHero(i + 6);
-    }
-  }
-</script>
+<script src="initAndSync.js"></script>
 
 <body onload="initialize();">
-  <hr/>
-  
-  <span>Battle Field</span>
-  <div class="section" id="battleField">
-    <div id="attHero0Field">
-      <span id="attHero0FieldName"></span>
-      <span id="attHero0FieldHP"></span>
-      <span id="attHero0FieldBuffDebuff"></span>
-    </div>
-    
-    <div id="battleFieldSpacer"></div>
-    
-    <div id="defHero0Field">
-      <span id="defHero0FieldName"></span>
-      <span id="defHero0FieldHP"></span>
-      <span id="defHero0FieldBuffDebuff"></span>
-    </div>
-  </div>
-  
-  <hr/>
-  
   <div>
-    Combat Log
+    <span>Combat Log</span>
     <div class="log" id="combatLog">Hello World</div>
   </div>
   
@@ -195,33 +31,33 @@
       <span>Attacker Slot 1 Hero:</span><br/>
       
       <label for="attHero0Name">Hero: </label>
-      <select id="attHero0Name" onchange="changeHero(0);"></select><br/>
+      <select id="attHero0Name" onchange="changeHero(0, 'att');"></select><br/>
       
       <label for="attHero0Skin">Skin: </label>
-      <select id="attHero0Skin" onchange="updateHero(0);">
+      <select id="attHero0Skin" onchange="updateHero(0, 'att');">
         <option value="None">None</option>
       </select><br />
       
       <label for="attHero0Stone">Stone: </label>
-      <select id="attHero0Stone" onchange="updateHero(0);"></select><br />
+      <select id="attHero0Stone" onchange="updateHero(0, 'att');"></select><br />
       
       <label for="attHero0Artifact">Artifact: </label>
-      <select id="attHero0Artifact" onchange="updateHero(0);"></select><br />
+      <select id="attHero0Artifact" onchange="updateHero(0, 'att');"></select><br />
       
       <label for="attHero0Weapon">Weapon: </label>
-      <select id="attHero0Weapon" onchange="updateHero(0);"></select><br />
+      <select id="attHero0Weapon" onchange="updateHero(0, 'att');"></select><br />
       
       <label for="attHero0Accessory">Accessory: </label>
-      <select id="attHero0Accessory" onchange="updateHero(0);"></select><br />
+      <select id="attHero0Accessory" onchange="updateHero(0, 'att');"></select><br />
       
       <label for="attHero0Armor">Armor: </label>
-      <select id="attHero0Armor" onchange="updateHero(0);"></select><br />
+      <select id="attHero0Armor" onchange="updateHero(0, 'att');"></select><br />
       
       <label for="attHero0Shoe">Shoe: </label>
-      <select id="attHero0Shoe" onchange="updateHero(0);"></select><br />
+      <select id="attHero0Shoe" onchange="updateHero(0, 'att');"></select><br />
       
       <label for="attHero0Enable1">Enable 1: </label>
-      <select id="attHero0Enable1" onchange="updateHero(0);">
+      <select id="attHero0Enable1" onchange="updateHero(0, 'att');">
         <option value="None">None</option>
         <option value="Vitality">Vitality</option>
         <option value="Mightiness">Mightiness</option>
@@ -229,7 +65,7 @@
       </select><br />
       
       <label for="attHero0Enable2">Enable 2: </label>
-      <select id="attHero0Enable2" onchange="updateHero(0);">
+      <select id="attHero0Enable2" onchange="updateHero(0, 'att');">
         <option value="None">None</option>
         <option value="Shelter">Shelter</option>
         <option value="LethalFightback">Lethal Fightback</option>
@@ -237,7 +73,7 @@
       </select><br />
       
       <label for="attHero0Enable3">Enable 3: </label>
-      <select id="attHero0Enable3" onchange="updateHero(0);">
+      <select id="attHero0Enable3" onchange="updateHero(0, 'att');">
         <option value="None">None</option>
         <option value="Resilience">Resilience</option>
         <option value="SharedFate">Shared Fate</option>
@@ -245,7 +81,7 @@
       </select><br />
       
       <label for="attHero0Enable4">Enable 4: </label>
-      <select id="attHero0Enable4" onchange="updateHero(0);">
+      <select id="attHero0Enable4" onchange="updateHero(0, 'att');">
         <option value="None">None</option>
         <option value="Vitality">Vitality</option>
         <option value="Mightiness">Mightiness</option>
@@ -253,7 +89,7 @@
       </select><br />
       
       <label for="attHero0Enable5">Enable 5: </label>
-      <select id="attHero0Enable5" onchange="updateHero(0);">
+      <select id="attHero0Enable5" onchange="updateHero(0, 'att');">
         <option value="None">None</option>
         <option value="BalancedStrike">Balanced Strike</option>
         <option value="UnbendingWill">Unbending Will</option>
@@ -271,8 +107,8 @@
   <div class="section">
     <span>Attacker Config:</span><br/>
     
-    <label for="avatarFrame">Select an Avatar Frame:</label>
-    <select id="avatarFrame">
+    <label for="attAvatarFrame">Select an Avatar Frame:</label>
+    <select id="attAvatarFrame">
     </select><br/>
     
     <div>
@@ -328,7 +164,51 @@
     </div>
   </div>
   
-  <hr/>
+  <hr />
+  
+  <div>
+    <span>Generate config text into area below or load config from area below.</span>
+    <div>
+      <button type="button" onclick="createConfig();">Generate</button>
+      <button type="button" onclick="loadConfig();">Load</button>
+    </div>
+    <div>
+      <textarea id="configText" rows="20" cols="100">
+{
+	"attHero0Name": "Foolish",
+	"attHero0Skin": "None",
+	"attHero0Stone": "T1 Attack",
+	"attHero0Artifact": "The Kiss of Ghost",
+	"attHero0Weapon": "None",
+	"attHero0Accessory": "None",
+	"attHero0Armor": "None",
+	"attHero0Shoe": "None",
+	"attHero0Enable1": "None",
+	"attHero0Enable2": "None",
+	"attHero0Enable3": "None",
+	"attHero0Enable4": "None",
+	"attHero0Enable5": "None",
+	"attAvatarFrame": "",
+	"attTechWarriorhpPercent": "60",
+	"attTechWarriorattackPercent": "50",
+	"attTechWarriorcrit": "40",
+	"attTechWarriorblock": "30",
+	"attTechWarriorskillDamage": "20",
+	"attTechWarriorspeed": "20",
+	"attTechWarriorconstitution": "20",
+	"attTechWarriormind": "20",
+	"attTechWarriorantiMage": "20",
+	"attTechWarriorantiRanger": "20",
+	"attTechWarriorantiAssassin": "20",
+	"attTechWarriorantiPriest": "20",
+	"attTechWarriorstunImmune": "10",
+	"attTechWarriorfreezeImmune": "10",
+	"attTechWarriorpetrifyImmune": "10",
+	"attTechWarriortwineImmune": "10"
+}
+      </textarea>
+    </div>
+  </div>
 
 </body>
 

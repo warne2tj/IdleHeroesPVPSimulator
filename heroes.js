@@ -58,9 +58,6 @@ class hero {
     // dictionary to track buffs and debuffs during combat
     this._buffs = {};
     this._debuffs = {};
-    
-    // update current stats based on selected gear, enables, guild tech, etc.
-    this.updateCurrentStats();
   }
   
   // a bunch of functions for override by hero subclasses as needed.
@@ -90,10 +87,6 @@ class hero {
   
   
   // Update current stats based on user selections.
-  // The order in which multipliers are applied seem to matter,
-  // They seem to be applied in a certain order with a floor in between each multiplier.
-  // Currently off by +/- 5 as displayed on Info screen
-  // Could be the result of incorrect ordering below or base stats +/- 2
   updateCurrentStats() {
     var prefix = this._heroPos < 6 ? "att" : "def";
     var arrLimits = [this._heroClass, this._heroFaction];

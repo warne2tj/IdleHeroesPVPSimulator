@@ -1,0 +1,16 @@
+.section {
+  column-count: 3;
+}
+
+.subsection2 {
+  column-span: 2;
+}
+
+.subsection1 {
+  column-span: 1;
+}
+
+.log {
+  height: 200px;
+  overflow: scroll;
+}
