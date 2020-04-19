@@ -46,7 +46,7 @@ class hero {
     // Non-displayed stat multipliers not reflected on info sheet
     // e.g. Avatar Frame, Auras, and Monsters
     this._ndAttackMultipliers = {};
-    this._npHPMultipliers = {};
+    this._ndHPMultipliers = {};
     
     // set equipment
     this._stone = "None";
@@ -69,7 +69,7 @@ class hero {
     this._debuffs = {};
   }
   
-  // a bunch of functions for override by hero subclasses as needed.
+  // a bunch of functions for override by hero subclasses as needed to trigger special abilities.
   doActive() { return;}
   passive1() { return;}
   passive2() { return;}
@@ -95,6 +95,23 @@ class hero {
   }
   
   
+  applyNdStatChange(arrStats, strSource) {
+    for (var strStatName in arrStats) {
+      if (strStatName == "attackPercent") {
+        this._ndAttackMultipliers[strSource] = 1 + arrStats[strStatName];
+      } else if (strStatName == "hpPercent") {
+        this._ndHPMultipliers[strSource] = 1 + arrStats[strStatName];
+      } else {
+        this._currentStats[strStatName] += arrStats[strStatName];
+        
+        if (strStatName == "damageReduce" && this._currentStats[strStatName] > 0.7) {
+          this._currentStats[strStatName] = 0.7;
+        }
+      }
+    }
+  }
+  
+  
   // Update current stats based on user selections.
   updateCurrentStats() {
     var arrLimits = [this._heroClass, this._heroFaction];
@@ -104,6 +121,8 @@ class hero {
     this._currentStats = Object.assign({}, this._baseStats);
     this._attackMultipliers = {};
     this._hpMultipliers = {};
+    this._ndAttackMultipliers = {};
+    this._ndHPMultipliers = {};
     
     
     // apply passives, does nothing unless overridden in subclass
@@ -230,14 +249,18 @@ class hero {
     }  
     
     
-    // apply skin, stone, artifact
+    // stone
     this.applyStatChange(stones[this._stone], "stone");
     
+    
+    // artifact
     this.applyStatChange(artifacts[this._artifact]["stats"], "artifact");
     if (arrLimits.includes(artifacts[this._artifact]["limit"])) {
       this.applyStatChange(artifacts[this._artifact]["limitStats"], "artifactLimit");
     }
     
+    
+    // skin
     if (this._skin != "None") {
       this.applyStatChange(skins[this._heroName][this._skin], "skin");
     }
@@ -257,9 +280,67 @@ class hero {
       }
     }
     
-    // apply monster, aura, avatar frame
     
-    // future: get and apply celestial island
+    // avatar frame
+    var sAvatarFrame = document.getElementById(this._attOrDef + "AvatarFrame").value;
+    this.applyNdStatChange(avatarFrames[sAvatarFrame], "avatarFrame");
+    
+    
+    // aura
+    // note: too lazy right now to split out the non-display 
+    //       bonuses to damage reduce and control immune
+    var arrToUse;
+    if (this._attOrDef == "att") {
+      arrToUse = attHeroes;
+    } else {
+      arrToUse = defHeroes;
+    }
+    
+    var arrIdentical = {
+      0: {},
+      1: {hpPercent: 0.02, attackPercent: 0.015},
+      2: {hpPercent: 0.05, attackPercent: 0.035},
+      3: {hpPercent: 0.08, attackPercent: 0.055},
+      4: {hpPercent: 0.11, attackPercent: 0.075},
+      5: {hpPercent: 0.14, attackPercent: 0.095},
+      6: {hpPercent: 0.18, attackPercent: 0.12}
+    };
+    
+    var factionCount = {
+      Shadow: 0,
+      Fortress: 0,
+      Abyss: 0,
+      Forest: 0,
+      Dark: 0,
+      Light: 0
+    };
+    
+    var heroCount = 0;
+    
+    for (var x = 0; x < arrToUse.length; x++) {
+      if (arrToUse[x]._heroFaction != "") {
+        factionCount[arrToUse[x]._heroFaction] += 1;
+        heroCount++;
+      }
+    }
+    
+    if (heroCount == 6) {
+      for (var x in factionCount) {
+        this.applyNdStatChange(arrIdentical[factionCount[x]], "faction" + x);
+      }
+    
+      var addBonuses = {
+        damageReduce: 0.02 * (factionCount["Shadow"] + factionCount["Fortress"] + factionCount["Abyss"] + factionCount["Forest"]),
+        controlImmune: 0.04 * (factionCount["Light"] + factionCount["Dark"])
+      }
+      this.applyNdStatChange(addBonuses, "auraAdditionalBonuses");
+    }
+    
+    
+    // implement monster
+    
+    
+    // future: implement celestial island
     
     this._currentStats["displayHP"] = this.calcHP();
     this._currentStats["displayAttack"] = this.calcAttack();

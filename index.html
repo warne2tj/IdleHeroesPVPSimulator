@@ -16,6 +16,7 @@
 <script src="stone.js"></script>
 <script src="artifact.js"></script>
 <script src="skin.js"></script>
+<script src="avatarFrame.js"></script>
 <script src="initAndSync.js"></script>
 <script src="simulation.js"></script>
 
@@ -36,7 +37,7 @@
     <span>Attacker Config:</span><br/>
     
     <label for="attAvatarFrame">Select an Avatar Frame:</label>
-    <select id="attAvatarFrame">
+    <select id="attAvatarFrame" onchange="updateAttackers();">
     </select><br/>
     
     <div>
@@ -566,7 +567,7 @@
     <span>Defender Config:</span><br/>
     
     <label for="defAvatarFrame">Select an Avatar Frame:</label>
-    <select id="defAvatarFrame">
+    <select id="defAvatarFrame" onchange="updateAttackers();">
     </select><br/>
     
     <div>
@@ -1133,7 +1134,7 @@
 	"defTechWarriorfreezeImmune": "0",
 	"defTechWarriorpetrifyImmune": "0",
 	"defTechWarriortwineImmune": "0",
-	"attAvatarFrame": "",
+	"attAvatarFrame": "None",
 	"attHero0Name": "Foolish",
 	"attHero0Skin": "None",
 	"attHero0Stone": "T1 Attack",
@@ -1147,7 +1148,7 @@
 	"attHero0Enable3": "None",
 	"attHero0Enable4": "None",
 	"attHero0Enable5": "None",
-	"attHero1Name": "Foolish",
+	"attHero1Name": "None",
 	"attHero1Skin": "None",
 	"attHero1Stone": "None",
 	"attHero1Artifact": "None",
@@ -1160,7 +1161,7 @@
 	"attHero1Enable3": "None",
 	"attHero1Enable4": "None",
 	"attHero1Enable5": "None",
-	"attHero2Name": "Foolish",
+	"attHero2Name": "None",
 	"attHero2Skin": "None",
 	"attHero2Stone": "None",
 	"attHero2Artifact": "None",
@@ -1173,7 +1174,7 @@
 	"attHero2Enable3": "None",
 	"attHero2Enable4": "None",
 	"attHero2Enable5": "None",
-	"attHero3Name": "Foolish",
+	"attHero3Name": "None",
 	"attHero3Skin": "None",
 	"attHero3Stone": "None",
 	"attHero3Artifact": "None",
@@ -1186,7 +1187,7 @@
 	"attHero3Enable3": "None",
 	"attHero3Enable4": "None",
 	"attHero3Enable5": "None",
-	"attHero4Name": "Foolish",
+	"attHero4Name": "None",
 	"attHero4Skin": "None",
 	"attHero4Stone": "None",
 	"attHero4Artifact": "None",
@@ -1199,7 +1200,7 @@
 	"attHero4Enable3": "None",
 	"attHero4Enable4": "None",
 	"attHero4Enable5": "None",
-	"attHero5Name": "Foolish",
+	"attHero5Name": "None",
 	"attHero5Skin": "None",
 	"attHero5Stone": "None",
 	"attHero5Artifact": "None",
@@ -1212,7 +1213,7 @@
 	"attHero5Enable3": "None",
 	"attHero5Enable4": "None",
 	"attHero5Enable5": "None",
-	"defAvatarFrame": "",
+	"defAvatarFrame": "None",
 	"defHero0Name": "Foolish",
 	"defHero0Skin": "None",
 	"defHero0Stone": "None",
@@ -1226,7 +1227,7 @@
 	"defHero0Enable3": "None",
 	"defHero0Enable4": "None",
 	"defHero0Enable5": "None",
-	"defHero1Name": "Foolish",
+	"defHero1Name": "None",
 	"defHero1Skin": "None",
 	"defHero1Stone": "None",
 	"defHero1Artifact": "None",
@@ -1239,7 +1240,7 @@
 	"defHero1Enable3": "None",
 	"defHero1Enable4": "None",
 	"defHero1Enable5": "None",
-	"defHero2Name": "Foolish",
+	"defHero2Name": "None",
 	"defHero2Skin": "None",
 	"defHero2Stone": "None",
 	"defHero2Artifact": "None",
@@ -1252,7 +1253,7 @@
 	"defHero2Enable3": "None",
 	"defHero2Enable4": "None",
 	"defHero2Enable5": "None",
-	"defHero3Name": "Foolish",
+	"defHero3Name": "None",
 	"defHero3Skin": "None",
 	"defHero3Stone": "None",
 	"defHero3Artifact": "None",
@@ -1265,7 +1266,7 @@
 	"defHero3Enable3": "None",
 	"defHero3Enable4": "None",
 	"defHero3Enable5": "None",
-	"defHero4Name": "Foolish",
+	"defHero4Name": "None",
 	"defHero4Skin": "None",
 	"defHero4Stone": "None",
 	"defHero4Artifact": "None",
@@ -1278,7 +1279,7 @@
 	"defHero4Enable3": "None",
 	"defHero4Enable4": "None",
 	"defHero4Enable5": "None",
-	"defHero5Name": "Foolish",
+	"defHero5Name": "None",
 	"defHero5Skin": "None",
 	"defHero5Stone": "None",
 	"defHero5Artifact": "None",

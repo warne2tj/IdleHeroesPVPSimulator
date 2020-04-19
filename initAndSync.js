@@ -26,6 +26,17 @@ function initialize() {
   addOptions(stones, "Stone");
   addOptions(artifacts, "Artifact");
   
+  var option;
+  for(var x in avatarFrames) {
+    option = document.createElement("option");
+    option.text = x;
+    document.getElementById("attAvatarFrame").add(option);
+    
+    option = document.createElement("option");
+    option.text = x;
+    document.getElementById("defAvatarFrame").add(option);
+  }
+  
   loadConfig();
 }
 
@@ -62,30 +73,37 @@ function changeHero(heroPos, prefix) {
   var cHeroSheet = document.getElementById(prefix + "Hero" + heroPos + "Sheet");
   var cHeroSkins = document.getElementById(prefix + "Hero" + heroPos + "Skin");
   
-  cHeroSkins.value = "None";
-  var skinLen = cHeroSkins.options.length - 1;
-  for (var i = skinLen; i > 0; i--){
-    cHeroSkins.remove(i);
-  }
-  
   if (cHeroName == pHeroName) {
     // no change, do nothing
-  } else if(cHeroName == "None") {
-    console.log("Change Hero " + heroPos + ": " + pHeroName + " to " + cHeroName);
-    arrToUse[heroPos] = new hero("None", heroPos, prefix);
-    cHeroSheet.innerHTML = "";
   } else {
     console.log("Change Hero " + heroPos + ": " + pHeroName + " to " + cHeroName);
-    arrToUse[heroPos] = new baseHeroStats[cHeroName]["className"](cHeroName, heroPos, prefix);
-    updateHero(heroPos, prefix);
-    
-    if ([cHeroName] in skins) {
-      var option;
-      for(var x in skins[cHeroName]) {
-        option = document.createElement("option");
-        option.text = x;
-        cHeroSkins.add(option);
+  
+    cHeroSkins.value = "None";
+    var skinLen = cHeroSkins.options.length - 1;
+    for (var i = skinLen; i > 0; i--){
+      cHeroSkins.remove(i);
+    }
+      
+    if(cHeroName == "None") {
+      arrToUse[heroPos] = new hero("None", heroPos, prefix);
+      cHeroSheet.innerHTML = "";
+    } else {
+      arrToUse[heroPos] = new baseHeroStats[cHeroName]["className"](cHeroName, heroPos, prefix);
+      
+      if ([cHeroName] in skins) {
+        var option;
+        for(var x in skins[cHeroName]) {
+          option = document.createElement("option");
+          option.text = x;
+          cHeroSkins.add(option);
+        }
       }
+    }
+    
+    if (prefix == "att") {
+      updateAttackers();
+    } else {
+      updateDefenders();
     }
   }
 }
@@ -179,13 +197,14 @@ function loadConfig() {
   
   for (var x in jsonConfig) {
     document.getElementById(x).value = jsonConfig[x];
+    
+    if (x.substring(x.length - 4, x.length) == "Name") {
+      if (x.substring(0, 3) == "att") {
+        changeHero(x.substring(7, 8), "att");
+      } else {
+        changeHero(x.substring(7, 8), "def");
+      }
+    }
   }
   
-  for (var i = 0; i < attHeroes.length; i++) {
-    changeHero(i, "att");
-  }
-  
-  for (var i = 0; i < defHeroes.length; i++) {
-    changeHero(i, "def");
-  }
 }
