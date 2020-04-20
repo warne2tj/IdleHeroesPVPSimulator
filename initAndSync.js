@@ -60,7 +60,7 @@ function addOptions(dictItems, strPostfix) {
 }
 
 
-function changeHero(heroPos, prefix) {
+function changeHero(heroPos, prefix, skipUpdates = false) {
   var arrToUse = [];
   if (prefix == "att") {
     arrToUse = attHeroes;
@@ -100,10 +100,12 @@ function changeHero(heroPos, prefix) {
       }
     }
     
-    if (prefix == "att") {
-      updateAttackers();
-    } else {
-      updateDefenders();
+    if (skipUpdates == false) {
+      if (prefix == "att") {
+        updateAttackers();
+      } else {
+        updateDefenders();
+      }
     }
   }
 }
@@ -199,12 +201,10 @@ function loadConfig() {
     document.getElementById(x).value = jsonConfig[x];
     
     if (x.substring(x.length - 4, x.length) == "Name") {
-      if (x.substring(0, 3) == "att") {
-        changeHero(x.substring(7, 8), "att");
-      } else {
-        changeHero(x.substring(7, 8), "def");
-      }
+      changeHero(x.substring(7, 8), x.substring(0, 3), true);
     }
   }
   
+  updateAttackers();
+  updateDefenders();
 }

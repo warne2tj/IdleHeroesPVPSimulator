@@ -49,7 +49,3 @@ To Do List:
     - monsters
 
   Improve GUI
-  
-  Efficiency Improvements:
-    - Reduce loadConfig() redundant calls to update all heroes
-    - Reduce number of copies of stats being kept by hero class

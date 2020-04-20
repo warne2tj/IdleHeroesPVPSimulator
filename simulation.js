@@ -96,23 +96,26 @@ function runSim() {
       for (i = 0; i < numOfHeroes; i++) {
         // @ start of hero action
         
-        if(numSims == 1) {oCombatLog.innerHTML += "<p><div>" + orderOfAttack[i]._heroName + "'s turn in position " + orderOfAttack[i]._heroPos + " of " + orderOfAttack[i]._attOrDef + " team.</div>";}
+        if (orderOfAttack[i]._snapshotStats["totalHP"] > 0) {
         
-        // decide on action
-        if (orderOfAttack[i]._snapshotStats["energy"] >= 100) {
-          // do active
-        } else {
-          // do basic
-          result = orderOfAttack[i].doBasic();
-          if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>";}
-          someoneWon = checkForWin();
-        }
-        
-        // @ end of hero action
-        if(numSims == 1) {oCombatLog.innerHTML += "</p>";}
-        
-        if (someoneWon != "") {
-          break;
+          if(numSims == 1) {oCombatLog.innerHTML += "<p><div>" + orderOfAttack[i]._heroName + "'s turn in position " + orderOfAttack[i]._heroPos + " of " + orderOfAttack[i]._attOrDef + " team.</div>";}
+          
+          // decide on action
+          if (orderOfAttack[i]._snapshotStats["energy"] >= 100) {
+            // do active
+          } else {
+            // do basic
+            result = orderOfAttack[i].doBasic();
+            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>";}
+            someoneWon = checkForWin();
+          }
+          
+          // @ end of hero action
+          if(numSims == 1) {oCombatLog.innerHTML += "</p>";}
+          
+          if (someoneWon != "") {
+            break;
+          }
         }
       }
       

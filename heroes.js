@@ -416,24 +416,39 @@ class hero {
     
     // Get damage related stats
     var attackDamage = this._snapshotStats["totalAttack"];
+    //console.log(attackDamage);
     var critChance = this._snapshotStats["crit"];
+    //console.log(critChance);
     var critDamage = this._snapshotStats["critDamage"] + 1.5;
+    //console.log(critDamage);
     var precision = this._snapshotStats["precision"];
+    //console.log(precision);
     var precisionDamageIncrease = precision >= 1.5 ? 1.45 : 1 + precision * 0.3;
+    //console.log(precisionDamageIncrease);
     var armorBreak = this._snapshotStats["armorBreak"] >= 1.0 ? 1.0 : this._snapshotStats["armorBreak"];
-    var holyDamageIncrease = 1 + this._snapshotStats["holyDamage"] * 70;
-    var holyDamage = attackDamage;
+    //console.log(armorBreak);
+    var holyDamageIncrease = this._snapshotStats["holyDamage"] * 70;
+    //console.log(holyDamageIncrease);
+    var holyDamage = attackDamage * holyDamageIncrease;
+    //console.log(holyDamage);
     
     var armorMitigation = target._snapshotStats["armor"] * (1 - armorBreak) / (180 + 20*(target._heroLevel));
+    //console.log(armorMitigation);
     var reduceDamage = target._snapshotStats["damageReduce"];
+    //console.log(reduceDamage);
     var blockChance = target._snapshotStats["block"] - precision;
+    //console.log(blockChance);
     var critDamageReduce = target._snapshotStats["critDamageReduce"];
+    //console.log(critDamageReduce);
     var classDamageReduce = target._snapshotStats[this._heroClass.toLowerCase() + "Reduce"];
+    //console.log(classDamageReduce);
     
     var outcomeRoll = Math.random();
     
     attackDamage = attackDamage * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * precisionDamageIncrease;
+    //console.log(attackDamage);
     holyDamage = holyDamage * (1-reduceDamage) * (1-classDamageReduce) * precisionDamageIncrease;
+    //console.log(holyDamage);
     
     if (outcomeRoll <= critChance && outcomeRoll <= blockChance) {
       // blocked crit
@@ -453,9 +468,11 @@ class hero {
     } else {
       // normal
       attackDamage = Math.floor(attackDamage);
-      holyDamage = Math.floor(attackDamage);
+      holyDamage = Math.floor(holyDamage);
       result["description"] += "Normal basic dealt " + (attackDamage + holyDamage) + " damage. ";
     }
+    //console.log(attackDamage);
+    //console.log(holyDamage);
     
     result["description"] += "Health dropped from " + target._snapshotStats["totalHP"] + " to ";
     target._snapshotStats["totalHP"] = target._snapshotStats["totalHP"] - attackDamage - holyDamage;
