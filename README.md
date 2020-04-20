@@ -18,7 +18,7 @@ To Do List:
       Currently off by +/- 5 as displayed on Info screen
       Could be the result of incorrect ordering or base stats +/- 2
     - How much does armor stat reduce damage?
-        = def / (180 + 20*level)
+        = armor / (180 + 20*level)
     - Can a crit be blocked?
         = Yes, see below
     - How much damage does a block reduce?
@@ -35,8 +35,9 @@ To Do List:
     - Energy
         = attack: 50, get hit: 10, get crit: 20
     - Monster energy, how is it gained, does excess go into ability damage like hero energy does?
+    - Crit damage reduction, does this subtract from target's crit damage stat? Or is it multiplicative?
 
-  Add data
+  Add data:
     - hero base stats
     - subclass heroes
     - stones
@@ -48,3 +49,7 @@ To Do List:
     - monsters
 
   Improve GUI
+  
+  Efficiency Improvements:
+    - Reduce loadConfig() redundant calls to update all heroes
+    - Reduce number of copies of stats being kept by hero class

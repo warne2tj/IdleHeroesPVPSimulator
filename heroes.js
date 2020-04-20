@@ -41,6 +41,7 @@ class hero {
     this._baseStats["controlPrecision"] = 0.0;
     
     this._currentStats = {};
+    this._snapshotStats = {};
     this._attackMultipliers = {};
     this._hpMultipliers = {};
     // Non-displayed stat multipliers not reflected on info sheet
@@ -388,6 +389,80 @@ class hero {
     }
     
     return ehp;
+  }
+  
+  
+  // Snapshot stats for combat
+  snapshotStats() {
+    this._snapshotStats = Object.assign({}, this._currentStats);
+  }
+  
+  
+  // Do basic attack
+  doBasic() {
+    var arrTargets = this._attOrDef == "att" ? defHeroes : attHeroes;
+    var target;
+    var result = {};
+    
+    // get first living target
+    for (var i=0; i<arrTargets.length; i++) {
+      if (arrTargets[i]._snapshotStats["totalHP"] > 0) {
+        target = arrTargets[i];
+        break;
+      }
+    }
+    
+    result["description"] = this._heroName + " did basic attack against enemy " + target._heroName + " in position " + target._heroPos + ". ";
+    
+    // Get damage related stats
+    var attackDamage = this._snapshotStats["totalAttack"];
+    var critChance = this._snapshotStats["crit"];
+    var critDamage = this._snapshotStats["critDamage"] + 1.5;
+    var precision = this._snapshotStats["precision"];
+    var precisionDamageIncrease = precision >= 1.5 ? 1.45 : 1 + precision * 0.3;
+    var armorBreak = this._snapshotStats["armorBreak"] >= 1.0 ? 1.0 : this._snapshotStats["armorBreak"];
+    var holyDamageIncrease = 1 + this._snapshotStats["holyDamage"] * 70;
+    var holyDamage = attackDamage;
+    
+    var armorMitigation = target._snapshotStats["armor"] * (1 - armorBreak) / (180 + 20*(target._heroLevel));
+    var reduceDamage = target._snapshotStats["damageReduce"];
+    var blockChance = target._snapshotStats["block"] - precision;
+    var critDamageReduce = target._snapshotStats["critDamageReduce"];
+    var classDamageReduce = target._snapshotStats[this._heroClass.toLowerCase() + "Reduce"];
+    
+    var outcomeRoll = Math.random();
+    
+    attackDamage = attackDamage * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * precisionDamageIncrease;
+    holyDamage = holyDamage * (1-reduceDamage) * (1-classDamageReduce) * precisionDamageIncrease;
+    
+    if (outcomeRoll <= critChance && outcomeRoll <= blockChance) {
+      // blocked crit
+      attackDamage = Math.floor(attackDamage * 0.56 * (1-critDamageReduce) * critDamage);
+      holyDamage = Math.floor(holyDamage * 0.56 * (1-critDamageReduce) * critDamage);
+      result["description"] += "Blocked crit dealt " + (attackDamage + holyDamage) + " damage. ";
+    } else if (outcomeRoll <= critChance && outcomeRoll > blockChance) {
+      // crit
+      attackDamage = Math.floor(attackDamage * (1-critDamageReduce) * critDamage);
+      holyDamage = Math.floor(holyDamage * (1-critDamageReduce) * critDamage);
+      result["description"] += "Crit dealt " + (attackDamage + holyDamage) + " damage. ";
+    } else if (outcomeRoll > critChance && outcomeRoll <= blockChance) {
+      // blocked normal
+      attackDamage = Math.floor(attackDamage * 0.7);
+      holyDamage = Math.floor(holyDamage * 0.7);
+      result["description"] += "Blocked normal basic dealt " + (attackDamage + holyDamage) + " damage. ";
+    } else {
+      // normal
+      attackDamage = Math.floor(attackDamage);
+      holyDamage = Math.floor(attackDamage);
+      result["description"] += "Normal basic dealt " + (attackDamage + holyDamage) + " damage. ";
+    }
+    
+    result["description"] += "Health dropped from " + target._snapshotStats["totalHP"] + " to ";
+    target._snapshotStats["totalHP"] = target._snapshotStats["totalHP"] - attackDamage - holyDamage;
+    target._snapshotStats["totalHP"] = target._snapshotStats["totalHP"] <= 0 ? 0 : target._snapshotStats["totalHP"];
+    result["description"] += target._snapshotStats["totalHP"] + ".";
+    
+    return result;
   }
   
   
