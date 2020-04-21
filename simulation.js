@@ -22,14 +22,14 @@ function checkForWin() {
   
   numOfHeroes = attHeroes.length;
   for (i = 0; i < numOfHeroes; i++) {
-    if (attHeroes[i]._snapshotStats["totalHP"] > 0) {
+    if (attHeroes[i]._currentStats["totalHP"] > 0) {
       attAlive++;
     }
   }
   
   numOfHeroes = defHeroes.length;
   for (i = 0; i < numOfHeroes; i++) {
-    if (defHeroes[i]._snapshotStats["totalHP"] > 0) {
+    if (defHeroes[i]._currentStats["totalHP"] > 0) {
       defAlive++;
     }
   }
@@ -96,12 +96,12 @@ function runSim() {
       for (i = 0; i < numOfHeroes; i++) {
         // @ start of hero action
         
-        if (orderOfAttack[i]._snapshotStats["totalHP"] > 0) {
+        if (orderOfAttack[i]._currentStats["totalHP"] > 0) {
         
           if(numSims == 1) {oCombatLog.innerHTML += "<p><div>" + orderOfAttack[i]._heroName + "'s turn in position " + orderOfAttack[i]._heroPos + " of " + orderOfAttack[i]._attOrDef + " team.</div>";}
           
           // decide on action
-          if (orderOfAttack[i]._snapshotStats["energy"] >= 100) {
+          if (orderOfAttack[i]._currentStats["energy"] >= 100) {
             // do active
           } else {
             // do basic

@@ -9,41 +9,11 @@ class hero {
     this._heroLevel = baseHeroStats[sHeroName]["heroLevel"];
     this._heroClass = baseHeroStats[sHeroName]["heroClass"];
     
-    // Copy the 4 main variable base stats from baseHeroStats,
-    // add other stats tied to items, tech, buffs, etc.
-    this._baseStats = Object.assign({}, baseHeroStats[sHeroName]["stats"]);
-    this._baseStats["totalHP"] = this._baseStats["hp"];
-    this._baseStats["totalAttack"] = this._baseStats["attack"];
-    this._baseStats["displayHP"] = this._baseStats["hp"];
-    this._baseStats["displayAttack"] = this._baseStats["attack"];
-    this._baseStats["skillDamage"] = 0.0;
-    this._baseStats["precision"] = 0.0;
-    this._baseStats["block"] = 0.0;
-    this._baseStats["crit"] = 0.0;
-    this._baseStats["critDamage"] = 0.0;
-    this._baseStats["armorBreak"] = 0.0;
-    this._baseStats["controlImmune"] = 0.0;
-    this._baseStats["damageReduce"] = 0.0;
-    this._baseStats["holyDamage"] = 0.0;
-    this._baseStats["warriorReduce"] = 0.0;
-    this._baseStats["mageReduce"] = 0.0;
-    this._baseStats["rangerReduce"] = 0.0;
-    this._baseStats["assassinReduce"] = 0.0;
-    this._baseStats["priestReduce"] = 0.0;
-    this._baseStats["freezeImmune"] = 0.0;
-    this._baseStats["petrifyImmune"] = 0.0;
-    this._baseStats["stunImmune"] = 0.0;
-    this._baseStats["twineImmune"] = 0.0;
-    this._baseStats["critDamageReduce"] = 0.0;
-    this._baseStats["effectBeingHealed"] = 0.0;
-    this._baseStats["dotReduce"] = 0.0;
-    this._baseStats["energy"] = 50;
-    this._baseStats["controlPrecision"] = 0.0;
-    
+    this._stats = {};
     this._currentStats = {};
-    this._snapshotStats = {};
     this._attackMultipliers = {};
     this._hpMultipliers = {};
+    
     // Non-displayed stat multipliers not reflected on info sheet
     // e.g. Avatar Frame, Auras, and Monsters
     this._ndAttackMultipliers = {};
@@ -68,15 +38,15 @@ class hero {
     // dictionary to track buffs and debuffs during combat
     this._buffs = {};
     this._debuffs = {};
+    
+    if (attOrDef == "att") {
+      this._allies = attHeroes;
+      this._enemies = defHeroes;
+    } else {
+      this._allies = defHeroes;
+      this._enemies = attHeroes;
+    }
   }
-  
-  // a bunch of functions for override by hero subclasses as needed to trigger special abilities.
-  doActive() { return;}
-  passive1() { return;}
-  passive2() { return;}
-  passive3() { return;}
-  allyDied() { return;}
-  enemyDied() { return;}
   
   
   applyStatChange(arrStats, strSource) {
@@ -86,11 +56,7 @@ class hero {
       } else if (strStatName == "hpPercent") {
         this._hpMultipliers[strSource] = 1 + arrStats[strStatName];
       } else {
-        this._currentStats[strStatName] += arrStats[strStatName];
-        
-        if (strStatName == "damageReduce" && this._currentStats[strStatName] > 0.7) {
-          this._currentStats[strStatName] = 0.7;
-        }
+        this._stats[strStatName] += arrStats[strStatName];
       }
     }
   }
@@ -103,11 +69,7 @@ class hero {
       } else if (strStatName == "hpPercent") {
         this._ndHPMultipliers[strSource] = 1 + arrStats[strStatName];
       } else {
-        this._currentStats[strStatName] += arrStats[strStatName];
-        
-        if (strStatName == "damageReduce" && this._currentStats[strStatName] > 0.7) {
-          this._currentStats[strStatName] = 0.7;
-        }
+        this._stats[strStatName] += arrStats[strStatName];
       }
     }
   }
@@ -119,63 +81,39 @@ class hero {
     var keySet = "";
     
     // start with base stats
-    this._currentStats = Object.assign({}, this._baseStats);
+    this._stats = Object.assign({}, baseHeroStats[this._heroName]["stats"]);
+    this._stats["totalHP"] = this._stats["hp"];
+    this._stats["totalAttack"] = this._stats["attack"];
+    this._stats["displayHP"] = this._stats["hp"];
+    this._stats["displayAttack"] = this._stats["attack"];
+    this._stats["skillDamage"] = 0.0;
+    this._stats["precision"] = 0.0;
+    this._stats["block"] = 0.0;
+    this._stats["crit"] = 0.0;
+    this._stats["critDamage"] = 0.0;
+    this._stats["armorBreak"] = 0.0;
+    this._stats["controlImmune"] = 0.0;
+    this._stats["damageReduce"] = 0.0;
+    this._stats["holyDamage"] = 0.0;
+    this._stats["warriorReduce"] = 0.0;
+    this._stats["mageReduce"] = 0.0;
+    this._stats["rangerReduce"] = 0.0;
+    this._stats["assassinReduce"] = 0.0;
+    this._stats["priestReduce"] = 0.0;
+    this._stats["freezeImmune"] = 0.0;
+    this._stats["petrifyImmune"] = 0.0;
+    this._stats["stunImmune"] = 0.0;
+    this._stats["twineImmune"] = 0.0;
+    this._stats["critDamageReduce"] = 0.0;
+    this._stats["effectBeingHealed"] = 0.0;
+    this._stats["dotReduce"] = 0.0;
+    this._stats["energy"] = 50;
+    this._stats["controlPrecision"] = 0.0;
+    
     this._attackMultipliers = {};
     this._hpMultipliers = {};
     this._ndAttackMultipliers = {};
     this._ndHPMultipliers = {};
-    
-    
-    // apply passives, does nothing unless overridden in subclass
-    this.passive1();
-    this.passive2();
-    this.passive3();
-    
-    
-    // apply enable bonus
-    if (this._starLevel > 10) {
-      this.applyStatChange({hpPercent: (this._starLevel - 10) * 0.14, attackPercent: (this._starLevel - 10) * 0.1}, "enableBonuses")
-    }
-    
-    
-    // apply enables
-    switch(this._enable1) {
-      case "Vitality":
-        this.applyStatChange({hpPercent: 0.12}, "enable1");
-        break;
-        
-      case "Mightiness":
-        this.applyStatChange({attackPercent: 0.08}, "enable1");
-        break;
-        
-      case "Growth":
-        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable1");
-        break;
-    }
-    
-    switch(this._enable2) {
-      case "Shelter":
-        this.applyStatChange({critDamageReduce: 0.15}, "enable2");
-        break;
-        
-      case "Vitality2":
-        this.applyStatChange({effectBeingHealed: 0.15}, "enable2");
-        break;
-    }
-    
-    switch(this._enable4) {
-      case "Vitality":
-        this.applyStatChange({hpPercent: 0.12}, "enable4");
-        break;
-        
-      case "Mightiness":
-        this.applyStatChange({attackPercent: 0.08}, "enable4");
-        break;
-        
-      case "Growth":
-        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable4");
-        break;
-    }
     
     
     // apply equipment and set bonus
@@ -254,16 +192,59 @@ class hero {
     this.applyStatChange(stones[this._stone], "stone");
     
     
-    // artifact
-    this.applyStatChange(artifacts[this._artifact]["stats"], "artifact");
-    if (arrLimits.includes(artifacts[this._artifact]["limit"])) {
-      this.applyStatChange(artifacts[this._artifact]["limitStats"], "artifactLimit");
-    }
-    
-    
     // skin
     if (this._skin != "None") {
       this.applyStatChange(skins[this._heroName][this._skin], "skin");
+    }
+    
+    
+    // apply passives that give stats, does nothing unless overridden in subclass
+    this.passiveStats();
+    
+    
+    // apply enable bonus
+    if (this._starLevel > 10) {
+      this.applyStatChange({hpPercent: (this._starLevel - 10) * 0.14, attackPercent: (this._starLevel - 10) * 0.1}, "enableBonuses")
+    }
+    
+    
+    // apply enables
+    switch(this._enable1) {
+      case "Vitality":
+        this.applyStatChange({hpPercent: 0.12}, "enable1");
+        break;
+        
+      case "Mightiness":
+        this.applyStatChange({attackPercent: 0.08}, "enable1");
+        break;
+        
+      case "Growth":
+        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable1");
+        break;
+    }
+    
+    switch(this._enable2) {
+      case "Shelter":
+        this.applyStatChange({critDamageReduce: 0.15}, "enable2");
+        break;
+        
+      case "Vitality2":
+        this.applyStatChange({effectBeingHealed: 0.15}, "enable2");
+        break;
+    }
+    
+    switch(this._enable4) {
+      case "Vitality":
+        this.applyStatChange({hpPercent: 0.12}, "enable4");
+        break;
+        
+      case "Mightiness":
+        this.applyStatChange({attackPercent: 0.08}, "enable4");
+        break;
+        
+      case "Growth":
+        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable4");
+        break;
     }
     
     
@@ -282,9 +263,14 @@ class hero {
     }
     
     
-    // avatar frame
-    var sAvatarFrame = document.getElementById(this._attOrDef + "AvatarFrame").value;
-    this.applyNdStatChange(avatarFrames[sAvatarFrame], "avatarFrame");
+    // artifact
+    this.applyStatChange(artifacts[this._artifact]["stats"], "artifact");
+    if (arrLimits.includes(artifacts[this._artifact]["limit"])) {
+      this.applyStatChange(artifacts[this._artifact]["limitStats"], "artifactLimit");
+    }
+    
+    
+    // implement monster
     
     
     // aura
@@ -338,20 +324,22 @@ class hero {
     }
     
     
-    // implement monster
+    // avatar frame
+    var sAvatarFrame = document.getElementById(this._attOrDef + "AvatarFrame").value;
+    this.applyNdStatChange(avatarFrames[sAvatarFrame], "avatarFrame");
     
     
     // future: implement celestial island
     
-    this._currentStats["displayHP"] = this.calcHP();
-    this._currentStats["displayAttack"] = this.calcAttack();
-    this._currentStats["totalHP"] = this.calcTotalHP();
-    this._currentStats["totalAttack"] = this.calcTotalAttack();
+    this._stats["displayHP"] = this.calcHP();
+    this._stats["displayAttack"] = this.calcAttack();
+    this._stats["totalHP"] = this.calcTotalHP();
+    this._stats["totalAttack"] = this.calcTotalAttack();
   }
   
   
   calcAttack() {
-    var att = this._currentStats["attack"];
+    var att = this._stats["attack"];
     
     for (var x in this._attackMultipliers) {
       att = Math.floor(att * this._attackMultipliers[x]);
@@ -361,7 +349,7 @@ class hero {
   }
   
   calcHP() {
-    var ehp = this._currentStats["hp"];
+    var ehp = this._stats["hp"];
     
     for (var x in this._hpMultipliers) {
       ehp = Math.floor(ehp * this._hpMultipliers[x]);
@@ -372,7 +360,7 @@ class hero {
   
   
   calcTotalAttack() {
-    var att = this._currentStats["displayAttack"];
+    var att = this._stats["displayAttack"];
     
     for (var x in this._ndAttackMultipliers) {
       att = Math.floor(att * this._ndAttackMultipliers[x]);
@@ -382,104 +370,13 @@ class hero {
   }
   
   calcTotalHP() {
-    var ehp = this._currentStats["displayHP"];
+    var ehp = this._stats["displayHP"];
     
     for (var x in this._ndHPMultipliers) {
       ehp = Math.floor(ehp * this._ndHPMultipliers[x]);
     }
     
     return ehp;
-  }
-  
-  
-  // Snapshot stats for combat
-  snapshotStats() {
-    this._snapshotStats = Object.assign({}, this._currentStats);
-  }
-  
-  
-  // Do basic attack
-  doBasic() {
-    var arrTargets = this._attOrDef == "att" ? defHeroes : attHeroes;
-    var target;
-    var result = {};
-    
-    // get first living target
-    for (var i=0; i<arrTargets.length; i++) {
-      if (arrTargets[i]._snapshotStats["totalHP"] > 0) {
-        target = arrTargets[i];
-        break;
-      }
-    }
-    
-    result["description"] = this._heroName + " did basic attack against enemy " + target._heroName + " in position " + target._heroPos + ". ";
-    
-    // Get damage related stats
-    var attackDamage = this._snapshotStats["totalAttack"];
-    //console.log(attackDamage);
-    var critChance = this._snapshotStats["crit"];
-    //console.log(critChance);
-    var critDamage = this._snapshotStats["critDamage"] + 1.5;
-    //console.log(critDamage);
-    var precision = this._snapshotStats["precision"];
-    //console.log(precision);
-    var precisionDamageIncrease = precision >= 1.5 ? 1.45 : 1 + precision * 0.3;
-    //console.log(precisionDamageIncrease);
-    var armorBreak = this._snapshotStats["armorBreak"] >= 1.0 ? 1.0 : this._snapshotStats["armorBreak"];
-    //console.log(armorBreak);
-    var holyDamageIncrease = this._snapshotStats["holyDamage"] * 70;
-    //console.log(holyDamageIncrease);
-    var holyDamage = attackDamage * holyDamageIncrease;
-    //console.log(holyDamage);
-    
-    var armorMitigation = target._snapshotStats["armor"] * (1 - armorBreak) / (180 + 20*(target._heroLevel));
-    //console.log(armorMitigation);
-    var reduceDamage = target._snapshotStats["damageReduce"];
-    //console.log(reduceDamage);
-    var blockChance = target._snapshotStats["block"] - precision;
-    //console.log(blockChance);
-    var critDamageReduce = target._snapshotStats["critDamageReduce"];
-    //console.log(critDamageReduce);
-    var classDamageReduce = target._snapshotStats[this._heroClass.toLowerCase() + "Reduce"];
-    //console.log(classDamageReduce);
-    
-    var outcomeRoll = Math.random();
-    
-    attackDamage = attackDamage * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * precisionDamageIncrease;
-    //console.log(attackDamage);
-    holyDamage = holyDamage * (1-reduceDamage) * (1-classDamageReduce) * precisionDamageIncrease;
-    //console.log(holyDamage);
-    
-    if (outcomeRoll <= critChance && outcomeRoll <= blockChance) {
-      // blocked crit
-      attackDamage = Math.floor(attackDamage * 0.56 * (1-critDamageReduce) * critDamage);
-      holyDamage = Math.floor(holyDamage * 0.56 * (1-critDamageReduce) * critDamage);
-      result["description"] += "Blocked crit dealt " + (attackDamage + holyDamage) + " damage. ";
-    } else if (outcomeRoll <= critChance && outcomeRoll > blockChance) {
-      // crit
-      attackDamage = Math.floor(attackDamage * (1-critDamageReduce) * critDamage);
-      holyDamage = Math.floor(holyDamage * (1-critDamageReduce) * critDamage);
-      result["description"] += "Crit dealt " + (attackDamage + holyDamage) + " damage. ";
-    } else if (outcomeRoll > critChance && outcomeRoll <= blockChance) {
-      // blocked normal
-      attackDamage = Math.floor(attackDamage * 0.7);
-      holyDamage = Math.floor(holyDamage * 0.7);
-      result["description"] += "Blocked normal basic dealt " + (attackDamage + holyDamage) + " damage. ";
-    } else {
-      // normal
-      attackDamage = Math.floor(attackDamage);
-      holyDamage = Math.floor(holyDamage);
-      result["description"] += "Normal basic dealt " + (attackDamage + holyDamage) + " damage. ";
-    }
-    //console.log(attackDamage);
-    //console.log(holyDamage);
-    
-    result["description"] += "Health dropped from " + target._snapshotStats["totalHP"] + " to ";
-    target._snapshotStats["totalHP"] = target._snapshotStats["totalHP"] - attackDamage - holyDamage;
-    target._snapshotStats["totalHP"] = target._snapshotStats["totalHP"] <= 0 ? 0 : target._snapshotStats["totalHP"];
-    result["description"] += target._snapshotStats["totalHP"] + ".";
-    
-    return result;
   }
   
   
@@ -491,14 +388,204 @@ class hero {
     heroSheet += "Level " + this._heroLevel + " " + this._heroName + "<br/>";
     heroSheet += this._starLevel + "* " + this._heroFaction + " " + this._heroClass + "<br/>";
     
-    for (var statName in this._currentStats) {
+    for (var statName in this._stats) {
       if (["hp", "attack", "speed", "armor", "totalHP", "totalAttack", "displayHP", "displayAttack"].includes(statName)) {
-        heroSheet += "<br/>" + statName + ": " + this._currentStats[statName].toFixed();
+        heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed();
       } else {
-        heroSheet += "<br/>" + statName + ": " + this._currentStats[statName].toFixed(2);
+        heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed(2);
       }
     }
     
     return heroSheet;
+  }
+  
+  
+  // Snapshot stats for combat
+  snapshotStats() {
+    this._currentStats = Object.assign({}, this._stats);
+    this._currentStats["damageDealt"] = 0;
+  }
+  
+  
+  // combat utility functions
+  
+  calcDamage(target, isSkill=1, canCrit=1, canBlock=1, armorReduces=1) {
+    // Get damage related stats
+    var attackDamage = this._currentStats["totalAttack"];
+    var critChance = canCrit * this._currentStats["crit"];
+    var critDamage = 2*this._currentStats["critDamage"] + 1.5;
+    var precision = this._currentStats["precision"];
+    var precisionDamageIncrease = 1.0;
+    var armorBreak = this._currentStats["armorBreak"] >= 1.0 ? 1.0 : this._currentStats["armorBreak"];
+    var holyDamageIncrease = this._currentStats["holyDamage"] * 70;
+    var holyDamage = attackDamage * holyDamageIncrease;
+    var skillDamage = 1 + isSkill * (this._currentStats["skillDamage"] + (this._currentStats["energy"] - 100));
+
+    var factionA = this._heroFaction;
+    var factionB = target._heroFaction;
+    var factionBonus = 1.0;
+    
+    if (
+      (factionA == "Abyss" && factionB == "Forest") ||
+      (factionA == "Forest" && factionB == "Shadow") ||
+      (factionA == "Shadow" && factionB == "Fortress") ||
+      (factionA == "Fortress" && factionB == "Abyss") ||
+      (factionA == "Dark" && factionB == "Light") ||
+      (factionA == "Light" && factionB == "Dark")
+    ) {
+      factionBonus += 0.3;
+      precision += 0.15;
+    }
+    precisionDamageIncrease = precision >= 1.5 ? 1.45 : 1.0 + precision * 0.3;
+    
+    var armorMitigation = armorReduces * (target._currentStats["armor"] * (1 - armorBreak) / (180 + 20*(target._heroLevel)));
+    var reduceDamage = target._currentStats["damageReduce"] > 0.75 ? 0.75 : target._currentStats["damageReduce"];
+    var critDamageReduce = target._currentStats["critDamageReduce"];
+    var classDamageReduce = target._currentStats[this._heroClass.toLowerCase() + "Reduce"];
+    var blockChance = canBlock * (target._currentStats["block"] - precision);
+    
+    attackDamage = attackDamage * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * precisionDamageIncrease * skillDamage * factionBonus;
+    holyDamage = holyDamage * (1-reduceDamage) * (1-classDamageReduce) * precisionDamageIncrease * skillDamage * factionBonus;
+    
+    var outcomeRoll = Math.random();
+    var blocked = false;
+    var critted = false;
+    
+    if (outcomeRoll >= (1 - critChance) && outcomeRoll >= (1 - blockChance)) {
+      // blocked crit
+      attackDamage = attackDamage * 0.56 * (1-critDamageReduce) * critDamage;
+      holyDamage = holyDamage * 0.56 * (1-critDamageReduce) * critDamage;
+      blocked = true;
+      critted = true;
+    } else if (outcomeRoll >= (1 - critChance) && outcomeRoll < (1 - blockChance)) {
+      // crit
+      attackDamage = attackDamage * (1-critDamageReduce) * critDamage;
+      holyDamage = holyDamage * (1-critDamageReduce) * critDamage;
+      critted = true;
+    } else if (outcomeRoll < (1 - critChance) && outcomeRoll >= (1 - blockChance)) {
+      // blocked normal
+      attackDamage = attackDamage * 0.7;
+      holyDamage = holyDamage * 0.7;
+      blocked = true;
+    } else {
+      // normal
+      attackDamage = attackDamage;
+      holyDamage = holyDamage;
+    }
+    
+    return [Math.floor(attackDamage) + Math.floor(holyDamage), critted, blocked];
+  }
+  
+  
+  getFirstTarget() {
+    // get first living target
+    for (var i=0; i<this._allies.length; i++) {
+      if (this._enemies[i]._currentStats["totalHP"] > 0) {
+        return this._enemies[i];
+      }
+    }
+  }
+  
+  
+  // alerters to trigger other heroes in response to an action
+  
+  // tell all heroes this hero did a basic attack and the outcome
+  alertDidBasic(target, damageResult) {
+    var result = "";
+    var temp = "";
+    
+    for (var i = 0; i < this._allies.length; i++) {
+      temp = this._allies[i].eventAllyBasic(this, target, damageResult);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
+    }
+    
+    for (var i = 0; i < this._enemies.length; i++) {
+      temp = this._enemies[i].eventEnemyBasic(this, target, damageResult);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  // tell all heroes this hero did an active and the outcome
+  alertDidActive(target, damageResult) {
+    var result = "";
+    var temp = "";
+    
+    for (var i = 0; i < this._allies.length; i++) {
+      temp = this._allies[i].eventAllyActive(this, damageResult);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
+    }
+    
+    for (var i = 0; i < this._enemies.length; i++) {
+      temp = this._enemies[i].eventEnemyActive(this, damageResult);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  // a bunch of functions for override by hero subclasses as needed to trigger special abilities.
+  // damageResult = [damage amount, was crit, was block, damage source, damage type]
+  // damage source: basic, active, passive
+  // damage type: normal, blood, mark, etc
+  passiveStats() { return;}
+  eventAllyBasic(source, target, damageResult) { return "";}
+  eventEnemyBasic(source, target, damageResult) { return "";}
+  eventAllyActive(source, target, damageResult) { return "";}
+  eventEnemyActive(source, target, damageResult) { return "";}
+  
+  
+  // Do basic attack
+  doBasic() {
+    var result = {};
+    var damageResult = [];
+    var target = this.getFirstTarget();
+    
+    result["description"] = this._heroName + " did basic attack against enemy " + target._heroName + " in position " + target._heroPos + ". ";
+    
+    damageResult = this.calcDamage(target, 0);
+    damageResult.push("basic");
+    damageResult.push("normal");
+    
+    if (damageResult[1] == true && damageResult[2] == true) {
+      result["description"] += "Blocked crit dealt " + damageResult[0] + " damage. ";
+    } else if (damageResult[1] == true && damageResult[2] == false) {
+      result["description"] += "Crit dealt " + damageResult[0] + " damage. ";
+    } else if (damageResult[1] == false && damageResult[2] == true) {
+      result["description"] += "Blocked normal basic dealt " + damageResult[0] + " damage. ";
+    } else {
+      result["description"] += "Normal basic dealt " + damageResult[0] + " damage. ";
+    }
+    
+    result["description"] += "Health dropped from " + target._currentStats["totalHP"] + " to ";
+    target._currentStats["totalHP"] = target._currentStats["totalHP"] - damageResult[0];
+    target._currentStats["totalHP"] = target._currentStats["totalHP"] <= 0 ? 0 : target._currentStats["totalHP"];
+    result["description"] += target._currentStats["totalHP"] + ".";
+    
+    result["eventDescription"] = this.alertDidBasic(target, damageResult);
+    
+    return result;
+  }
+  
+  
+  // do active
+  doActive() { 
+    var result = {description: "Did active."};
+    var damageResult = [0, 0, 0, "active", "normal"];
+    
+    this._stats["energy"] = 0;
+    result["eventDescription"] = alertDidActive(target, damageResult);
+    return result;
   }
 }
