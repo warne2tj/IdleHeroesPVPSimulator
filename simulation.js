@@ -21,14 +21,14 @@ function checkForWin() {
   var numOfHeroes = 0;
   
   numOfHeroes = attHeroes.length;
-  for (i = 0; i < numOfHeroes; i++) {
+  for (var i = 0; i < numOfHeroes; i++) {
     if (attHeroes[i]._currentStats["totalHP"] > 0) {
       attAlive++;
     }
   }
   
   numOfHeroes = defHeroes.length;
-  for (i = 0; i < numOfHeroes; i++) {
+  for (var i = 0; i < numOfHeroes; i++) {
     if (defHeroes[i]._currentStats["totalHP"] > 0) {
       defAlive++;
     }
@@ -51,13 +51,20 @@ function runSim() {
   var winCount = 0;
   var orderOfAttack = [];
   var numOfHeroes = 0;
-  var i = 0;
   var result = {};
-  var attackersAlive = 0;
-  var defendersAlive = 0;
   var someoneWon = "";
   
   oCombatLog.innerHTML = "";
+  
+  for (var i = 0; i < attHeroes.length; i++) {
+    attHeroes[i]._damageDealt = 0;
+    attHeroes[i]._damageHealed = 0;
+  }
+  
+  for (var i = 0; i < defHeroes.length; i++) {
+    defHeroes[i]._damageDealt = 0;
+    defHeroes[i]._damageHealed = 0;
+  }
   
   for (var x = 1; x <= numSims; x++) {
     // @ start of single simulation
@@ -66,21 +73,21 @@ function runSim() {
     someoneWon = "";
     
     // snapshot stats as they are
+    orderOfAttack = [];
+    
     numOfHeroes = attHeroes.length;
-    for (i = 0; i < numOfHeroes; i++) {
+    for (var i = 0; i < numOfHeroes; i++) {
       if (attHeroes[i]._heroName != "None") {
         attHeroes[i].snapshotStats();
         orderOfAttack.push(attHeroes[i]);
-        attackersAlive++;
       }
     }
     
     numOfHeroes = defHeroes.length;
-    for (i = 0; i < numOfHeroes; i++) {
+    for (var i = 0; i < numOfHeroes; i++) {
       if (defHeroes[i]._heroName != "None") {
         defHeroes[i].snapshotStats();
         orderOfAttack.push(defHeroes[i]);
-        defendersAlive++;
       }
     }
     
@@ -91,9 +98,8 @@ function runSim() {
       if(numSims == 1) {oCombatLog.innerHTML += "<p>Round " + roundNum + "</p>";}
       
       orderOfAttack.sort(speedSort);
-      numOfHeroes = orderOfAttack.length;
       
-      for (i = 0; i < numOfHeroes; i++) {
+      for (var i = 0; i < orderOfAttack.length; i++) {
         // @ start of hero action
         
         if (orderOfAttack[i]._currentStats["totalHP"] > 0) {
@@ -103,10 +109,13 @@ function runSim() {
           // decide on action
           if (orderOfAttack[i]._currentStats["energy"] >= 100) {
             // do active
+            result = orderOfAttack[i].doActive();
+            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["takeDamageDescription"] + result["eventDescription"];}
+            someoneWon = checkForWin();
           } else {
             // do basic
             result = orderOfAttack[i].doBasic();
-            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>";}
+            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["takeDamageDescription"] + result["eventDescription"];}
             someoneWon = checkForWin();
           }
           
@@ -135,9 +144,63 @@ function runSim() {
       if(numSims == 1) {oCombatLog.innerHTML += "<p>Defender wins!</p>";}
     }
     
+    
+    numOfHeroes = attHeroes.length;
+    for (var i = 0; i < numOfHeroes; i++) {
+      if (attHeroes[i]._heroName != "None") {
+        attHeroes[i]._damageDealt += attHeroes[i]._currentStats["damageDealt"];
+        attHeroes[i]._currentStats["damageDealt"] = 0;
+        attHeroes[i]._damageHealed += attHeroes[i]._currentStats["damageHealed"];
+        attHeroes[i]._currentStats["damageHealed"] = 0;
+      }
+    }
+    
+    numOfHeroes = defHeroes.length;
+    for (var i = 0; i < numOfHeroes; i++) {
+      if (defHeroes[i]._heroName != "None") {
+        defHeroes[i]._damageDealt += defHeroes[i]._currentStats["damageDealt"];
+        defHeroes[i]._currentStats["damageDealt"] = 0;
+        defHeroes[i]._damageHealed += defHeroes[i]._currentStats["damageHealed"];
+        defHeroes[i]._currentStats["damageHealed"] = 0;
+      }
+    }
+    
     oCombatLog.innerHTML += "<p>Simulation #" + x +" Ended.</p>";
+    
     // @ end of simulation
   }
   
   oCombatLog.innerHTML += "<p>Attacker won " + winCount + " out of " + numSims + " (" + (winCount/numSims * 100).toFixed(2) + "%).</p>";
+  
+  oCombatLog.innerHTML += "<p>Attacker average damage summary.";
+  for (var i = 0; i < attHeroes.length; i++) {
+    if (attHeroes[i]._heroName != "None") {
+      oCombatLog.innerHTML += "<div>" + attHeroes[i]._heroName + ": " + Math.floor(attHeroes[i]._damageDealt / numSims).toLocaleString() + "</div>";
+    }
+  }
+  oCombatLog.innerHTML += "</p>";
+  
+  oCombatLog.innerHTML += "<p>Defender average damage summary.";
+  for (var i = 0; i < defHeroes.length; i++) {
+    if (defHeroes[i]._heroName != "None") {
+      oCombatLog.innerHTML += "<div>" + defHeroes[i]._heroName + ": " + Math.floor(defHeroes[i]._damageDealt / numSims).toLocaleString() + "</div>";
+    }
+  }
+  oCombatLog.innerHTML += "</p>";
+  
+  oCombatLog.innerHTML += "<p>Attacker average healing summary.";
+  for (var i = 0; i < attHeroes.length; i++) {
+    if (attHeroes[i]._heroName != "None") {
+      oCombatLog.innerHTML += "<div>" + attHeroes[i]._heroName + ": " + Math.floor(attHeroes[i]._damageHealed / numSims).toLocaleString() + "</div>";
+    }
+  }
+  oCombatLog.innerHTML += "</p>";
+  
+  oCombatLog.innerHTML += "<p>Defender average healing summary.";
+  for (var i = 0; i < defHeroes.length; i++) {
+    if (defHeroes[i]._heroName != "None") {
+      oCombatLog.innerHTML += "<div>" + defHeroes[i]._heroName + ": " + Math.floor(defHeroes[i]._damageHealed / numSims).toLocaleString() + "</div>";
+    }
+  }
+  oCombatLog.innerHTML += "</p>";
 }
