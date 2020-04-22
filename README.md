@@ -12,6 +12,7 @@ To Do List
   * apply class specific damage reduction from guild tech
   * fully implement enables
   * adjust for hp% damage, dot damage, dot damage reduction in calcDamage
+  * test multiplier ordering
   * ------------
   * figure out if golden crown all damage reduce is different from regular damage reduce
   * implement some monsters
@@ -23,7 +24,7 @@ To Do List
   * improve gui
   
   
-Hero mechanics:
+Hero Mechanics:
   * TBD as heroes are implemented
     
 
@@ -32,6 +33,14 @@ Mechanics:
     + they seem to be applied by first adding all constant modifers together
     + then applying percentage modifiers one source at a time in a specific order 
     + with a math.floor in between
+  * Leveling
+    + base stats are different at 5*, 6*, and 10*
+    + increases base stats by 10% per level
+    + except speed, speed increases a flat 2 per level
+    + each tier adds an additive percentage bonus to stats
+    + 20% for hp and attack, 10% for speed
+    + enabling adds a multiplier for attack (10%) and hp (14%) per enable level
+    + this multiplier affects other sources of attack and hp
   * HP % damage
     + ignores armor
     + affected by block?

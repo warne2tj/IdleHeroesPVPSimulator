@@ -37,8 +37,8 @@ var baseHeroStats = {
     heroLevel: 100,
     heroClass: "Warrior",
     stats: {
-      hp: 22235,
-      attack: 2506,
+      hp: 22236,
+      attack: 2507,
       armor: 632,
       speed: 606
     }

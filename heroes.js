@@ -414,9 +414,8 @@ class hero {
   
   // combat utility functions
   
-  calcDamage(target, isSkill=false, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1) {
+  calcDamage(target, attackDamage, isSkill=false, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1) {
     // Get damage related stats
-    var attackDamage = this._currentStats["totalAttack"];
     var critChance = canCrit * this._currentStats["crit"];
     var critDamage = 2*this._currentStats["critDamage"] + 1.5;
     var precision = this._currentStats["precision"];
@@ -492,6 +491,20 @@ class hero {
         return this._enemies[i];
       }
     }
+  }
+  
+  
+  getLowestHPTarget() {
+    // get first living target with lowest current HP
+    var target = new hero("None");
+    
+    for (var i=0; i<this._enemies.length; i++) {
+      if (this._enemies[i]._currentStats["totalHP"] > 0 && (target._heroName == "None" || this._enemies[i].currentStats["totalHP"] < target._currentStats["totalHP"])) {
+        target = this._enemies[i];
+      }
+    }
+    
+    return target;
   }
   
   
@@ -625,7 +638,7 @@ class hero {
     
     result["description"] = this._heroName + " did basic attack against enemy " + target._heroName + " in position " + target._heroPos + ". ";
     
-    damageResult = this.calcDamage(target);
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"]);
     damageResult.push("basic");
     damageResult.push("normal");
     result["takeDamageDescription"] = target.takeDamage(this, damageResult);

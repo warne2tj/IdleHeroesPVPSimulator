@@ -11,7 +11,7 @@ class Foolish extends hero {
     
     result["description"] = this._heroName + " did used active (Thump) against enemy " + target._heroName + " in position " + target._heroPos + ". ";
     
-    damageResult = this.calcDamage(target, true, 1.8);
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, 1.8);
     damageResult.push("active");
     damageResult.push("normal");
     result["takeDamageDescription"] = target.takeDamage(this, damageResult);
@@ -43,6 +43,45 @@ class Baade extends hero {
   passiveStats() {
     // apply Will of Undead passive
     this.applyStatChange({attackPercent: 0.1, hpPercent: 0.2, armorBreak: 0.2}, "Passive1");
+  }
+  
+  doBasic() {
+    var result = {};
+    var damageResult = [];
+    var target = this.getLowestHPTarget();
+    var attackDamage = this._currentStats["totalAttack"];
+    var outcomeRoll = Math.random();
+    
+    if (outcomeRoll < 0.25) {
+      attackDamage *= 1.1;
+    } else if (outcomeRoll < 0.75) {
+      attackDamage *= 1.5;
+    } else {
+      attackDamage *= 2.25;
+    }
+    
+    result["description"] = this._heroName + " did basic attack against enemy " + target._heroName + " in position " + target._heroPos + ". ";
+    
+    damageResult = this.calcDamage(target, attackDamage, false, 1, 0);
+    damageResult.push("basic");
+    damageResult.push("normal");
+    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
+    
+    if (damageResult[1] == true && damageResult[2] == true) {
+      result["description"] += "Blocked crit attack dealt " + damageResult[0] + " damage. ";
+    } else if (damageResult[1] == true && damageResult[2] == false) {
+      result["description"] += "Crit attack dealt " + damageResult[0] + " damage. ";
+    } else if (damageResult[1] == false && damageResult[2] == true) {
+      result["description"] += "Blocked basic attack dealt " + damageResult[0] + " damage. ";
+    } else {
+      result["description"] += "Basic attack dealt " + damageResult[0] + " damage. ";
+    }
+    
+    this._currentStats["energy"] += 50;
+    result["description"] += "Gained 50 energy. Energy at " + this._currentStats["energy"] + ".";
+    result["eventDescription"] = this.alertDidBasic(target, damageResult);
+    
+    return result;
   }
 }
 
