@@ -11,6 +11,7 @@ h2, div {
   height: 400px;
   overflow: scroll;
   background-color: #f0f0f0;
+  margin-bottom: 18px;
 }
 
 
@@ -66,7 +67,7 @@ h2, div {
   background-color: #f9f7e8;
   overflow: hidden;
   max-height: 0;
-  transition: max-height .5s ease-out;
+  transition: max-height .5s ease;
 }
 
 
@@ -123,6 +124,7 @@ h2, div {
 input[type=text], select, textarea {
   width: 100%;
   color: #444;
+  background-color: #fff;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -147,6 +149,10 @@ input[type=submit] {
   margin: 5px;
 }
 
+input[type=text]#numSims {
+  width: auto;
+}
+
 
 /* style scroll to top button */
 #topButton {
@@ -157,8 +163,8 @@ input[type=submit] {
   z-index: 99; 
   border: none; 
   outline: none; 
-  background-color: #ff0000; 
-  color: #ffffff; 
+  background-color: #f00; 
+  color: #fff; 
   cursor: pointer; 
   padding: 15px; 
   border-radius: 10px;
