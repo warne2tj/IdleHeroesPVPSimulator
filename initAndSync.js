@@ -18,6 +18,60 @@ var defHeroes = [
   
   
 function initialize() {
+  // layout stuff
+  var acc = document.getElementsByClassName("colorA");
+  for (var i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      /* Toggle between adding and removing the "active" class,
+      to highlight the button that controls the panel */
+      this.classList.toggle("activeA");
+
+      /* Toggle between hiding and showing the active panel */
+      var panel = this.nextElementSibling;
+      if (panel.style.display === "block") {
+        panel.style.display = "none";
+      } else {
+        panel.style.display = "block";
+      }
+    });
+  }
+  
+  var acc = document.getElementsByClassName("colorB");
+  for (var i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      /* Toggle between adding and removing the "active" class,
+      to highlight the button that controls the panel */
+      this.classList.toggle("activeB");
+
+      /* Toggle between hiding and showing the active panel */
+      var panel = this.nextElementSibling;
+      if (panel.style.display === "block") {
+        panel.style.display = "none";
+      } else {
+        panel.style.display = "block";
+      }
+    });
+  }
+  
+  var acc = document.getElementsByClassName("colorC");
+  for (var i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      /* Toggle between adding and removing the "active" class,
+      to highlight the button that controls the panel */
+      this.classList.toggle("activeC");
+
+      /* Toggle between hiding and showing the active panel */
+      var panel = this.nextElementSibling;
+      if (panel.style.display === "block") {
+        panel.style.display = "none";
+      } else {
+        panel.style.display = "block";
+      }
+    });
+  }
+  
+  
+  // populate options
   addOptions(baseHeroStats, "Name");
   addOptions(weapons, "Weapon");
   addOptions(accessories, "Accessory");
@@ -37,6 +91,8 @@ function initialize() {
     document.getElementById("defAvatarFrame").add(option);
   }
   
+  
+  // load default configuration
   loadConfig();
 }
 

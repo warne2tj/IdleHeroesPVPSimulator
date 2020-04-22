@@ -7,7 +7,6 @@ Description:
 
   
 To Do List
-  * improve gui
   * implement baade
   * ---------
   * apply class specific damage reduction from guild tech
@@ -24,11 +23,11 @@ To Do List
   * improve gui
   
   
-Questions about hero mechanics:
+Hero mechanics:
   * TBD as heroes are implemented
     
 
-Combat Mechanics:
+Mechanics:
   * Order of applying attack and hp percent modifiers
     + they seem to be applied by first adding all constant modifers together
     + then applying percentage modifiers one source at a time in a specific order 
@@ -41,10 +40,10 @@ Combat Mechanics:
     + ignores skill damage
     + ignores precision
     + ignores crit
-  * Armor stat
-    + armor / (180 + 20*level)
+  * Armor
+    + damage mitigation = armor / (180 + 20*level)
   * Block
-    + 30% reduced normal, 44% reduced crit 
+    + 30% reduced normal damage, 44% reduced crit damage
     + chance of crit and chance of block seem to use the same roll
   * Precision
     + each percent reduces enemy block and adds 0.3% damage 
@@ -74,4 +73,5 @@ Far far far future functionality*:
     + auto generate configurations
     + pit them against each other
     + most successful configurations "mate" and produce offspring for next generation
+    + mutation rate: 10%?
     + repeat

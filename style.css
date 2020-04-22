@@ -1,16 +1,81 @@
-.section {
-  column-count: 3;
+h1 {
+  text-align: center;
+  color: #444;
 }
 
-.subsection2 {
-  column-span: 2;
-}
-
-.subsection1 {
-  column-span: 1;
+h2 {
+  color: #444;
 }
 
 .log {
-  height: 200px;
+  height: 400px;
   overflow: scroll;
+  background-color: lightgrey;
+}
+
+
+/* Style the buttons that are used to open and close the accordion panel */
+.accordion {
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+  font-weight: bold;
+}
+
+.colorA {background-color: #def3fd;}
+
+.colorB {background-color: #fddfdf;}
+
+.colorC {background-color: #f9f7e8;}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.activeA, .colorA:hover {
+  background-color: #a6b6be;
+}
+
+.activeB, .colorB:hover {
+  background-color: #bea7a7;
+}
+
+.activeC, .colorC:hover {
+  background-color: #bbb9ae;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+  padding: 18px;
+  background-color: #f9f7e8;
+  display: none;
+  overflow: hidden;
+}
+
+
+/* Responsive stacking columns */
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+* {
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
 }
