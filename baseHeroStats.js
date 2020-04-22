@@ -52,7 +52,7 @@ var baseHeroStats = {
     heroClass: "Warrior",
     stats: {
       hp: 671965,
-      attack: 25352,
+      attack: 25208,
       armor: 2067,
       speed: 1428
     }

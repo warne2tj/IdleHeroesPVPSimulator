@@ -6,6 +6,41 @@ var weapons = {
     limitStats: {}
   },
   
+  "Warrior's Epee": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Warrior",
+    limitStats: {attackPercent: 0.06, block: 0.1}
+  },
+  
+  "Weaver's Staff": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Mage",
+    limitStats: {attackPercent: 0.06, crit: 0.05}
+  },
+  
+  "Minstrel's Bow": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Ranger",
+    limitStats: {attackPercent: 0.06, crit: 0.05}
+  },
+  
+  "Assassin's Blade": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Assassin",
+    limitStats: {attackPercent: 0.06, crit: 0.05}
+  },
+  
+  "Oracle's Staff": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Priest",
+    limitStats: {attackPercent: 0.06, attackPercent: 0.05}
+  },
+  
   "6* Thorny Flame Whip": {
     set: "Thorny Flame Suit",
     stats: {attack: 3704, critDamage: 0.05},
@@ -18,13 +53,6 @@ var weapons = {
     stats: {attack: 2464, critDamage: 0.03},
     limit: "",
     limitStats: {}
-  },
-  
-  "Warrior's Epee": {
-    set: "",
-    stats: {attack: 3704, attackPercent: 0.07},
-    limit: "Warrior",
-    limitStats: {attackPercent: 0.06, block: 0.1}
   }
 };
 
@@ -35,6 +63,41 @@ var armors = {
     stats: {},
     limit: "",
     limitStats: {}
+  },
+  
+  "Warrior's Armor": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Warrior",
+    limitStats: {hpPercent: 0.06, damageReduce: 0.05}
+  },
+  
+  "Weaver's Robe": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Mage",
+    limitStats: {hpPercent: 0.06, precision: 0.1}
+  },
+  
+  "Minstrel's Cape": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Ranger",
+    limitStats: {hpPercent: 0.06, block: 0.05}
+  },
+  
+  "Assassin's Cape": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Assassin",
+    limitStats: {hpPercent: 0.06, armorBreak: 0.1}
+  },
+  
+  "Oracle's Cape": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Priest",
+    limitStats: {hpPercent: 0.06, damageReduce: 0.05}
   },
   
   "6* Flame Armor": {
@@ -49,13 +112,6 @@ var armors = {
     stats: {hp: 32455, damageReduce: 0.01},
     limit: "",
     limitStats: {}
-  },
-  
-  "Warrior's Armor": {
-    set: "",
-    stats: {hp: 52449, hpPercent: 0.07},
-    limit: "Warrior",
-    limitStats: {hpPercent: 0.06, damageReduce: 0.05}
   }
 };
 
@@ -66,6 +122,41 @@ var shoes = {
     stats: {},
     limit: "",
     limitStats: {}
+  },
+  
+  "Warrior's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Warrior",
+    limitStats: {hpPercent: 0.06, speed: 20}
+  },
+  
+  "Weaver's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Mage",
+    limitStats: {hpPercent: 0.06, speed: 20}
+  },
+  
+  "Minstrel's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Ranger",
+    limitStats: {hpPercent: 0.06, speed: 20}
+  },
+  
+  "Assassin's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Assassin",
+    limitStats: {hpPercent: 0.06, speed: 20}
+  },
+  
+  "Oracle's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Priest",
+    limitStats: {hpPercent: 0.06, speed: 20}
   },
   
   "6* Flame Boots": {
@@ -80,13 +171,6 @@ var shoes = {
     stats: {hp: 20146, block: 0.02},
     limit: "",
     limitStats: {}
-  },
-  
-  "Warrior's Boots": {
-    set: "",
-    stats: {hp: 32367, hpPercent: 0.07},
-    limit: "Warrior",
-    limitStats: {hpPercent: 0.06, speed: 20}
   }
 };
 
@@ -97,6 +181,41 @@ var accessories = {
     stats: {},
     limit: "",
     limitStats: {}
+  },
+  
+  "Warrior's Necklace": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Warrior",
+    limitStats: {attackPercent: 0.06, controlImmune: 0.05}
+  },
+  
+  "Weaver's Necklace": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Mage",
+    limitStats: {attackPercent: 0.06, skillDamage: 0.1}
+  },
+  
+  "Minstrel's Ring": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Ranger",
+    limitStats: {attackPercent: 0.06, damageReduce: 0.05}
+  },
+  
+  "Assassin's Ring": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Assassin",
+    limitStats: {attackPercent: 0.06, critDamage: 0.05}
+  },
+  
+  "Ring of the Oracle": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Priest",
+    limitStats: {attackPercent: 0.06, hpPercent: 0.05}
   },
   
   "6* Flame Necklace": {
@@ -111,13 +230,6 @@ var accessories = {
     stats: {attack: 1643, skillDamage: 0.03},
     limit: "",
     limitStats: {}
-  },
-  
-  "Warrior's Necklace": {
-    set: "",
-    stats: {attack: 2469, attackPercent: 0.07},
-    limit: "Warrior",
-    limitStats: {attackPercent: 0.06, controlImmune: 0.05}
   }
 };
 
