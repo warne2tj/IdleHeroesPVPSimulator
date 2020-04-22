@@ -203,4 +203,6 @@ function runSim() {
     }
   }
   oCombatLog.innerHTML += "</p>";
+  
+  oCombatLog.scrollTop = 0;
 }
