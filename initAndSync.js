@@ -28,10 +28,10 @@ function initialize() {
 
       /* Toggle between hiding and showing the active panel */
       var panel = this.nextElementSibling;
-      if (panel.style.display === "block") {
-        panel.style.display = "none";
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
       } else {
-        panel.style.display = "block";
+        panel.style.maxHeight = panel.scrollHeight + "px";
       }
     });
   }
@@ -39,16 +39,13 @@ function initialize() {
   var acc = document.getElementsByClassName("colorB");
   for (var i = 0; i < acc.length; i++) {
     acc[i].addEventListener("click", function() {
-      /* Toggle between adding and removing the "active" class,
-      to highlight the button that controls the panel */
       this.classList.toggle("activeB");
 
-      /* Toggle between hiding and showing the active panel */
       var panel = this.nextElementSibling;
-      if (panel.style.display === "block") {
-        panel.style.display = "none";
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
       } else {
-        panel.style.display = "block";
+        panel.style.maxHeight = panel.scrollHeight + "px";
       }
     });
   }
@@ -56,20 +53,26 @@ function initialize() {
   var acc = document.getElementsByClassName("colorC");
   for (var i = 0; i < acc.length; i++) {
     acc[i].addEventListener("click", function() {
-      /* Toggle between adding and removing the "active" class,
-      to highlight the button that controls the panel */
       this.classList.toggle("activeC");
 
-      /* Toggle between hiding and showing the active panel */
       var panel = this.nextElementSibling;
-      if (panel.style.display === "block") {
-        panel.style.display = "none";
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
       } else {
-        panel.style.display = "block";
+        panel.style.maxHeight = panel.scrollHeight + "px";
       }
     });
   }
   
+  // When the user scrolls down 20px from the top of the document, show the button
+  window.onscroll = function() {
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+      document.getElementById("topButton").style.display = "block";
+    } else {
+      document.getElementById("topButton").style.display = "none";
+    }
+  };
+
   
   // populate options
   addOptions(baseHeroStats, "Name");
@@ -94,6 +97,13 @@ function initialize() {
   
   // load default configuration
   loadConfig();
+}
+
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0; // For Safari
+  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
 
 
