@@ -1,16 +1,16 @@
 h1 {
   text-align: center;
-  color: #444;
+  color: #222;
 }
 
 h2, div {
-  color: #444;
+  color: #222;
 }
 
 .log {
   height: 400px;
   overflow: scroll;
-  background-color: #f0f0f0;
+  background-color: #f6f6f6;
   margin-bottom: 18px;
 }
 
@@ -18,7 +18,7 @@ h2, div {
 
 /* Style the buttons that are used to open and close the accordion panel */
 .accordion {
-  color: #444;
+  color: #222;
   cursor: pointer;
   padding: 18px;
   width: 100%;
@@ -38,23 +38,23 @@ h2, div {
   margin-left: 5px;
 }
 
-.colorA {background-color: #def3fd;}
+.colorA {background-color: #00a0fa;}
 
-.colorB {background-color: #fddfdf;}
+.colorB {background-color: #ff825f;}
 
-.colorC {background-color: #f9f7e8;}
+.colorC {background-color: #fae6be;}
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
 .activeA, .colorA:hover {
-  background-color: #a6b6be;
+  background-color: #0078bb;
 }
 
 .activeB, .colorB:hover {
-  background-color: #bea7a7;
+  background-color: #c06147;
 }
 
 .activeC, .colorC:hover {
-  background-color: #bbb9ae;
+  background-color: #bbac8e;
 }
 
 .activeA:after, .activeB:after, .activeC:after {
@@ -64,7 +64,7 @@ h2, div {
 /* Style the accordion panel. Note: hidden by default */
 .panel {
   padding: 0 18px;
-  background-color: #f9f7e8;
+  background-color: #fae6be;
   overflow: hidden;
   max-height: 0;
   transition: max-height .5s ease;
@@ -113,7 +113,7 @@ h2, div {
 
 /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
-  .column, .col-25, .col-75 {
+  .column {
     width: 100%;
   }
 }
@@ -123,7 +123,7 @@ h2, div {
 /* Style inputs, select elements and textareas */
 input[type=text], select, textarea {
   width: 100%;
-  color: #444;
+  color: #222;
   background-color: #fff;
   padding: 5px;
   border: 1px solid #ccc;
@@ -134,7 +134,7 @@ input[type=text], select, textarea {
 /* Style the label to display next to the inputs */
 label {
   padding: 5px;
-  color: #444;
+  color: #222;
   display: inline-block;
 }
 
@@ -173,4 +173,24 @@ input[type=text]#numSims {
 
 #topButton:hover {
   background-color: #bf0000; 
+}
+
+
+/* combat log styles */
+.num {
+  color: #8214a0;
+}
+
+.att {
+  color: #00a0fa;
+  font-weight: bold;
+}
+
+.def {
+  color: #ff825f;
+  font-weight: bold;
+}
+
+.logSeg {
+  font-weight: bold;
 }

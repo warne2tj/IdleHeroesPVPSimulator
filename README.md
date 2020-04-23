@@ -13,9 +13,7 @@ Implemented Heroes:
   
 To Do List
   * test multiplier ordering
-  * end of round tick down buffs for all heroes
   * implement baade's active
-  * test baade
   * ---------
   * apply class specific damage reduction from guild tech
   * fully implement enables
