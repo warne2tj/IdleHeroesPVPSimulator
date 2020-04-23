@@ -12,12 +12,14 @@ Implemented Heroes:
 
   
 To Do List
-  * implement baade
+  * test multiplier ordering
+  * end of round tick down buffs for all heroes
+  * implement baade's active
+  * test baade
   * ---------
   * apply class specific damage reduction from guild tech
   * fully implement enables
   * adjust for hp% damage, dot damage, dot damage reduction in calcDamage
-  * test multiplier ordering
   * ------------
   * figure out if golden crown all damage reduce is different from regular damage reduce
   * implement some monsters
@@ -31,6 +33,9 @@ To Do List
   
 Hero Mechanics:
   * TBD as heroes are implemented
+  * Baade 5* vs. Foolish
+    + Basic attack amount always the same, second part of last passive not working correctly?
+    + Or maybe the second part of the last passive is a second piece of damage?
     
 
 Mechanics:
@@ -38,9 +43,10 @@ Mechanics:
     + they seem to be applied by first adding all constant modifers together
     + then applying percentage modifiers one source at a time in a specific order 
     + with a math.floor in between
+    + current best guess: enable level bonus, enable selected skills, (skin/equipment?), guild tech, passive, artifact, (stone?)
   * Leveling
     + base stats are different at 5*, 6*, and 10*
-    + increases base stats by 10% per level
+    + increases base stats by usually 10% per level, some stats for some heroes grow at a different amount
     + except speed, speed increases a flat 2 per level
     + each tier adds an additive percentage bonus to stats
     + 20% for hp and attack, 10% for speed
@@ -78,6 +84,8 @@ Mechanics:
     + multiplicative?
   * How does global damage reduce interact with class specific damage reduce?
     + multiplicative?
+  * Heal effect and effect being healed
+    + is hp% healing affected by these stats?
   * Monster energy, how is it gained, does excess go into ability damage like hero energy does?
   
   

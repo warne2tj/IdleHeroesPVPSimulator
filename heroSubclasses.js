@@ -83,6 +83,17 @@ class Baade extends hero {
     
     return result;
   }
+  
+  eventEnemyDied(source, target, damageResult) { 
+    var result = "<div>" + this._heroName + "'s Blood Armor passive triggered. ";
+    
+    result += this.getHeal(this, this._currentStats["totalAttack"]);
+    result += " Gained 10% damage reduce.</div>";
+    
+    this.getBuff("Blood Armor", 1, {damageReduce: 0.1});
+    
+    return result;
+  }
 }
 
 

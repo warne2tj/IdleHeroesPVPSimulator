@@ -120,6 +120,58 @@ class hero {
     this._ndHPMultipliers = {};
     
     
+    // apply enable bonus
+    if (this._starLevel > 10) {
+      this.applyStatChange({hpPercent: (this._starLevel - 10) * 0.14, attackPercent: (this._starLevel - 10) * 0.1}, "enableBonuses")
+    }
+    
+    
+    // apply enables
+    switch(this._enable1) {
+      case "Vitality":
+        this.applyStatChange({hpPercent: 0.12}, "enable1");
+        break;
+        
+      case "Mightiness":
+        this.applyStatChange({attackPercent: 0.08}, "enable1");
+        break;
+        
+      case "Growth":
+        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable1");
+        break;
+    }
+    
+    switch(this._enable2) {
+      case "Shelter":
+        this.applyStatChange({critDamageReduce: 0.15}, "enable2");
+        break;
+        
+      case "Vitality2":
+        this.applyStatChange({effectBeingHealed: 0.15}, "enable2");
+        break;
+    }
+    
+    switch(this._enable4) {
+      case "Vitality":
+        this.applyStatChange({hpPercent: 0.12}, "enable4");
+        break;
+        
+      case "Mightiness":
+        this.applyStatChange({attackPercent: 0.08}, "enable4");
+        break;
+        
+      case "Growth":
+        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable4");
+        break;
+    }
+    
+    
+    // skin
+    if (this._skin != "None") {
+      this.applyStatChange(skins[this._heroName][this._skin], "skin");
+    }
+    
+    
     // apply equipment and set bonus
     var sets = {};
     
@@ -192,66 +244,6 @@ class hero {
     }  
     
     
-    // stone
-    this.applyStatChange(stones[this._stone], "stone");
-    
-    
-    // skin
-    if (this._skin != "None") {
-      this.applyStatChange(skins[this._heroName][this._skin], "skin");
-    }
-    
-    
-    // apply passives that give stats, does nothing unless overridden in subclass
-    this.passiveStats();
-    
-    
-    // apply enable bonus
-    if (this._starLevel > 10) {
-      this.applyStatChange({hpPercent: (this._starLevel - 10) * 0.14, attackPercent: (this._starLevel - 10) * 0.1}, "enableBonuses")
-    }
-    
-    
-    // apply enables
-    switch(this._enable1) {
-      case "Vitality":
-        this.applyStatChange({hpPercent: 0.12}, "enable1");
-        break;
-        
-      case "Mightiness":
-        this.applyStatChange({attackPercent: 0.08}, "enable1");
-        break;
-        
-      case "Growth":
-        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable1");
-        break;
-    }
-    
-    switch(this._enable2) {
-      case "Shelter":
-        this.applyStatChange({critDamageReduce: 0.15}, "enable2");
-        break;
-        
-      case "Vitality2":
-        this.applyStatChange({effectBeingHealed: 0.15}, "enable2");
-        break;
-    }
-    
-    switch(this._enable4) {
-      case "Vitality":
-        this.applyStatChange({hpPercent: 0.12}, "enable4");
-        break;
-        
-      case "Mightiness":
-        this.applyStatChange({attackPercent: 0.08}, "enable4");
-        break;
-        
-      case "Growth":
-        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable4");
-        break;
-    }
-    
-    
     // get and apply guild tech
     var tech = guildTech[this._heroClass];
     
@@ -267,11 +259,19 @@ class hero {
     }
     
     
+    // apply passives that give stats, does nothing unless overridden in subclass
+    this.passiveStats();
+    
+    
     // artifact
     this.applyStatChange(artifacts[this._artifact]["stats"], "artifact");
     if (arrLimits.includes(artifacts[this._artifact]["limit"])) {
       this.applyStatChange(artifacts[this._artifact]["limitStats"], "artifactLimit");
     }
+    
+    
+    // stone
+    this.applyStatChange(stones[this._stone], "stone");
     
     
     // implement monster
@@ -344,7 +344,6 @@ class hero {
   
   calcAttack() {
     var att = this._stats["attack"];
-    
     for (var x in this._attackMultipliers) {
       att = Math.floor(att * this._attackMultipliers[x]);
     }
@@ -354,7 +353,6 @@ class hero {
   
   calcHP() {
     var ehp = this._stats["hp"];
-    
     for (var x in this._hpMultipliers) {
       ehp = Math.floor(ehp * this._hpMultipliers[x]);
     }
@@ -481,6 +479,37 @@ class hero {
     }
     
     return [Math.floor(attackDamage) + Math.floor(holyDamage), critted, blocked];
+  }
+  
+  
+  getHeal(source, amount) {
+    var healEffect = 1 + source._currentStats["healEffect"];
+    var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
+    var amountHealed = Math.floor(amount * healEffect * effectBeingHealed);
+    var result = "";
+    
+    source._currentStats["damageHealed"] += amountHealed;
+    result = source._heroName + " healed " + this._heroName + " for " + amountHealed + ". ";
+    return result;
+  }
+  
+  
+  getBuff(buffName, duration, effects) {
+    for (var strStatName in effects) {
+      if (strStatName == "attackPercent") {
+        this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * effects[strStatName]);
+      } else {
+        this._currentStats[strStatName] += effects[strStatName];
+      }
+    }
+    
+    if (buffName in this._buffs) {
+      var keyAt = Object.keys(this._buffs[buffName]).length;
+      this._buffs[buffName][keyAt] = {"duration": duration, "effects": effects};
+    } else {
+      this._buffs[buffName] = {};
+      this._buffs[buffName][0] = {"duration": duration, "effects": effects};
+    }
   }
   
   

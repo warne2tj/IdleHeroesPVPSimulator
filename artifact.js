@@ -4,7 +4,7 @@ var artifacts = {
     limit: "",
     limitStats: {}
   },
-  //ptw
+
   "Antlers Cane": {
     stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
     limit: "",

@@ -66,7 +66,7 @@ var baseHeroStats = {
     heroClass: "Priest",
     stats: {
       hp: 670175,
-      attack: 25208,
+      attack: 25352,
       armor: 2067,
       speed: 1428
     }
@@ -80,7 +80,7 @@ var baseHeroStats = {
     heroClass: "Warrior",
     stats: {
       hp: 670175,
-      attack: 25208,
+      attack: 25352,
       armor: 2067,
       speed: 1428
     }
@@ -234,7 +234,7 @@ var baseHeroStats = {
     heroClass: "Warrior",
     stats: {
       hp: 671965,
-      attack: 25208,
+      attack: 25352,
       armor: 2067,
       speed: 1428
     }
@@ -249,7 +249,7 @@ var baseHeroStats = {
     stats: {
       hp: 678678,
       attack: 22821,
-      armor: 2779,
+      armor: 2787,
       speed: 1449
     }
   }
