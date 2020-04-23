@@ -97,6 +97,7 @@ function initialize() {
   
   // load default configuration
   loadConfig();
+  runSim();
 }
 
 

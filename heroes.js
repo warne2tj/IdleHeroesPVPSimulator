@@ -9,7 +9,9 @@ class hero {
     this._heroLevel = baseHeroStats[sHeroName]["heroLevel"];
     this._heroClass = baseHeroStats[sHeroName]["heroClass"];
     
+    // start with base stats
     this._stats = {};
+    
     this._currentStats = {};
     this._attackMultipliers = {};
     this._hpMultipliers = {};
@@ -49,32 +51,6 @@ class hero {
     
     this._damageDealt = 0;
     this._damageHealed = 0;
-  }
-  
-  
-  applyStatChange(arrStats, strSource) {
-    for (var strStatName in arrStats) {
-      if (strStatName == "attackPercent") {
-        this._attackMultipliers[strSource] = 1 + arrStats[strStatName];
-      } else if (strStatName == "hpPercent") {
-        this._hpMultipliers[strSource] = 1 + arrStats[strStatName];
-      } else {
-        this._stats[strStatName] += arrStats[strStatName];
-      }
-    }
-  }
-  
-  
-  applyNdStatChange(arrStats, strSource) {
-    for (var strStatName in arrStats) {
-      if (strStatName == "attackPercent") {
-        this._ndAttackMultipliers[strSource] = 1 + arrStats[strStatName];
-      } else if (strStatName == "hpPercent") {
-        this._ndHPMultipliers[strSource] = 1 + arrStats[strStatName];
-      } else {
-        this._stats[strStatName] += arrStats[strStatName];
-      }
-    }
   }
   
   
@@ -342,6 +318,32 @@ class hero {
   }
   
   
+  applyStatChange(arrStats, strSource) {
+    for (var strStatName in arrStats) {
+      if (strStatName == "attackPercent") {
+        this._attackMultipliers[strSource] = 1 + arrStats[strStatName];
+      } else if (strStatName == "hpPercent") {
+        this._hpMultipliers[strSource] = 1 + arrStats[strStatName];
+      } else {
+        this._stats[strStatName] += arrStats[strStatName];
+      }
+    }
+  }
+  
+  
+  applyNdStatChange(arrStats, strSource) {
+    for (var strStatName in arrStats) {
+      if (strStatName == "attackPercent") {
+        this._ndAttackMultipliers[strSource] = 1 + arrStats[strStatName];
+      } else if (strStatName == "hpPercent") {
+        this._ndHPMultipliers[strSource] = 1 + arrStats[strStatName];
+      } else {
+        this._stats[strStatName] += arrStats[strStatName];
+      }
+    }
+  }
+  
+  
   calcAttack() {
     var att = this._stats["attack"];
     for (var x in this._attackMultipliers) {
@@ -399,6 +401,12 @@ class hero {
     }
     
     return heroSheet;
+  }
+  
+  heroDesc() {
+    var pos1 = parseInt(this._heroPos) + 1;
+    
+    return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["energy"].toLocaleString() + " energy)</span>";
   }
   
   
@@ -486,10 +494,17 @@ class hero {
     var healEffect = 1 + source._currentStats["healEffect"];
     var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
     var amountHealed = Math.floor(amount * healEffect * effectBeingHealed);
-    var result = "";
+    var result = source.heroDesc() + " healed ";
     
+    if (this._currentStats["totalHP"] + amountHealed > this._stats["totalHP"]) {
+      this._currentStats["totalHP"] = this._stats["totalHP"];
+    } else {
+      this._currentStats["totalHP"] += amountHealed;
+    }
+    
+    // prevent overheal 
     source._currentStats["damageHealed"] += amountHealed;
-    result = source._heroName + " healed " + this._heroName + " for " + amountHealed + ". ";
+    result += this.heroDesc() + " for " + formatNum(amountHealed) + ". ";
     return result;
   }
   
@@ -513,6 +528,52 @@ class hero {
   }
   
   
+  tickBuffs() {
+    var result = "";
+    var stacksLeft = 0;
+    
+    // for each buff name
+    for (var b in this._buffs) {
+      stacksLeft = 0;
+      
+      // for each stack
+      for (var s in this._buffs[b]) {
+        if (this._buffs[b][s]["duration"] > 0) {
+          this._buffs[b][s]["duration"] -= 1;
+          
+          if (this._buffs[b][s]["duration"] == 0) {
+            result += "<div>" + this.heroDesc() + " buff (" + b + ") ended.</div>";
+            
+            // remove the effects
+            for (var strStatName in this._buffs[b][s]["effects"]) {
+              if (strStatName == "attackPercent") {
+                this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] / effects[strStatName]);
+              } else {
+                this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];
+              }
+            }
+          } else {
+            stacksLeft++;
+          }
+        }
+      }
+      
+      if (stacksLeft == 0) {
+        delete this._buffs[b];
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  tickDebuffs() {
+    return "";
+  }
+  
+  
+  // targeting functions
+  
   getFirstTarget() {
     // get first living target
     for (var i=0; i<this._allies.length; i++) {
@@ -528,7 +589,7 @@ class hero {
     var target = new hero("None");
     
     for (var i=0; i<this._enemies.length; i++) {
-      if (this._enemies[i]._currentStats["totalHP"] > 0 && (target._heroName == "None" || this._enemies[i].currentStats["totalHP"] < target._currentStats["totalHP"])) {
+      if (this._enemies[i]._currentStats["totalHP"] > 0 && (target._heroName == "None" || this._enemies[i]._currentStats["totalHP"] < target._currentStats["totalHP"])) {
         target = this._enemies[i];
       }
     }
@@ -609,9 +670,13 @@ class hero {
   
   
   // a bunch of functions for override by hero subclasses as needed to trigger special abilities.
+  
   // damageResult = [damage amount, was crit, was block, damage source, damage type]
   // damage source: basic, active, passive
   // damage type: normal, blood, mark, etc
+  
+  // usually you'll want to check that the hero is still alive before triggering their effect
+  
   passiveStats() { return;}
   eventAllyBasic(source, target, damageResult) { return "";}
   eventEnemyBasic(source, target, damageResult) { return "";}
@@ -631,11 +696,11 @@ class hero {
       source._currentStats["damageDealt"] += damageResult[0];
       this._currentStats["totalHP"] = 0;
       
-      result = "<div>Enemy health dropped from " + beforeHP + " to 0.</div><div>" + this._heroName + " died.</div>" + result;
+      result = "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>" + result;
     } else {
       this._currentStats["totalHP"] = this._currentStats["totalHP"] - damageResult[0];
       source._currentStats["damageDealt"] += damageResult[0];
-      result = "<div>Enemy health dropped from " + beforeHP + " to " + this._currentStats["totalHP"] + ".</div>";
+      result = "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(this._currentStats["totalHP"]) + ".</div>";
     }
     
     if (this._currentStats["totalHP"] > 0) {
@@ -644,17 +709,17 @@ class hero {
         if (damageResult[1] == true) {
           // crit
           this._currentStats["energy"] += 20;
-          result += "<div>" + this._attOrDef + " " + this._heroName + " gained 20 energy.";
+          result += "<div>" + this.heroDesc() + " gained " + formatNum(20) + " energy.";
         } else {
           this._currentStats["energy"] += 10;
-          result += "<div>" + this._attOrDef + " " + this._heroName + " gained 10 energy.";
+          result += "<div>" + this.heroDesc() + " gained " + formatNum(10) + " energy.";
         }
       }
       
-      result += " Energy at " + this._currentStats["energy"] + ".</div>";
+      result += "</div>";
     }
     
-    return result
+    return result;
   }
   
   
@@ -663,7 +728,7 @@ class hero {
     var damageResult = [];
     var target = this.getFirstTarget();
     
-    result["description"] = this._heroName + " did basic attack against enemy " + target._heroName + " in position " + target._heroPos + ". ";
+    result["description"] = "<div>" + this.heroDesc() + " did basic attack against " + target.heroDesc() + ".</div>";
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"]);
     damageResult.push("basic");
@@ -671,17 +736,17 @@ class hero {
     result["takeDamageDescription"] = target.takeDamage(this, damageResult);
     
     if (damageResult[1] == true && damageResult[2] == true) {
-      result["description"] += "Blocked crit attack dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Blocked crit attack dealt " + formatNum(damageResult[0]) + " damage. ";
     } else if (damageResult[1] == true && damageResult[2] == false) {
-      result["description"] += "Crit attack dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Crit attack dealt " + formatNum(damageResult[0]) + " damage. ";
     } else if (damageResult[1] == false && damageResult[2] == true) {
-      result["description"] += "Blocked basic attack dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Blocked basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
     } else {
-      result["description"] += "Basic attack dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
     }
     
     this._currentStats["energy"] += 50;
-    result["description"] += "Gained 50 energy. Energy at " + this._currentStats["energy"] + ".";
+    result["description"] += "Gained " + formatNum(50) + " energy. Energy at " + formatNum(this._currentStats["energy"]) + ".";
     result["eventDescription"] = this.alertDidBasic(target, damageResult);
     
     return result;
@@ -689,14 +754,30 @@ class hero {
   
   
   doActive() { 
-    var result = {description: "Did active."};
-    var damageResult = [0, 0, 0, "active", "normal"];
+    var result = {};
+    var damageResult = [];
     var target = this.getFirstTarget();
     
-    result["takeDamageDescription"] = "";
-    result["eventDescription"] = this.alertDidActive(target, damageResult);
+    result["description"] = "<div>" + this.heroDesc() + " used active (template) against " + target.heroDesc() + ".</div>";
+    
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, 1.0);
+    damageResult.push("active");
+    damageResult.push("normal");
+    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
+    
+    if (damageResult[1] == true && damageResult[2] == true) {
+      result["description"] += "Blocked crit active dealt " + formatNum(damageResult[0]) + " damage. ";
+    } else if (damageResult[1] == true && damageResult[2] == false) {
+      result["description"] += "Crit active dealt " + formatNum(damageResult[0]) + " damage. ";
+    } else if (damageResult[1] == false && damageResult[2] == true) {
+      result["description"] += "Blocked active dealt " + formatNum(damageResult[0]) + " damage. ";
+    } else {
+      result["description"] += "Active dealt " + formatNum(damageResult[0]) + " damage. ";
+    }
     
     this._currentStats["energy"] = 0;
+    result["eventDescription"] = this.alertDidActive(target, damageResult);
+    
     return result;
   }
 }

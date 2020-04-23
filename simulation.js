@@ -15,6 +15,11 @@ function speedSort(heroA, heroB) {
 }
 
 
+function formatNum(num) {
+  return "<span class ='num'>" + num.toLocaleString() + "</span>";
+}
+
+
 function checkForWin() {
   var attAlive = 0;
   var defAlive = 0;
@@ -53,6 +58,7 @@ function runSim() {
   var numOfHeroes = 0;
   var result = {};
   var someoneWon = "";
+  var endRoundDesc = "";
   
   oCombatLog.innerHTML = "";
   
@@ -69,7 +75,7 @@ function runSim() {
   for (var x = 1; x <= numSims; x++) {
     // @ start of single simulation
     
-    oCombatLog.innerHTML += "<p>Simulation #" + x +" Started.</p>";
+    oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(x) +" Started.</p>";
     someoneWon = "";
     
     // snapshot stats as they are
@@ -79,6 +85,8 @@ function runSim() {
     for (var i = 0; i < numOfHeroes; i++) {
       if (attHeroes[i]._heroName != "None") {
         attHeroes[i].snapshotStats();
+        attHeroes[i]._buffs = {};
+        attHeroes[i]._debuffs = {};
         orderOfAttack.push(attHeroes[i]);
       }
     }
@@ -87,6 +95,8 @@ function runSim() {
     for (var i = 0; i < numOfHeroes; i++) {
       if (defHeroes[i]._heroName != "None") {
         defHeroes[i].snapshotStats();
+        defHeroes[i]._buffs = {};
+        defHeroes[i]._debuffs = {};
         orderOfAttack.push(defHeroes[i]);
       }
     }
@@ -95,7 +105,7 @@ function runSim() {
       // @ start of round
       
       // Output detailed combat log only if running a single simulation
-      if(numSims == 1) {oCombatLog.innerHTML += "<p>Round " + roundNum + "</p>";}
+      if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Round " + formatNum(roundNum) + " Start</p>";}
       
       orderOfAttack.sort(speedSort);
       
@@ -104,7 +114,7 @@ function runSim() {
         
         if (orderOfAttack[i]._currentStats["totalHP"] > 0) {
         
-          if(numSims == 1) {oCombatLog.innerHTML += "<p><div>" + orderOfAttack[i]._heroName + "'s turn in position " + orderOfAttack[i]._heroPos + " of " + orderOfAttack[i]._attOrDef + " team.</div>";}
+          if(numSims == 1) {oCombatLog.innerHTML += "<p>";}
           
           // decide on action
           if (orderOfAttack[i]._currentStats["energy"] >= 100) {
@@ -133,15 +143,29 @@ function runSim() {
       }
       
       // trigger end of round stuff, decrement buffs and debuffs, tick dots
+      endRoundDesc = "<p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";
+      
+      for (var h in attHeroes) {
+        endRoundDesc += attHeroes[h].tickBuffs();
+        endRoundDesc += attHeroes[h].tickDebuffs();
+      }
+      
+      for (var h in defHeroes) {
+        endRoundDesc += defHeroes[h].tickBuffs();
+        endRoundDesc += defHeroes[h].tickDebuffs();
+      }
+      
+      endRoundDesc += "</p>"
+      if(numSims == 1) {oCombatLog.innerHTML += endRoundDesc;}
       
       // @ end of round
     }
     
     if (someoneWon == "att") {
       winCount++;
-      if(numSims == 1) {oCombatLog.innerHTML += "<p>Attacker wins!</p>";}
+      if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Attacker wins!</p>";}
     } else {
-      if(numSims == 1) {oCombatLog.innerHTML += "<p>Defender wins!</p>";}
+      if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Defender wins!</p>";}
     }
     
     
@@ -165,41 +189,41 @@ function runSim() {
       }
     }
     
-    oCombatLog.innerHTML += "<p>Simulation #" + x +" Ended.</p>";
+    oCombatLog.innerHTML += "<p class='logSeg'>Simulation #" + formatNum(x) +" Ended.</p>";
     
     // @ end of simulation
   }
   
-  oCombatLog.innerHTML += "<p>Attacker won " + winCount + " out of " + numSims + " (" + (winCount/numSims * 100).toFixed(2) + "%).</p>";
+  oCombatLog.innerHTML += "<p class='logSeg'>Attacker won " + winCount + " out of " + numSims + " (" + formatNum((winCount/numSims * 100).toFixed(2)) + "%).</p>";
   
-  oCombatLog.innerHTML += "<p>Attacker average damage summary.";
+  oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average damage summary.</div>";
   for (var i = 0; i < attHeroes.length; i++) {
     if (attHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + attHeroes[i]._heroName + ": " + Math.floor(attHeroes[i]._damageDealt / numSims).toLocaleString() + "</div>";
+      oCombatLog.innerHTML += "<div>" + attHeroes[i].heroDesc() + ": " + formatNum(Math.floor(attHeroes[i]._damageDealt / numSims)) + "</div>";
     }
   }
   oCombatLog.innerHTML += "</p>";
   
-  oCombatLog.innerHTML += "<p>Defender average damage summary.";
+  oCombatLog.innerHTML += "<p><div class='logSeg'>Defender average damage summary.</div>";
   for (var i = 0; i < defHeroes.length; i++) {
     if (defHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + defHeroes[i]._heroName + ": " + Math.floor(defHeroes[i]._damageDealt / numSims).toLocaleString() + "</div>";
+      oCombatLog.innerHTML += "<div>" + defHeroes[i].heroDesc() + ": " + formatNum(Math.floor(defHeroes[i]._damageDealt / numSims)) + "</div>";
     }
   }
   oCombatLog.innerHTML += "</p>";
   
-  oCombatLog.innerHTML += "<p>Attacker average healing summary.";
+  oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average healing summary.</div>";
   for (var i = 0; i < attHeroes.length; i++) {
     if (attHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + attHeroes[i]._heroName + ": " + Math.floor(attHeroes[i]._damageHealed / numSims).toLocaleString() + "</div>";
+      oCombatLog.innerHTML += "<div>" + attHeroes[i].heroDesc() + ": " + formatNum(Math.floor(attHeroes[i]._damageHealed / numSims)) + "</div>";
     }
   }
   oCombatLog.innerHTML += "</p>";
   
-  oCombatLog.innerHTML += "<p>Defender average healing summary.";
+  oCombatLog.innerHTML += "<p><div class='logSeg'>Defender average healing summary.</div>";
   for (var i = 0; i < defHeroes.length; i++) {
     if (defHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + defHeroes[i]._heroName + ": " + Math.floor(defHeroes[i]._damageHealed / numSims).toLocaleString() + "</div>";
+      oCombatLog.innerHTML += "<div>" + defHeroes[i]._heroName + ": " + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + "</div>";
     }
   }
   oCombatLog.innerHTML += "</p>";

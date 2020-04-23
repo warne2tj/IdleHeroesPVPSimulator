@@ -9,7 +9,7 @@ class Foolish extends hero {
     var damageResult = [];
     var target = this.getFirstTarget();
     
-    result["description"] = this._heroName + " did used active (Thump) against enemy " + target._heroName + " in position " + target._heroPos + ". ";
+    result["description"] = "<div>" + this.heroDesc() + " used active (Thump) against " + target.heroDesc() + ".</div>";
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, 1.8);
     damageResult.push("active");
@@ -17,13 +17,13 @@ class Foolish extends hero {
     result["takeDamageDescription"] = target.takeDamage(this, damageResult);
     
     if (damageResult[1] == true && damageResult[2] == true) {
-      result["description"] += "Blocked crit active dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Blocked crit active dealt " + formatNum(damageResult[0]) + " damage. ";
     } else if (damageResult[1] == true && damageResult[2] == false) {
-      result["description"] += "Crit active dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Crit active dealt " + formatNum(damageResult[0]) + " damage. ";
     } else if (damageResult[1] == false && damageResult[2] == true) {
-      result["description"] += "Blocked active dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Blocked active dealt " + formatNum(damageResult[0]) + " damage. ";
     } else {
-      result["description"] += "Active dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Active dealt " + formatNum(damageResult[0]) + " damage. ";
     }
     
     result["eventDescription"] = this.alertDidActive(target, damageResult);
@@ -60,7 +60,7 @@ class Baade extends hero {
       attackDamage *= 2.25;
     }
     
-    result["description"] = this._heroName + " did basic attack against enemy " + target._heroName + " in position " + target._heroPos + ". ";
+    result["description"] = "<div>" + this.heroDesc() + " did basic attack against " + target.heroDesc() + ".</div>";
     
     damageResult = this.calcDamage(target, attackDamage, false, 1, 0);
     damageResult.push("basic");
@@ -68,29 +68,32 @@ class Baade extends hero {
     result["takeDamageDescription"] = target.takeDamage(this, damageResult);
     
     if (damageResult[1] == true && damageResult[2] == true) {
-      result["description"] += "Blocked crit attack dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Blocked crit attack dealt " + formatNum(damageResult[0]) + " damage. ";
     } else if (damageResult[1] == true && damageResult[2] == false) {
-      result["description"] += "Crit attack dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Crit attack dealt " + formatNum(damageResult[0]) + " damage. ";
     } else if (damageResult[1] == false && damageResult[2] == true) {
-      result["description"] += "Blocked basic attack dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Blocked basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
     } else {
-      result["description"] += "Basic attack dealt " + damageResult[0] + " damage. ";
+      result["description"] += "Basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
     }
     
     this._currentStats["energy"] += 50;
-    result["description"] += "Gained 50 energy. Energy at " + this._currentStats["energy"] + ".";
+    result["description"] += "Gained " + formatNum(50) + " energy. Energy at " + formatNum(this._currentStats["energy"]) + ".";
     result["eventDescription"] = this.alertDidBasic(target, damageResult);
     
     return result;
   }
   
   eventEnemyDied(source, target, damageResult) { 
-    var result = "<div>" + this._heroName + "'s Blood Armor passive triggered. ";
+    var result = ""
     
-    result += this.getHeal(this, this._currentStats["totalAttack"]);
-    result += " Gained 10% damage reduce.</div>";
-    
-    this.getBuff("Blood Armor", 1, {damageReduce: 0.1});
+    if (this._currentStats["totalHP"] > 0) {
+      result = "<div>" + this.heroDesc() + " Blood Armor passive triggered.</div>";
+      result += "<div>" + this.getHeal(this, this._currentStats["totalAttack"]);
+      result += " Gained " + formatNum(10) + "% damage reduce.</div>";
+      
+      this.getBuff("Blood Armor", 1, {damageReduce: 0.1});
+    }
     
     return result;
   }
