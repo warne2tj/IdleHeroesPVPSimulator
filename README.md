@@ -4,6 +4,11 @@ Idle Heroes Battle Simulator version pre pre pre alpha
 
 Description:
   Simulator for PVP battles in Idle Heroes. 
+  
+  
+Implemented Heroes:
+  * Foolish
+  * The rest are only there for stat verification and testing
 
   
 To Do List

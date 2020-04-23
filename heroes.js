@@ -599,9 +599,7 @@ class hero {
       // hero died
       var result = "";
       result = this.alertHeroDied(source);
-      
-      damageResult[0] = beforeHP;
-      source._currentStats["damageDealt"] += beforeHP;
+      source._currentStats["damageDealt"] += damageResult[0];
       this._currentStats["totalHP"] = 0;
       
       result = "<div>Enemy health dropped from " + beforeHP + " to 0.</div><div>" + this._heroName + " died.</div>" + result;
