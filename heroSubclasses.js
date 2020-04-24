@@ -84,6 +84,52 @@ class Baade extends hero {
     return result;
   }
   
+  doActive() {
+    var result = {};
+    var damageResult = [];
+    var target = this.getLowestHPTarget();
+    var skillDamage = 1.0;
+    var outcomeRoll = Math.random();
+    var healAmount = 0;
+    
+    if (outcomeRoll < 0.16) {
+      skillDamage = 1.5;
+    } else if (outcomeRoll < 0.64) {
+      skillDamage = 2.0;
+    } else {
+      skillDamage = 4.0;
+    }
+    
+    result["description"] = "<div>" + this.heroDesc() + " used active (Nether Strike) against " + target.heroDesc() + ".</div>";
+    
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, skillDamage);
+    damageResult.push("active");
+    damageResult.push("normal");
+    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
+    
+    if (damageResult[1] == true && damageResult[2] == true) {
+      result["description"] += "Blocked crit active dealt " + formatNum(damageResult[0]) + " damage. ";
+    } else if (damageResult[1] == true && damageResult[2] == false) {
+      result["description"] += "Crit active dealt " + formatNum(damageResult[0]) + " damage. ";
+    } else if (damageResult[1] == false && damageResult[2] == true) {
+      result["description"] += "Blocked active dealt " + formatNum(damageResult[0]) + " damage. ";
+    } else {
+      result["description"] += "Active dealt " + formatNum(damageResult[0]) + " damage. ";
+    }
+    
+    this._currentStats["energy"] = 0;
+    
+    healAmount = Math.floor(damageResult[0] * 0.2);
+    result["description"] += this.getHeal(this, healAmount);
+    
+    this.getBuff("Nether Strike", 6, {attackPercent: 0.4});
+    result["description"] += " Baaded gains " + formatNum(40) + "% attack for " + formatNum(6) + " rounds.";
+    
+    result["eventDescription"] = this.alertDidActive(target, damageResult);
+    
+    return result;
+  }
+  
   eventEnemyDied(source, target, damageResult) { 
     var result = ""
     
