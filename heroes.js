@@ -486,14 +486,14 @@ class hero {
       // normal
     }
     
-    return [Math.floor(attackDamage) + Math.floor(holyDamage), critted, blocked];
+    return [attackDamage + holyDamage, critted, blocked];
   }
   
   
   getHeal(source, amount) {
     var healEffect = 1 + source._currentStats["healEffect"];
     var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
-    var amountHealed = Math.floor(amount * healEffect * effectBeingHealed);
+    var amountHealed = Math.round(amount * healEffect * effectBeingHealed);
     var result = source.heroDesc() + " healed ";
     
     if (this._currentStats["totalHP"] + amountHealed > this._stats["totalHP"]) {
@@ -542,7 +542,7 @@ class hero {
           this._buffs[b][s]["duration"] -= 1;
           
           if (this._buffs[b][s]["duration"] == 0) {
-            result += "<div>" + this.heroDesc() + " buff (" + b + ") ended.</div>";
+            result += "<div>" + this.heroDesc() + " buff (<span class='skill'>" + b + "</span>) ended.</div>";
             
             // remove the effects
             for (var strStatName in this._buffs[b][s]["effects"]) {
@@ -688,15 +688,16 @@ class hero {
   
   takeDamage(source, damageResult) {
     var beforeHP = this._currentStats["totalHP"];
-      var result = "";
+    var result = "";
     
     if (this._currentStats["totalHP"] <= damageResult[0]) {
       // hero died
-      result = this.alertHeroDied(source);
       source._currentStats["damageDealt"] += damageResult[0];
       this._currentStats["totalHP"] = 0;
       
-      result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>" + result;
+      result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>";
+      
+      result += this.alertHeroDied(source);
     } else {
       this._currentStats["totalHP"] = this._currentStats["totalHP"] - damageResult[0];
       source._currentStats["damageDealt"] += damageResult[0];
@@ -731,6 +732,7 @@ class hero {
     result["description"] = "<div>" + this.heroDesc() + " did basic attack against " + target.heroDesc() + ".</div>";
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"]);
+    damageResult[0] = Math.round(damageResult[0]);
     damageResult.push("basic");
     damageResult.push("normal");
     result["takeDamageDescription"] = target.takeDamage(this, damageResult);
@@ -761,6 +763,7 @@ class hero {
     result["description"] = "<div>" + this.heroDesc() + " used active (template) against " + target.heroDesc() + ".</div>";
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, 1.0);
+    damageResult[0] = Math.round(damageResult[0]);
     damageResult.push("active");
     damageResult.push("normal");
     result["takeDamageDescription"] = target.takeDamage(this, damageResult);
