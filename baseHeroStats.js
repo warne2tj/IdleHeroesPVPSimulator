@@ -45,7 +45,7 @@ var baseHeroStats = {
   },
   
   "Aida": {
-    className: hero,
+    className: Aida,
     heroFaction: "Light",
     starLevel: 15,
     heroLevel: 330,
@@ -59,7 +59,7 @@ var baseHeroStats = {
   },
   
   "Amen-Ra": {
-    className: hero,
+    className: AmenRa,
     heroFaction: "Dark",
     starLevel: 15,
     heroLevel: 330,
@@ -73,7 +73,7 @@ var baseHeroStats = {
   },
   
   "Aspen": {
-    className: hero,
+    className: Aspen,
     heroFaction: "Dark",
     starLevel: 15,
     heroLevel: 330,
@@ -87,7 +87,7 @@ var baseHeroStats = {
   },
   
   "Belrain": {
-    className: hero,
+    className: Belrain,
     heroFaction: "Light",
     starLevel: 15,
     heroLevel: 330,
@@ -101,7 +101,7 @@ var baseHeroStats = {
   },
   
   "Carrie": {
-    className: hero,
+    className: Carrie,
     heroFaction: "Dark",
     starLevel: 15,
     heroLevel: 330,
@@ -115,7 +115,7 @@ var baseHeroStats = {
   },
   
   "Cthuga": {
-    className: hero,
+    className: Cthuga,
     heroFaction: "Abyss",
     starLevel: 15,
     heroLevel: 330,
@@ -129,7 +129,7 @@ var baseHeroStats = {
   },
   
   "Garuda": {
-    className: hero,
+    className: Garuda,
     heroFaction: "Forest",
     starLevel: 15,
     heroLevel: 330,
@@ -143,7 +143,7 @@ var baseHeroStats = {
   },
   
   "Gustin": {
-    className: hero,
+    className: Gustin,
     heroFaction: "Shadow",
     starLevel: 15,
     heroLevel: 330,
@@ -157,7 +157,7 @@ var baseHeroStats = {
   },
   
   "Horus": {
-    className: hero,
+    className: Horus,
     heroFaction: "Shadow",
     starLevel: 15,
     heroLevel: 330,
@@ -171,7 +171,7 @@ var baseHeroStats = {
   },
   
   "Mihm": {
-    className: hero,
+    className: Mihm,
     heroFaction: "Dark",
     starLevel: 15,
     heroLevel: 330,
@@ -185,7 +185,7 @@ var baseHeroStats = {
   },
   
   "Nakia": {
-    className: hero,
+    className: Nakia,
     heroFaction: "Abyss",
     starLevel: 15,
     heroLevel: 330,
@@ -199,7 +199,7 @@ var baseHeroStats = {
   },
   
   "Oberon": {
-    className: hero,
+    className: Oberon,
     heroFaction: "Forest",
     starLevel: 15,
     heroLevel: 330,
@@ -213,7 +213,7 @@ var baseHeroStats = {
   },
   
   "Penny": {
-    className: hero,
+    className: Penny,
     heroFaction: "Fortress",
     starLevel: 15,
     heroLevel: 330,
@@ -241,7 +241,7 @@ var baseHeroStats = {
   },
   
   "UniMax-3000": {
-    className: hero,
+    className: UniMax3000,
     heroFaction: "Fortress",
     starLevel: 15,
     heroLevel: 330,

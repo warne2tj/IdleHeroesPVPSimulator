@@ -189,6 +189,7 @@ input[type=text]#numSims {
 .att {
   color: #00a0fa;
   font-weight: bold;
+  /*-webkit-text-stroke: 1px black;*/
 }
 
 .def {

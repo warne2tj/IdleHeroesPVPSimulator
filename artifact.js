@@ -30,7 +30,7 @@ var artifacts = {
   },
   
   "Golden Crown": {
-    stats: {attackPercent: 0.18, hpPercent: 0.25, reduceDamage: 0.25},
+    stats: {attackPercent: 0.18, hpPercent: 0.25, damageReduce: 0.25},
     limit: "",
     limitStats: {}
   },
@@ -54,7 +54,7 @@ var artifacts = {
   },
   
   "Magic Stone Sword": {
-    stats: {attackPercent: 0.21, reduceDamage: 0.3, controlImmune: 0.25},
+    stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
     limitStats: {}
   },
