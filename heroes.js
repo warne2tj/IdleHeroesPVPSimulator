@@ -15,11 +15,13 @@ class hero {
     this._currentStats = {};
     this._attackMultipliers = {};
     this._hpMultipliers = {};
+    this._armorMultipliers = {};
     
     // Non-displayed stat multipliers not reflected on info sheet
     // e.g. Avatar Frame, Auras, and Monsters
     this._ndAttackMultipliers = {};
     this._ndHPMultipliers = {};
+    this._ndArmorMultipliers = {};
     
     // set equipment
     this._stone = "None";
@@ -63,8 +65,10 @@ class hero {
     this._stats = Object.assign({}, baseHeroStats[this._heroName]["stats"]);
     this._stats["totalHP"] = this._stats["hp"];
     this._stats["totalAttack"] = this._stats["attack"];
+    this._stats["totalArmor"] = this._stats["armor"];
     this._stats["displayHP"] = this._stats["hp"];
     this._stats["displayAttack"] = this._stats["attack"];
+    this._stats["displayArmor"] = this._stats["armor"];
     this._stats["skillDamage"] = 0.0;
     this._stats["precision"] = 0.0;
     this._stats["block"] = 0.0;
@@ -92,8 +96,10 @@ class hero {
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
+    this._armorMultipliers = {};
     this._ndAttackMultipliers = {};
     this._ndHPMultipliers = {};
+    this._ndArmorMultipliers = {};
     
     
     // apply enable bonus
@@ -313,8 +319,10 @@ class hero {
     
     this._stats["displayHP"] = this.calcHP();
     this._stats["displayAttack"] = this.calcAttack();
+    this._stats["displayArmor"] = this.calcArmor();
     this._stats["totalHP"] = this.calcTotalHP();
     this._stats["totalAttack"] = this.calcTotalAttack();
+    this._stats["totalArmor"] = this.calcTotalArmor();
   }
   
   
@@ -324,6 +332,8 @@ class hero {
         this._attackMultipliers[strSource] = 1 + arrStats[strStatName];
       } else if (strStatName == "hpPercent") {
         this._hpMultipliers[strSource] = 1 + arrStats[strStatName];
+      } else if (strStatName == "armorPercent") {
+        this._armorMultipliers[strSource] = 1 + arrStats[strStatName];
       } else {
         this._stats[strStatName] += arrStats[strStatName];
       }
@@ -337,6 +347,8 @@ class hero {
         this._ndAttackMultipliers[strSource] = 1 + arrStats[strStatName];
       } else if (strStatName == "hpPercent") {
         this._ndHPMultipliers[strSource] = 1 + arrStats[strStatName];
+      } else if (strStatName == "armorPercent") {
+        this._ndArmorMultipliers[strSource] = 1 + arrStats[strStatName];
       } else {
         this._stats[strStatName] += arrStats[strStatName];
       }
@@ -357,6 +369,15 @@ class hero {
     var ehp = this._stats["hp"];
     for (var x in this._hpMultipliers) {
       ehp = Math.floor(ehp * this._hpMultipliers[x]);
+    }
+    
+    return ehp;
+  }
+  
+  calcArmor() {
+    var ehp = this._stats["armor"];
+    for (var x in this._armorMultipliers) {
+      ehp = Math.floor(ehp * this._armorMultipliers[x]);
     }
     
     return ehp;
@@ -383,6 +404,16 @@ class hero {
     return ehp;
   }
   
+  calcTotalArmor() {
+    var ehp = this._stats["displayArmor"];
+    
+    for (var x in this._ndArmorMultipliers) {
+      ehp = Math.floor(ehp * this._ndArmorMultipliers[x]);
+    }
+    
+    return ehp;
+  }
+  
   
   // Get hero stats for display.
   getHeroSheet() {
@@ -393,7 +424,7 @@ class hero {
     heroSheet += this._starLevel + "* " + this._heroFaction + " " + this._heroClass + "<br/>";
     
     for (var statName in this._stats) {
-      if (["hp", "attack", "speed", "armor", "totalHP", "totalAttack", "displayHP", "displayAttack"].includes(statName)) {
+      if (["hp", "attack", "speed", "armor", "totalHP", "totalAttack", "totalArmor", "displayHP", "displayAttack", "displayArmor"].includes(statName)) {
         heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed();
       } else {
         heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed(2);
@@ -406,7 +437,7 @@ class hero {
   heroDesc() {
     var pos1 = parseInt(this._heroPos) + 1;
     
-    return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["energy"].toLocaleString() + " energy)</span>";
+    return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["totalAttack"].toLocaleString() + " attack, " + this._currentStats["energy"].toLocaleString() + " energy)</span>";
   }
   
   
@@ -528,6 +559,11 @@ class hero {
   }
   
   
+  getDebuff(debuffName, duration, effects) {
+    return;
+  }
+  
+  
   tickBuffs() {
     var result = "";
     var stacksLeft = 0;
@@ -547,7 +583,7 @@ class hero {
             // remove the effects
             for (var strStatName in this._buffs[b][s]["effects"]) {
               if (strStatName == "attackPercent") {
-                this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] / this._buffs[b][s]["effects"][strStatName]);
+                this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] / (1 +this._buffs[b][s]["effects"][strStatName]));
               } else {
                 this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];
               }

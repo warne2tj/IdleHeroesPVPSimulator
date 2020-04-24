@@ -2,23 +2,25 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Idle Heroes Battle Simulator</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Idle Heroes Battle Simulator</title>
+  
+  <link rel="stylesheet" type="text/css" href="style.css">
+  
+  <script src="heroes.js"></script>
+  <script src="heroSubclasses.js"></script>
+  <script src="baseHeroStats.js"></script>
+  <script src="guildTech.js"></script>
+  <script src="equipment.js"></script>
+  <script src="stone.js"></script>
+  <script src="artifact.js"></script>
+  <script src="skin.js"></script>
+  <script src="avatarFrame.js"></script>
+  <script src="initAndSync.js"></script>
+  <script src="simulation.js"></script>
 </head>
 
-<script src="heroes.js"></script>
-<script src="heroSubclasses.js"></script>
-<script src="baseHeroStats.js"></script>
-<script src="guildTech.js"></script>
-<script src="equipment.js"></script>
-<script src="stone.js"></script>
-<script src="artifact.js"></script>
-<script src="skin.js"></script>
-<script src="avatarFrame.js"></script>
-<script src="initAndSync.js"></script>
-<script src="simulation.js"></script>
 
 <body onload="initialize();">
   <h1>Idle Heroes Battle Simulator</h1>
@@ -285,18 +287,18 @@
 	"defAvatarFrame": "None",
 	"defHero0Name": "Foolish",
 	"defHero0Skin": "None",
-	"defHero0Stone": "None",
-	"defHero0Artifact": "None",
-	"defHero0Weapon": "None",
-	"defHero0Accessory": "None",
-	"defHero0Armor": "None",
-	"defHero0Shoe": "None",
+	"defHero0Stone": "S3 HP, HP",
+	"defHero0Artifact": "Withered Armor",
+	"defHero0Weapon": "6* Thorny Flame Whip",
+	"defHero0Accessory": "6* Flame Necklace",
+	"defHero0Armor": "Warrior's Armor",
+	"defHero0Shoe": "Warrior's Boots",
 	"defHero0Enable1": "None",
 	"defHero0Enable2": "None",
 	"defHero0Enable3": "None",
 	"defHero0Enable4": "None",
 	"defHero0Enable5": "None",
-	"defHero1Name": "Foolish",
+	"defHero1Name": "None",
 	"defHero1Skin": "None",
 	"defHero1Stone": "None",
 	"defHero1Artifact": "None",
@@ -309,7 +311,7 @@
 	"defHero1Enable3": "None",
 	"defHero1Enable4": "None",
 	"defHero1Enable5": "None",
-	"defHero2Name": "Foolish",
+	"defHero2Name": "None",
 	"defHero2Skin": "None",
 	"defHero2Stone": "None",
 	"defHero2Artifact": "None",
@@ -322,7 +324,7 @@
 	"defHero2Enable3": "None",
 	"defHero2Enable4": "None",
 	"defHero2Enable5": "None",
-	"defHero3Name": "Foolish",
+	"defHero3Name": "None",
 	"defHero3Skin": "None",
 	"defHero3Stone": "None",
 	"defHero3Artifact": "None",
@@ -335,7 +337,7 @@
 	"defHero3Enable3": "None",
 	"defHero3Enable4": "None",
 	"defHero3Enable5": "None",
-	"defHero4Name": "Foolish",
+	"defHero4Name": "None",
 	"defHero4Skin": "None",
 	"defHero4Stone": "None",
 	"defHero4Artifact": "None",
@@ -348,7 +350,7 @@
 	"defHero4Enable3": "None",
 	"defHero4Enable4": "None",
 	"defHero4Enable5": "None",
-	"defHero5Name": "Foolish",
+	"defHero5Name": "None",
 	"defHero5Skin": "None",
 	"defHero5Stone": "None",
 	"defHero5Artifact": "None",
@@ -2621,6 +2623,18 @@
         </div>
       </div>
     </div>
+  </div>
+  
+  
+  <button class="accordion colorC">Release Notes</button>
+  <div class="panel">
+    <p>Monsters not currently implemented.</p>
+    <h4>Implemented Heroes:</h4>
+    <p>
+      <div>+ Foolish</div>
+      <div>+ 5* Baade</div>
+      <div>+ The rest are only there for stat verification and testing</div>
+    </p>
   </div>
   
   <button onclick="topFunction();" id="topButton" title="Go to top">Top</button>
