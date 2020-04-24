@@ -12,6 +12,7 @@ h2, div {
   overflow: scroll;
   background-color: #f6f6f6;
   margin-bottom: 18px;
+  color: #000;
 }
 
 
@@ -178,7 +179,11 @@ input[type=text]#numSims {
 
 /* combat log styles */
 .num {
-  color: #8214a0;
+  color: #aa0a3c;
+}
+
+.skill {
+  color: #0089a2;
 }
 
 .att {

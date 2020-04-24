@@ -9,9 +9,10 @@ class Foolish extends hero {
     var damageResult = [];
     var target = this.getFirstTarget();
     
-    result["description"] = "<div>" + this.heroDesc() + " used active (Thump) against " + target.heroDesc() + ".</div>";
+    result["description"] = "<div>" + this.heroDesc() + " used active (<span class='skill'>Thump</span>) against " + target.heroDesc() + ".</div>";
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, 1.8);
+    damageResult[0] = Math.round(damageResult[0]);
     damageResult.push("active");
     damageResult.push("normal");
     result["takeDamageDescription"] = target.takeDamage(this, damageResult);
@@ -49,24 +50,17 @@ class Baade extends hero {
     var result = {};
     var damageResult = [];
     var target = this.getLowestHPTarget();
-    var attackDamage = this._currentStats["totalAttack"];
-    var outcomeRoll = Math.random();
-    
-    if (outcomeRoll < 0.25) {
-      attackDamage *= 1.1;
-    } else if (outcomeRoll < 0.75) {
-      attackDamage *= 1.5;
-    } else {
-      attackDamage *= 2.25;
-    }
+    var additionalDamage = 0;
     
     result["description"] = "<div>" + this.heroDesc() + " did basic attack against " + target.heroDesc() + ".</div>";
     
-    damageResult = this.calcDamage(target, attackDamage, false, 1, 0);
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.1, false, 1, 0);
+    additionalDamage = damageResult[0];
+    damageResult[0] = Math.round(damageResult[0]);
     damageResult.push("basic");
     damageResult.push("normal");
-    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
     
+    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
     if (damageResult[1] == true && damageResult[2] == true) {
       result["description"] += "Blocked crit attack dealt " + formatNum(damageResult[0]) + " damage. ";
     } else if (damageResult[1] == true && damageResult[2] == false) {
@@ -75,6 +69,20 @@ class Baade extends hero {
       result["description"] += "Blocked basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
     } else {
       result["description"] += "Basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
+    }
+    
+    if (target._currentStats["totalHP"] > 0) {
+      var outcomeRoll = Math.random();
+      
+      if (outcomeRoll < 0.5) {
+        additionalDamage = Math.round(additionalDamage * 1.5);
+        result["description"] += "Additional damage triggered for " + formatNum(additionalDamage) + " damage. ";
+      } else if (outcomeRoll < 0.75) {
+        additionalDamage = Math.round(additionalDamage * 2.25);
+        result["description"] += "Additional damage triggered for " + formatNum(additionalDamage) + " damage. ";
+      }
+      
+      result["takeDamageDescription"] += target.takeDamage(this, [additionalDamage, "trigger", "normal"]);
     }
     
     this._currentStats["energy"] += 50;
@@ -88,21 +96,14 @@ class Baade extends hero {
     var result = {};
     var damageResult = [];
     var target = this.getLowestHPTarget();
-    var skillDamage = 1.0;
-    var outcomeRoll = Math.random();
     var healAmount = 0;
+    var additionalDamage = 0;
     
-    if (outcomeRoll < 0.16) {
-      skillDamage = 1.5;
-    } else if (outcomeRoll < 0.64) {
-      skillDamage = 2.0;
-    } else {
-      skillDamage = 4.0;
-    }
+    result["description"] = "<div>" + this.heroDesc() + " used active (<span class='skill'>Nether Strike</span>) against " + target.heroDesc() + ".</div>";
     
-    result["description"] = "<div>" + this.heroDesc() + " used active (Nether Strike) against " + target.heroDesc() + ".</div>";
-    
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, skillDamage);
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, 1.5, 0);
+    additionalDamage = damageResult[0];
+    damageResult[0] = Math.round(damageResult[0]);
     damageResult.push("active");
     damageResult.push("normal");
     result["takeDamageDescription"] = target.takeDamage(this, damageResult);
@@ -117,9 +118,23 @@ class Baade extends hero {
       result["description"] += "Active dealt " + formatNum(damageResult[0]) + " damage. ";
     }
     
+    if (target._currentStats["totalHP"] > 0) {
+      var outcomeRoll = Math.random();
+      
+      if (outcomeRoll < 0.48) {
+        additionalDamage = Math.round(additionalDamage * 2);
+        result["description"] += "Additional damage triggered for " + formatNum(additionalDamage) + " damage. ";
+      } else if (outcomeRoll < 0.84) {
+        additionalDamage = Math.round(additionalDamage * 4);
+        result["description"] += "Additional damage triggered for " + formatNum(additionalDamage) + " damage. ";
+      }
+      
+      result["takeDamageDescription"] += target.takeDamage(this, [additionalDamage, "trigger", "normal"]);
+    }
+    
     this._currentStats["energy"] = 0;
     
-    healAmount = Math.floor(damageResult[0] * 0.2);
+    healAmount = Math.floor((damageResult[0] + additionalDamage) * 0.2);
     result["description"] += this.getHeal(this, healAmount);
     
     this.getBuff("Nether Strike", 6, {attackPercent: 0.4});
@@ -134,7 +149,7 @@ class Baade extends hero {
     var result = ""
     
     if (this._currentStats["totalHP"] > 0) {
-      result = "<div>" + this.heroDesc() + " Blood Armor passive triggered.</div>";
+      result = "<div>" + this.heroDesc() + " <span class='skill'>Blood Armor</span> passive triggered.</div>";
       result += "<div>" + this.getHeal(this, this._currentStats["totalAttack"]);
       result += " Gained " + formatNum(10) + "% damage reduce.</div>";
       

@@ -1,5 +1,5 @@
 # vincitego.github.io
-Idle Heroes Battle Simulator version pre pre pre alpha
+Idle Heroes Battle Simulator version Alpha
 
 
 Description:
@@ -8,13 +8,11 @@ Description:
   
 Implemented Heroes:
   * Foolish
+  * Baade 5 star
   * The rest are only there for stat verification and testing
 
   
 To Do List
-  * test multiplier ordering
-  * implement baade's active
-  * ---------
   * apply class specific damage reduction from guild tech
   * fully implement enables
   * adjust for hp% damage, dot damage, dot damage reduction in calcDamage
@@ -32,8 +30,9 @@ To Do List
 Hero Mechanics:
   * TBD as heroes are implemented
   * Baade 5* vs. Foolish
-    + Basic attack amount always the same, second part of last passive not working correctly?
-    + Or maybe the second part of the last passive is a second piece of damage?
+    + Attack amount always the same
+    + Is the second part of the last passive is another source of damage?
+    + So additional damage does not trigger if hero dies from first part?
     
 
 Mechanics:
@@ -78,6 +77,9 @@ Mechanics:
     + additive to damage in skill description, not multiplicative
     + each energy over 100 adds 1% skill damage
     + does not affect hp% based or dot damage
+  * Damage calculation
+    + unlike all the other calculations, damage appears to be rounded instead of floored.
+    + abilities that do further calculations on this number use the true unrounded number. See baade.
   * How does global cc immunity interact with cc specific immunity?
     + multiplicative?
   * How does global damage reduce interact with class specific damage reduce?
