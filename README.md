@@ -77,6 +77,9 @@ Mechanics:
     + additive to damage in skill description, not multiplicative
     + each energy over 100 adds 1% skill damage
     + does not affect hp% based or dot damage
+  * Damage calculation
+    + unlike all the other calculations, damage appears to be rounded instead of floored.
+    + abilities that do further calculations on this number use the true unrounded number. See baade.
   * How does global cc immunity interact with cc specific immunity?
     + multiplicative?
   * How does global damage reduce interact with class specific damage reduce?
