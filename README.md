@@ -41,7 +41,7 @@ Mechanics:
     + they seem to be applied by first adding all constant modifers together
     + then applying percentage modifiers one source at a time in a specific order 
     + with a math.floor in between
-    + current best guess: enable level bonus, enable selected skills, (skin/equipment?), guild tech, passive, artifact, (stone?)
+    + current best guess: enable level bonus, enable selected skills, equipment, set bonus, skin, guild tech, passive, artifact, stone
   * Leveling
     + base stats are different at 5*, 6*, and 10*
     + increases base stats by usually 10% per level, some stats for some heroes grow at a different amount

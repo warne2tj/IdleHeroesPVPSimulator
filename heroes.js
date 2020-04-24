@@ -142,12 +142,6 @@ class hero {
     }
     
     
-    // skin
-    if (this._skin != "None") {
-      this.applyStatChange(skins[this._heroName][this._skin], "skin");
-    }
-    
-    
     // apply equipment and set bonus
     var sets = {};
     
@@ -217,7 +211,13 @@ class hero {
           this.applyStatChange(setBonus[x][4], "Four piece " + x);
         }
       }
-    }  
+    } 
+    
+    
+    // skin
+    if (this._skin != "None") {
+      this.applyStatChange(skins[this._heroName][this._skin], "skin");
+    } 
     
     
     // get and apply guild tech
@@ -512,7 +512,7 @@ class hero {
   getBuff(buffName, duration, effects) {
     for (var strStatName in effects) {
       if (strStatName == "attackPercent") {
-        this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * effects[strStatName]);
+        this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * (1 + effects[strStatName]));
       } else {
         this._currentStats[strStatName] += effects[strStatName];
       }
@@ -547,7 +547,7 @@ class hero {
             // remove the effects
             for (var strStatName in this._buffs[b][s]["effects"]) {
               if (strStatName == "attackPercent") {
-                this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] / effects[strStatName]);
+                this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] / this._buffs[b][s]["effects"][strStatName]);
               } else {
                 this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];
               }
@@ -688,15 +688,15 @@ class hero {
   
   takeDamage(source, damageResult) {
     var beforeHP = this._currentStats["totalHP"];
+      var result = "";
     
     if (this._currentStats["totalHP"] <= damageResult[0]) {
       // hero died
-      var result = "";
       result = this.alertHeroDied(source);
       source._currentStats["damageDealt"] += damageResult[0];
       this._currentStats["totalHP"] = 0;
       
-      result = "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>" + result;
+      result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>" + result;
     } else {
       this._currentStats["totalHP"] = this._currentStats["totalHP"] - damageResult[0];
       source._currentStats["damageDealt"] += damageResult[0];
