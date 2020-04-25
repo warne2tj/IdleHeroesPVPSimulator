@@ -148,13 +148,11 @@ function runSim() {
       
       // handle buffs and debuffs
       for (var h in orderOfAttack) {
-        endRoundDesc += attHeroes[h].tickBuffs();
-        endRoundDesc += attHeroes[h].tickDebuffs();
+        endRoundDesc += orderOfAttack[h].tickBuffs();
       }
       
-      for (var h in defHeroes) {
-        endRoundDesc += defHeroes[h].tickBuffs();
-        endRoundDesc += defHeroes[h].tickDebuffs();
+      for (var h in orderOfAttack) {
+        endRoundDesc += orderOfAttack[h].tickDebuffs();
       }
       
       // get number of living heroes for shared fate enable

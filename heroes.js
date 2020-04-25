@@ -93,6 +93,8 @@ class hero {
     this._stats["dotReduce"] = 0.0;
     this._stats["energy"] = 50;
     this._stats["controlPrecision"] = 0.0;
+    this._stats["unbendingWillTriggered"] = 0;
+    this._stats["unbendingWillStacks"] = 0;
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
@@ -419,12 +421,18 @@ class hero {
   getHeroSheet() {
     console.log("Get stats summary for " + this._heroName);
     var heroSheet = "";
+    var arrIntStats = [
+      "hp", "attack", "speed", "armor", 
+      "totalHP", "totalAttack", "totalArmor", 
+      "displayHP", "displayAttack", "displayArmor",
+      "unbendingWillTriggered", "unbendingWillStacks"
+    ];
     
     heroSheet += "Level " + this._heroLevel + " " + this._heroName + "<br/>";
     heroSheet += this._starLevel + "* " + this._heroFaction + " " + this._heroClass + "<br/>";
     
     for (var statName in this._stats) {
-      if (["hp", "attack", "speed", "armor", "totalHP", "totalAttack", "totalArmor", "displayHP", "displayAttack", "displayArmor"].includes(statName)) {
+      if (arrIntStats.includes(statName)) {
         heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed();
       } else {
         heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed(2);
@@ -571,10 +579,10 @@ class hero {
   
   
   getEnergy(source, amount) {
-    var result = source.heroDesc() + " gained " + formatNum(amount) + " energy. Energy at "; 
+    var result = "<div>" + source.heroDesc() + " gained " + formatNum(amount) + " energy. Energy at "; 
     
     this._currentStats["energy"] += amount;
-    result += formatNum(this._currentStats["energy"]) + "."
+    result += formatNum(this._currentStats["energy"]) + ".</div>"
     
     return result;
   }
@@ -884,17 +892,33 @@ class hero {
     var result = "";
     
     if (this._currentStats["totalHP"] <= damageResult[0]) {
-      // hero died
-      source._currentStats["damageDealt"] += damageResult[0];
-      this._currentStats["totalHP"] = 0;
-      
-      result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>";
-      
-      result += this.alertHeroDied(source);
+      // hero would die, check for unbending will
+      if (this._enable5 == "UnbendingWill" && this._currentStats["unbendingWillTriggered"] == 0 && damageResult[4] != "mark") {
+        this._currentStats["unbendingWillTriggered"] = 1;
+        this._currentStats["unbendingWillStacks"] = 3;
+        this._currentStats["damageHealed"] += damageResult[0];
+        damageResult[0] = 0;
+        result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
+      } else if (this._currentStats["unbendingWillStacks"] > 0 && damageResult[4] != "mark") {
+        this._currentStats["unbendingWillStacks"] -= 1;
+        this._currentStats["damageHealed"] += damageResult[0];
+        damageResult[0] = 0;
+        result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
+        
+        if (this._currentStats["unbendingWillStacks"] == 0) {
+          result += "<div><span class='skill'>Unbending Will</span> ended.</div>";
+        }
+      } else {
+        // hero died
+        source._currentStats["damageDealt"] += damageResult[0];
+        this._currentStats["totalHP"] = 0;
+        result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>";
+        result += this.alertHeroDied(source);
+      }
     } else {
       this._currentStats["totalHP"] = this._currentStats["totalHP"] - damageResult[0];
       source._currentStats["damageDealt"] += damageResult[0];
-      result = "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(this._currentStats["totalHP"]) + ".</div>";
+      result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(this._currentStats["totalHP"]) + ".</div>";
     }
     
     if (this._currentStats["totalHP"] > 0) {
@@ -907,8 +931,6 @@ class hero {
           result += this.getEnergy(this, 10);
         }
       }
-      
-      result += "</div>";
     }
     
     return result;
@@ -920,21 +942,24 @@ class hero {
     var strTakeDamage = ""
     
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
-    result = "<div>" + this.heroDesc() + " used " + strAttackDesc + " against " + target.heroDesc() + ".</div><div>";
+    result = "<div>" + this.heroDesc() + " used " + strAttackDesc + " against " + target.heroDesc() + ".</div>";
     damageResult[0] = Math.round(damageResult[0]);
     strTakeDamage = target.takeDamage(this, damageResult);
     
-    if (damageResult[1] == true && damageResult[2] == true) {
-      result += "Blocked crit " + strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == true && damageResult[2] == false) {
-      result += "Crit " + strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == false && damageResult[2] == true) {
-      result += "Blocked " + strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else {
-      result += strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage. ";
+    if (damageResult[0] > 0) {
+      if (damageResult[1] == true && damageResult[2] == true) {
+        result += "Blocked crit " + strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage.";
+      } else if (damageResult[1] == true && damageResult[2] == false) {
+        result += "Crit " + strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage.";
+      } else if (damageResult[1] == false && damageResult[2] == true) {
+        result += "Blocked " + strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage.";
+      } else {
+        result += strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage.";
+      }
+      result += "</div>"
     }
     
-    result += "</div>" + damageResult[5];
+    result += damageResult[5];
     result += strTakeDamage;
     
     return result;
