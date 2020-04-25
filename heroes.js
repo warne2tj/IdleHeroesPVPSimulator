@@ -449,9 +449,11 @@ class hero {
   }
   
   
-  // combat utility functions
+  // utility functions for combat
   
-  calcDamage(target, attackDamage, isSkill=false, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1) {
+  // can further extend this to account for new mechanics by adding parameters to the end
+  // supply a default value so as to not break other calls to this function
+  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1) {
     // Get damage related stats
     var critChance = canCrit * this._currentStats["crit"];
     var critDamage = 2*this._currentStats["critDamage"] + 1.5;
@@ -460,16 +462,22 @@ class hero {
     var armorBreak = this._currentStats["armorBreak"] >= 1.0 ? 1.0 : this._currentStats["armorBreak"];
     var holyDamageIncrease = this._currentStats["holyDamage"] * 70;
     var holyDamage = attackDamage * holyDamageIncrease;
+    var lethalFightback = 1.0;
     
-    if (isSkill == false) {
-      skillDamage = 1;
-    } else {
-      skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
-    }
+    var armorMitigation = armorReduces * (target._currentStats["armor"] * (1 - armorBreak) / (180 + 20*(target._heroLevel)));
+    var reduceDamage = target._currentStats["damageReduce"] > 0.75 ? 0.75 : target._currentStats["damageReduce"];
+    var critDamageReduce = target._currentStats["critDamageReduce"];
+    var classDamageReduce = target._currentStats[this._heroClass.toLowerCase() + "Reduce"];
+    var blockChance = canBlock * (target._currentStats["block"] - precision);
     
     var factionA = this._heroFaction;
     var factionB = target._heroFaction;
     var factionBonus = 1.0;
+    var e5Desc = "";
+    
+    if (damageSource.substring(0, 6) == "active") {
+      skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
+    }
     
     if (
       (factionA == "Abyss" && factionB == "Forest") ||
@@ -483,15 +491,19 @@ class hero {
       precision += 0.15;
     }
     precisionDamageIncrease = precision >= 1.5 ? 1.45 : 1.0 + precision * 0.3;
+
+    if (
+      this._enable2 == "LethalFightback" && 
+      this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
+      !(["bleed", "poison", "burn"].includes(damageType)) &&
+      (damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic")
+    ) {
+      lethalFightback = 1.12;
+      e5Desc = "<div><span class='skill'>Lethal Fightback</span> triggered additional damage.</div>";
+    }
     
-    var armorMitigation = armorReduces * (target._currentStats["armor"] * (1 - armorBreak) / (180 + 20*(target._heroLevel)));
-    var reduceDamage = target._currentStats["damageReduce"] > 0.75 ? 0.75 : target._currentStats["damageReduce"];
-    var critDamageReduce = target._currentStats["critDamageReduce"];
-    var classDamageReduce = target._currentStats[this._heroClass.toLowerCase() + "Reduce"];
-    var blockChance = canBlock * (target._currentStats["block"] - precision);
-    
-    attackDamage = attackDamage * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * skillDamage * precisionDamageIncrease * factionBonus;
-    holyDamage = holyDamage * (1-reduceDamage) * (1-classDamageReduce) * skillDamage * precisionDamageIncrease * factionBonus;
+    attackDamage = attackDamage * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback;
+    holyDamage = holyDamage * (1-reduceDamage) * (1-classDamageReduce) * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback;
     
     var outcomeRoll = Math.random();
     var blocked = false;
@@ -517,7 +529,25 @@ class hero {
       // normal
     }
     
-    return [attackDamage + holyDamage, critted, blocked];
+    if (["bleed", "poison", "burn"].includes(damageType)) {
+      var dotReduce = this._currentStats["dotReduce"];
+      attackDamage *= (1 - dotReduce);
+      holyDamage *= (1 - dotReduce);
+    }
+    
+    // E5 Balanced strike
+    if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike") {
+      if (critted == true) {
+        var healAmount = Math.round(0.15 * (attackDamage + holyDamage));
+        e5Desc = "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>" + this.getHeal(this, healAmount);
+      } else {
+        attackDamage *= 1.3;
+        holyDamage *= 1.3;
+        e5Desc = "<div><span class='skill'>Balanced Strike</span> triggered additional damage on non-crit.</div>";
+      }
+    }
+    
+    return [attackDamage + holyDamage, critted, blocked, damageSource, damageType, e5Desc];
   }
   
   
@@ -536,6 +566,16 @@ class hero {
     // prevent overheal 
     source._currentStats["damageHealed"] += amountHealed;
     result += this.heroDesc() + " for " + formatNum(amountHealed) + ". ";
+    return result;
+  }
+  
+  
+  getEnergy(source, amount) {
+    var result = source.heroDesc() + " gained " + formatNum(amount) + " energy. Energy at "; 
+    
+    this._currentStats["energy"] += amount;
+    result += formatNum(this._currentStats["energy"]) + "."
+    
     return result;
   }
   
@@ -560,7 +600,55 @@ class hero {
   
   
   getDebuff(debuffName, duration, effects) {
-    return;
+    for (var strStatName in effects) {
+      if (strStatName == "attackPercent") {
+        this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * (1 - effects[strStatName]));
+      } else {
+        this._currentStats[strStatName] -= effects[strStatName];
+      }
+    }
+    
+    if (debuffName in this._debuffs) {
+      var keyAt = Object.keys(this._debuffs[debuffName]).length;
+      this._debuffs[debuffName][keyAt] = {"duration": duration, "effects": effects};
+    } else {
+      this._debuffs[debuffName] = {};
+      this._debuffs[debuffName][0] = {"duration": duration, "effects": effects};
+    }
+  }
+  
+  
+  removeBuff(strBuffName) {        
+    // for each stack
+    for (var s in this._buffs[strBuffName]) {
+      // remove the effects
+      for (var strStatName in this._buffs[strBuffName][s]["effects"]) {
+        if (strStatName == "attackPercent") {
+          this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 + this._buffs[strBuffName][s]["effects"][strStatName]));
+        } else {
+          this._currentStats[strStatName] -= this._buffs[strBuffName][s]["effects"][strStatName];
+        }
+      }
+    }
+    
+    delete this._buffs[strBuffName];
+  }
+  
+  
+  removeDebuff(strDebuffName) {        
+    // for each stack
+    for (var s in this._debuffs[strDebuffName]) {
+      // remove the effects
+      for (var strStatName in this._debuffs[strDebuffName][s]["effects"]) {
+        if (strStatName == "attackPercent") {
+          this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
+        } else {
+          this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
+        }
+      }
+    }
+    
+    delete this._buffs[strDebuffName];
   }
   
   
@@ -568,34 +656,36 @@ class hero {
     var result = "";
     var stacksLeft = 0;
     
-    // for each buff name
-    for (var b in this._buffs) {
-      stacksLeft = 0;
-      
-      // for each stack
-      for (var s in this._buffs[b]) {
-        if (this._buffs[b][s]["duration"] > 0) {
-          this._buffs[b][s]["duration"] -= 1;
-          
-          if (this._buffs[b][s]["duration"] == 0) {
-            result += "<div>" + this.heroDesc() + " buff (<span class='skill'>" + b + "</span>) ended.</div>";
+    if (this._currentStats["totalHP"] > 0) {
+      // for each buff name
+      for (var b in this._buffs) {
+        stacksLeft = 0;
+        
+        // for each stack
+        for (var s in this._buffs[b]) {
+          if (this._buffs[b][s]["duration"] > 0) {
+            this._buffs[b][s]["duration"] -= 1;
             
-            // remove the effects
-            for (var strStatName in this._buffs[b][s]["effects"]) {
-              if (strStatName == "attackPercent") {
-                this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] / (1 +this._buffs[b][s]["effects"][strStatName]));
-              } else {
-                this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];
+            if (this._buffs[b][s]["duration"] == 0) {
+              result += "<div>" + this.heroDesc() + " buff (<span class='skill'>" + b + "</span>) ended.</div>";
+              
+              // remove the effects
+              for (var strStatName in this._buffs[b][s]["effects"]) {
+                if (strStatName == "attackPercent") {
+                  this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 + this._buffs[b][s]["effects"][strStatName]));
+                } else {
+                  this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];
+                }
               }
+            } else {
+              stacksLeft++;
             }
-          } else {
-            stacksLeft++;
           }
         }
-      }
-      
-      if (stacksLeft == 0) {
-        delete this._buffs[b];
+        
+        if (stacksLeft == 0) {
+          delete this._buffs[b];
+        }
       }
     }
     
@@ -604,7 +694,74 @@ class hero {
   
   
   tickDebuffs() {
-    return "";
+    var result = "";
+    var stacksLeft = 0;
+    
+    if (this._currentStats["totalHP"] > 0) {
+      // for each buff name
+      for (var b in this._debuffs) {
+        stacksLeft = 0;
+        
+        // for each stack
+        for (var s in this._debuffs[b]) {
+          if (this._debuffs[b][s]["duration"] > 0) {
+            this._debuffs[b][s]["duration"] -= 1;
+            
+            if (this._debuffs[b][s]["duration"] == 0) {
+              result += "<div>" + this.heroDesc() + " debuff (<span class='skill'>" + b + "</span>) ended.</div>";
+              
+              // remove the effects
+              for (var strStatName in this._debuffs[b][s]["effects"]) {
+                if (strStatName == "attackPercent") {
+                  this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
+                } else {
+                  this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
+                }
+              }
+            } else {
+              stacksLeft++;
+            }
+          }
+        }
+        
+        if (stacksLeft == 0) {
+          delete this._debuffs[b];
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  tickEnable3(numLiving) {
+    var result = "";
+    
+    if (this._enable3 == "Resilience") {
+      var healAmount = Math.round(0.15 * (this._stats["totalHP"] - this._currentStats["totalHP"]));
+      if (healAmount > 0) {
+        result += "<div>" + this.heroDesc() + " Resilience triggered.</div>" 
+        result += this.getHeal(this, healAmount);
+      }
+      
+    } else if (this._enable3 == "SharedFate") {
+      var attBuff = numLiving * 0.012;
+      if (numLiving > 0) {
+        result += "<div>" + this.heroDesc() + " gained Shared Fate. Increased attack by " + formatNum(attBuff * 100) + "%.</div>";
+        this.getBuff("SharedFate", 1, {attackPercent: attBuff});
+      }
+      
+    } else if (this._enable3 == "Purify") {
+      var listDebuffs = Object.keys(this._debuffs);
+      var rng = Math.floor(Math.random() * listDebuffs.length);
+      
+      if (listDebuffs.length > 0) {
+        this.removeDebuff(listDebuffs[rng]);
+        result += "<div>" + this.heroDesc() + " Purify triggered. Removed all stacks of debuff " + listDebuffs[rng] + ".</div>";
+      }
+    }
+    
+    return result;
   }
   
   
@@ -745,11 +902,9 @@ class hero {
       if (damageResult[3] == "basic" || damageResult[3] == "active") {
         if (damageResult[1] == true) {
           // crit
-          this._currentStats["energy"] += 20;
-          result += "<div>" + this.heroDesc() + " gained " + formatNum(20) + " energy.";
+          result += this.getEnergy(this, 20);
         } else {
-          this._currentStats["energy"] += 10;
-          result += "<div>" + this.heroDesc() + " gained " + formatNum(10) + " energy.";
+          result += this.getEnergy(this, 10);
         }
       }
       
@@ -760,31 +915,40 @@ class hero {
   }
   
   
+  formatDamageResult(target, damageResult, strAttackDesc) {
+    var result = "";
+    var strTakeDamage = ""
+    
+    strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
+    result = "<div>" + this.heroDesc() + " used " + strAttackDesc + " against " + target.heroDesc() + ".</div><div>";
+    damageResult[0] = Math.round(damageResult[0]);
+    strTakeDamage = target.takeDamage(this, damageResult);
+    
+    if (damageResult[1] == true && damageResult[2] == true) {
+      result += "Blocked crit " + strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage. ";
+    } else if (damageResult[1] == true && damageResult[2] == false) {
+      result += "Crit " + strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage. ";
+    } else if (damageResult[1] == false && damageResult[2] == true) {
+      result += "Blocked " + strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage. ";
+    } else {
+      result += strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage. ";
+    }
+    
+    result += "</div>" + damageResult[5];
+    result += strTakeDamage;
+    
+    return result;
+  }
+  
+  
   doBasic() {
     var result = {};
     var damageResult = [];
     var target = this.getFirstTarget();
     
-    result["description"] = "<div>" + this.heroDesc() + " did basic attack against " + target.heroDesc() + ".</div>";
-    
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"]);
-    damageResult[0] = Math.round(damageResult[0]);
-    damageResult.push("basic");
-    damageResult.push("normal");
-    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
-    
-    if (damageResult[1] == true && damageResult[2] == true) {
-      result["description"] += "Blocked crit attack dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == true && damageResult[2] == false) {
-      result["description"] += "Crit attack dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == false && damageResult[2] == true) {
-      result["description"] += "Blocked basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else {
-      result["description"] += "Basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
-    }
-    
-    this._currentStats["energy"] += 50;
-    result["description"] += "Gained " + formatNum(50) + " energy. Energy at " + formatNum(this._currentStats["energy"]) + ".";
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "basic", "normal");
+    result["description"] = this.formatDamageResult(target, damageResult, "Basic Attack");
+    result["description"] += this.getEnergy(this, 50);
     result["eventDescription"] = this.alertDidBasic(target, damageResult);
     
     return result;
@@ -796,24 +960,8 @@ class hero {
     var damageResult = [];
     var target = this.getFirstTarget();
     
-    result["description"] = "<div>" + this.heroDesc() + " used active (template) against " + target.heroDesc() + ".</div>";
-    
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, 1.0);
-    damageResult[0] = Math.round(damageResult[0]);
-    damageResult.push("active");
-    damageResult.push("normal");
-    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
-    
-    if (damageResult[1] == true && damageResult[2] == true) {
-      result["description"] += "Blocked crit active dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == true && damageResult[2] == false) {
-      result["description"] += "Crit active dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == false && damageResult[2] == true) {
-      result["description"] += "Blocked active dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else {
-      result["description"] += "Active dealt " + formatNum(damageResult[0]) + " damage. ";
-    }
-    
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal");
+    result["description"] = this.formatDamageResult(target, damageResult, "Active (Template)");
     this._currentStats["energy"] = 0;
     result["eventDescription"] = this.alertDidActive(target, damageResult);
     
