@@ -9,27 +9,11 @@ class Foolish extends hero {
     var damageResult = [];
     var target = this.getFirstTarget();
     
-    result["description"] = "<div>" + this.heroDesc() + " used active (<span class='skill'>Thump</span>) against " + target.heroDesc() + ".</div>";
-    
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, 1.8);
-    damageResult[0] = Math.round(damageResult[0]);
-    damageResult.push("active");
-    damageResult.push("normal");
-    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
-    
-    if (damageResult[1] == true && damageResult[2] == true) {
-      result["description"] += "Blocked crit active dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == true && damageResult[2] == false) {
-      result["description"] += "Crit active dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == false && damageResult[2] == true) {
-      result["description"] += "Blocked active dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else {
-      result["description"] += "Active dealt " + formatNum(damageResult[0]) + " damage. ";
-    }
-    
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 1.8);
+    result["description"] = this.formatDamageResult(target, damageResult, "Thump");
     result["eventDescription"] = this.alertDidActive(target, damageResult);
-    
     this._currentStats["energy"] = 0;
+    
     return result;
   }
 }
@@ -52,41 +36,27 @@ class Baade extends hero {
     var target = this.getLowestHPTarget();
     var additionalDamage = 0;
     
-    result["description"] = "<div>" + this.heroDesc() + " did basic attack against " + target.heroDesc() + ".</div>";
-    
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.1, false, 1, 0);
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.1, "basic", "normal", 1, 0);
     additionalDamage = damageResult[0];
-    damageResult[0] = Math.round(damageResult[0]);
-    damageResult.push("basic");
-    damageResult.push("normal");
-    
-    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
-    if (damageResult[1] == true && damageResult[2] == true) {
-      result["description"] += "Blocked crit attack dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == true && damageResult[2] == false) {
-      result["description"] += "Crit attack dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == false && damageResult[2] == true) {
-      result["description"] += "Blocked basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else {
-      result["description"] += "Basic attack dealt " + formatNum(damageResult[0]) + " damage. ";
-    }
+    result["description"] = this.formatDamageResult(target, damageResult, "Basic Attack");
     
     if (target._currentStats["totalHP"] > 0) {
       var outcomeRoll = Math.random();
       
-      if (outcomeRoll < 0.5) {
-        additionalDamage = Math.round(additionalDamage * 0.5);
-        result["takeDamageDescription"] += target.takeDamage(this, [additionalDamage, "trigger", "normal"]);
-        result["description"] += "Additional damage triggered for " + formatNum(additionalDamage) + " damage. ";
-      } else if (outcomeRoll < 0.75) {
-        additionalDamage = Math.round(additionalDamage * 1.25);
-        result["takeDamageDescription"] += target.takeDamage(this, [additionalDamage, "trigger", "normal"]);
-        result["description"] += "Additional damage triggered for " + formatNum(additionalDamage) + " damage. ";
+      if (outcomeRoll < 0.75) {
+        if (outcomeRoll < 0.5) {
+          additionalDamage = additionalDamage * 0.5;
+        } else if (outcomeRoll < 0.75) {
+          additionalDamage = additionalDamage * 1.25;
+        }
+        
+        additionalDamage = Math.round(additionalDamage);
+        result["description"] += "Passive <span class='skill'>Death Threat</span> did additional damage: " + formatNum(additionalDamage) + ". ";
+        result["description"] += target.takeDamage(this, [additionalDamage, "basic2", "normal"]);
       }
     }
     
-    this._currentStats["energy"] += 50;
-    result["description"] += "Gained " + formatNum(50) + " energy. Energy at " + formatNum(this._currentStats["energy"]) + ".";
+    result["description"] += this.getEnergy(this, 50);
     result["eventDescription"] = this.alertDidBasic(target, damageResult);
     
     return result;
@@ -99,46 +69,33 @@ class Baade extends hero {
     var healAmount = 0;
     var additionalDamage = 0;
     
-    result["description"] = "<div>" + this.heroDesc() + " used active (<span class='skill'>Nether Strike</span>) against " + target.heroDesc() + ".</div>";
-    
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], true, 1.5, 0);
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 1.5, 0);
     additionalDamage = damageResult[0];
-    damageResult[0] = Math.round(damageResult[0]);
-    damageResult.push("active");
-    damageResult.push("normal");
-    result["takeDamageDescription"] = target.takeDamage(this, damageResult);
-    
-    if (damageResult[1] == true && damageResult[2] == true) {
-      result["description"] += "Blocked crit active dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == true && damageResult[2] == false) {
-      result["description"] += "Crit active dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else if (damageResult[1] == false && damageResult[2] == true) {
-      result["description"] += "Blocked active dealt " + formatNum(damageResult[0]) + " damage. ";
-    } else {
-      result["description"] += "Active dealt " + formatNum(damageResult[0]) + " damage. ";
-    }
+    result["description"] = this.formatDamageResult(target, damageResult, "Nether Strike");
     
     if (target._currentStats["totalHP"] > 0) {
       var outcomeRoll = Math.random();
       
-      if (outcomeRoll < 0.48) {
+      if (outcomeRoll < 0.84) {
+        if (outcomeRoll < 0.48) {
+          additionalDamage = additionalDamage;
+        } else if (outcomeRoll < 0.84) {
+          additionalDamage = additionalDamage * 3;
+        }
+        
         additionalDamage = Math.round(additionalDamage);
-        result["takeDamageDescription"] += target.takeDamage(this, [additionalDamage, "trigger", "normal"]);
-        result["description"] += "Additional damage triggered for " + formatNum(additionalDamage) + " damage. ";
-      } else if (outcomeRoll < 0.84) {
-        additionalDamage = Math.round(additionalDamage * 3);
-        result["takeDamageDescription"] += target.takeDamage(this, [additionalDamage, "trigger", "normal"]);
-        result["description"] += "Additional damage triggered for " + formatNum(additionalDamage) + " damage. ";
+        result["description"] += "<span class='skill'>Nether Strike</span> did additional damage: " + formatNum(additionalDamage) + ". ";
+        result["description"] += target.takeDamage(this, [additionalDamage, "active2", "normal"]);
       }
     }
     
     this._currentStats["energy"] = 0;
     
-    healAmount = Math.floor((damageResult[0] + additionalDamage) * 0.2);
+    healAmount = Math.round((damageResult[0] + additionalDamage) * 0.2);
     result["description"] += this.getHeal(this, healAmount);
     
     this.getBuff("Nether Strike", 6, {attackPercent: 0.4});
-    result["description"] += " Baaded gains " + formatNum(40) + "% attack for " + formatNum(6) + " rounds.";
+    result["description"] += " Baade gains " + formatNum(40) + "% attack for " + formatNum(6) + " rounds.";
     
     result["eventDescription"] = this.alertDidActive(target, damageResult);
     

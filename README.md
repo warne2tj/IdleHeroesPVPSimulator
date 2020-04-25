@@ -13,26 +13,25 @@ Implemented Heroes:
 
   
 To Do List
-  * apply class specific damage reduction from guild tech
-  * fully implement enables
-  * adjust for hp% damage, dot damage, dot damage reduction in calcDamage
-  * ------------
-  * figure out if golden crown all damage reduce is different from regular damage reduce
   * implement some monsters
     + phoenix
     + deer
-  * subclass a couple of heroes
+  * ------------
+  * figure out if golden crown all damage reduce is different from regular damage reduce
+  * subclass some top tier heroes
   * implement rest of monsters
-  * subclass more heroes
   * improve gui
+  * refactor damage description to flow better for reading purposes
   
   
 Hero Mechanics:
   * TBD as heroes are implemented
   * Baade 5* vs. Foolish
     + Attack amount always the same
-    + Is the second part of the last passive is another source of damage?
+    + Is the second part of the last passive another source of damage?
     + So additional damage does not trigger if hero dies from first part?
+  * Carrie
+    + Energy attack percent damage, what affects it?
     
 
 Mechanics:
@@ -87,6 +86,16 @@ Mechanics:
   * Heal effect and effect being healed
     + is hp% healing affected by these stats?
   * Monster energy, how is it gained, does excess go into ability damage like hero energy does?
+  * Buffs/debuffs
+    + currently applying percent buff debuffs using rounding to match the calculate damage, but should they be fully recalculated using floor in between each application?
+    + do buffs tick first, then debuffs?
+    + can you die in the middle of a buff/debuff resolution if there's a heal buff on the "stack"?
+  * Enable3 skills
+    + do they trigger before or after buffs/debuffs tick?
+    + does purify remove an entire stack of debuffs?
+  * Enable5 skills
+    + does balanced strike count as a separate source of attack?
+    + unbending will: does the triggering damage count as 1 of the 4 stacks?
   
   
 Far far far future functionality*:

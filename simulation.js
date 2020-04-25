@@ -59,6 +59,7 @@ function runSim() {
   var result = {};
   var someoneWon = "";
   var endRoundDesc = "";
+  var numLiving = 0;
   
   oCombatLog.innerHTML = "";
   
@@ -75,7 +76,7 @@ function runSim() {
   for (var x = 1; x <= numSims; x++) {
     // @ start of single simulation
     
-    oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(x) +" Started.</p>";
+    if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(x) +" Started.</p>"};
     someoneWon = "";
     
     // snapshot stats as they are
@@ -120,12 +121,12 @@ function runSim() {
           if (orderOfAttack[i]._currentStats["energy"] >= 100) {
             // do active
             result = orderOfAttack[i].doActive();
-            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["takeDamageDescription"] + result["eventDescription"];}
+            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["eventDescription"];}
             someoneWon = checkForWin();
           } else {
             // do basic
             result = orderOfAttack[i].doBasic();
-            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["takeDamageDescription"] + result["eventDescription"];}
+            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["eventDescription"];}
             someoneWon = checkForWin();
           }
           
@@ -142,10 +143,11 @@ function runSim() {
         break;
       }
       
-      // trigger end of round stuff, decrement buffs and debuffs, tick dots
+      // trigger end of round stuff
       endRoundDesc = "<p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";
       
-      for (var h in attHeroes) {
+      // handle buffs and debuffs
+      for (var h in orderOfAttack) {
         endRoundDesc += attHeroes[h].tickBuffs();
         endRoundDesc += attHeroes[h].tickDebuffs();
       }
@@ -153,6 +155,19 @@ function runSim() {
       for (var h in defHeroes) {
         endRoundDesc += defHeroes[h].tickBuffs();
         endRoundDesc += defHeroes[h].tickDebuffs();
+      }
+      
+      // get number of living heroes for shared fate enable
+      numLiving = 0;
+      for (var h in orderOfAttack) {
+        if (orderOfAttack[h]._currentStats["totalHP"] > 0) { numLiving++; }
+      }
+      
+      // trigger E3 enables
+      for (var h in orderOfAttack) {
+        if (orderOfAttack[h]._currentStats["totalHP"] > 0) { 
+          endRoundDesc += orderOfAttack[h].tickEnable3(numLiving);
+        }
       }
       
       endRoundDesc += "</p>"
@@ -189,7 +204,7 @@ function runSim() {
       }
     }
     
-    oCombatLog.innerHTML += "<p class='logSeg'>Simulation #" + formatNum(x) +" Ended.</p>";
+    if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Simulation #" + formatNum(x) +" Ended.</p>"};
     
     // @ end of simulation
   }
