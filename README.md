@@ -16,12 +16,13 @@ To Do List
   * implement some monsters
     + phoenix
     + deer
-  * ------------
   * figure out if golden crown all damage reduce is different from regular damage reduce
   * subclass some top tier heroes
   * implement rest of monsters
-  * improve gui
-  * refactor damage description to flow better for reading purposes
+  * change damage result array to object for clarity
+  * improve look of hero stat sheet
+  * refactor damage description to read better, output directly to combat log(?)
+  * improve gui (incorporate icons?)
   
   
 Hero Mechanics:
@@ -39,10 +40,10 @@ Mechanics:
     + they seem to be applied by first adding all constant modifers together
     + then applying percentage modifiers one source at a time in a specific order 
     + with a math.floor in between
-    + current best guess: enable level bonus, enable selected skills, equipment, set bonus, skin, guild tech, passive, artifact, stone
+    + current best guess on order: enable level bonus, enable selected skills, equipment, set bonus, skin, guild tech, passive, artifact, stone
   * Leveling
     + base stats are different at 5*, 6*, and 10*
-    + increases base stats by usually 10% per level, some stats for some heroes grow at a different amount
+    + increases by usually 10% of base stats per level, some stats for some heroes grow at a different amount
     + except speed, speed increases a flat 2 per level
     + each tier adds an additive percentage bonus to stats
     + 20% for hp and attack, 10% for speed
@@ -77,15 +78,20 @@ Mechanics:
     + each energy over 100 adds 1% skill damage
     + does not affect hp% based or dot damage
   * Damage calculation
-    + unlike all the other calculations, damage appears to be rounded instead of floored.
+    + unlike stat calculations, damage appears to be rounded instead of floored.
     + abilities that do further calculations on this number use the true unrounded number. See baade.
+    + another possibility is that baades damage is calculated as a single block but his extra damage only triggers if the "normal" damage wouldn't kill the target
   * How does global cc immunity interact with cc specific immunity?
     + multiplicative?
   * How does global damage reduce interact with class specific damage reduce?
     + multiplicative?
   * Heal effect and effect being healed
     + is hp% healing affected by these stats?
-  * Monster energy, how is it gained, does excess go into ability damage like hero energy does?
+  * Monster 
+    + energy +20 at end of round, +10 on ally active
+    + active does true damage
+    + excess energy does not increase damage of active
+    + static attack and hp buff, how does it work?
   * Buffs/debuffs
     + currently applying percent buff debuffs using rounding to match the calculate damage, but should they be fully recalculated using floor in between each application?
     + do buffs tick first, then debuffs?
@@ -95,7 +101,7 @@ Mechanics:
     + does purify remove an entire stack of debuffs?
   * Enable5 skills
     + does balanced strike count as a separate source of attack?
-    + unbending will: does the triggering damage count as 1 of the 4 stacks?
+    + unbending will: is this a buff that can be cleansed? ie by Gustin
   
   
 Far far far future functionality*:
