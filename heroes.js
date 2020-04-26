@@ -542,11 +542,18 @@ class hero {
   
   
   getBuff(buffName, duration, effects) {
+    var result = "";
+    result += "<div>" + this.heroDesc() + " gained buff <span class='skill'>" + buffName + "</span> for " + formatNum(duration) + " round(s)."
+    
     for (var strStatName in effects) {
+      result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+      
       if (strStatName == "attackPercent") {
         this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
         this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * (1 + effects[strStatName]));
         this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+      } else if (strStatName == "armorPercent") {
+        this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 + effects[strStatName]));
       } else {
         this._currentStats[strStatName] += effects[strStatName];
       }
@@ -559,15 +566,24 @@ class hero {
       this._buffs[buffName] = {};
       this._buffs[buffName][0] = {"duration": duration, "effects": effects};
     }
+    
+    return result + "</div>";
   }
   
   
   getDebuff(debuffName, duration, effects) {
+    var result = "";
+    result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(duration) + " round(s)."
+    
     for (var strStatName in effects) {
+      result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+      
       if (strStatName == "attackPercent") {
         this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
         this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * (1 - effects[strStatName]));
         this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+      } else if (strStatName == "armorPercent") {
+        this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
       } else {
         this._currentStats[strStatName] -= effects[strStatName];
       }
@@ -580,18 +596,27 @@ class hero {
       this._debuffs[debuffName] = {};
       this._debuffs[debuffName][0] = {"duration": duration, "effects": effects};
     }
+    
+    return result + "</div>";
   }
   
   
-  removeBuff(strBuffName) {        
+  removeBuff(strBuffName) {   
+    var result = "";
+    result += "<div>" + this.heroDesc() + " lost buff <span class='skill'>" + strBuffName + "</span>."
+    
     // for each stack
     for (var s in this._buffs[strBuffName]) {
       // remove the effects
       for (var strStatName in this._buffs[strBuffName][s]["effects"]) {
+        result += " " + strStatName + " " + formatNum(this._buffs[strBuffName][s]["effects"][strStatName]) + ".";
+        
         if (strStatName == "attackPercent") {
           this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
           this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 + this._buffs[strBuffName][s]["effects"][strStatName]));
           this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+        } else if (strStatName == "armorPercent") {
+          this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 + this._buffs[strBuffName][s]["effects"][strStatName]));
         } else {
           this._currentStats[strStatName] -= this._buffs[strBuffName][s]["effects"][strStatName];
         }
@@ -599,25 +624,36 @@ class hero {
     }
     
     delete this._buffs[strBuffName];
+    
+    return result + "</div>";
   }
   
   
-  removeDebuff(strDebuffName) {        
+  removeDebuff(strDebuffName) {   
+    var result = "";
+    result += "<div>" + this.heroDesc() + " lost buff <span class='skill'>" + strDebuffName + "</span>."
+    
     // for each stack
     for (var s in this._debuffs[strDebuffName]) {
       // remove the effects
       for (var strStatName in this._debuffs[strDebuffName][s]["effects"]) {
+        result += " " + strStatName + " " + formatNum(this._debuffs[strDebuffName][s]["effects"][strStatName]) + ".";
+        
         if (strStatName == "attackPercent") {
           this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
           this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
           this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+        } else if (strStatName == "armorPercent") {
+          this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
         } else {
           this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
         }
       }
     }
     
-    delete this._buffs[strDebuffName];
+    delete this._debuffs[strDebuffName];
+    
+    return result + "</div>";
   }
   
   
@@ -644,6 +680,8 @@ class hero {
                   this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
                   this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 + this._buffs[b][s]["effects"][strStatName]));
                   this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+                } else if (strStatName == "armorPercent") {
+                  this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 + this._buffs[b][s]["effects"][strStatName]));
                 } else {
                   this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];
                 }
@@ -687,6 +725,8 @@ class hero {
                   this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
                   this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
                   this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+                } else if (strStatName == "armorPercent") {
+                  this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
                 } else {
                   this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
                 }

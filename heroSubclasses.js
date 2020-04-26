@@ -116,9 +116,7 @@ class Baade extends hero {
     
     healAmount = Math.round((damageResult["damageAmount"] + additionalDamage) * 0.2);
     result += this.getHeal(this, healAmount);
-    
-    this.getBuff("Nether Strike", 6, {attackPercent: 0.4});
-    result += " Baade gains " + formatNum(40) + "% attack for " + formatNum(6) + " rounds.";
+    result += this.getBuff("Nether Strike", 6, {attackPercent: 0.4});
     
     activeQueue.push([this, target]);
     
@@ -130,10 +128,7 @@ class Baade extends hero {
     
     if (this._currentStats["totalHP"] > 0) {
       result = "<div>" + this.heroDesc() + " <span class='skill'>Blood Armor</span> passive triggered.</div>";
-      result += "<div>" + this.getHeal(this, this._currentStats["totalAttack"]);
-      result += " Gained " + formatNum(10) + "% damage reduce.</div>";
-      
-      this.getBuff("Blood Armor", 1, {damageReduce: 0.1});
+      result += this.getBuff("Blood Armor", 1, {damageReduce: 0.1});
     }
     
     return result;

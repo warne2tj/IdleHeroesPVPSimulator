@@ -13,7 +13,8 @@ class monster {
     
     this._currentStats = {
       "damageDealt": 0,
-      "damageHealed": 0
+      "damageHealed": 0,
+      "healEffect": 0.0
     };
     
     this._energy = 0;
@@ -76,16 +77,18 @@ class mDeer extends monster {
     }
     
     var healAmount = 0;
-    //buffs = {armorPercent: 0.37, attackPercent: 0.15} 2 rounds
-    //heal 20% hp
+    var targets = getRandomTargets(this._allies);
     
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff("Emerald Nourishing", 2, {armorPercent: 0.37, attackPercent: 0.15});
+      
+      healAmount = Math.floor(targets[i]._stats["totalHP"] * 0.2);
+      result += targets[i].getHeal(this, healAmount);
+    }
     
     this._energy = 0;
-    
-    //result["description"] += this.getHeal(this, healAmount);
-    
-    //this.getBuff("Nether Strike", 6, {attackPercent: 0.4});
-    //result["description"] += " Baade gains " + formatNum(40) + "% attack for " + formatNum(6) + " rounds.";
     
     return result;
   }
