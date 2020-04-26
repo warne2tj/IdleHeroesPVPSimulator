@@ -1,3 +1,6 @@
+var deathQueue = [];
+
+
 function speedSort(heroA, heroB) {
   if (heroA._currentStats["speed"] > heroB._currentStats["speed"]) {
     return -1;
@@ -80,10 +83,10 @@ function runSim() {
     defHeroes[i]._damageHealed = 0;
   }
   
-  for (var x = 1; x <= numSims; x++) {
+  for (var simIterNum = 1; simIterNum <= numSims; simIterNum++) {
     // @ start of single simulation
     
-    if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(x) +" Started.</p>"};
+    if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(simIterNum) +" Started.</p>"};
     someoneWon = "";
     attMonster._energy = 0;
     defMonster._energy = 0;
@@ -118,21 +121,22 @@ function runSim() {
       if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Round " + formatNum(roundNum) + " Start</p>";}
       
       orderOfAttack.sort(speedSort);
+      deathQueue = [];
       
-      for (var i = 0; i < orderOfAttack.length; i++) {
+      for (var orderNum = 0; orderNum < orderOfAttack.length; orderNum++) {
         // @ start of hero action
         
-        if (orderOfAttack[i]._currentStats["totalHP"] > 0) {
+        if (orderOfAttack[orderNum]._currentStats["totalHP"] > 0) {
         
           if(numSims == 1) {oCombatLog.innerHTML += "<p>";}
           
           // decide on action
-          if (orderOfAttack[i]._currentStats["energy"] >= 100) {
+          if (orderOfAttack[orderNum]._currentStats["energy"] >= 100) {
             // do active
-            result = orderOfAttack[i].doActive();
+            result = orderOfAttack[orderNum].doActive();
             if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["eventDescription"];}
             
-            if (orderOfAttack[i]._attOrDef == "att") {
+            if (orderOfAttack[orderNum]._attOrDef == "att") {
               if (attMonster._monsterName != "None") {
                 monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
                 attMonster._energy += 10;
@@ -151,8 +155,8 @@ function runSim() {
             someoneWon = checkForWin();
           } else {
             // do basic
-            result = orderOfAttack[i].doBasic();
-            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["eventDescription"];}
+            result = orderOfAttack[orderNum].doBasic();
+            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["eventDescription"];}  
             
             someoneWon = checkForWin();
           }
@@ -160,18 +164,14 @@ function runSim() {
           // @ end of hero action
           if(numSims == 1) {oCombatLog.innerHTML += "</p>";}
           
-          if (someoneWon != "") {
-            break;
-          }
+          if (someoneWon != "") {break;}
         }
       }
       
-      if (someoneWon != "") {
-        break;
-      }
+      if (someoneWon != "") {break;}
       
       // trigger end of round stuff
-      oCombatLog.innerHTML += "<p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";
+      if(numSims == 1) {oCombatLog.innerHTML += "<p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";}
       
       // handle monster stuff
       if (attMonster._monsterName != "None") {
@@ -185,6 +185,8 @@ function runSim() {
         
         if(numSims == 1) {oCombatLog.innerHTML += monsterResult + "</p>";}
       }
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
       
       if (defMonster._monsterName != "None") {
         monsterResult = "<p><div>" + defMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
@@ -197,6 +199,8 @@ function runSim() {
         
         if(numSims == 1) {oCombatLog.innerHTML += monsterResult + "</p>";}
       }
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
       
       // handle buffs and debuffs
       for (var h in orderOfAttack) {
@@ -206,6 +210,8 @@ function runSim() {
       for (var h in orderOfAttack) {
         if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickDebuffs();}
       }
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
       
       // get number of living heroes for shared fate enable
       numLiving = 0;
@@ -253,7 +259,7 @@ function runSim() {
       }
     }
     
-    if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Simulation #" + formatNum(x) +" Ended.</p>"};
+    if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Simulation #" + formatNum(simIterNum) +" Ended.</p>"};
     
     // @ end of simulation
   }

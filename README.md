@@ -10,16 +10,22 @@ Implemented Heroes:
   * Foolish
   * Baade 5 star
   * The rest are only there for stat verification and testing
+  
+  
+Implemented Monsters:
+  * Deer (in progress)
+  * Phoenix (in progress)
 
   
 To Do List
-  * implement some monsters
-    + phoenix
-    + deer
+  * ----------- Priority 1 ------------
   * figure out if golden crown all damage reduce is different from regular damage reduce
   * subclass some top tier heroes
+  * ----------- Priority 2 ------------
+  * allow for 10*-E5 of different levels
   * implement rest of monsters
-  * change damage result array to object for clarity
+  * add swap, copy, move functionality for team management
+  * ----------- Priority 3 ------------
   * improve look of hero stat sheet
   * refactor damage description to read better, output directly to combat log(?)
   * improve gui (incorporate icons?)

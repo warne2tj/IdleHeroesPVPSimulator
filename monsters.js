@@ -30,11 +30,11 @@ class monster {
     
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
     result = "<div>" + this.heroDesc() + " used " + strAttackDesc + " against " + target.heroDesc() + ".</div>";
-    damageResult[0] = Math.round(damageResult[0]);
+    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"]);
     strTakeDamage = target.takeDamage(this, damageResult);
     
-    if (damageResult[0] > 0) {
-      result += strAttackDesc + " dealt " + formatNum(damageResult[0]) + " damage.</div>";
+    if (damageResult["damageAmount"] > 0) {
+      result += strAttackDesc + " dealt " + formatNum(damageResult["damageAmount"]) + " damage.</div>";
     }
     
     result += strTakeDamage;
@@ -51,30 +51,6 @@ class monster {
     this._energy = 0;
     return result;
   }
-  
-  
-  getRandomTargets(arrTargets) {
-    var copyTargets = [];
-    
-    for (var i=0; i<arrTargets.length; i++) {
-      if (arrTargets[i]._currentStats["totalHP"] > 0) {
-        arrTargets[i]._rng = Math.random();
-        copyTargets.push(arrTargets[i]);
-      }
-    }
-    
-    copyTargets.sort(function(a,b) {
-      if (a._rng > b._rng) {
-        return 1;
-      } else if (a._rng < b._rng) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-    
-    return copyTargets;
-  }
 }
 
 
@@ -82,13 +58,20 @@ class mDeer extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = this.getRandomTargets(this._enemies);
+    var targets = getRandomTargets(this._enemies);
     var numTargets = 4;
     
     if (targets.length < numTargets) {numTargets = targets.length;}
     
     for (var i=0; i < numTargets; i++) {
-      damageResult = [402068, 0, 0, "monster", "normal", ""];
+      damageResult = {
+        damageAmount: 402068, 
+        critted: 0, 
+        blocked: 0, 
+        damageSource: "monster", 
+        damageType: "normal", 
+        e5Desc: ""
+      };
       result += this.formatDamageResult(targets[i], damageResult, "Emerald Nourishing");
     }
     
