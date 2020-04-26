@@ -20,7 +20,7 @@ Implemented Monsters:
 To Do List
   * ----------- Priority 1 ------------
   * figure out if golden crown all damage reduce is different from regular damage reduce
-  * subclass some top tier heroes
+  * subclass top tier heroes
   * ----------- Priority 2 ------------
   * allow for 10*-E5 of different levels
   * implement rest of monsters

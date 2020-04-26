@@ -738,92 +738,16 @@ class hero {
   }
   
   
-  // alerters to trigger other heroes in response to an action
-  
-  // tell all heroes this hero did a basic attack and the outcome
-  alertDidBasic(target, damageResult) {
-    var result = "";
-    var temp = "";
-    
-    for (var i = 0; i < this._allies.length; i++) {
-      temp = this._allies[i].eventAllyBasic(this, target, damageResult);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-    
-    for (var i = 0; i < this._enemies.length; i++) {
-      temp = this._enemies[i].eventEnemyBasic(this, target, damageResult);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-    
-    return result;
-  }
-  
-  
-  // tell all heroes this hero did an active and the outcome
-  alertDidActive(target, damageResult) {
-    var result = "";
-    var temp = "";
-    
-    for (var i = 0; i < this._allies.length; i++) {
-      temp = this._allies[i].eventAllyActive(this, damageResult);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-    
-    for (var i = 0; i < this._enemies.length; i++) {
-      temp = this._enemies[i].eventEnemyActive(this, damageResult);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-    
-    return result;
-  }
-  
-  
-  // tell all heroes this hero died
-  alertHeroDied(killer) {
-    var result = "";
-    var temp = "";
-    
-    for (var i = 0; i < this._allies.length; i++) {
-      temp = this._allies[i].eventAllyDied(killer, this);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-    
-    for (var i = 0; i < this._enemies.length; i++) {
-      temp = this._enemies[i].eventEnemyDied(killer, this);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-    
-    return result;
-  }
-  
-  
   // a bunch of functions for override by hero subclasses as needed to trigger special abilities.
-  
-  // damageResult = [damage amount, was crit, was block, damage source, damage type]
-  // damage source: basic, active, passive
-  // damage type: normal, blood, mark, etc
-  
   // usually you'll want to check that the hero is still alive before triggering their effect
   
   passiveStats() { return;}
-  eventAllyBasic(source, target, damageResult) { return "";}
-  eventEnemyBasic(source, target, damageResult) { return "";}
-  eventAllyActive(source, target, damageResult) { return "";}
-  eventEnemyActive(source, target, damageResult) { return "";}
-  eventAllyDied(source, target, damageResult) { return "";}
-  eventEnemyDied(source, target, damageResult) { return "";}
+  eventAllyBasic(source, target) { return "";}
+  eventEnemyBasic(source, target) { return "";}
+  eventAllyActive(source, target) { return "";}
+  eventEnemyActive(source, target) { return "";}
+  eventAllyDied(source, target) { return "";}
+  eventEnemyDied(source, target) { return "";}
   
   
   takeDamage(source, damageResult) {
@@ -852,7 +776,7 @@ class hero {
         source._currentStats["damageDealt"] += damageResult["damageAmount"];
         this._currentStats["totalHP"] = 0;
         result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>";
-        result += this.alertHeroDied(source);
+        deathQueue.push([source, this]);
       }
     } else {
       this._currentStats["totalHP"] = this._currentStats["totalHP"] - damageResult["damageAmount"];
@@ -906,28 +830,30 @@ class hero {
   
   
   doBasic() {
-    var result = {};
-    var damageResult = [];
+    var result = "";
+    var damageResult = {};
     var target = getFirstTarget(this._enemies);
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "basic", "normal");
-    result["description"] = this.formatDamageResult(target, damageResult, "Basic Attack");
-    result["description"] += this.getEnergy(this, 50);
-    result["eventDescription"] = this.alertDidBasic(target, damageResult);
+    result = this.formatDamageResult(target, damageResult, "Basic Attack");
+    result += this.getEnergy(this, 50);
+    
+    basicQueue.push([this, target]);
     
     return result;
   }
   
   
   doActive() { 
-    var result = {};
-    var damageResult = [];
+    var result = "";
+    var damageResult = {};
     var target = getFirstTarget(this._enemies);
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal");
-    result["description"] = this.formatDamageResult(target, damageResult, "Active (Template)");
+    result = this.formatDamageResult(target, damageResult, "Active (Template)");
     this._currentStats["energy"] = 0;
-    result["eventDescription"] = this.alertDidActive(target, damageResult);
+    
+    activeQueue.push([this, target]);
     
     return result;
   }

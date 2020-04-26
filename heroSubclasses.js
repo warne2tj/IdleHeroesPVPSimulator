@@ -5,14 +5,15 @@ class Foolish extends hero {
   }
   
   doActive() {
-    var result = {};
+    var result = "";
     var damageResult = {};
     var target = getFirstTarget(this._enemies);
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 1.8);
-    result["description"] = this.formatDamageResult(target, damageResult, "Thump");
-    result["eventDescription"] = this.alertDidActive(target, damageResult);
+    result = this.formatDamageResult(target, damageResult, "Thump");
     this._currentStats["energy"] = 0;
+    
+    activeQueue.push([this, target]);
     
     return result;
   }
@@ -31,7 +32,7 @@ class Baade extends hero {
   }
   
   doBasic() {
-    var result = {};
+    var result = "";
     var damageResult = {};
     var additionalDamageResult = {};
     var target = getLowestHPTarget(this._enemies);
@@ -39,7 +40,7 @@ class Baade extends hero {
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.1, "basic", "normal", 1, 0);
     additionalDamage = damageResult["damageAmount"];
-    result["description"] = this.formatDamageResult(target, damageResult, "Basic Attack");
+    result = this.formatDamageResult(target, damageResult, "Basic Attack");
     
     if (target._currentStats["totalHP"] > 0) {
       var outcomeRoll = Math.random();
@@ -62,19 +63,19 @@ class Baade extends hero {
           e5Desc: ""
         };
         
-        result["description"] += "Passive <span class='skill'>Death Threat</span> did additional damage: " + formatNum(additionalDamage) + ". ";
-        result["description"] += target.takeDamage(this, additionalDamageResult);
+        result += "Passive <span class='skill'>Death Threat</span> did additional damage: " + formatNum(additionalDamage) + ". ";
+        result += target.takeDamage(this, additionalDamageResult);
       }
     }
     
-    result["description"] += this.getEnergy(this, 50);
-    result["eventDescription"] = this.alertDidBasic(target, damageResult);
+    result += this.getEnergy(this, 50);
+    basicQueue.push([this, target]);
     
     return result;
   }
   
   doActive() {
-    var result = {};
+    var result = "";
     var damageResult = {};
     var additionalDamageResult = {};
     var target = getLowestHPTarget(this._enemies);
@@ -83,7 +84,7 @@ class Baade extends hero {
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 1.5, 0);
     additionalDamage = damageResult["damageAmount"];
-    result["description"] = this.formatDamageResult(target, damageResult, "Nether Strike");
+    result = this.formatDamageResult(target, damageResult, "Nether Strike");
     
     if (target._currentStats["totalHP"] > 0) {
       var outcomeRoll = Math.random();
@@ -106,25 +107,25 @@ class Baade extends hero {
           e5Desc: ""
         };
         
-        result["description"] += "<span class='skill'>Nether Strike</span> did additional damage: " + formatNum(additionalDamage) + ". ";
-        result["description"] += target.takeDamage(this, additionalDamageResult);
+        result += "<span class='skill'>Nether Strike</span> did additional damage: " + formatNum(additionalDamage) + ". ";
+        result += target.takeDamage(this, additionalDamageResult);
       }
     }
     
     this._currentStats["energy"] = 0;
     
     healAmount = Math.round((damageResult["damageAmount"] + additionalDamage) * 0.2);
-    result["description"] += this.getHeal(this, healAmount);
+    result += this.getHeal(this, healAmount);
     
     this.getBuff("Nether Strike", 6, {attackPercent: 0.4});
-    result["description"] += " Baade gains " + formatNum(40) + "% attack for " + formatNum(6) + " rounds.";
+    result += " Baade gains " + formatNum(40) + "% attack for " + formatNum(6) + " rounds.";
     
-    result["eventDescription"] = this.alertDidActive(target, damageResult);
+    activeQueue.push([this, target]);
     
     return result;
   }
   
-  eventEnemyDied(source, target, damageResult) { 
+  eventEnemyDied(source, target) { 
     var result = ""
     
     if (this._currentStats["totalHP"] > 0) {

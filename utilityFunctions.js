@@ -1,3 +1,8 @@
+function formatNum(num) {
+  return "<span class ='num'>" + num.toLocaleString() + "</span>";
+}
+
+
 function getRandomTargets(arrTargets) {
   var copyTargets = [];
   
