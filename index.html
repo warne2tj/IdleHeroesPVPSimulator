@@ -11,6 +11,8 @@
   <script src="heroes.js"></script>
   <script src="heroSubclasses.js"></script>
   <script src="baseHeroStats.js"></script>
+  <script src="monsters.js"></script>
+  <script src="baseMonsterStats.js"></script>
   <script src="guildTech.js"></script>
   <script src="equipment.js"></script>
   <script src="stone.js"></script>
@@ -206,6 +208,7 @@
 	"defTechPriestpetrifyImmune": "0",
 	"defTechPriesttwineImmune": "0",
 	"attAvatarFrame": "None",
+	"attMonster": "Deer",
 	"attHero0Name": "Baade",
 	"attHero0Skin": "None",
 	"attHero0Stone": "None",
@@ -285,14 +288,15 @@
 	"attHero5Enable4": "None",
 	"attHero5Enable5": "None",
 	"defAvatarFrame": "None",
+	"defMonster": "None",
 	"defHero0Name": "Foolish",
 	"defHero0Skin": "None",
-	"defHero0Stone": "S3 HP, HP",
-	"defHero0Artifact": "Withered Armor",
-	"defHero0Weapon": "6* Thorny Flame Whip",
-	"defHero0Accessory": "6* Flame Necklace",
-	"defHero0Armor": "Warrior's Armor",
-	"defHero0Shoe": "Warrior's Boots",
+	"defHero0Stone": "None",
+	"defHero0Artifact": "None",
+	"defHero0Weapon": "None",
+	"defHero0Accessory": "None",
+	"defHero0Armor": "None",
+	"defHero0Shoe": "None",
 	"defHero0Enable1": "None",
 	"defHero0Enable2": "None",
 	"defHero0Enable3": "None",
@@ -377,6 +381,11 @@
         <div class="row">
           <div class="col-25"><label for="attAvatarFrame">Avatar Frame:</label></div>
           <div class="col-75"><select id="attAvatarFrame" onchange="updateAttackers();"></select></div>
+        </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="attMonster">Monster:</label></div>
+          <div class="col-75"><select id="attMonster" onchange="updateAttackers();"></select></div>
         </div>
         
         <h4>Warrior Tech</h4>
@@ -1506,6 +1515,11 @@
           <div class="col-75"><select id="defAvatarFrame" onchange="updateDefenders();"></select></div>
         </div>
         
+        <div class="row">
+          <div class="col-25"><label for="defMonster">Monster:</label></div>
+          <div class="col-75"><select id="defMonster" onchange="updateDefenders();"></select></div>
+        </div>
+        
         <h4>Warrior Tech</h4>
           
         <div class="row">
@@ -2628,7 +2642,10 @@
   
   <button class="accordion colorC">Release Notes</button>
   <div class="panel">
-    <p>Monsters not currently implemented.</p>
+    <p>
+      <div>Removed display stats. Keeping track of and syncing two sets of stats was getting to be a pain. If you want to see what the displayed stats would look like, set the monster and avatar frame to none.</div>
+      <div>Monsters not currently implemented.</div>
+    </p>
     <h4>Implemented Heroes:</h4>
     <p>
       <div>+ Foolish</div>

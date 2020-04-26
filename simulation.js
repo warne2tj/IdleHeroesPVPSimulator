@@ -57,9 +57,16 @@ function runSim() {
   var orderOfAttack = [];
   var numOfHeroes = 0;
   var result = {};
+  var monsterResult = "";
   var someoneWon = "";
   var endRoundDesc = "";
   var numLiving = 0;
+  
+  var attMonsterName = document.getElementById("attMonster").value;
+  var attMonster = new baseMonsterStats[attMonsterName]["className"](attMonsterName, "att");
+  
+  var defMonsterName = document.getElementById("defMonster").value;
+  var defMonster = new baseMonsterStats[defMonsterName]["className"](defMonsterName, "def");
   
   oCombatLog.innerHTML = "";
   
@@ -78,6 +85,8 @@ function runSim() {
     
     if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(x) +" Started.</p>"};
     someoneWon = "";
+    attMonster._energy = 0;
+    defMonster._energy = 0;
     
     // snapshot stats as they are
     orderOfAttack = [];
@@ -122,11 +131,29 @@ function runSim() {
             // do active
             result = orderOfAttack[i].doActive();
             if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["eventDescription"];}
+            
+            if (orderOfAttack[i]._attOrDef == "att") {
+              if (attMonster._monsterName != "None") {
+                monsterResult = "<div>" + attMonster.monsterDesc() + " gained " + formatNum(10) + " energy. ";
+                attMonster._energy += 10;
+                monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
+                if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+              }
+            } else {
+              if (defMonster._monsterName != "None") {
+                monsterResult = "<div>" + defMonster.monsterDesc() + " gained " + formatNum(10) + " energy. ";
+                defMonster._energy += 10;
+                monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
+                if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+              }
+            }
+            
             someoneWon = checkForWin();
           } else {
             // do basic
             result = orderOfAttack[i].doBasic();
             if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["eventDescription"];}
+            
             someoneWon = checkForWin();
           }
           
@@ -144,15 +171,40 @@ function runSim() {
       }
       
       // trigger end of round stuff
-      endRoundDesc = "<p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";
+      oCombatLog.innerHTML += "<p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";
+      
+      // handle monster stuff
+      if (attMonster._monsterName != "None") {
+        monsterResult = "<p><div>" + attMonster.monsterDesc() + " gained " + formatNum(20) + " energy. ";
+        attMonster._energy += 20;
+        monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
+      
+        if (attMonster._energy >= 100) {
+          monsterResult += attMonster.doActive();
+        }
+        
+        if(numSims == 1) {oCombatLog.innerHTML += monsterResult + "</p>";}
+      }
+      
+      if (defMonster._monsterName != "None") {
+        monsterResult = "<p><div>" + defMonster.monsterDesc() + " gained " + formatNum(20) + " energy. ";
+        defMonster._energy += 20;
+        monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
+      
+        if (defMonster._energy >= 100) {
+          monsterResult += defMonster.doActive();
+        }
+        
+        if(numSims == 1) {oCombatLog.innerHTML += monsterResult + "</p>";}
+      }
       
       // handle buffs and debuffs
       for (var h in orderOfAttack) {
-        endRoundDesc += orderOfAttack[h].tickBuffs();
+        if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickBuffs();}
       }
       
       for (var h in orderOfAttack) {
-        endRoundDesc += orderOfAttack[h].tickDebuffs();
+        if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickDebuffs();}
       }
       
       // get number of living heroes for shared fate enable
@@ -164,12 +216,11 @@ function runSim() {
       // trigger E3 enables
       for (var h in orderOfAttack) {
         if (orderOfAttack[h]._currentStats["totalHP"] > 0) { 
-          endRoundDesc += orderOfAttack[h].tickEnable3(numLiving);
+          if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickEnable3(numLiving);}
         }
       }
       
-      endRoundDesc += "</p>"
-      if(numSims == 1) {oCombatLog.innerHTML += endRoundDesc;}
+      if(numSims == 1) {oCombatLog.innerHTML += "</p>";}
       
       // @ end of round
     }
@@ -209,11 +260,15 @@ function runSim() {
   
   oCombatLog.innerHTML += "<p class='logSeg'>Attacker won " + winCount + " out of " + numSims + " (" + formatNum((winCount/numSims * 100).toFixed(2)) + "%).</p>";
   
+  // damage summary
   oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average damage summary.</div>";
   for (var i = 0; i < attHeroes.length; i++) {
     if (attHeroes[i]._heroName != "None") {
       oCombatLog.innerHTML += "<div>" + attHeroes[i].heroDesc() + ": " + formatNum(Math.floor(attHeroes[i]._damageDealt / numSims)) + "</div>";
     }
+  }
+  if (attMonster._monsterName != "None") {
+    oCombatLog.innerHTML += "<div>" + attMonster.monsterDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageDealt"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
@@ -223,21 +278,31 @@ function runSim() {
       oCombatLog.innerHTML += "<div>" + defHeroes[i].heroDesc() + ": " + formatNum(Math.floor(defHeroes[i]._damageDealt / numSims)) + "</div>";
     }
   }
+  if (defMonster._monsterName != "None") {
+    oCombatLog.innerHTML += "<div>" + defMonster.monsterDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageDealt"] / numSims)) + "</div>";
+  }
   oCombatLog.innerHTML += "</p>";
   
-  oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average healing summary.</div>";
+  // healing and damage prevention summary
+  oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average healing and damage prevention summary.</div>";
   for (var i = 0; i < attHeroes.length; i++) {
     if (attHeroes[i]._heroName != "None") {
       oCombatLog.innerHTML += "<div>" + attHeroes[i].heroDesc() + ": " + formatNum(Math.floor(attHeroes[i]._damageHealed / numSims)) + "</div>";
     }
   }
+  if (attMonster._monsterName != "None") {
+    oCombatLog.innerHTML += "<div>" + attMonster.monsterDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageHealed"] / numSims)) + "</div>";
+  }
   oCombatLog.innerHTML += "</p>";
   
-  oCombatLog.innerHTML += "<p><div class='logSeg'>Defender average healing summary.</div>";
+  oCombatLog.innerHTML += "<p><div class='logSeg'>Defender average healing and damage prevention summary.</div>";
   for (var i = 0; i < defHeroes.length; i++) {
     if (defHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + defHeroes[i]._heroName + ": " + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + "</div>";
+      oCombatLog.innerHTML += "<div>" + defHeroes[i].heroDesc() + ": " + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + "</div>";
     }
+  }
+  if (defMonster._monsterName != "None") {
+    oCombatLog.innerHTML += "<div>" + defMonster.monsterDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageHealed"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   

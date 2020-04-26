@@ -9,19 +9,11 @@ class hero {
     this._heroLevel = baseHeroStats[sHeroName]["heroLevel"];
     this._heroClass = baseHeroStats[sHeroName]["heroClass"];
     
-    // start with base stats
     this._stats = {};
-    
     this._currentStats = {};
     this._attackMultipliers = {};
     this._hpMultipliers = {};
     this._armorMultipliers = {};
-    
-    // Non-displayed stat multipliers not reflected on info sheet
-    // e.g. Avatar Frame, Auras, and Monsters
-    this._ndAttackMultipliers = {};
-    this._ndHPMultipliers = {};
-    this._ndArmorMultipliers = {};
     
     // set equipment
     this._stone = "None";
@@ -66,9 +58,6 @@ class hero {
     this._stats["totalHP"] = this._stats["hp"];
     this._stats["totalAttack"] = this._stats["attack"];
     this._stats["totalArmor"] = this._stats["armor"];
-    this._stats["displayHP"] = this._stats["hp"];
-    this._stats["displayAttack"] = this._stats["attack"];
-    this._stats["displayArmor"] = this._stats["armor"];
     this._stats["skillDamage"] = 0.0;
     this._stats["precision"] = 0.0;
     this._stats["block"] = 0.0;
@@ -93,15 +82,14 @@ class hero {
     this._stats["dotReduce"] = 0.0;
     this._stats["energy"] = 50;
     this._stats["controlPrecision"] = 0.0;
+    this._stats["fixedAttack"] = 0;
+    this._stats["fixedHP"] = 0;
     this._stats["unbendingWillTriggered"] = 0;
     this._stats["unbendingWillStacks"] = 0;
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
     this._armorMultipliers = {};
-    this._ndAttackMultipliers = {};
-    this._ndHPMultipliers = {};
-    this._ndArmorMultipliers = {};
     
     
     // apply enable bonus
@@ -259,11 +247,11 @@ class hero {
     
     
     // implement monster
+    var monsterName = document.getElementById(this._attOrDef + "Monster").value;
+    this.applyStatChange(baseMonsterStats[monsterName]["stats"], "monster");
     
     
     // aura
-    // note: too lazy right now to split out the non-display 
-    //       bonuses to damage reduce and control immune
     var arrToUse;
     if (this._attOrDef == "att") {
       arrToUse = attHeroes;
@@ -301,30 +289,28 @@ class hero {
     
     if (heroCount == 6) {
       for (var x in factionCount) {
-        this.applyNdStatChange(arrIdentical[factionCount[x]], "faction" + x);
+        this.applyStatChange(arrIdentical[factionCount[x]], "faction" + x);
       }
     
       var addBonuses = {
         damageReduce: 0.02 * (factionCount["Shadow"] + factionCount["Fortress"] + factionCount["Abyss"] + factionCount["Forest"]),
         controlImmune: 0.04 * (factionCount["Light"] + factionCount["Dark"])
       }
-      this.applyNdStatChange(addBonuses, "auraAdditionalBonuses");
+      this.applyStatChange(addBonuses, "auraAdditionalBonuses");
     }
     
     
     // avatar frame
     var sAvatarFrame = document.getElementById(this._attOrDef + "AvatarFrame").value;
-    this.applyNdStatChange(avatarFrames[sAvatarFrame], "avatarFrame");
+    this.applyStatChange(avatarFrames[sAvatarFrame], "avatarFrame");
     
     
     // future: implement celestial island
     
-    this._stats["displayHP"] = this.calcHP();
-    this._stats["displayAttack"] = this.calcAttack();
-    this._stats["displayArmor"] = this.calcArmor();
-    this._stats["totalHP"] = this.calcTotalHP();
-    this._stats["totalAttack"] = this.calcTotalAttack();
-    this._stats["totalArmor"] = this.calcTotalArmor();
+    
+    this._stats["totalHP"] = this.calcHP();
+    this._stats["totalAttack"] = this.calcAttack();
+    this._stats["totalArmor"] = this.calcArmor();
   }
   
   
@@ -343,26 +329,13 @@ class hero {
   }
   
   
-  applyNdStatChange(arrStats, strSource) {
-    for (var strStatName in arrStats) {
-      if (strStatName == "attackPercent") {
-        this._ndAttackMultipliers[strSource] = 1 + arrStats[strStatName];
-      } else if (strStatName == "hpPercent") {
-        this._ndHPMultipliers[strSource] = 1 + arrStats[strStatName];
-      } else if (strStatName == "armorPercent") {
-        this._ndArmorMultipliers[strSource] = 1 + arrStats[strStatName];
-      } else {
-        this._stats[strStatName] += arrStats[strStatName];
-      }
-    }
-  }
-  
-  
   calcAttack() {
     var att = this._stats["attack"];
     for (var x in this._attackMultipliers) {
       att = Math.floor(att * this._attackMultipliers[x]);
     }
+    
+    att += this._stats["fixedAttack"];
     
     return att;
   }
@@ -372,6 +345,8 @@ class hero {
     for (var x in this._hpMultipliers) {
       ehp = Math.floor(ehp * this._hpMultipliers[x]);
     }
+    
+    ehp += this._stats["fixedHP"];
     
     return ehp;
   }
@@ -386,37 +361,6 @@ class hero {
   }
   
   
-  calcTotalAttack() {
-    var att = this._stats["displayAttack"];
-    
-    for (var x in this._ndAttackMultipliers) {
-      att = Math.floor(att * this._ndAttackMultipliers[x]);
-    }
-    
-    return att;
-  }
-  
-  calcTotalHP() {
-    var ehp = this._stats["displayHP"];
-    
-    for (var x in this._ndHPMultipliers) {
-      ehp = Math.floor(ehp * this._ndHPMultipliers[x]);
-    }
-    
-    return ehp;
-  }
-  
-  calcTotalArmor() {
-    var ehp = this._stats["displayArmor"];
-    
-    for (var x in this._ndArmorMultipliers) {
-      ehp = Math.floor(ehp * this._ndArmorMultipliers[x]);
-    }
-    
-    return ehp;
-  }
-  
-  
   // Get hero stats for display.
   getHeroSheet() {
     console.log("Get stats summary for " + this._heroName);
@@ -424,7 +368,6 @@ class hero {
     var arrIntStats = [
       "hp", "attack", "speed", "armor", 
       "totalHP", "totalAttack", "totalArmor", 
-      "displayHP", "displayAttack", "displayArmor",
       "unbendingWillTriggered", "unbendingWillStacks"
     ];
     
