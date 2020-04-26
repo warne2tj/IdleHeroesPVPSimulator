@@ -84,6 +84,7 @@ function initialize() {
   addOptions(artifacts, "Artifact");
   
   var option;
+  
   for(var x in avatarFrames) {
     option = document.createElement("option");
     option.text = x;
@@ -92,6 +93,16 @@ function initialize() {
     option = document.createElement("option");
     option.text = x;
     document.getElementById("defAvatarFrame").add(option);
+  }
+  
+  for(var x in baseMonsterStats) {
+    option = document.createElement("option");
+    option.text = x;
+    document.getElementById("attMonster").add(option);
+    
+    option = document.createElement("option");
+    option.text = x;
+    document.getElementById("defMonster").add(option);
   }
   
   

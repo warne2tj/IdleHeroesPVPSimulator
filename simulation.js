@@ -1,52 +1,6 @@
-function speedSort(heroA, heroB) {
-  if (heroA._currentStats["speed"] > heroB._currentStats["speed"]) {
-    return -1;
-  } else if (heroA._currentStats["speed"] < heroB._currentStats["speed"]) {
-    return 1;
-  } else if (heroA._attOrDef == "att" && heroB._attOrDef == "def") {
-    return -1;
-  } else if (heroA._attOrDef == "def" && heroB._attOrDef == "att") {
-    return 1;
-  } else if (heroA._heroPos < heroB._heroPos) {
-    return -1;
-  } else {
-    return 1;
-  }
-}
-
-
-function formatNum(num) {
-  return "<span class ='num'>" + num.toLocaleString() + "</span>";
-}
-
-
-function checkForWin() {
-  var attAlive = 0;
-  var defAlive = 0;
-  var numOfHeroes = 0;
-  
-  numOfHeroes = attHeroes.length;
-  for (var i = 0; i < numOfHeroes; i++) {
-    if (attHeroes[i]._currentStats["totalHP"] > 0) {
-      attAlive++;
-    }
-  }
-  
-  numOfHeroes = defHeroes.length;
-  for (var i = 0; i < numOfHeroes; i++) {
-    if (defHeroes[i]._currentStats["totalHP"] > 0) {
-      defAlive++;
-    }
-  }
-  
-  if (attAlive == 0 && defAlive >= 0) {
-    return "def";
-  } else if (attAlive > 0 && defAlive == 0) {
-    return "att";
-  } else {
-    return "";
-  }
-}
+var deathQueue = [];
+var basicQueue = [];
+var activeQueue = [];
 
 
 function runSim() {
@@ -57,9 +11,16 @@ function runSim() {
   var orderOfAttack = [];
   var numOfHeroes = 0;
   var result = {};
+  var monsterResult = "";
   var someoneWon = "";
   var endRoundDesc = "";
   var numLiving = 0;
+  
+  var attMonsterName = document.getElementById("attMonster").value;
+  var attMonster = new baseMonsterStats[attMonsterName]["className"](attMonsterName, "att");
+  
+  var defMonsterName = document.getElementById("defMonster").value;
+  var defMonster = new baseMonsterStats[defMonsterName]["className"](defMonsterName, "def");
   
   oCombatLog.innerHTML = "";
   
@@ -73,11 +34,13 @@ function runSim() {
     defHeroes[i]._damageHealed = 0;
   }
   
-  for (var x = 1; x <= numSims; x++) {
+  for (var simIterNum = 1; simIterNum <= numSims; simIterNum++) {
     // @ start of single simulation
     
-    if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(x) +" Started.</p>"};
+    if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(simIterNum) +" Started.</p>"};
     someoneWon = "";
+    attMonster._energy = 0;
+    defMonster._energy = 0;
     
     // snapshot stats as they are
     orderOfAttack = [];
@@ -110,50 +73,125 @@ function runSim() {
       
       orderOfAttack.sort(speedSort);
       
-      for (var i = 0; i < orderOfAttack.length; i++) {
+      for (var orderNum = 0; orderNum < orderOfAttack.length; orderNum++) {
         // @ start of hero action
+        deathQueue = [];
+        basicQueue = [];
+        activeQueue = [];
         
-        if (orderOfAttack[i]._currentStats["totalHP"] > 0) {
+        if (orderOfAttack[orderNum]._currentStats["totalHP"] > 0) {
         
-          if(numSims == 1) {oCombatLog.innerHTML += "<p>";}
+          if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
           
           // decide on action
-          if (orderOfAttack[i]._currentStats["energy"] >= 100) {
+          if (orderOfAttack[orderNum]._currentStats["energy"] >= 100) {
             // do active
-            result = orderOfAttack[i].doActive();
-            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["eventDescription"];}
-            someoneWon = checkForWin();
+            result = orderOfAttack[orderNum].doActive();
+            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
+            
+            if (orderOfAttack[orderNum]._attOrDef == "att") {
+              if (attMonster._monsterName != "None") {
+                monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
+                attMonster._energy += 10;
+                monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
+                if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+              }
+            } else {
+              if (defMonster._monsterName != "None") {
+                monsterResult = "<div>" + defMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
+                defMonster._energy += 10;
+                monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
+                if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+              }
+            }
+            
+            // process active queue
+            for (var e in activeQueue) {
+              temp = alertDidActive(activeQueue[e][0], activeQueue[e][1]);
+              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+            }
           } else {
             // do basic
-            result = orderOfAttack[i].doBasic();
-            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result["description"] + "</div>" + result["eventDescription"];}
-            someoneWon = checkForWin();
+            result = orderOfAttack[orderNum].doBasic();
+            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
+            
+            // process basic queue
+            for (var e in basicQueue) {
+              temp = alertDidBasic(basicQueue[e][0], basicQueue[e][1]);
+              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+            }
           }
+            
+          temp = processDeathQueue(oCombatLog);
+          if(numSims == 1) {oCombatLog.innerHTML += temp;}
+          
+          someoneWon = checkForWin();
           
           // @ end of hero action
-          if(numSims == 1) {oCombatLog.innerHTML += "</p>";}
           
-          if (someoneWon != "") {
-            break;
-          }
+          if (someoneWon != "") {break;}
         }
       }
       
-      if (someoneWon != "") {
-        break;
-      }
+      if (someoneWon != "") {break;}
       
       // trigger end of round stuff
-      endRoundDesc = "<p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";
+      if(numSims == 1) {oCombatLog.innerHTML += "<p></p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";}
+      
       
       // handle buffs and debuffs
       for (var h in orderOfAttack) {
-        endRoundDesc += orderOfAttack[h].tickBuffs();
+        if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickBuffs();}
       }
       
       for (var h in orderOfAttack) {
-        endRoundDesc += orderOfAttack[h].tickDebuffs();
+        if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickDebuffs();}
       }
+      
+      temp = processDeathQueue(oCombatLog);
+      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
+      
+      
+      // handle monster stuff
+      if (attMonster._monsterName != "None") {
+        monsterResult = "<p></p><div>" + attMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
+        attMonster._energy += 20;
+        monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
+      
+        if (attMonster._energy >= 100) {
+          monsterResult += attMonster.doActive();
+        }
+        
+        if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+      }
+      
+      temp = processDeathQueue(oCombatLog);
+      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
+      
+      if (defMonster._monsterName != "None") {
+        monsterResult = "<p></p><div>" + defMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
+        defMonster._energy += 20;
+        monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
+      
+        if (defMonster._energy >= 100) {
+          monsterResult += defMonster.doActive();
+        }
+        
+        if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+      }
+      
+      temp = processDeathQueue(oCombatLog);
+      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
+      
       
       // get number of living heroes for shared fate enable
       numLiving = 0;
@@ -164,12 +202,9 @@ function runSim() {
       // trigger E3 enables
       for (var h in orderOfAttack) {
         if (orderOfAttack[h]._currentStats["totalHP"] > 0) { 
-          endRoundDesc += orderOfAttack[h].tickEnable3(numLiving);
+          if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickEnable3(numLiving);}
         }
       }
-      
-      endRoundDesc += "</p>"
-      if(numSims == 1) {oCombatLog.innerHTML += endRoundDesc;}
       
       // @ end of round
     }
@@ -202,18 +237,22 @@ function runSim() {
       }
     }
     
-    if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Simulation #" + formatNum(x) +" Ended.</p>"};
+    if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Simulation #" + formatNum(simIterNum) +" Ended.</p>"};
     
     // @ end of simulation
   }
   
   oCombatLog.innerHTML += "<p class='logSeg'>Attacker won " + winCount + " out of " + numSims + " (" + formatNum((winCount/numSims * 100).toFixed(2)) + "%).</p>";
   
+  // damage summary
   oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average damage summary.</div>";
   for (var i = 0; i < attHeroes.length; i++) {
     if (attHeroes[i]._heroName != "None") {
       oCombatLog.innerHTML += "<div>" + attHeroes[i].heroDesc() + ": " + formatNum(Math.floor(attHeroes[i]._damageDealt / numSims)) + "</div>";
     }
+  }
+  if (attMonster._monsterName != "None") {
+    oCombatLog.innerHTML += "<div>" + attMonster.heroDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageDealt"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
@@ -223,23 +262,162 @@ function runSim() {
       oCombatLog.innerHTML += "<div>" + defHeroes[i].heroDesc() + ": " + formatNum(Math.floor(defHeroes[i]._damageDealt / numSims)) + "</div>";
     }
   }
+  if (defMonster._monsterName != "None") {
+    oCombatLog.innerHTML += "<div>" + defMonster.heroDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageDealt"] / numSims)) + "</div>";
+  }
   oCombatLog.innerHTML += "</p>";
   
-  oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average healing summary.</div>";
+  // healing and damage prevention summary
+  oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average healing and damage prevention summary.</div>";
   for (var i = 0; i < attHeroes.length; i++) {
     if (attHeroes[i]._heroName != "None") {
       oCombatLog.innerHTML += "<div>" + attHeroes[i].heroDesc() + ": " + formatNum(Math.floor(attHeroes[i]._damageHealed / numSims)) + "</div>";
     }
   }
+  if (attMonster._monsterName != "None") {
+    oCombatLog.innerHTML += "<div>" + attMonster.heroDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageHealed"] / numSims)) + "</div>";
+  }
   oCombatLog.innerHTML += "</p>";
   
-  oCombatLog.innerHTML += "<p><div class='logSeg'>Defender average healing summary.</div>";
+  oCombatLog.innerHTML += "<p><div class='logSeg'>Defender average healing and damage prevention summary.</div>";
   for (var i = 0; i < defHeroes.length; i++) {
     if (defHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + defHeroes[i]._heroName + ": " + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + "</div>";
+      oCombatLog.innerHTML += "<div>" + defHeroes[i].heroDesc() + ": " + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + "</div>";
     }
+  }
+  if (defMonster._monsterName != "None") {
+    oCombatLog.innerHTML += "<div>" + defMonster.heroDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageHealed"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
   oCombatLog.scrollTop = 0;
+}
+
+
+function processDeathQueue(oCombatLog) {
+  var temp = "";
+  
+  while (deathQueue.length > 0) {
+    temp += alertHeroDied(deathQueue[0][0], deathQueue[0][1]);
+    deathQueue.shift();
+  }
+  
+  return temp;
+}
+
+
+// alerters to trigger other heroes in response to an action
+
+// tell all heroes a hero did a basic attack and the outcome
+function alertDidBasic(source, target) {
+  var result = "";
+  var temp = "";
+  
+  for (var i = 0; i < source._allies.length; i++) {
+    temp = source._allies[i].eventAllyBasic(source, target);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
+    }
+  }
+  
+  for (var i = 0; i < source._enemies.length; i++) {
+    temp = source._enemies[i].eventEnemyBasic(source, target);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
+    }
+  }
+  
+  return result;
+}
+
+
+// tell all heroes a hero did an active and the outcome
+function alertDidActive(source, target) {
+  var result = "";
+  var temp = "";
+  
+  for (var i = 0; i < source._allies.length; i++) {
+    temp = source._allies[i].eventAllyActive(source, target);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
+    }
+  }
+  
+  for (var i = 0; i < source._enemies.length; i++) {
+    temp = source._enemies[i].eventEnemyActive(source, target);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
+    }
+  }
+  
+  return result;
+}
+  
+  
+// tell all heroes a hero died
+function alertHeroDied(source, target) {
+  var result = "";
+  var temp = "";
+  
+  for (var i = 0; i < target._allies.length; i++) {
+    temp = target._allies[i].eventAllyDied(source, target);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
+    }
+  }
+  
+  for (var i = 0; i < target._enemies.length; i++) {
+    temp = target._enemies[i].eventEnemyDied(source, target);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
+    }
+  }
+  
+  return result;
+}
+
+
+function speedSort(heroA, heroB) {
+  if (heroA._currentStats["speed"] > heroB._currentStats["speed"]) {
+    return -1;
+  } else if (heroA._currentStats["speed"] < heroB._currentStats["speed"]) {
+    return 1;
+  } else if (heroA._attOrDef == "att" && heroB._attOrDef == "def") {
+    return -1;
+  } else if (heroA._attOrDef == "def" && heroB._attOrDef == "att") {
+    return 1;
+  } else if (heroA._heroPos < heroB._heroPos) {
+    return -1;
+  } else {
+    return 1;
+  }
+}
+
+
+function checkForWin() {
+  var attAlive = 0;
+  var defAlive = 0;
+  var numOfHeroes = 0;
+  
+  numOfHeroes = attHeroes.length;
+  for (var i = 0; i < numOfHeroes; i++) {
+    if (attHeroes[i]._currentStats["totalHP"] > 0) {
+      attAlive++;
+    }
+  }
+  
+  numOfHeroes = defHeroes.length;
+  for (var i = 0; i < numOfHeroes; i++) {
+    if (defHeroes[i]._currentStats["totalHP"] > 0) {
+      defAlive++;
+    }
+  }
+  
+  if (attAlive == 0 && defAlive >= 0) {
+    return "def";
+  } else if (attAlive > 0 && defAlive == 0) {
+    return "att";
+  } else {
+    return "";
+  }
 }
