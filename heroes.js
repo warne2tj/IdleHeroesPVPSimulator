@@ -45,6 +45,7 @@ class hero {
     
     this._damageDealt = 0;
     this._damageHealed = 0;
+    this._rng = Math.random();
   }
   
   

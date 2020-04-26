@@ -134,14 +134,14 @@ function runSim() {
             
             if (orderOfAttack[i]._attOrDef == "att") {
               if (attMonster._monsterName != "None") {
-                monsterResult = "<div>" + attMonster.monsterDesc() + " gained " + formatNum(10) + " energy. ";
+                monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
                 attMonster._energy += 10;
                 monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
                 if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
               }
             } else {
               if (defMonster._monsterName != "None") {
-                monsterResult = "<div>" + defMonster.monsterDesc() + " gained " + formatNum(10) + " energy. ";
+                monsterResult = "<div>" + defMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
                 defMonster._energy += 10;
                 monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
                 if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
@@ -175,7 +175,7 @@ function runSim() {
       
       // handle monster stuff
       if (attMonster._monsterName != "None") {
-        monsterResult = "<p><div>" + attMonster.monsterDesc() + " gained " + formatNum(20) + " energy. ";
+        monsterResult = "<p><div>" + attMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
         attMonster._energy += 20;
         monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
       
@@ -187,7 +187,7 @@ function runSim() {
       }
       
       if (defMonster._monsterName != "None") {
-        monsterResult = "<p><div>" + defMonster.monsterDesc() + " gained " + formatNum(20) + " energy. ";
+        monsterResult = "<p><div>" + defMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
         defMonster._energy += 20;
         monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
       
@@ -268,7 +268,7 @@ function runSim() {
     }
   }
   if (attMonster._monsterName != "None") {
-    oCombatLog.innerHTML += "<div>" + attMonster.monsterDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageDealt"] / numSims)) + "</div>";
+    oCombatLog.innerHTML += "<div>" + attMonster.heroDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageDealt"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
@@ -279,7 +279,7 @@ function runSim() {
     }
   }
   if (defMonster._monsterName != "None") {
-    oCombatLog.innerHTML += "<div>" + defMonster.monsterDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageDealt"] / numSims)) + "</div>";
+    oCombatLog.innerHTML += "<div>" + defMonster.heroDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageDealt"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
@@ -291,7 +291,7 @@ function runSim() {
     }
   }
   if (attMonster._monsterName != "None") {
-    oCombatLog.innerHTML += "<div>" + attMonster.monsterDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageHealed"] / numSims)) + "</div>";
+    oCombatLog.innerHTML += "<div>" + attMonster.heroDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageHealed"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
@@ -302,7 +302,7 @@ function runSim() {
     }
   }
   if (defMonster._monsterName != "None") {
-    oCombatLog.innerHTML += "<div>" + defMonster.monsterDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageHealed"] / numSims)) + "</div>";
+    oCombatLog.innerHTML += "<div>" + defMonster.heroDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageHealed"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
