@@ -357,12 +357,12 @@ class hero {
   
   
   calcArmor() {
-    var ehp = this._stats["armor"];
+    var armor = this._stats["armor"];
     for (var x in this._armorMultipliers) {
-      ehp = Math.floor(ehp * this._armorMultipliers[x]);
+      armor = Math.floor(armor * this._armorMultipliers[x]);
     }
     
-    return ehp;
+    return armor;
   }
   
   
@@ -421,7 +421,7 @@ class hero {
     var lethalFightback = 1.0;
     var damageAgainstBurning = 1.0;
     
-    var armorMitigation = armorReduces * (target._currentStats["armor"] * (1 - armorBreak) / (180 + 20*(target._heroLevel)));
+    var armorMitigation = armorReduces * (target._currentStats["totalArmor"] * (1 - armorBreak) / (180 + 20*(target._heroLevel)));
     var reduceDamage = target._currentStats["damageReduce"] > 0.75 ? 0.75 : target._currentStats["damageReduce"];
     var critDamageReduce = target._currentStats["critDamageReduce"];
     var classDamageReduce = target._currentStats[this._heroClass.toLowerCase() + "Reduce"];
@@ -459,7 +459,7 @@ class hero {
       e5Desc = "<div><span class='skill'>Lethal Fightback</span> triggered additional damage.</div>";
     }
     
-    if (damageType == "burn" && target._currentStats["isBurning"] == 1) {
+    if (target._currentStats["isBurning"] == 1) {
        damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
@@ -492,10 +492,7 @@ class hero {
     
     // E5 Balanced strike
     if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike") {
-      if (critted == true) {
-        var healAmount = Math.round(0.15 * (attackDamage + holyDamage));
-        e5Desc = "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>" + this.getHeal(this, healAmount);
-      } else {
+      if (critted == false) {
         attackDamage *= 1.3;
         holyDamage *= 1.3;
         e5Desc = "<div><span class='skill'>Balanced Strike</span> triggered additional damage on non-crit.</div>";
@@ -818,6 +815,15 @@ class hero {
       this._currentStats["totalHP"] = this._currentStats["totalHP"] - damageResult["damageAmount"];
       source._currentStats["damageDealt"] += damageResult["damageAmount"];
       result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(this._currentStats["totalHP"]) + ".</div>";
+    }
+
+    
+    // balanced strike enable heal
+    if ((damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic") && source._enable5 == "BalancedStrike") {
+      if (damageResult["critted"] == true) {
+        var healAmount = Math.round(0.15 * (damageResult["damageAmount"]));
+        result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>" + source.getHeal(source, healAmount);
+      }
     }
     
     if (this._currentStats["totalHP"] > 0) {

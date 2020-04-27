@@ -1,3 +1,27 @@
+/* Function prototypes
+
+calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1)
+    return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
+    damageSource = passive, active, monster
+    damageType = normal, burn, bleed, poison, mark
+
+formatDamageResult(target, [damageResult{}], strAttackDesc)
+
+takeDamage(source, damageResult{})
+
+getHeal(source, amount)
+
+getEnergy(source, amount)
+
+getBuff(source, buffName, duration, effects{})
+
+getDebuff(source, debuffName, duration, effects{})
+
+basicQueue[], activeQueue[], deathQueue[] = push([source, target])
+    
+*/
+
+
 // 1* Foolish
 class Foolish extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
