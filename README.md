@@ -9,12 +9,11 @@ Description:
 Implemented Heroes:
   * Foolish
   * Baade 5 star
-  * The rest are only there for stat verification and testing
   
   
 Implemented Monsters:
-  * Deer (in progress)
-  * Phoenix (in progress)
+  * Deer
+  * Phoenix
 
   
 To Do List
@@ -98,6 +97,9 @@ Mechanics:
     + active does true damage
     + excess energy does not increase damage of active
     + static attack and hp buff, how does it work?
+    + monsters act at end of turn before buffs and debuffs tick
+    + which means their buffs/debuffs last one round less than stated, dots still do full damage
+    + first tick of dot happens right away, then debuffs tick, that's 2 rounds worth of dots that occur at the end of the turn
   * Buffs/debuffs
     + currently applying percent buff debuffs using rounding to match the calculate damage, but should they be fully recalculated using floor in between each application?
     + do buffs tick first, then debuffs?

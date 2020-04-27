@@ -84,6 +84,7 @@ class Baade extends hero {
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 1.5, 0);
     additionalDamage = damageResult["damageAmount"];
+    
     result = this.formatDamageResult(target, damageResult, "Nether Strike");
     
     if (target._currentStats["totalHP"] > 0) {
@@ -116,7 +117,7 @@ class Baade extends hero {
     
     healAmount = Math.round((damageResult["damageAmount"] + additionalDamage) * 0.2);
     result += this.getHeal(this, healAmount);
-    result += this.getBuff("Nether Strike", 6, {attackPercent: 0.4});
+    result += this.getBuff(this, "Nether Strike", 6, {attackPercent: 0.4});
     
     activeQueue.push([this, target]);
     
@@ -128,7 +129,7 @@ class Baade extends hero {
     
     if (this._currentStats["totalHP"] > 0) {
       result = "<div>" + this.heroDesc() + " <span class='skill'>Blood Armor</span> passive triggered.</div>";
-      result += this.getBuff("Blood Armor", 1, {damageReduce: 0.1});
+      result += this.getBuff(this, "Blood Armor", 1, {damageReduce: 0.1});
     }
     
     return result;
