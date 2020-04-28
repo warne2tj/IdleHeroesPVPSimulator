@@ -9,8 +9,8 @@ Description:
 Implemented Heroes:
   * Foolish
   * Baade 5 star
-  * Carrie E5 (in progress)
-  * Tara E5 (next up)
+  * Carrie E5
+  * Tara E5 (up next)
   
   
 Implemented Monsters:
