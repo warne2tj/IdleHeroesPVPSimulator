@@ -82,6 +82,7 @@ function runSim() {
         if (orderOfAttack[orderNum]._currentStats["totalHP"] > 0) {
         
           if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
+          orderOfAttack[orderNum].rng = Math.random();
           
           // decide on action
           if (orderOfAttack[orderNum]._currentStats["energy"] >= 100) {
@@ -89,6 +90,11 @@ function runSim() {
             result = orderOfAttack[orderNum].doActive();
             if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
             
+            // set hero energy to 0 after doing active
+            orderOfAttack[orderNum]._currentStats["energy"] = 0;
+            if(numSims == 1) {oCombatLog.innerHTML += "<div>Energy reset to <span class='num'>0</span> after active.</div>";}
+            
+            // monster gains energy from hero active
             if (orderOfAttack[orderNum]._attOrDef == "att") {
               if (attMonster._monsterName != "None") {
                 monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
@@ -96,6 +102,7 @@ function runSim() {
                 monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
                 if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
               }
+              
             } else {
               if (defMonster._monsterName != "None") {
                 monsterResult = "<div>" + defMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
@@ -107,7 +114,7 @@ function runSim() {
             
             // process active queue
             for (var e in activeQueue) {
-              temp = alertDidActive(activeQueue[e][0], activeQueue[e][1]);
+              temp = alertDidActive(activeQueue[e]);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
             }
           } else {
@@ -115,9 +122,13 @@ function runSim() {
             result = orderOfAttack[orderNum].doBasic();
             if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
             
+            // hero gains 50 energy after doing basic
+            temp = orderOfAttack[orderNum].getEnergy(orderOfAttack[orderNum], 50);
+            if(numSims == 1) {oCombatLog.innerHTML += temp;}
+            
             // process basic queue
             for (var e in basicQueue) {
-              temp = alertDidBasic(basicQueue[e][0], basicQueue[e][1]);
+              temp = alertDidBasic(basicQueue[e]);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
             }
           }
@@ -250,22 +261,22 @@ function runSim() {
   oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average damage summary.</div>";
   for (var i = 0; i < attHeroes.length; i++) {
     if (attHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + attHeroes[i].heroDesc() + ": " + formatNum(Math.floor(attHeroes[i]._damageDealt / numSims)) + "</div>";
+      oCombatLog.innerHTML += "<div><span class='att'>" + attHeroes[i]._heroName + "</span>: " + formatNum(Math.floor(attHeroes[i]._damageDealt / numSims)) + "</div>";
     }
   }
   if (attMonster._monsterName != "None") {
-    oCombatLog.innerHTML += "<div>" + attMonster.heroDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageDealt"] / numSims)) + "</div>";
+    oCombatLog.innerHTML += "<div><span class='att'>" + attMonster._monsterName + "</span>: " + formatNum(Math.floor(attMonster._currentStats["damageDealt"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
   oCombatLog.innerHTML += "<p><div class='logSeg'>Defender average damage summary.</div>";
   for (var i = 0; i < defHeroes.length; i++) {
     if (defHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + defHeroes[i].heroDesc() + ": " + formatNum(Math.floor(defHeroes[i]._damageDealt / numSims)) + "</div>";
+      oCombatLog.innerHTML += "<div><span class='def'>" + defHeroes[i]._heroName + "</span>: " + formatNum(Math.floor(defHeroes[i]._damageDealt / numSims)) + "</div>";
     }
   }
   if (defMonster._monsterName != "None") {
-    oCombatLog.innerHTML += "<div>" + defMonster.heroDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageDealt"] / numSims)) + "</div>";
+    oCombatLog.innerHTML += "<div><span class='def'>" + defMonster._monsterName + "</span>: " + formatNum(Math.floor(defMonster._currentStats["damageDealt"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
@@ -273,22 +284,22 @@ function runSim() {
   oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average healing and damage prevention summary.</div>";
   for (var i = 0; i < attHeroes.length; i++) {
     if (attHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + attHeroes[i].heroDesc() + ": " + formatNum(Math.floor(attHeroes[i]._damageHealed / numSims)) + "</div>";
+      oCombatLog.innerHTML += "<div><span class='att'>" + attHeroes[i]._heroName + "</span>: " + formatNum(Math.floor(attHeroes[i]._damageHealed / numSims)) + "</div>";
     }
   }
   if (attMonster._monsterName != "None") {
-    oCombatLog.innerHTML += "<div>" + attMonster.heroDesc() + ": " + formatNum(Math.floor(attMonster._currentStats["damageHealed"] / numSims)) + "</div>";
+    oCombatLog.innerHTML += "<div><span class='att'>" + attMonster._monsterName + "</span>: " + formatNum(Math.floor(attMonster._currentStats["damageHealed"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
   oCombatLog.innerHTML += "<p><div class='logSeg'>Defender average healing and damage prevention summary.</div>";
   for (var i = 0; i < defHeroes.length; i++) {
     if (defHeroes[i]._heroName != "None") {
-      oCombatLog.innerHTML += "<div>" + defHeroes[i].heroDesc() + ": " + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + "</div>";
+      oCombatLog.innerHTML += "<div><span class='def'>" + defHeroes[i]._heroName + "</span>: " + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + "</div>";
     }
   }
   if (defMonster._monsterName != "None") {
-    oCombatLog.innerHTML += "<div>" + defMonster.heroDesc() + ": " + formatNum(Math.floor(defMonster._currentStats["damageHealed"] / numSims)) + "</div>";
+    oCombatLog.innerHTML += "<div><span class='def'>" + defMonster._monsterName + "</span>: " + formatNum(Math.floor(defMonster._currentStats["damageHealed"] / numSims)) + "</div>";
   }
   oCombatLog.innerHTML += "</p>";
   
@@ -300,7 +311,7 @@ function processDeathQueue(oCombatLog) {
   var temp = "";
   
   while (deathQueue.length > 0) {
-    temp += alertHeroDied(deathQueue[0][0], deathQueue[0][1]);
+    temp += alertHeroDied(deathQueue[0]);
     deathQueue.shift();
   }
   
@@ -311,21 +322,25 @@ function processDeathQueue(oCombatLog) {
 // alerters to trigger other heroes in response to an action
 
 // tell all heroes a hero did a basic attack and the outcome
-function alertDidBasic(source, target) {
+function alertDidBasic(e) {
   var result = "";
   var temp = "";
   
-  for (var i = 0; i < source._allies.length; i++) {
-    temp = source._allies[i].eventAllyBasic(source, target);
-    if (temp != "") {
-      result += "<div>" + temp + "</div>";
+  for (var i = 0; i < e[0]._allies.length; i++) {
+    if (e[0]._allies[i]._heroName != "None") {
+      temp = e[0]._allies[i].eventAllyBasic(e);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
     }
   }
   
-  for (var i = 0; i < source._enemies.length; i++) {
-    temp = source._enemies[i].eventEnemyBasic(source, target);
-    if (temp != "") {
-      result += "<div>" + temp + "</div>";
+  for (var i = 0; i < e[0]._enemies.length; i++) {
+    if (e[0]._enemies[i]._heroName != "None") {
+      temp = e[0]._enemies[i].eventEnemyBasic(e);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
     }
   }
   
@@ -334,21 +349,25 @@ function alertDidBasic(source, target) {
 
 
 // tell all heroes a hero did an active and the outcome
-function alertDidActive(source, target) {
+function alertDidActive(e) {
   var result = "";
   var temp = "";
   
-  for (var i = 0; i < source._allies.length; i++) {
-    temp = source._allies[i].eventAllyActive(source, target);
-    if (temp != "") {
-      result += "<div>" + temp + "</div>";
+  for (var i = 0; i < e[0]._allies.length; i++) {
+    if (e[0]._allies[i]._heroName != "None") {
+      temp = e[0]._allies[i].eventAllyActive(e);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
     }
   }
   
-  for (var i = 0; i < source._enemies.length; i++) {
-    temp = source._enemies[i].eventEnemyActive(source, target);
-    if (temp != "") {
-      result += "<div>" + temp + "</div>";
+  for (var i = 0; i < e[0]._enemies.length; i++) {
+    if (e[0]._enemies[i]._heroName != "None") {
+      temp = e[0]._enemies[i].eventEnemyActive(e);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
     }
   }
   
@@ -357,21 +376,25 @@ function alertDidActive(source, target) {
   
   
 // tell all heroes a hero died
-function alertHeroDied(source, target) {
+function alertHeroDied(e) {
   var result = "";
   var temp = "";
   
-  for (var i = 0; i < target._allies.length; i++) {
-    temp = target._allies[i].eventAllyDied(source, target);
-    if (temp != "") {
-      result += "<div>" + temp + "</div>";
+  for (var i = 0; i < e[1]._allies.length; i++) {
+    if (e[1]._allies[i]._heroName != "None") {
+      temp = e[1]._allies[i].eventAllyDied(e);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
     }
   }
   
-  for (var i = 0; i < target._enemies.length; i++) {
-    temp = target._enemies[i].eventEnemyDied(source, target);
-    if (temp != "") {
-      result += "<div>" + temp + "</div>";
+  for (var i = 0; i < e[1]._enemies.length; i++) {
+    if (e[1]._enemies[i]._heroName != "None") {
+      temp = e[1]._enemies[i].eventEnemyDied(e);
+      if (temp != "") {
+        result += "<div>" + temp + "</div>";
+      }
     }
   }
   
