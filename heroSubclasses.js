@@ -2,7 +2,7 @@
 
 calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1)
     return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
-    damageSource = passive, active, monster
+    damageSource = passive, active, monster, active2(does not apply skill damage)
     damageType = normal, burn, bleed, poison, mark
 
 
@@ -169,6 +169,7 @@ class Aida extends hero {
 }
 
 
+
 // E5 AmenRa
 class AmenRa extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -180,6 +181,7 @@ class AmenRa extends hero {
     this.applyStatChange({hpPercent: 0.2, attackPercent: 0.25, damageReduce: 0.25}, "PassiveStats");
   }
 }
+
 
 
 // E5 Aspen
@@ -195,6 +197,7 @@ class Aspen extends hero {
 }
 
 
+
 // E5 Belrain
 class Belrain extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -206,6 +209,7 @@ class Belrain extends hero {
     this.applyStatChange({hpPercent: 0.3, attackPercent: 0.45, controlImmune: 0.3, healEffect: 0.4}, "PassiveStats");
   }
 }
+
 
 
 // E5 Carrie
@@ -263,7 +267,53 @@ class Carrie extends hero {
     
     return result;
   }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var additionalDamageResult = {damageAmount: 0};
+    var targets = getRandomTargets(this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {
+      numTargets = targets.length;
+    }
+    
+    for (var i=0; i<numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.2);
+      result += targets[i].takeDamage(this, "Energy Devouring", damageResult);
+      
+      if (targets[i]._currentStats["totalHP"] > 0) {
+        additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"], "active2", "normal");
+        result += targets[i].takeDamage(this, "Energy Oscillation", additionalDamageResult);
+      }
+      
+      if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
+        result += targets[i].getDebuff(this, "Devouring Mark", 99, {});
+      }
+      
+      activeQueue.push([this, targets[i], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
+    }
+    
+    return result;
+  }
+  
+  
+  devouringMark(target) {
+    var result = "";
+    var damageResult = {};
+    
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 0.1 * target._currentStats["energy"], "mark", "normal");
+    result = target.takeDamage(this, "Devouring Mark", damageResult);
+    result += target.removeDebuff("Devouring Mark");
+    result += "<div>Energy set to " + formatNum(0) + ".</div>";
+    target._currentStats["energy"] = 0;
+    
+    return result;
+  }
 }
+
 
 
 // E5 Cthuga
@@ -279,6 +329,7 @@ class Cthuga extends hero {
 }
 
 
+
 // E5 Garuda
 class Garuda extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -290,6 +341,7 @@ class Garuda extends hero {
     this.applyStatChange({attackPercent: 0.25, hpPercent: 0.3, critDamage: 0.4, controlImmune: 0.3}, "PassiveStats");
   }
 }
+
 
 
 // E5 Gustin
@@ -305,6 +357,7 @@ class Gustin extends hero {
 }
 
 
+
 // E5 Horus
 class Horus extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -316,6 +369,7 @@ class Horus extends hero {
     this.applyStatChange({hpPercent: 0.4, attackPercent: 0.3, armorBreak: 0.4, block: 0.6}, "PassiveStats");
   }
 }
+
 
 
 // E5 Mihm
@@ -331,6 +385,7 @@ class Mihm extends hero {
 }
 
 
+
 // E5 Nakia
 class Nakia extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -342,6 +397,7 @@ class Nakia extends hero {
     this.applyStatChange({attackPercent: 0.35, crit: 0.35, controlImmune: 0.3, speed: 30}, "PassiveStats");
   }
 }
+
 
 
 // E5 Oberon
@@ -357,6 +413,7 @@ class Oberon extends hero {
 }
 
 
+
 // E5 Penny
 class Penny extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -370,6 +427,7 @@ class Penny extends hero {
 }
 
 
+
 // E5 Tara
 class Tara extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -381,6 +439,7 @@ class Tara extends hero {
     this.applyStatChange({hpPercent: 0.4, holyDamage: 0.7, controlImmune: 0.3, damageReduce: 0.3}, "PassiveStats");
   }
 }
+
 
 
 // E5 Unimax-3000

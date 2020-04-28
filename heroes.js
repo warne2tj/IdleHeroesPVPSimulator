@@ -432,7 +432,7 @@ class hero {
     var factionBonus = 1.0;
     var e5Desc = "";
     
-    if (damageSource.substring(0, 6) == "active") {
+    if (damageSource == "active") {
       skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
     }
     
@@ -541,6 +541,10 @@ class hero {
       
       this._currentStats["energy"] += amount;
       result += formatNum(this._currentStats["energy"]) + ".</div>"
+      
+      if ("Devouring Mark" in this._debuffs && this._currentStats["energy"] >= 100) {
+        result += this._debuffs["Devouring Mark"][0]["source"].devouringMark(this);
+      }
     }
     
     return result;
@@ -586,6 +590,7 @@ class hero {
     var result = "";
     result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(duration) + " round(s)."
     
+    
     for (var strStatName in effects) {
       result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
       
@@ -593,8 +598,10 @@ class hero {
         this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
         this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * (1 - effects[strStatName]));
         this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+        
       } else if (strStatName == "armorPercent") {
         this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
+        
       } else if (strStatName == "burn") {
         damageResult = {
           damageAmount: effects[strStatName], 
@@ -607,6 +614,7 @@ class hero {
         
         this._currentStats["isBurning"] = 1;
         strDamageResult = this.takeDamage(source, "debuff " + debuffName, damageResult);
+        
       } else {
         this._currentStats[strStatName] -= effects[strStatName];
       }
@@ -618,6 +626,12 @@ class hero {
     } else {
       this._debuffs[debuffName] = {};
       this._debuffs[debuffName][0] = {"source": source, "duration": duration, "effects": effects};
+    }
+    
+    
+    // handle special debuffs
+    if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
+      result += source.devouringMark(this);
     }
     
     return result + "</div>" + strDamageResult;
