@@ -1,26 +1,31 @@
-/* Function prototypes
+/* 
+Important Notes
+  * Don't forget to account for Tara's Seal of Light.
+  
 
-calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1)
-    return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
-    damageSource = passive, active, monster, active2(does not apply skill damage)
-    damageType = normal, burn, bleed, poison, mark
+Important Function prototypes
+
+  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1)
+      return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
+      damageSource = passive, active, monster, active2(does not apply skill damage but applies other skill related effects)
+      damageType = normal, burn, bleed, poison, mark
 
 
-takeDamage(source, strAttackDesc, damageResult{})
+  takeDamage(source, strAttackDesc, damageResult{})
 
-getHeal(source, amount)
+  getHeal(source, amount)
 
-getEnergy(source, amount)
+  getEnergy(source, amount)
 
-getBuff(source, buffName, duration, effects{})
+  getBuff(source, buffName, duration, effects{})
 
-getDebuff(source, debuffName, duration, effects{})
+  getDebuff(source, debuffName, duration, effects{})
 
-deathQueue[] = push([source, target])
+  deathQueue[] = push([source, target])
 
-basicQueue[], activeQueue[] = push([source, target, damageAmount, critted])
+  basicQueue[], activeQueue[] = push([source, target, damageAmount, critted])
 
-eventEnemyBasic(e), eventEnemyActive(e) = if overridden, call the super() version so the enemy still gains energy on an attack
+  eventEnemyBasic(e), eventEnemyActive(e) = if overridden, call the super() version so the enemy still gains energy on an attack
     
 */
 
@@ -216,6 +221,7 @@ class Belrain extends hero {
 class Carrie extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
     super(sHeroName, iHeroPos, attOrDef);
+    this._stats["spiritPowerStacks"] = 0;
   }
   
   
@@ -309,6 +315,66 @@ class Carrie extends hero {
     result += target.removeDebuff("Devouring Mark");
     result += "<div>Energy set to " + formatNum(0) + ".</div>";
     target._currentStats["energy"] = 0;
+    
+    return result;
+  }
+  
+  
+  eventAllyDied(e) { 
+    var result = "";
+    
+    if (e[1].heroDesc() == this.heroDesc()) {
+      for (var buffName in this._buffs) {
+        this.removeBuff(buffName);
+      }
+      for (var debuffName in this._debuffs) {
+        this.removeDebuff(debuffName);
+      }
+      
+      this._currentStats["spiritPowerStacks"] = 0;
+      result = "<div>" + this.heroDesc() + " become a <span class='skill'>Shadowy Spirit</span>.</div>";
+    } else if (this._currentStats["totalHP"] == 0) {
+      this._currentStats["spiritPowerStacks"] += 1;
+    }
+    
+    return result; 
+  }
+  
+  
+  eventEnemyDied(e) { 
+    if (this._currentStats["totalHP"] == 0) {
+      this._currentStats["spiritPowerStacks"] += 1;
+    }
+    
+    return ""; 
+  }
+  
+  
+  endOfRound() {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] == 0) {
+      var damageResult = {};
+      var target = getLowestHPTarget(this._enemies);
+      var damageAmount = 0.5 * (target._stats["totalHP"] - target._currentStats["totalHP"]);
+      var maxDamage = 15 * this._currentStats["totalAttack"];
+      
+      if (damageAmount > maxDamage) {
+        damageAmount = maxDamage;
+      }
+      
+      damageResult = this.calcDamage(target, damageAmount, "passive", "normal");
+      result += target.takeDamage(this, "Shadowy Spirit", damageResult);
+      
+      this._currentStats["spiritPowerStacks"] += 1;
+      
+      if (this._currentStats["spiritPowerStacks"] >= 4) {
+        this._currentStats["spiritPowerStacks"] = 0;
+        this._currentStats["totalHP"] = this._stats["totalHP"];
+        this._currentStats["energy"] = 100;
+        result += "<div>" + this.heroDesc() + " has revived with full health and energy.</div>";
+      }
+    }
     
     return result;
   }

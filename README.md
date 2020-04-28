@@ -40,6 +40,11 @@ Hero Mechanics:
     + So additional damage does not trigger if hero dies from first part?
   * Carrie
     + Dodge, is it all or nothing? Do basics or actives that do multiple attacks dodge all or is each attack evaulated separately? Ex: Garuda.
+  * Tara
+    + What does seal of light actually seal?
+    + On death effects seem to still work
+    + Basic attack modifications seem to still work
+    + Seal can't be removed by purify
     
 
 Mechanics:

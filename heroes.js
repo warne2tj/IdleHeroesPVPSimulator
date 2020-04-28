@@ -851,11 +851,12 @@ class hero {
   // a bunch of functions for override by hero subclasses as needed to trigger special abilities.
   // usually you'll want to check that the hero is still alive before triggering their effect
   
-  passiveStats() { return;}
-  eventAllyBasic(e) { return "";}
-  eventAllyActive(e) { return "";}
-  eventAllyDied(e) { return "";}
-  eventEnemyDied(e) { return "";}
+  passiveStats() { return; }
+  eventAllyBasic(e) { return ""; }
+  eventAllyActive(e) { return ""; }
+  eventAllyDied(e) { return ""; }
+  eventEnemyDied(e) { return ""; }
+  endOfRound() { return ""; }
   
   
   eventEnemyBasic(e) { 

@@ -190,11 +190,13 @@ function runSim() {
       // handle buffs and debuffs
       if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
       for (var h in orderOfAttack) {
-        if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickBuffs();}
+        temp = orderOfAttack[h].tickBuffs();
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
       for (var h in orderOfAttack) {
-        if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickDebuffs();}
+        temp = orderOfAttack[h].tickDebuffs();
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
       temp = processDeathQueue(oCombatLog);
@@ -214,9 +216,17 @@ function runSim() {
       // trigger E3 enables
       for (var h in orderOfAttack) {
         if (orderOfAttack[h]._currentStats["totalHP"] > 0) { 
-          if(numSims == 1) {oCombatLog.innerHTML += orderOfAttack[h].tickEnable3(numLiving);}
+          temp = orderOfAttack[h].tickEnable3(numLiving);
+          if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
       }
+      
+      // trigger hero end of round abilities
+      for (var h in orderOfAttack) {
+        temp = orderOfAttack[h].endOfRound();
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      }
+      
       
       // @ end of round
     }
