@@ -9,6 +9,8 @@ Description:
 Implemented Heroes:
   * Foolish
   * Baade 5 star
+  * Carrie E5 (in progress)
+  * Tara E5 (next up)
   
   
 Implemented Monsters:
@@ -37,7 +39,7 @@ Hero Mechanics:
     + Is the second part of the last passive another source of damage?
     + So additional damage does not trigger if hero dies from first part?
   * Carrie
-    + Energy attack percent damage, what affects it?
+    + Dodge, is it all or nothing? Do basics or actives that do multiple attacks dodge all or is each attack evaulated separately? Ex: Garuda.
     
 
 Mechanics:

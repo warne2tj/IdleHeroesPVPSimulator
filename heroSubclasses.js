@@ -5,9 +5,8 @@ calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCri
     damageSource = passive, active, monster
     damageType = normal, burn, bleed, poison, mark
 
-formatDamageResult(target, [damageResult{}], strAttackDesc)
 
-takeDamage(source, damageResult{})
+takeDamage(source, strAttackDesc, damageResult{})
 
 getHeal(source, amount)
 
@@ -17,7 +16,11 @@ getBuff(source, buffName, duration, effects{})
 
 getDebuff(source, debuffName, duration, effects{})
 
-basicQueue[], activeQueue[], deathQueue[] = push([source, target])
+deathQueue[] = push([source, target])
+
+basicQueue[], activeQueue[] = push([source, target, damageAmount, critted])
+
+eventEnemyBasic(e), eventEnemyActive(e) = if overridden, call the super() version so the enemy still gains energy on an attack
     
 */
 
@@ -34,10 +37,8 @@ class Foolish extends hero {
     var target = getFirstTarget(this._enemies);
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 1.8);
-    result = this.formatDamageResult(target, damageResult, "Thump");
-    this._currentStats["energy"] = 0;
-    
-    activeQueue.push([this, target]);
+    result = target.takeDamage(this, "Thump", damageResult);
+    activeQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
     
     return result;
   }
@@ -58,13 +59,13 @@ class Baade extends hero {
   doBasic() {
     var result = "";
     var damageResult = {};
-    var additionalDamageResult = {};
+    var additionalDamageResult = {damageAmount: 0};
     var target = getLowestHPTarget(this._enemies);
     var additionalDamage = 0;
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.1, "basic", "normal", 1, 0);
     additionalDamage = damageResult["damageAmount"];
-    result = this.formatDamageResult(target, damageResult, "Basic Attack");
+    result = target.takeDamage(this, "Basic Attack", damageResult);
     
     if (target._currentStats["totalHP"] > 0) {
       var outcomeRoll = Math.random();
@@ -82,18 +83,16 @@ class Baade extends hero {
           damageAmount: additionalDamage, 
           critted: 0, 
           blocked: 0, 
-          damageSource: "basic2", 
+          damageSource: "basic", 
           damageType: "normal", 
           e5Desc: ""
         };
         
-        result += "Passive <span class='skill'>Death Threat</span> did additional damage: " + formatNum(additionalDamage) + ". ";
-        result += target.takeDamage(this, additionalDamageResult);
+        result += target.takeDamage(this, "Death Threat", additionalDamageResult);
       }
     }
     
-    result += this.getEnergy(this, 50);
-    basicQueue.push([this, target]);
+    basicQueue.push([this, target, damageResult["damageAmount"] + additionalDamage, damageResult["critted"]]);
     
     return result;
   }
@@ -101,15 +100,14 @@ class Baade extends hero {
   doActive() {
     var result = "";
     var damageResult = {};
-    var additionalDamageResult = {};
+    var additionalDamageResult = {damageAmount: 0};
     var target = getLowestHPTarget(this._enemies);
     var healAmount = 0;
     var additionalDamage = 0;
     
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 1.5, 0);
     additionalDamage = damageResult["damageAmount"];
-    
-    result = this.formatDamageResult(target, damageResult, "Nether Strike");
+    result = target.takeDamage(this, "Nether Strike", damageResult);
     
     if (target._currentStats["totalHP"] > 0) {
       var outcomeRoll = Math.random();
@@ -127,28 +125,25 @@ class Baade extends hero {
           damageAmount: additionalDamage, 
           critted: 0, 
           blocked: 0, 
-          damageSource: "active2", 
+          damageSource: "active", 
           damageType: "normal", 
           e5Desc: ""
         };
         
-        result += "<span class='skill'>Nether Strike</span> did additional damage: " + formatNum(additionalDamage) + ". ";
-        result += target.takeDamage(this, additionalDamageResult);
+        result += target.takeDamage(this, "Nether Strike 2", additionalDamageResult);
       }
     }
-    
-    this._currentStats["energy"] = 0;
     
     healAmount = Math.round((damageResult["damageAmount"] + additionalDamage) * 0.2);
     result += this.getHeal(this, healAmount);
     result += this.getBuff(this, "Nether Strike", 6, {attackPercent: 0.4});
     
-    activeQueue.push([this, target]);
+    activeQueue.push([this, target, damageResult["damageAmount"] + additionalDamage, damageResult["critted"]]);
     
     return result;
   }
   
-  eventEnemyDied(source, target) { 
+  eventEnemyDied(e) { 
     var result = ""
     
     if (this._currentStats["totalHP"] > 0) {
@@ -219,9 +214,54 @@ class Carrie extends hero {
     super(sHeroName, iHeroPos, attOrDef);
   }
   
+  
   passiveStats() {
     // apply Darkness Befall passive
     this.applyStatChange({attackPercent: 0.25, controlImmune: 0.3, speed: 60}, "PassiveStats");
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = "";
+    var outcomeRoll = Math.random();
+    
+    result = "<div>" + source.heroDesc() + " used <span class='skill'>" + strAttackDesc + "</span> against " + this.heroDesc() + ".</div>";
+    
+    if (outcomeRoll < 0.4 && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
+      result += "<div>Damage dodged by <span class='skill'>Darkness Befall</span>.</div>";
+      this._currentStats["damageHealed"] += damageResult["damageAmount"];
+      damageResult["damageAmount"] = 0;
+    } else {
+      result = super.takeDamage(source, strAttackDesc, damageResult);
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var additionalDamageResult = {damageAmount: 0};
+    var target = getRandomTargets(this._enemies)[0];
+    
+    damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.56, "basic", "normal");
+    result = target.takeDamage(this, "Basic Attack", damageResult);
+    
+    if (target._currentStats["totalHP"] > 0) {
+      additionalDamageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 0.06 * (target._currentStats["energy"] + 50), "basic", "normal");
+      result += target.takeDamage(this, "Outburst of Magic", additionalDamageResult);
+      
+      if (target._currentStats["totalHP"] > 0 && additionalDamageResult["damageAmount"] > 0) {
+        result += target.getEnergy(this, 50);
+        target._currentStats["energy"] = 0;
+        result += "<div>" + target.heroDesc() + " energy set to " + formatNum(0) + ".</div>";
+      }
+    }
+    
+    basicQueue.push([this, target, damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
+    
+    return result;
   }
 }
 

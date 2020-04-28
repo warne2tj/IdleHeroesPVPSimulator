@@ -20,34 +20,16 @@ class monster {
     this._energy = 0;
   }
   
+  
   heroDesc() {
     return "<span class='" + this._attOrDef + "'>" + this._monsterName + " (" + this._energy + " energy)</span>";
-  }
-  
-  
-  formatDamageResult(target, damageResult, strAttackDesc) {
-    var result = "";
-    var strTakeDamage = ""
-    
-    strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
-    result = "<div>" + this.heroDesc() + " used " + strAttackDesc + " against " + target.heroDesc() + ".</div>";
-    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"]);
-    strTakeDamage = target.takeDamage(this, damageResult);
-    
-    if (damageResult["damageAmount"] > 0) {
-      result += strAttackDesc + " dealt " + formatNum(damageResult["damageAmount"]) + " damage.</div>";
-    }
-    
-    result += strTakeDamage;
-    
-    return result;
   }
   
   
   doActive() {
     var result = "";
     
-    result = "<div><span class='" + this._attOrDef + "'>" + this._monsterName + "</span> used <span class='skill'>Active</span>.</div>";
+    result = "<div><span class='" + this._attOrDef + "'>" + this._monsterName + "</span> used <span class='skill'>Active Template</span>.</div>";
     
     this._energy = 0;
     return result;
@@ -71,9 +53,9 @@ class mDeer extends monster {
         blocked: 0, 
         damageSource: "monster", 
         damageType: "normal", 
-        e5Desc: ""
+        e5Description: ""
       };
-      result += this.formatDamageResult(targets[i], damageResult, "Emerald Nourishing");
+      result += targets[i].takeDamage(this, "Emerald Nourishing", damageResult);
     }
     
     var healAmount = 0;
@@ -111,9 +93,9 @@ class mPhoenix extends monster {
         blocked: 0, 
         damageSource: "monster", 
         damageType: "normal", 
-        e5Desc: ""
+        e5Description: ""
       };
-      result += this.formatDamageResult(targets[i], damageResult, "Blazing Spirit");
+      result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
       result += targets[i].getDebuff(this, "Phoenix Burn", 3, {burn: 363465});
     }
     
