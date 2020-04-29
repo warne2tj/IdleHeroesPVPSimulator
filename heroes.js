@@ -88,7 +88,7 @@ class hero {
     this._stats["fixedAttack"] = 0;
     this._stats["fixedHP"] = 0;
     this._stats["damageAgainstBurning"] = 0.0;
-    this._stats["isBurning"] = 0;
+    this._stats["allDamageReduce"] = 0.0;
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
@@ -391,9 +391,12 @@ class hero {
   }
   
   heroDesc() {
-    var pos1 = parseInt(this._heroPos) + 1;
-    
-    return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["totalAttack"].toLocaleString() + " attack, " + this._currentStats["energy"].toLocaleString() + " energy)</span>";
+    if (this._heroName == "None") {
+      return "";
+    } else {
+      var pos1 = parseInt(this._heroPos) + 1;
+      return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["totalAttack"].toLocaleString() + " attack, " + this._currentStats["energy"].toLocaleString() + " energy)</span>";
+    }
   }
   
   
@@ -406,6 +409,39 @@ class hero {
   
   
   // utility functions for combat
+  
+  hasStatus(strStatus) {
+    var result = false;
+    var b = "";
+    var s = "";
+    var e = "";
+    
+    for (b in this._debuffs) {
+      if (b == strStatus) {
+        return true; 
+      } else {
+        for (s in this._debuffs[b]) {
+          for (e in this._debuffs[b][s]) {
+            if (e == strStatus) { return true; }
+          }
+        }
+      }
+    }
+    
+    for (b in this._buffs) {
+      if (b == strStatus) {
+        return true; 
+      } else {
+        for (s in this._buffs[b]) {
+          for (e in this._buffs[b][s]) {
+            if (e == strStatus) { return true; }
+          }
+        }
+      }
+    }
+    
+    return result;
+  }
   
   // can further extend this to account for new mechanics by adding parameters to the end
   // supply a default value so as to not break other calls to this function
@@ -459,7 +495,7 @@ class hero {
       e5Desc = "<div><span class='skill'>Lethal Fightback</span> triggered additional damage.</div>";
     }
     
-    if (target._currentStats["isBurning"] == 1) {
+    if (this.hasStatus("burn")) {
        damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
@@ -543,7 +579,8 @@ class hero {
       result += formatNum(this._currentStats["energy"]) + ".</div>"
       
       if ("Devouring Mark" in this._debuffs && this._currentStats["energy"] >= 100) {
-        result += this._debuffs["Devouring Mark"][0]["source"].devouringMark(this);
+        var s = Object.keys(this._debuffs["Devouring Mark"])[0];
+        result += this._debuffs["Devouring Mark"][s]["source"].devouringMark(this);
       }
     }
     
@@ -572,12 +609,12 @@ class hero {
       }
     }
     
+    var keyAt = uuid();
     if (buffName in this._buffs) {
-      var keyAt = Object.keys(this._buffs[buffName]).length;
       this._buffs[buffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
     } else {
       this._buffs[buffName] = {};
-      this._buffs[buffName][0] = {"source": source, "duration": duration, "effects": effects};
+      this._buffs[buffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
     }
     
     return result + "</div>" + healResult;
@@ -588,53 +625,82 @@ class hero {
     var damageResult = {};
     var strDamageResult = "";
     var result = "";
-    result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(duration) + " round(s)."
+    var controlImmune = this._currentStats["controlImmune"];
+    var isControlEffect = false;
     
     
-    for (var strStatName in effects) {
-      result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+    if (["stun", "petrify", "freeze", "entangle", "Seal of Light"].includes(debuffName)) {
+      isControlEffect = true;
       
-      if (strStatName == "attackPercent") {
-        this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
-        this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * (1 - effects[strStatName]));
-        this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
-        
-      } else if (strStatName == "armorPercent") {
-        this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
-        
-      } else if (strStatName == "burn") {
-        damageResult = {
-          damageAmount: effects[strStatName], 
-          critted: 0, 
-          blocked: 0, 
-          damageSource: "debuff", 
-          damageType: "burn", 
-          e5Desc: ""
-        };
-        
-        this._currentStats["isBurning"] = 1;
-        strDamageResult = this.takeDamage(source, "debuff " + debuffName, damageResult);
-        
-      } else {
-        this._currentStats[strStatName] -= effects[strStatName];
+      if ((debuffName + "Immune") in this._currentStats) {
+        controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
       }
     }
     
-    if (debuffName in this._debuffs) {
-      var keyAt = Object.keys(this._debuffs[debuffName]).length;
-      this._debuffs[debuffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
+    
+    if (Math.random() < controlImmune && isControlEffect) {
+      result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
     } else {
-      this._debuffs[debuffName] = {};
-      this._debuffs[debuffName][0] = {"source": source, "duration": duration, "effects": effects};
+      if (duration == 99) {
+        result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span>.";
+      } else if (duration ==1) {
+        result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(1) + " round.";
+      } else {
+        result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(duration) + " rounds.";
+      }
+      
+      
+      // process effects
+      for (var strStatName in effects) {
+        result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+        
+        if (strStatName == "attackPercent") {
+          this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
+          this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * (1 - effects[strStatName]));
+          this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+          
+        } else if (strStatName == "armorPercent") {
+          this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
+          
+        } else if (strStatName == "burn") {
+          damageResult = {
+            damageAmount: effects[strStatName], 
+            critted: 0, 
+            blocked: 0, 
+            damageSource: "debuff", 
+            damageType: strStatName, 
+            e5Description: ""
+          };
+          
+          strDamageResult = this.takeDamage(source, debuffName, damageResult);
+          
+        } else {
+          this._currentStats[strStatName] -= effects[strStatName];
+        }
+      }
+      
+      result += "</div>";
+      
+      var keyAt = uuid();
+      if (debuffName in this._debuffs) {
+        this._debuffs[debuffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
+      } else {
+        this._debuffs[debuffName] = {};
+        this._debuffs[debuffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
+      }
+      
+      
+      // handle special debuffs
+      if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
+        result += source.devouringMark(this);
+      } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
+        result += this.getDebuff(source, "Seal of Light", 2, {});
+      } else if (debuffName == "Seal of Light") {
+        result += this.removeDebuff("Power of Light");
+      }
     }
     
-    
-    // handle special debuffs
-    if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
-      result += source.devouringMark(this);
-    }
-    
-    return result + "</div>" + strDamageResult;
+    return result + strDamageResult;
   }
 
 
@@ -685,7 +751,7 @@ class hero {
         } else if (strStatName == "armorPercent") {
           this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
         } else if (strStatName == "burn") {
-          this._currentStats["isBurning"] = 0;
+          // do nothing
         } else {
           this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
         }
@@ -709,34 +775,34 @@ class hero {
         
         // for each stack
         for (var s in this._buffs[b]) {
-          if (this._buffs[b][s]["duration"] > 0) {
-            this._buffs[b][s]["duration"] -= 1;
+          this._buffs[b][s]["duration"] -= 1;
+          
+          if (this._buffs[b][s]["duration"] == 0) {
+            result += "<div>" + this.heroDesc() + " buff (<span class='skill'>" + b + "</span>) ended.</div>";
             
-            if (this._buffs[b][s]["duration"] == 0) {
-              result += "<div>" + this.heroDesc() + " buff (<span class='skill'>" + b + "</span>) ended.</div>";
-              
-              // remove the effects
-              for (var strStatName in this._buffs[b][s]["effects"]) {
-                if (strStatName == "attackPercent") {
-                  this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
-                  this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 + this._buffs[b][s]["effects"][strStatName]));
-                  this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
-                } else if (strStatName == "armorPercent") {
-                  this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 + this._buffs[b][s]["effects"][strStatName]));
-                } else if (strStatName == "heal") {
-                  // do nothing
-                } else {
-                  this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];
-                }
+            // remove the effects
+            for (var strStatName in this._buffs[b][s]["effects"]) {
+              if (strStatName == "attackPercent") {
+                this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
+                this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 + this._buffs[b][s]["effects"][strStatName]));
+                this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+              } else if (strStatName == "armorPercent") {
+                this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 + this._buffs[b][s]["effects"][strStatName]));
+              } else if (strStatName == "heal") {
+                // do nothing
+              } else {
+                this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];
               }
-            } else {
-              stacksLeft++;
-              
-              for (var strStatName in this._buffs[b][s]["effects"]) {
-                if (strStatName == "heal") {
-                  result += "<div>" + this.heroDesc() + " layer of buff <span class='skill'>" + b + "</span> ticked.</div>";
-                  result += "<div>" + this.getHeal(this._buffs[b][s]["source"], this._buffs[b][s]["effects"][strStatName]) + "</div>";
-                }
+            }
+            
+            delete this._buffs[b][s];
+          } else {
+            stacksLeft++;
+            
+            for (var strStatName in this._buffs[b][s]["effects"]) {
+              if (strStatName == "heal") {
+                result += "<div>" + this.heroDesc() + " layer of buff <span class='skill'>" + b + "</span> ticked.</div>";
+                result += "<div>" + this.getHeal(this._buffs[b][s]["source"], this._buffs[b][s]["effects"][strStatName]) + "</div>";
               }
             }
           }
@@ -764,44 +830,43 @@ class hero {
         
         // for each stack
         for (var s in this._debuffs[b]) {
-          if (this._debuffs[b][s]["duration"] > 0) {
-            this._debuffs[b][s]["duration"] -= 1;
+          this._debuffs[b][s]["duration"] -= 1;
+          
+          if (this._debuffs[b][s]["duration"] == 0) {
+            result += "<div>" + this.heroDesc() + " debuff (<span class='skill'>" + b + "</span>) ended.</div>";
             
-            if (this._debuffs[b][s]["duration"] == 0) {
-              result += "<div>" + this.heroDesc() + " debuff (<span class='skill'>" + b + "</span>) ended.</div>";
-              
-              // remove the effects
-              for (var strStatName in this._debuffs[b][s]["effects"]) {
-                if (strStatName == "attackPercent") {
-                  this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
-                  this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
-                  this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
-                } else if (strStatName == "armorPercent") {
-                  this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
-                } else if (strStatName == "burn") {
-                  this._currentStats["isBurning"] = 0;
-                } else {
-                  this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
-                }
+            // remove the effects
+            for (var strStatName in this._debuffs[b][s]["effects"]) {
+              if (strStatName == "attackPercent") {
+                this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
+                this._currentStats["totalAttack"] = Math.round(this._currentStats["totalAttack"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
+                this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+              } else if (strStatName == "armorPercent") {
+                this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
+              } else if (strStatName == "burn") {
+                // do nothing, full burn damage already done
+              } else {
+                this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
               }
-            } else {
-              stacksLeft++;
-              
-              for (var strStatName in this._debuffs[b][s]["effects"]) {
-                if (strStatName == "burn") {
-                  damageResult = {
-                    damageAmount: this._debuffs[b][s]["effects"][strStatName], 
-                    critted: 0, 
-                    blocked: 0, 
-                    damageSource: "debuff", 
-                    damageType: "burn", 
-                    e5Desc: ""
-                  };
-                  
-                  this._currentStats["isBurning"] = 1;
-                  result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
-                  result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "debuff " + b, damageResult) + "</div>";
-                }
+            }
+            
+            delete this._debuffs[b][s];
+          } else {
+            stacksLeft++;
+            
+            for (var strStatName in this._debuffs[b][s]["effects"]) {
+              if (strStatName == "burn") {
+                damageResult = {
+                  damageAmount: this._debuffs[b][s]["effects"][strStatName], 
+                  critted: 0, 
+                  blocked: 0, 
+                  damageSource: "debuff", 
+                  damageType: strStatName, 
+                  e5Description: ""
+                };
+                
+                result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
+                result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "debuff " + b, damageResult) + "</div>";
               }
             }
           }
@@ -835,12 +900,19 @@ class hero {
       }
       
     } else if (this._enable3 == "Purify") {
-      var listDebuffs = Object.keys(this._debuffs);
+      var listDebuffs = []; 
+      var allDebuffs = Object.keys(this._debuffs);
       var rng = Math.floor(Math.random() * listDebuffs.length);
+      
+      for (var i in allDebuffs) {
+        if (!(["Seal of Light", "Power of Light"].includes(allDebuffs[i]))) {
+          listDebuffs.push(allDebuffs[i]);
+        }
+      }
       
       if (listDebuffs.length > 0) {
         this.removeDebuff(listDebuffs[rng]);
-        result += "<div>" + this.heroDesc() + " Purify triggered. Removed all stacks of debuff " + listDebuffs[rng] + ".</div>";
+        result += "<div>" + this.heroDesc() + " Purify triggered. Removed all stacks of debuff <span class='skill'>" + listDebuffs[rng] + "</span>.</div>";
       }
     }
     
@@ -851,11 +923,13 @@ class hero {
   // a bunch of functions for override by hero subclasses as needed to trigger special abilities.
   // usually you'll want to check that the hero is still alive before triggering their effect
   
-  passiveStats() { return;}
-  eventAllyBasic(e) { return "";}
-  eventAllyActive(e) { return "";}
-  eventAllyDied(e) { return "";}
-  eventEnemyDied(e) { return "";}
+  passiveStats() { return; }
+  eventAllyBasic(e) { return ""; }
+  eventAllyActive(e) { return ""; }
+  eventAllyDied(e) { return ""; }
+  eventEnemyDied(e) { return ""; }
+  startOfRound() { return ""; }
+  endOfRound() { return ""; }
   
   
   eventEnemyBasic(e) { 
@@ -897,6 +971,7 @@ class hero {
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var beforeHP = this._currentStats["totalHP"];
+    var allDamageReduce = this._currentStats["allDamageReduce"];
     
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
@@ -906,7 +981,7 @@ class hero {
       damageResult["damageAmount"] = damageResult["damageAmount"] * (1 - dotReduce);
     }
     
-    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"]);
+    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"] * (1-allDamageReduce));
     
     if (this._currentStats["totalHP"] <= damageResult["damageAmount"]) {
       // hero would die, check for unbending will
@@ -971,6 +1046,7 @@ class hero {
     }
     
     result += damageResult["e5Description"];
+    
     return result;
   }
   
@@ -978,11 +1054,13 @@ class hero {
   doBasic() {
     var result = "";
     var damageResult = {};
-    var target = getFirstTarget(this._enemies);
+    var target = getFirstTarget(this, this._enemies);
     
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "basic", "normal");
-    result = target.takeDamage(this, "Basic Attack", damageResult);
-    basicQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    if (target._heroName != "None") {
+      damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "basic", "normal");
+      result = target.takeDamage(this, "Basic Attack", damageResult);
+      basicQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    }
     
     return result;
   }
@@ -991,11 +1069,13 @@ class hero {
   doActive() { 
     var result = "";
     var damageResult = {};
-    var target = getFirstTarget(this._enemies);
+    var target = getFirstTarget(this, this._enemies);
     
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal");
-    result = target.takeDamage(this, "Active Template", damageResult);
-    activeQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    if (target._heroName != "None") {
+      damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal");
+      result = target.takeDamage(this, "Active Template", damageResult);
+      activeQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    }
     
     return result;
   }

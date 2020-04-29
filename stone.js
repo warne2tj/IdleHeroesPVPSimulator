@@ -1,6 +1,5 @@
 var stones = {
   "None": {},
-  "T1 Attack": {attack: 55},
   "S3 Attack, Attack, Armor Break": {attack: 1550, attackPercent: 0.24, armorBreak: 0.5},
   "S3 Attack, Attack, Holy": {attack: 1550, attackPercent: 0.24, holyDamage: 0.36},
   "S3 Attack, Attack, Precision": {attack: 1550, attackPercent: 0.24, precision: 0.24},
