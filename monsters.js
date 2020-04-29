@@ -41,7 +41,7 @@ class mDeer extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this._enemies);
+    var targets = getRandomTargets(this, this._enemies);
     var numTargets = 4;
     
     if (targets.length < numTargets) {numTargets = targets.length;}
@@ -59,7 +59,7 @@ class mDeer extends monster {
     }
     
     var healAmount = 0;
-    var targets = getRandomTargets(this._allies);
+    var targets = getRandomTargets(this, this._allies);
     
     if (targets.length < numTargets) {numTargets = targets.length;}
     
@@ -81,7 +81,7 @@ class mPhoenix extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this._enemies);
+    var targets = getRandomTargets(this, this._enemies);
     var numTargets = 4;
     
     if (targets.length < numTargets) {numTargets = targets.length;}
@@ -96,11 +96,11 @@ class mPhoenix extends monster {
         e5Description: ""
       };
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
-      result += targets[i].getDebuff(this, "Phoenix Burn", 3, {burn: 363465});
+      result += targets[i].getDebuff(this, "Blazing Spirit", 3, {burn: 363465});
     }
     
     var healAmount = 0;
-    var targets = getRandomTargets(this._allies);
+    targets = getRandomTargets(this, this._allies);
     
     if (targets.length < numTargets) {numTargets = targets.length;}
     

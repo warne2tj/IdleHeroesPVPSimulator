@@ -9,8 +9,9 @@ Description:
 Implemented Heroes:
   * Foolish
   * Baade 5 star
-  * Carrie E5
-  * Tara E5 (up next)
+  * Carrie
+  * Tara
+  * Amen-ra (in progress)
   
   
 Implemented Monsters:
@@ -20,7 +21,6 @@ Implemented Monsters:
   
 To Do List
   * ----------- Priority 1 ------------
-  * figure out if golden crown all damage reduce is different from regular damage reduce
   * subclass top tier heroes
   * ----------- Priority 2 ------------
   * allow for 10*-E5 of different levels
@@ -28,7 +28,7 @@ To Do List
   * add swap, copy, move functionality for team management
   * ----------- Priority 3 ------------
   * improve look of hero stat sheet
-  * refactor damage description to read better, output directly to combat log(?)
+  * refactor combat log output to read and flow better
   * improve gui (incorporate icons?)
   
   
@@ -45,6 +45,7 @@ Hero Mechanics:
     + On death effects seem to still work
     + Basic attack modifications seem to still work
     + Passive stat modifications seem to still work
+    + Seems to only affect passives that are triggered by an event (aside from on death)?
     + Seal can't be removed by purify
     
 

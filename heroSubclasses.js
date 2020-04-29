@@ -1,8 +1,9 @@
 /* 
 Important Notes
   * Don't forget to account for Tara's Seal of Light.
-  * When getting targets, check that the target is alive. In case all targets are dead. i.e. only sleepless left to resurrect at end of round
-  * When overriding events, check that target or source of event is the same as the hero being called, depending on the details of the skill
+  * When getting targets, check that the target is alive. In case all targets are dead. i.e. only sleepless left to resurrect at end of round.
+  * After doing damage, check that damage amount is greater than 0. If it's 0, then the target was Carrie and she dodged.
+  * When overriding events, you probably need to check that the target or source of the event is the same as the hero being called, depending on the details of the skill
   * Also, check that the hero answering the event is alive. Notable exception: Carrie
   
 
@@ -39,6 +40,7 @@ Important Function prototypes
 */
 
 
+
 // 1* Foolish
 class Foolish extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -48,7 +50,7 @@ class Foolish extends hero {
   doActive() {
     var result = "";
     var damageResult = {};
-    var target = getFirstTarget(this._enemies);
+    var target = getFirstTarget(this, this._enemies);
     
     if (target._heroName != "None") {
       damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 1.8);
@@ -76,7 +78,7 @@ class Baade extends hero {
     var result = "";
     var damageResult = {};
     var additionalDamageResult = {damageAmount: 0};
-    var target = getLowestHPTarget(this._enemies);
+    var target = getLowestHPTarget(this, this._enemies);
     var additionalDamage = 0;
     
     if (target._heroName != "None") {
@@ -119,7 +121,7 @@ class Baade extends hero {
     var result = "";
     var damageResult = {};
     var additionalDamageResult = {damageAmount: 0};
-    var target = getLowestHPTarget(this._enemies);
+    var target = getLowestHPTarget(this, this._enemies);
     var healAmount = 0;
     var additionalDamage = 0;
     
@@ -274,7 +276,7 @@ class Carrie extends hero {
     var result = "";
     var damageResult = {};
     var additionalDamageResult = {damageAmount: 0};
-    var targets = getRandomTargets(this._enemies);
+    var targets = getRandomTargets(this, this._enemies);
     
     if (targets.length > 0) {
       var target = targets[0];
@@ -282,8 +284,16 @@ class Carrie extends hero {
       damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.56, "basic", "normal");
       result = target.takeDamage(this, "Basic Attack", damageResult);
       
+      // attack % per energy damage seems to be true damage
       if (target._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
-        additionalDamageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 0.06 * (target._currentStats["energy"] + 50), "basic", "normal");
+        additionalDamageResult = {
+          "damageAmount": this._currentStats["totalAttack"] * 0.06 * (target._currentStats["energy"] + 50),
+          "critted": false,
+          "blocked": false,
+          "damageSource": "other",
+          "damageType": "normal",
+          "e5Description": ""
+        };
         result += target.takeDamage(this, "Outburst of Magic", additionalDamageResult);
         
         if (target._currentStats["totalHP"] > 0) {
@@ -304,7 +314,7 @@ class Carrie extends hero {
     var result = "";
     var damageResult = {};
     var additionalDamageResult = {damageAmount: 0};
-    var targets = getRandomTargets(this._enemies);
+    var targets = getRandomTargets(this, this._enemies);
     var numTargets = 4;
     
     if (targets.length < numTargets) {
@@ -317,8 +327,16 @@ class Carrie extends hero {
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.2);
       result += targets[i].takeDamage(this, "Energy Devouring", damageResult);
       
+      // attack % per energy damage seems to be true damage
       if (targets[i]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
-        additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"], "active2", "normal");
+        additionalDamageResult = {
+          "damageAmount": this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"],
+          "critted": false,
+          "blocked": false,
+          "damageSource": "other",
+          "damageType": "normal",
+          "e5Description": ""
+        };
         result += targets[i].takeDamage(this, "Energy Oscillation", additionalDamageResult);
       
         if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
@@ -337,8 +355,15 @@ class Carrie extends hero {
     var result = "";
     var damageResult = {};
     
-    this._rng = Math.random();
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 0.1 * target._currentStats["energy"], "mark", "normal");
+    // attack % per energy damage seems to be true damage
+    damageResult = {
+      "damageAmount": this._currentStats["totalAttack"] * 0.1 * target._currentStats["energy"],
+      "critted": false,
+      "blocked": false,
+      "damageSource": "mark",
+      "damageType": "normal",
+      "e5Description": ""
+    };
     result = target.takeDamage(this, "Devouring Mark", damageResult);
     result += target.removeDebuff("Devouring Mark");
     result += "<div>Energy set to " + formatNum(0) + ".</div>";
@@ -360,7 +385,7 @@ class Carrie extends hero {
       }
       
       this._currentStats["spiritPowerStacks"] = 0;
-      result = "<div>" + this.heroDesc() + " become a <span class='skill'>Shadowy Spirit</span>.</div>";
+      result = "<div>" + this.heroDesc() + " became a <span class='skill'>Shadowy Spirit</span>.</div>";
     } else if (this._currentStats["totalHP"] == 0) {
       this._currentStats["spiritPowerStacks"] += 1;
     }
@@ -378,12 +403,28 @@ class Carrie extends hero {
   }
   
   
+  startOfRound() {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] == 0) {
+      if (this._currentStats["spiritPowerStacks"] >= 4) {
+        this._currentStats["spiritPowerStacks"] = 0;
+        this._currentStats["totalHP"] = this._stats["totalHP"];
+        this._currentStats["energy"] = 100;
+        result += "<div>" + this.heroDesc() + " has revived with full health and energy.</div>";
+      }
+    }
+    
+    return result;
+  }
+  
+  
   endOfRound() {
     var result = "";
     
     if (this._currentStats["totalHP"] == 0) {
       var damageResult = {};
-      var target = getLowestHPTarget(this._enemies);
+      var target = getLowestHPTarget(this, this._enemies);
       var damageAmount = 0.5 * (target._stats["totalHP"] - target._currentStats["totalHP"]);
       var maxDamage = 15 * this._currentStats["totalAttack"];
       
@@ -392,18 +433,17 @@ class Carrie extends hero {
           damageAmount = maxDamage;
         }
         
-        this._rng = Math.random();
-        damageResult = this.calcDamage(target, damageAmount, "passive", "normal");
+        damageResult = {
+          "damageAmount": damageAmount,
+          "critted": false,
+          "blocked": false,
+          "damageSource": "passive",
+          "damageType": "normal",
+          "e5Description": ""
+        };
         result += target.takeDamage(this, "Shadowy Spirit", damageResult);
         
         this._currentStats["spiritPowerStacks"] += 1;
-        
-        if (this._currentStats["spiritPowerStacks"] >= 4) {
-          this._currentStats["spiritPowerStacks"] = 0;
-          this._currentStats["totalHP"] = this._stats["totalHP"];
-          this._currentStats["energy"] = 100;
-          result += "<div>" + this.heroDesc() + " has revived with full health and energy.</div>";
-        }
       }
     }
     
@@ -574,7 +614,7 @@ class Tara extends hero {
   doBasic() {
     var result = "";
     var damageResult = {};
-    var targets = getRandomTargets(this._enemies);
+    var targets = getRandomTargets(this, this._enemies);
     
     if (targets.length > 0) {
       var target = targets[0];

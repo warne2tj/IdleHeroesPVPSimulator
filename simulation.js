@@ -73,6 +73,12 @@ function runSim() {
       
       orderOfAttack.sort(speedSort);
       
+      // trigger hero start of round abilities
+      for (var h in orderOfAttack) {
+        temp = orderOfAttack[h].startOfRound();
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      }
+      
       for (var orderNum = 0; orderNum < orderOfAttack.length; orderNum++) {
         // @ start of hero action
         deathQueue = [];

@@ -30,7 +30,7 @@ var artifacts = {
   },
   
   "Golden Crown": {
-    stats: {attackPercent: 0.18, hpPercent: 0.25, damageReduce: 0.25},
+    stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
     limit: "",
     limitStats: {}
   },
