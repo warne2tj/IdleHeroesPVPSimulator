@@ -391,9 +391,12 @@ class hero {
   }
   
   heroDesc() {
-    var pos1 = parseInt(this._heroPos) + 1;
-    
-    return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["totalAttack"].toLocaleString() + " attack, " + this._currentStats["energy"].toLocaleString() + " energy)</span>";
+    if (this._heroName == "None") {
+      return "";
+    } else {
+      var pos1 = parseInt(this._heroPos) + 1;
+      return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["totalAttack"].toLocaleString() + " attack, " + this._currentStats["energy"].toLocaleString() + " energy)</span>";
+    }
   }
   
   
@@ -588,53 +591,83 @@ class hero {
     var damageResult = {};
     var strDamageResult = "";
     var result = "";
-    result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(duration) + " round(s)."
+    var controlImmune = this._currentStats["controlImmune"];
+    var isControlEffect = false;
     
     
-    for (var strStatName in effects) {
-      result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+    if (["stun", "petrify", "freeze", "entangle", "Seal of Light"].includes(debuffName)) {
+      isControlEffect = true;
       
-      if (strStatName == "attackPercent") {
-        this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
-        this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * (1 - effects[strStatName]));
-        this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
-        
-      } else if (strStatName == "armorPercent") {
-        this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
-        
-      } else if (strStatName == "burn") {
-        damageResult = {
-          damageAmount: effects[strStatName], 
-          critted: 0, 
-          blocked: 0, 
-          damageSource: "debuff", 
-          damageType: "burn", 
-          e5Desc: ""
-        };
-        
-        this._currentStats["isBurning"] = 1;
-        strDamageResult = this.takeDamage(source, "debuff " + debuffName, damageResult);
-        
-      } else {
-        this._currentStats[strStatName] -= effects[strStatName];
+      if ((debuffName + "Immune") in this._currentStats) {
+        controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
       }
     }
     
-    if (debuffName in this._debuffs) {
-      var keyAt = Object.keys(this._debuffs[debuffName]).length;
-      this._debuffs[debuffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
+    
+    if (Math.random() < controlImmune && isControlEffect) {
+      result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
     } else {
-      this._debuffs[debuffName] = {};
-      this._debuffs[debuffName][0] = {"source": source, "duration": duration, "effects": effects};
+      if (duration == 99) {
+        result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span>.";
+      } else if (duration ==1) {
+        result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(1) + " round.";
+      } else {
+        result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(duration) + " rounds.";
+      }
+      
+      
+      // process effects
+      for (var strStatName in effects) {
+        result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+        
+        if (strStatName == "attackPercent") {
+          this._currentStats["totalAttack"] -= this._currentStats["fixedAttack"];
+          this._currentStats["totalAttack"] = Math.floor(this._currentStats["totalAttack"] * (1 - effects[strStatName]));
+          this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
+          
+        } else if (strStatName == "armorPercent") {
+          this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
+          
+        } else if (strStatName == "burn") {
+          damageResult = {
+            damageAmount: effects[strStatName], 
+            critted: 0, 
+            blocked: 0, 
+            damageSource: "debuff", 
+            damageType: "burn", 
+            e5Description: ""
+          };
+          
+          this._currentStats["isBurning"] = 1;
+          strDamageResult = this.takeDamage(source, "debuff " + debuffName, damageResult);
+          
+        } else {
+          this._currentStats[strStatName] -= effects[strStatName];
+        }
+      }
+      
+      result += "</div>";
+      
+      if (debuffName in this._debuffs) {
+        var keyAt = Object.keys(this._debuffs[debuffName]).length;
+        this._debuffs[debuffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
+      } else {
+        this._debuffs[debuffName] = {};
+        this._debuffs[debuffName][0] = {"source": source, "duration": duration, "effects": effects};
+      }
+      
+      
+      // handle special debuffs
+      if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
+        result += source.devouringMark(this);
+      } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
+        result += this.getDebuff(source, "Seal of Light", 2, {});
+      } else if (debuffName == "Seal of Light") {
+        result += this.removeDebuff("Power of Light");
+      }
     }
     
-    
-    // handle special debuffs
-    if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
-      result += source.devouringMark(this);
-    }
-    
-    return result + "</div>" + strDamageResult;
+    return result + strDamageResult;
   }
 
 
@@ -795,7 +828,7 @@ class hero {
                     blocked: 0, 
                     damageSource: "debuff", 
                     damageType: "burn", 
-                    e5Desc: ""
+                    e5Description: ""
                   };
                   
                   this._currentStats["isBurning"] = 1;
@@ -835,12 +868,19 @@ class hero {
       }
       
     } else if (this._enable3 == "Purify") {
-      var listDebuffs = Object.keys(this._debuffs);
+      var listDebuffs = []; 
+      var allDebuffs = Object.keys(this._debuffs);
       var rng = Math.floor(Math.random() * listDebuffs.length);
+      
+      for (var i in allDebuffs) {
+        if (!(["Seal of Light", "Power of Light", "Devouring Mark"].includes(allDebuffs[i]))) {
+          listDebuffs.push(allDebuffs[i]);
+        }
+      }
       
       if (listDebuffs.length > 0) {
         this.removeDebuff(listDebuffs[rng]);
-        result += "<div>" + this.heroDesc() + " Purify triggered. Removed all stacks of debuff " + listDebuffs[rng] + ".</div>";
+        result += "<div>" + this.heroDesc() + " Purify triggered. Removed all stacks of debuff <span class='skill'>" + listDebuffs[rng] + "</span>.</div>";
       }
     }
     
@@ -972,6 +1012,7 @@ class hero {
     }
     
     result += damageResult["e5Description"];
+    
     return result;
   }
   
@@ -981,9 +1022,11 @@ class hero {
     var damageResult = {};
     var target = getFirstTarget(this._enemies);
     
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "basic", "normal");
-    result = target.takeDamage(this, "Basic Attack", damageResult);
-    basicQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    if (target._heroName != "None") {
+      damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "basic", "normal");
+      result = target.takeDamage(this, "Basic Attack", damageResult);
+      basicQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    }
     
     return result;
   }
@@ -994,9 +1037,11 @@ class hero {
     var damageResult = {};
     var target = getFirstTarget(this._enemies);
     
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal");
-    result = target.takeDamage(this, "Active Template", damageResult);
-    activeQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    if (target._heroName != "None") {
+      damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal");
+      result = target.takeDamage(this, "Active Template", damageResult);
+      activeQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    }
     
     return result;
   }

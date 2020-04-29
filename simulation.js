@@ -227,6 +227,12 @@ function runSim() {
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
+      temp = processDeathQueue(oCombatLog);
+      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
+      
       
       // @ end of round
     }

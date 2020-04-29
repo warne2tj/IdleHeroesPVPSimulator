@@ -34,6 +34,8 @@ function getFirstTarget(arrTargets) {
       return arrTargets[i];
     }
   }
+  
+  return new hero("None");
 }
 
 
