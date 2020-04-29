@@ -591,7 +591,14 @@ class hero {
   getBuff(source, buffName, duration, effects) {
     var result = "";
     var healResult = "";
-    result += "<div>" + this.heroDesc() + " gained buff <span class='skill'>" + buffName + "</span> for " + formatNum(duration) + " round(s)."
+    
+    if (duration == 99) {
+      result += "<div>" + this.heroDesc() + " gained buff <span class='skill'>" + buffName + "</span>.";
+    } else if (duration ==1) {
+      result += "<div>" + this.heroDesc() + " gained buff <span class='skill'>" + buffName + "</span> for " + formatNum(1) + " round.";
+    } else {
+      result += "<div>" + this.heroDesc() + " gained buff <span class='skill'>" + buffName + "</span> for " + formatNum(duration) + " rounds.";
+    }
     
     for (var strStatName in effects) {
       result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
