@@ -5,6 +5,8 @@ Important Notes
   * After doing damage, check that damage amount is greater than 0. If it's 0, then the target was Carrie and she dodged.
   * When overriding events, you probably need to check that the target or source of the event is the same as the hero being called, depending on the details of the skill
   * Also, check that the hero answering the event is alive. Notable exception: Carrie
+  * Rng for a hero's attack is initially generated at the beginning of their turn. Need to regenerate if they do further attacks. But maybe not depending on if subsequent attacks use the same roll.
+  
   
 
 Important Function prototypes
@@ -627,6 +629,44 @@ class Tara extends hero {
         result += target.getDebuff(this, "Power of Light", 99, {});
       }
     }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var numAdditionalAttacks = 0;
+    
+    if (targets.length > 0) {
+      var target = targets[0];
+      
+      damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 3);
+      result = target.takeDamage(this, "Seal of Light", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        var numAdditionalAttacks = Math.floor(Math.random() * 3) + 1;
+        
+        for (var i=0; i<numAdditionalAttacks; i++) {
+          result += target.takeDamage(this, "Seal of Light", damageResult);
+        }
+        
+        result += target.getDebuff(this, "Power of Light", 99, {});
+      }
+      
+      targets = getAllTargets(this, this._enemies);
+      for (var h in targets) {
+        if ("Power of Light" in targets[h]._debuffs && Math.random() < 0.6) {
+          result += targets[h].getDebuff(this, "Power of Light", 99, {});
+        }
+      }
+      
+      basicQueue.push([this, target, damageResult["damageAmount"] * (numAdditionalAttacks + 1), damageResult["critted"]]);
+    }
+      
+    result += this.getBuff(this, "Tara Holy Damage Buff", 99, {holyDamage: 0.5});
     
     return result;
   }
