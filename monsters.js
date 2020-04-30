@@ -96,7 +96,7 @@ class mPhoenix extends monster {
         e5Description: ""
       };
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
-      result += targets[i].getDebuff(this, "Blazing Spirit", 3, {burn: 363465});
+      result += targets[i].getDebuff(this, "Phoenix Burn", 3, {burn: 363465});
     }
     
     var healAmount = 0;

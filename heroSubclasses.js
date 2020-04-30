@@ -6,38 +6,45 @@ Important Notes
   * When overriding events, you probably need to check that the target or source of the event is the same as the hero being called, depending on the details of the skill
   * Also, check that the hero answering the event is alive. Notable exception: Carrie
   * Rng for a hero's attack is initially generated at the beginning of their turn. Need to regenerate if they do further attacks. But maybe not depending on if subsequent attacks use the same roll.
+  * In passives, might need to check if hero is under control
   
   
 
 Important Function prototypes
 
-  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1)
+  this.calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1)
       return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
-      damageSource = passive, active, monster, active2(does not apply skill damage but applies other skill related effects)
-      damageType = normal, burn, bleed, poison, mark
+      damageSource = passive, active, mark, monster, debuff, active2(does not apply skill damage but applies other skill related effects)
+      damageType = normal, burn, bleed, poison
 
 
-  takeDamage(source, strAttackDesc, damageResult{})
+  this.takeDamage(source, strAttackDesc, damageResult{})
 
-  getHeal(source, amount)
+  this.getHeal(source, amount)
 
-  getEnergy(source, amount)
+  this.getEnergy(source, amount)
 
-  getBuff(source, buffName, duration, effects{})
+  this.getBuff(source, buffName, duration, effects{})
   
-  removeBuff(strBuffName)
+  this.removeBuff(strBuffName)
 
-  getDebuff(source, debuffName, duration, effects{})
+  this.getDebuff(source, debuffName, duration, effects{})
   
-  removeDebuff(strDebuffName)
+  this.removeDebuff(strDebuffName)
+  
+  this.hasStatus(strStatus)
+  
+  this.isUnderStandardControl()
+  
+  isControlEffect(strName, effects)
 
   basicQueue[], activeQueue[] = push([source, target, damageAmount, critted]) to call the event
 
   deathQueue[] = push([source, target]) to call the event
   
-  eventAllyBasic(e), eventAllyActive(e), eventAllyDied(e), eventEnemyDied(e) = called by all heroes so they can react to an event
+  this.eventAllyBasic(e), this.eventAllyActive(e), this.eventAllyDied(e), this.eventEnemyDied(e) = called by all heroes so they can react to an event
 
-  eventEnemyBasic(e), eventEnemyActive(e) = if overridden, call the super() version so the enemy still gains energy on an attack
+  this.eventEnemyBasic(e), this.eventEnemyActive(e) = if overridden, call the super() version so the enemy still gains energy on an attack
     
 */
 
@@ -200,15 +207,107 @@ class Aida extends hero {
 
 
 
-// E5 AmenRa
+// E5 Amen-Ra
 class AmenRa extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
     super(sHeroName, iHeroPos, attOrDef);
   }
   
+  
   passiveStats() {
     // apply Aura of Despair passive
     this.applyStatChange({hpPercent: 0.2, attackPercent: 0.25, damageReduce: 0.25}, "PassiveStats");
+  }
+  
+  
+  getDebuff(source, debuffName, duration, effects) {
+    var result = "";
+    
+    if (isControlEffect(debuffName, effects)) {
+      duration--;
+      
+      if (duration == 0) {
+        result = "<div>" + this.heroDesc() + " negated <span class='skill'>" + debuffName + "</span> by reducing it's duration to " + formatNum(0) + " rouunds.</div>";
+      } else {
+        result = super.getDebuff(source, debuffName, duration, effects);
+      }
+    } else {
+      result = super.getDebuff(source, debuffName, duration, effects);
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyActive(e) {
+    var result = "";
+    var damageResult = {};
+    var targets;
+    
+    if (this._currentStats["totalHP"] > 0 && !("Seal of Light" in this._debuffs)) {
+      for (var i=1; i<=3; i++) {
+        targets = getRandomTargets(this, this._enemies);
+        
+        if (targets.length > 0) {
+          this._rng = Math.random();
+          damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 2, "passive", "normal");
+          result += targets[0].takeDamage(this, "Terrible Feast", damageResult);
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var targets;
+    
+    result = super.doBasic();
+    
+    for (var i=1; i<=2; i++) {
+      targets = getRandomTargets(this, this._enemies);
+      
+      if (targets.length > 0) {
+        result += targets[0].getDebuff(this, "Healing Curse", 99, {});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var target;
+    var targets = getFrontTargets(this, this._enemies);
+    
+    for (i in targets) {
+      target = targets[i];
+      
+      if (targets[i]._currentStats["totalHP"] > 0) {
+        target._rng = Math.random();
+        damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 2);
+        result += target.takeDamage(this, "Shadow Defense", damageResult);
+        
+        if (damageResult["damageAmount"] > 0 && target._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
+          result += target.getDebuff(this, "petrify", 2, {});
+        }
+        
+        activeQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    targets = getAllTargets(this, this._allies);
+    for (i in targets) {
+      target = targets[i];
+      result += target.getBuff(this, "Guardian Shadow", 99, {});
+      result += target.getBuff(this, "Guardian Shadow", 99, {});
+    }
+    
+    return result;
   }
 }
 
