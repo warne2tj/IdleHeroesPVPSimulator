@@ -120,10 +120,9 @@ function runSim() {
               }
               
               // process active queue
-              for (var e in activeQueue) {
-                temp = alertDidActive(activeQueue[e]);
-                if(numSims == 1) {oCombatLog.innerHTML += temp;}
-              }
+              temp = alertDidActive(activeQueue);
+              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              
             } else {
               // do basic
               result = orderOfAttack[orderNum].doBasic();
@@ -134,10 +133,8 @@ function runSim() {
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
               // process basic queue
-              for (var e in basicQueue) {
-                temp = alertDidBasic(basicQueue[e]);
-                if(numSims == 1) {oCombatLog.innerHTML += temp;}
-              }
+              temp = alertDidBasic(basicQueue);
+              if(numSims == 1) {oCombatLog.innerHTML += temp;}
             }
           }
               
@@ -349,19 +346,20 @@ function processDeathQueue(oCombatLog) {
 function alertDidBasic(e) {
   var result = "";
   var temp = "";
+  var source = e[0][0];
   
-  for (var i = 0; i < e[0]._allies.length; i++) {
-    if (e[0]._allies[i]._heroName != "None") {
-      temp = e[0]._allies[i].eventAllyBasic(e);
+  for (var i = 0; i < source._allies.length; i++) {
+    if (source._allies[i]._heroName != "None") {
+      temp = source._allies[i].eventAllyBasic(e);
       if (temp != "") {
         result += "<div>" + temp + "</div>";
       }
     }
   }
   
-  for (var i = 0; i < e[0]._enemies.length; i++) {
-    if (e[0]._enemies[i]._heroName != "None") {
-      temp = e[0]._enemies[i].eventEnemyBasic(e);
+  for (var i = 0; i < source._enemies.length; i++) {
+    if (source._enemies[i]._heroName != "None") {
+      temp = source._enemies[i].eventEnemyBasic(e);
       if (temp != "") {
         result += "<div>" + temp + "</div>";
       }
@@ -376,19 +374,20 @@ function alertDidBasic(e) {
 function alertDidActive(e) {
   var result = "";
   var temp = "";
+  var source = e[0][0];
   
-  for (var i = 0; i < e[0]._allies.length; i++) {
-    if (e[0]._allies[i]._heroName != "None") {
-      temp = e[0]._allies[i].eventAllyActive(e);
+  for (var i = 0; i < source._allies.length; i++) {
+    if (source._allies[i]._heroName != "None") {
+      temp = source._allies[i].eventAllyActive(e);
       if (temp != "") {
         result += "<div>" + temp + "</div>";
       }
     }
   }
   
-  for (var i = 0; i < e[0]._enemies.length; i++) {
-    if (e[0]._enemies[i]._heroName != "None") {
-      temp = e[0]._enemies[i].eventEnemyActive(e);
+  for (var i = 0; i < source._enemies.length; i++) {
+    if (source._enemies[i]._heroName != "None") {
+      temp = source._enemies[i].eventEnemyActive(e);
       if (temp != "") {
         result += "<div>" + temp + "</div>";
       }

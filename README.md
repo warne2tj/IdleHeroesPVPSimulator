@@ -24,9 +24,12 @@ To Do List
   * ----------- Priority 1 ------------
   * subclass top tier heroes
   * subclass mid tier heroes
+  * update queue processing to grab all living heroes prior, excluding carrie
   * ----------- Priority 2 ------------
   * allow for 10*-E5 of different levels
   * implement rest of monsters
+  * implement celestial island
+  * implement enhanced artifacts
   * add swap, copy, move functionality for team management
   * ----------- Priority 3 ------------
   * reorganize read me document into github wiki

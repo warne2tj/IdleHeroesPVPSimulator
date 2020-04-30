@@ -493,7 +493,7 @@ class Carrie extends hero {
       
       this._currentStats["spiritPowerStacks"] = 0;
       result = "<div>" + this.heroDesc() + " became a <span class='skill'>Shadowy Spirit</span>.</div>";
-    } else if (this._currentStats["totalHP"] == 0) {
+    } else if (this._currentStats["totalHP"] <= 0) {
       this._currentStats["spiritPowerStacks"] += 1;
     }
     
@@ -502,7 +502,7 @@ class Carrie extends hero {
   
   
   eventEnemyDied(e) { 
-    if (this._currentStats["totalHP"] == 0) {
+    if (this._currentStats["totalHP"] <= 0) {
       this._currentStats["spiritPowerStacks"] += 1;
     }
     
@@ -513,7 +513,7 @@ class Carrie extends hero {
   startOfRound() {
     var result = "";
     
-    if (this._currentStats["totalHP"] == 0) {
+    if (this._currentStats["totalHP"] <= 0) {
       if (this._currentStats["spiritPowerStacks"] >= 4) {
         this._currentStats["spiritPowerStacks"] = 0;
         this._currentStats["totalHP"] = this._stats["totalHP"];
@@ -529,7 +529,7 @@ class Carrie extends hero {
   endOfRound() {
     var result = "";
     
-    if (this._currentStats["totalHP"] == 0) {
+    if (this._currentStats["totalHP"] <= 0) {
       var damageResult = {};
       var target = getLowestHPTarget(this, this._enemies);
       var damageAmount = 0.5 * (target._stats["totalHP"] - target._currentStats["totalHP"]);
@@ -583,6 +583,88 @@ class Garuda extends hero {
   passiveStats() {
     // apply Eagle Power passive
     this.applyStatChange({attackPercent: 0.25, hpPercent: 0.3, critDamage: 0.4, controlImmune: 0.3}, "PassiveStats");
+  }
+  
+  
+  eventAllyBasic(e) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] > 0 && !("Seal of Light" in this._debuffs) && !(this.isUnderStandardControl())) {
+      var damageResult = {};
+      
+      result += "<div>" + this.heroDesc() + " <span class='skill'>Instinct of Hunt</span> passive triggered.</div>";
+      result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
+      result += this.getBuff(this, "Instinct of Hunt", 2, {crit: 0.05});
+      
+      for (var i=0; i<e.length; i++) {
+        if (e[i][1]._currentStats["totalHP"] > 0) {
+          this._rng = Math.random();
+          damageResult = this.calcDamage(e[i][1], this._currentStats["totalAttack"] * 2.5, "passive", "normal");
+          result += e[i][1].takeDamage(this, "Instinct of Hunt", damageResult);
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyActive(e) {
+    return this.eventAllyBasic(e);
+  }
+  
+  
+  eventAllyDied(e) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] > 0 && !("Seal of Light" in this._debuffs)) {
+      result += "<div>" + this.heroDesc() + " <span class='skill'>Unbeatable Force</span> passive triggered.</div>";
+      result += this.getHeal(this, this._stats["totalHP"] * 0.3);
+      result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
+      result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyDied(e) {
+    return this.eventAllyDied(e);
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 3;
+    
+    if (targets.length < numTargets) {
+      numTargets = targets.length;
+    }
+    
+    for (var i=0; i<numTargets; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 4.8);
+      result += targets[i].takeDamage(this, "Fatal Feather", damageResult);
+      activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+    }
+    
+    // Use up all Feather Blades
+    var numBlades = Object.keys(this._buffs["Feather Blade"]).length;
+    for (var i=1; i<= numBlades; i++) {
+      this._rng = Math.random();
+      targets = getRandomTargets(this, this._enemies);
+      
+      if (targets.length > 0) {
+        this._rng = Math.random();
+        damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active2", "normal", 3.2);
+        result += targets[0].takeDamage(this, "Feather Blade", damageResult);
+      }
+    }
+    result += this.removeBuff("Feather Blade");
+    
+    return result;
   }
 }
 
@@ -688,7 +770,7 @@ class Tara extends hero {
     var result = "";
     
     if (this._currentStats["totalHP"] > 0) {
-      if (this.heroDesc() == e[0].heroDesc() && !(this.isUnderStandardControl())) {
+      if (this.heroDesc() == e[0][0].heroDesc() && !(this.isUnderStandardControl())) {
         if ("Seal of Light" in this._debuffs) {
           result += "<div><span class='skill'>Seal of Light</span> prevented " + this.heroDesc() + " from triggering <span class='skill'>Fluctuation of Light</span>.</div>";
         } else {
