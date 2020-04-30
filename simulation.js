@@ -86,58 +86,61 @@ function runSim() {
         activeQueue = [];
         
         if (orderOfAttack[orderNum]._currentStats["totalHP"] > 0) {
-        
-          if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-          orderOfAttack[orderNum].rng = Math.random();
-          
-          // decide on action
-          if (orderOfAttack[orderNum]._currentStats["energy"] >= 100) {
-            // do active
-            result = orderOfAttack[orderNum].doActive();
-            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
+          if(orderOfAttack[orderNum].isUnderStandardControl()) {
+            if(numSims == 1) {oCombatLog.innerHTML += "<p>" + orderOfAttack[orderNum].heroDesc() + " is under control effect, turn skipped.</p>";}
+          } else {
+            if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
+            orderOfAttack[orderNum]._rng = Math.random();
             
-            // set hero energy to 0 after doing active
-            orderOfAttack[orderNum]._currentStats["energy"] = 0;
-            
-            // monster gains energy from hero active
-            if (orderOfAttack[orderNum]._attOrDef == "att") {
-              if (attMonster._monsterName != "None") {
-                monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
-                attMonster._energy += 10;
-                monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
-                if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+            // decide on action
+            if (orderOfAttack[orderNum]._currentStats["energy"] >= 100) {
+              // do active
+              result = orderOfAttack[orderNum].doActive();
+              if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
+              
+              // set hero energy to 0 after doing active
+              orderOfAttack[orderNum]._currentStats["energy"] = 0;
+              
+              // monster gains energy from hero active
+              if (orderOfAttack[orderNum]._attOrDef == "att") {
+                if (attMonster._monsterName != "None") {
+                  monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
+                  attMonster._energy += 10;
+                  monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
+                  if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+                }
+                
+              } else {
+                if (defMonster._monsterName != "None") {
+                  monsterResult = "<div>" + defMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
+                  defMonster._energy += 10;
+                  monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
+                  if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+                }
               }
               
+              // process active queue
+              for (var e in activeQueue) {
+                temp = alertDidActive(activeQueue[e]);
+                if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              }
             } else {
-              if (defMonster._monsterName != "None") {
-                monsterResult = "<div>" + defMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
-                defMonster._energy += 10;
-                monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
-                if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+              // do basic
+              result = orderOfAttack[orderNum].doBasic();
+              if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
+              
+              // hero gains 50 energy after doing basic
+              temp = orderOfAttack[orderNum].getEnergy(orderOfAttack[orderNum], 50);
+              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              
+              // process basic queue
+              for (var e in basicQueue) {
+                temp = alertDidBasic(basicQueue[e]);
+                if(numSims == 1) {oCombatLog.innerHTML += temp;}
               }
             }
-            
-            // process active queue
-            for (var e in activeQueue) {
-              temp = alertDidActive(activeQueue[e]);
-              if(numSims == 1) {oCombatLog.innerHTML += temp;}
-            }
-          } else {
-            // do basic
-            result = orderOfAttack[orderNum].doBasic();
-            if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
-            
-            // hero gains 50 energy after doing basic
-            temp = orderOfAttack[orderNum].getEnergy(orderOfAttack[orderNum], 50);
-            if(numSims == 1) {oCombatLog.innerHTML += temp;}
-            
-            // process basic queue
-            for (var e in basicQueue) {
-              temp = alertDidBasic(basicQueue[e]);
-              if(numSims == 1) {oCombatLog.innerHTML += temp;}
-            }
           }
-            
+              
           temp = processDeathQueue(oCombatLog);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
           

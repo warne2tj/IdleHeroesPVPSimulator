@@ -11,6 +11,54 @@ function uuid() {
 }
 
 
+function isMonster(source) {
+  if ("_monsterName" in source) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+function isControlEffect(strName, effects) {
+  if (["stun", "petrify", "freeze", "entangle", "Seal of Light"].includes(strName)) {
+    return true;
+  } else if ("petrify" in effects) {
+    return true;
+  } else if ("freeze" in effects) {
+    return true;
+  } else if ("entangle" in effects) {
+    return true;
+  } else if ("Seal of Light" in effects) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+function getFrontTargets(source, arrTargets) {
+  var targets = [];
+  
+  if (arrTargets[0]._currentStats["totalHP"] > 0) {
+    targets.push(arrTargets[0]);
+  }
+  if (arrTargets[1]._currentStats["totalHP"] > 0) {
+    targets.push(arrTargets[1]);
+  }
+  
+  if (targets.length == 0) {
+    for (var h=2; h<arrTargets.length; h++) {
+      if (arrTargets[h]._currentStats["totalHP"] > 0) {
+        targets.push(arrTargets[h]);
+      }
+    }
+  }
+  
+  return targets;
+}
+
+
 function getAllTargets(source, arrTargets) {
   // in anticipation of Unimax
   var livingTargets = [];

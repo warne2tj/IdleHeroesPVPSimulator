@@ -11,7 +11,7 @@ Implemented Heroes:
   * Baade 5 star
   * Carrie
   * Tara
-  * Amen-ra (in progress)
+  * Amen-Ra (in progress)
   
   
 Implemented Monsters:
@@ -30,6 +30,7 @@ To Do List
   * improve look of hero stat sheet
   * refactor combat log output to read and flow better
   * improve gui (incorporate icons?)
+  * reorganize read me document into a more concise format of discoveries, assumptions, and questions about game mechanics
   
   
 Hero Mechanics:
@@ -40,6 +41,8 @@ Hero Mechanics:
     + So additional damage does not trigger if hero dies from first part?
   * Carrie
     + Dodge, is it all or nothing? Do basics or actives that do multiple attacks dodge all or is each attack evaulated separately? Ex: Garuda.
+    + Her percent attack per energy is true damage?
+    + Is this reduced by all damage reduce?
   * Tara
     + What does seal of light actually seal?
     + On death effects seem to still work
@@ -47,6 +50,9 @@ Hero Mechanics:
     + Passive stat modifications seem to still work
     + Seems to only affect passives that are triggered by an event (aside from on death)?
     + Seal can't be removed by purify
+  * Amen-Ra
+    + Do her shields block ticks of a dot from an active?
+    + Can you crit/block against an active shield?
     
 
 Mechanics:
@@ -55,6 +61,7 @@ Mechanics:
     + then applying percentage modifiers one source at a time in a specific order 
     + with a math.floor in between
     + current best guess on order: enable level bonus, enable selected skills, equipment, set bonus, skin, guild tech, passive, artifact, stone
+    + testing seems to indicate attack damage is calculated with a round in between each multiplier, needs additional testing
   * Leveling
     + base stats are different at 5*, 6*, and 10*
     + increases by usually 10% of base stats per level, some stats for some heroes grow at a different amount
