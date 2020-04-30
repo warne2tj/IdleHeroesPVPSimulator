@@ -12,7 +12,8 @@ Implemented Heroes:
   * Carrie
   * Tara
   * Amen-Ra
-  * Garuda (in progress)
+  * Garuda
+  * Aida (in progress)
   
   
 Implemented Monsters:
