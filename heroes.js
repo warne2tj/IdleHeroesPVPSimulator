@@ -1039,7 +1039,7 @@ class hero {
       
       result += "<div>Damage prevented by <span class='skill'>Guardian Shadow</span>.</div>";
       result += this.getHeal(this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]);
-      source._currentStats["damageHealed"] += 2 * damageResult["damageAmount"];
+      this._buffs["Guardian Shadow"][keyDelete[0]]["source"]._currentStats["damageHealed"] += 2 * damageResult["damageAmount"];
       
       delete this._buffs["Guardian Shadow"][keyDelete[0]];
       

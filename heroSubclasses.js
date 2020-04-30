@@ -1,12 +1,16 @@
 /* 
 Important Notes
   * Don't forget to account for Tara's Seal of Light.
-  * When getting targets, check that the target is alive. In case all targets are dead. i.e. only sleepless left to resurrect at end of round.
+  * When getting targets, check that the target is alive. In case all targets are dead. 
+      Some effects still happen with no currently living targets.
+      i.e. only sleepless left to resurrect at end of round, kroos attack still heals
   * After doing damage, check that damage amount is greater than 0. If it's 0, then the target was Carrie and she dodged.
-  * When overriding events, you probably need to check that the target or source of the event is the same as the hero being called, depending on the details of the skill
+  * When overriding events, you probably need to check that the target or source of the event is the same as the hero being called
+      Depending on the details of the skill that is. Some react to anyone triggering the event, some only react to themselves.
   * Also, check that the hero answering the event is alive. Notable exception: Carrie
-  * Rng for a hero's attack is initially generated at the beginning of their turn. Need to regenerate if they do further attacks. But maybe not depending on if subsequent attacks use the same roll.
-  * In passives, might need to check if hero is under control
+  * Rng for a hero's attack is initially generated at the beginning of their turn. Need to regenerate if they do further attacks. 
+      But maybe not depending on if subsequent attacks use the same roll. This is an open question.
+  * In passives, might need to check if hero is under control effect
   
   
 
@@ -244,7 +248,7 @@ class AmenRa extends hero {
     var damageResult = {};
     var targets;
     
-    if (this._currentStats["totalHP"] > 0 && !("Seal of Light" in this._debuffs)) {
+    if (this._currentStats["totalHP"] > 0 && !("Seal of Light" in this._debuffs) && !(this.isUnderStandardControl())) {
       for (var i=1; i<=3; i++) {
         targets = getRandomTargets(this, this._enemies);
         
@@ -283,6 +287,7 @@ class AmenRa extends hero {
     var damageResult = {};
     var target;
     var targets = getFrontTargets(this, this._enemies);
+    var controlPrecision = this._currentStats["controlPrecision"];
     
     for (i in targets) {
       target = targets[i];
@@ -292,7 +297,8 @@ class AmenRa extends hero {
         damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 2);
         result += target.takeDamage(this, "Shadow Defense", damageResult);
         
-        if (damageResult["damageAmount"] > 0 && target._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
+        
+        if (damageResult["damageAmount"] > 0 && target._currentStats["totalHP"] > 0 && Math.random() < (0.7 + controlPrecision)) {
           result += target.getDebuff(this, "petrify", 2, {});
         }
         
@@ -682,7 +688,7 @@ class Tara extends hero {
     var result = "";
     
     if (this._currentStats["totalHP"] > 0) {
-      if (this.heroDesc() == e[0].heroDesc()) {
+      if (this.heroDesc() == e[0].heroDesc() && !(this.isUnderStandardControl())) {
         if ("Seal of Light" in this._debuffs) {
           result += "<div><span class='skill'>Seal of Light</span> prevented " + this.heroDesc() + " from triggering <span class='skill'>Fluctuation of Light</span>.</div>";
         } else {
