@@ -983,10 +983,10 @@ class hero {
   eventEnemyBasic(e) { 
     var result = "";
     
-    if (e[1].heroDesc() == this.heroDesc()) {
+    if (e[0][1].heroDesc() == this.heroDesc()) {
       // this hero got attacked with basic attack, gain energy
-      if (e[2] > 0) {
-        if (e[3] == true) {
+      if (e[0][2] > 0) {
+        if (e[0][3] == true) {
           result += this.getEnergy(this, 20);
         } else {
           result += this.getEnergy(this, 10);
@@ -1001,10 +1001,10 @@ class hero {
   eventEnemyActive(e) { 
     var result = "";
     
-    if (e[1].heroDesc() == this.heroDesc()) {
+    if (e[0][1].heroDesc() == this.heroDesc()) {
       // this hero got attacked with active, gain energy
-      if (e[2] > 0) {
-        if (e[3] == true) {
+      if (e[0][2] > 0) {
+        if (e[0][3] == true) {
           result += this.getEnergy(this, 20);
         } else {
           result += this.getEnergy(this, 10);
@@ -1039,7 +1039,7 @@ class hero {
       
       result += "<div>Damage prevented by <span class='skill'>Guardian Shadow</span>.</div>";
       result += this.getHeal(this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]);
-      source._currentStats["damageHealed"] += 2 * damageResult["damageAmount"];
+      this._buffs["Guardian Shadow"][keyDelete[0]]["source"]._currentStats["damageHealed"] += 2 * damageResult["damageAmount"];
       
       delete this._buffs["Guardian Shadow"][keyDelete[0]];
       
@@ -1068,8 +1068,8 @@ class hero {
           
         } else {
           // hero died
+          this._currentStats["totalHP"] = this._currentStats["totalHP"] - damageResult["damageAmount"];
           source._currentStats["damageDealt"] += damageResult["damageAmount"];
-          this._currentStats["totalHP"] = 0;
           
           if (damageResult["critted"] == true && damageResult["blocked"] == true) {
             result += "<div>Blocked crit " + strAttackDesc + " dealt " + formatNum(damageResult["damageAmount"]) + " damage.</div>";

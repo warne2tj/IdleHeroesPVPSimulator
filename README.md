@@ -11,7 +11,8 @@ Implemented Heroes:
   * Baade 5 star
   * Carrie
   * Tara
-  * Amen-Ra (in progress)
+  * Amen-Ra
+  * Garuda (in progress)
   
   
 Implemented Monsters:
@@ -22,15 +23,19 @@ Implemented Monsters:
 To Do List
   * ----------- Priority 1 ------------
   * subclass top tier heroes
+  * subclass mid tier heroes
+  * update queue processing to grab all living heroes prior, excluding carrie
   * ----------- Priority 2 ------------
   * allow for 10*-E5 of different levels
   * implement rest of monsters
+  * implement celestial island
+  * implement enhanced artifacts
   * add swap, copy, move functionality for team management
   * ----------- Priority 3 ------------
-  * improve look of hero stat sheet
+  * reorganize read me document into github wiki
+  * improve look of hero stat sheet, buff, and debuff descriptions
   * refactor combat log output to read and flow better
   * improve gui (incorporate icons?)
-  * reorganize read me document into a more concise format of discoveries, assumptions, and questions about game mechanics
   
   
 Hero Mechanics:
@@ -61,7 +66,8 @@ Mechanics:
     + then applying percentage modifiers one source at a time in a specific order 
     + with a math.floor in between
     + current best guess on order: enable level bonus, enable selected skills, equipment, set bonus, skin, guild tech, passive, artifact, stone
-    + testing seems to indicate attack damage is calculated with a round in between each multiplier, needs additional testing
+  * Combat Damage
+    + Numbers in game combat are off by 0.0058%. After testing multiple methods of accounting for this small error, the only thing I can think of is that it is due to a full recalculation of the attack stat during combat that uses a different order from what is displayed to the user.
   * Leveling
     + base stats are different at 5*, 6*, and 10*
     + increases by usually 10% of base stats per level, some stats for some heroes grow at a different amount
