@@ -25,7 +25,7 @@ To Do List
   * ----------- Priority 1 ------------
   * subclass top tier heroes
   * subclass mid tier heroes
-  * update queue processing to grab all living heroes prior, excluding carrie
+  * update queue processing to grab all living heroes, excluding carrie
   * ----------- Priority 2 ------------
   * allow for 10*-E5 of different levels
   * implement rest of monsters

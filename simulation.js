@@ -328,18 +328,6 @@ function runSim() {
 }
 
 
-function processDeathQueue(oCombatLog) {
-  var temp = "";
-  
-  while (deathQueue.length > 0) {
-    temp += alertHeroDied(deathQueue[0]);
-    deathQueue.shift();
-  }
-  
-  return temp;
-}
-
-
 // alerters to trigger other heroes in response to an action
 
 // tell all heroes a hero did a basic attack and the outcome
@@ -347,22 +335,51 @@ function alertDidBasic(e) {
   var result = "";
   var temp = "";
   var source = e[0][0];
+  var livingAllies = [];
+  var livingEnemies = [];
   
-  for (var i = 0; i < source._allies.length; i++) {
-    if (source._allies[i]._heroName != "None") {
-      temp = source._allies[i].eventAllyBasic(e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
+  
+  // enemies get energy after getting hit by basic
+  for (var i=0; i<e.length; i++) {
+    if (e[i][1]._currentStats["totalHP"] > 0) {
+      if (e[i][2] > 0) {
+        if (e[i][3] == true) {
+          // double energy on being critted
+          result += e[i][1].getEnergy(e[i][1], 20);
+        } else {
+          result += e[i][1].getEnergy(e[i][1], 10);
+        }
       }
     }
   }
   
+  
+  // get currently living allies and enemies
+  for (var i = 0; i < source._allies.length; i++) {
+    if (source._allies[i]._heroName != "None" && source._allies[i]._currentStats["totalHP"] > 0) {
+      livingAllies.push(source._allies[i])
+    }
+  }
+  
   for (var i = 0; i < source._enemies.length; i++) {
-    if (source._enemies[i]._heroName != "None") {
-      temp = source._enemies[i].eventEnemyBasic(e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
+    if (source._enemies[i]._heroName != "None" && source._enemies[i]._currentStats["totalHP"] > 0) {
+      livingEnemies.push(source._enemies[i])
+    }
+  }
+  
+  
+  // alert living allies and enemies
+  for (var i = 0; i < livingAllies.length; i++) {
+    temp = livingAllies[i].eventAllyBasic(e);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
+    }
+  }
+  
+  for (var i = 0; i < livingEnemies.length; i++) {
+    temp = livingEnemies[i].eventEnemyBasic(e);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
     }
   }
   
@@ -375,22 +392,51 @@ function alertDidActive(e) {
   var result = "";
   var temp = "";
   var source = e[0][0];
+  var livingAllies = [];
+  var livingEnemies = [];
   
-  for (var i = 0; i < source._allies.length; i++) {
-    if (source._allies[i]._heroName != "None") {
-      temp = source._allies[i].eventAllyActive(e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
+  
+  // enemies get energy after getting hit by active
+  for (var i=0; i<e.length; i++) {
+    if (e[i][1]._currentStats["totalHP"] > 0) {
+      if (e[i][2] > 0) {
+        if (e[i][3] == true) {
+          // double energy on being critted
+          result += e[i][1].getEnergy(e[i][1], 20);
+        } else {
+          result += e[i][1].getEnergy(e[i][1], 10);
+        }
       }
     }
   }
   
+  
+  // get currently living allies and enemies
+  for (var i = 0; i < source._allies.length; i++) {
+    if (source._allies[i]._heroName != "None" && source._allies[i]._currentStats["totalHP"] > 0) {
+      livingAllies.push(source._allies[i])
+    }
+  }
+  
   for (var i = 0; i < source._enemies.length; i++) {
-    if (source._enemies[i]._heroName != "None") {
-      temp = source._enemies[i].eventEnemyActive(e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
+    if (source._enemies[i]._heroName != "None" && source._enemies[i]._currentStats["totalHP"] > 0) {
+      livingEnemies.push(source._enemies[i])
+    }
+  }
+  
+  
+  // alert living allies and enemies
+  for (var i = 0; i < livingAllies.length; i++) {
+    temp = livingAllies[i].eventAllyActive(e);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
+    }
+  }
+  
+  for (var i = 0; i < livingEnemies.length; i++) {
+    temp = livingEnemies[i].eventEnemyActive(e);
+    if (temp != "") {
+      result += "<div>" + temp + "</div>";
     }
   }
   
@@ -399,24 +445,60 @@ function alertDidActive(e) {
   
   
 // tell all heroes a hero died
-function alertHeroDied(e) {
+function processDeathQueue(oCombatLog) {
   var result = "";
   var temp = "";
+  var copyQueue;
+  var livingAttackers;
+  var livingDefenders;
+  var livingAllies;
+  var livingEnemies;
   
-  for (var i = 0; i < e[1]._allies.length; i++) {
-    if (e[1]._allies[i]._heroName != "None") {
-      temp = e[1]._allies[i].eventAllyDied(e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
+  
+  while (deathQueue.length > 0) {
+    copyQueue = [];
+    for (var i=0; i<deathQueue.length; i++) {
+      copyQueue.push(deathQueue[i]);
+    }
+    deathQueue = [];
+    
+    // get currently living attackers and defenders
+    livingAttackers = [];
+    for (var i = 0; i < attHeroes.length; i++) {
+      if ((attHeroes[i]._heroName != "None" && attHeroes[i]._currentStats["totalHP"] > 0) || attHeroes[i]._heroName == "Carrie") {
+        livingAttackers.push(attHeroes[i])
       }
     }
-  }
-  
-  for (var i = 0; i < e[1]._enemies.length; i++) {
-    if (e[1]._enemies[i]._heroName != "None") {
-      temp = e[1]._enemies[i].eventEnemyDied(e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
+    
+    livingDefenders = [];
+    for (var i = 0; i < defHeroes.length; i++) {
+      if ((defHeroes[i]._heroName != "None" && defHeroes[i]._currentStats["totalHP"] > 0) || defHeroes[i]._heroName == "Carrie") {
+        livingDefenders.push(defHeroes[i])
+      }
+    }
+    
+    for (var i=0; i<copyQueue.length; i++) {
+      if (copyQueue[i][1]._attOrDef == "att") {
+        livingAllies = livingAttackers;
+        livingEnemies = livingDefenders;
+      } else {
+        livingAllies = livingDefenders;
+        livingEnemies = livingAttackers;
+      }
+      
+      
+      for (var j = 0; j < livingAllies.length; j++) {
+        temp = livingAllies[j].eventAllyDied(copyQueue[i]);
+        if (temp != "") {
+          result += "<div>" + temp + "</div>";
+        }
+      }
+      
+      for (var j = 0; j < livingEnemies.length; j++) {
+        temp = livingEnemies[j].eventEnemyDied(copyQueue[i]);
+        if (temp != "") {
+          result += "<div>" + temp + "</div>";
+        }
       }
     }
   }
