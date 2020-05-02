@@ -1,6 +1,7 @@
 var deathQueue = [];
 var basicQueue = [];
 var activeQueue = [];
+var damageInRound = 0;
 
 
 function runSim() {
@@ -68,6 +69,9 @@ function runSim() {
     for (roundNum = 1; roundNum <= 15; roundNum++) {
       // @ start of round
       
+      // track amount of damage done in a round for Aida
+      damageInRound = 0;
+      
       // Output detailed combat log only if running a single simulation
       if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Round " + formatNum(roundNum) + " Start</p>";}
       
@@ -118,6 +122,14 @@ function runSim() {
                   if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
                 }
               }
+              
+              // check for Aida's Balance Mark debuffs
+              if ("Balance Mark" in orderOfAttack[orderNum]._debuffs) {
+                var firstKey = Object.keys(orderOfAttack[orderNum]._debuffs["Balance Mark"])[0];
+                temp = orderOfAttack[orderNum]._debuffs["Balance Mark"][firstKey]["source"].balanceMark(orderOfAttack[orderNum]);
+                if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              }
+              
               
               // process active queue
               temp = alertDidActive(activeQueue);

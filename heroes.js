@@ -559,7 +559,10 @@ class hero {
     var result = "";
     var healEffect = 1 + source._currentStats["healEffect"];
     var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
+    if (effectBeingHealed < 0) { effectBeingHealed = 0; }
+    
     var amountHealed = Math.round(amount * healEffect * effectBeingHealed);
+    
       
     if (!(isMonster(source)) && "Healing Curse" in this._debuffs) {
       var debuffKeys = Object.keys(this._debuffs["Healing Curse"]);
@@ -1014,7 +1017,7 @@ class hero {
         result += this.removeBuff("Guardian Shadow");
       }
     } else {
-      
+      damageInRound += damageResult["damageAmount"];
       
       if (this._currentStats["totalHP"] <= damageResult["damageAmount"]) {
         // hero would die, check for unbending will

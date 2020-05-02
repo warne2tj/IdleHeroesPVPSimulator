@@ -13,25 +13,52 @@ Implemented Heroes:
   * Tara
   * Amen-Ra
   * Garuda
-  * Aida (in progress)
+  * Aida
+  * Belrain (up next)
   
   
 Implemented Monsters:
   * Deer
   * Phoenix
+  
+  
+No Plans to Implement:
+  * Ormus
+  * Emily
+  * Aidan
+  * Das Moge
+  * Jahra
+  * Sigmund
+  * Valentino
+  * Flame Strike
+  * Xia
+  * Vesa
+  * Starlight
+  * Skerei
+  * Walter
+  * Gerke
+  * Sleepless
+  * Corpsedemon
+  * Kamath
+  * Barea
+  * Queen
+  * Heartwatcher
+  * Rosa
+  * Baade
+  * Groo
+  * Blood Blade
 
   
 To Do List
   * ----------- Priority 1 ------------
   * subclass top tier heroes
   * subclass mid tier heroes
-  * update queue processing to grab all living heroes, excluding carrie
   * ----------- Priority 2 ------------
   * allow for 10*-E5 of different levels
   * implement rest of monsters
+  * add swap, copy, move functionality for team management
   * implement celestial island
   * implement enhanced artifacts
-  * add swap, copy, move functionality for team management
   * ----------- Priority 3 ------------
   * reorganize read me document into github wiki
   * improve look of hero stat sheet, buff, and debuff descriptions
@@ -59,6 +86,8 @@ Hero Mechanics:
   * Amen-Ra
     + Do her shields block ticks of a dot from an active?
     + Can you crit/block against an active shield?
+  * Aida
+    + Does final verdict passive still happen if under cc?
     
 
 Mechanics:
@@ -90,6 +119,7 @@ Mechanics:
   * Block
     + 30% reduced normal damage, 44% reduced crit damage
     + chance of crit and chance of block seem to use the same roll
+    + can you block while CC'ed?
   * Precision
     + each percent reduces enemy block and adds 0.3% damage 
     + max bonus damage capped at 45%
@@ -141,5 +171,6 @@ Far far far future functionality*:
     + auto generate configurations
     + pit them against each other
     + most successful configurations "mate" and produce offspring for next generation
-    + mutation rate: 10%?
+    + clone 20%, crossover 40%, mutation rate per gene: 1%?
+    + other 40% sample from lower tiers to maintain genetic diversity
     + repeat

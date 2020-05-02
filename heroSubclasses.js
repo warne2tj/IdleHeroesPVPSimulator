@@ -17,8 +17,11 @@ Important Function prototypes
 
   this.calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1)
       return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
-      damageSource = passive, active, mark, monster, debuff, active2(does not apply skill damage but applies other skill related effects)
-      damageType = normal, burn, bleed, poison
+      damageSource = passive, active, mark, monster, debuff, other, active2
+        debuff: don't know if this damage type is needed, just in case
+        active2: does not apply skill damage but applies other skill related effects
+        other: does not trigger amenra shield
+      damageType = normal, burn, bleed, poison, hpPercent
 
 
   this.takeDamage(source, strAttackDesc, damageResult{})
@@ -109,14 +112,13 @@ class Baade extends hero {
           }
           
           additionalDamage = Math.round(additionalDamage);
-          damageResult["damageAmount"] += additionalDamage;
           additionalDamageResult = {
             damageAmount: additionalDamage, 
             critted: 0, 
             blocked: 0, 
             damageSource: "basic", 
             damageType: "normal", 
-            e5Desc: ""
+            e5Description: ""
           };
           
           result += target.takeDamage(this, "Death Threat", additionalDamageResult);
@@ -153,14 +155,13 @@ class Baade extends hero {
           }
           
           additionalDamage = Math.round(additionalDamage);
-          damageResult["damageAmount"] += additionalDamage;
           additionalDamageResult = {
             damageAmount: additionalDamage, 
             critted: 0, 
             blocked: 0, 
             damageSource: "active2", 
             damageType: "normal", 
-            e5Desc: ""
+            e5Description: ""
           };
           
           result += target.takeDamage(this, "Nether Strike 2", additionalDamageResult);
@@ -182,9 +183,7 @@ class Baade extends hero {
   eventEnemyDied(e) { 
     var result = ""
     
-    if ("Seal of Light" in this._debuffs) {
-      result += "<div><span class='skill'>Seal of Light</span> prevented " + this.heroDesc() + " from triggering <span class='skill'>Blood Armor</span>.</div>";
-    } else {
+    if (!("Seal of Light" in this._debuffs)) {
       result = "<div>" + this.heroDesc() + " <span class='skill'>Blood Armor</span> passive triggered.</div>";
       result += this.getHeal(this, this._currentStats["totalAttack"]);
       result += this.getBuff(this, "Blood Armor", 1, {damageReduce: 0.1});
@@ -201,9 +200,140 @@ class Aida extends hero {
     super(sHeroName, iHeroPos, attOrDef);
   }
   
+  
   passiveStats() {
     // apply Blessing of Light passive
     this.applyStatChange({hpPercent: 0.4, holyDamage: 1.0, damageReduce: 0.3, speed: 80}, "PassiveStats");
+  }
+  
+  
+  balanceMark(target) {
+    var result = "";
+    
+    if (target._currentStats["totalHP"] > 0) {
+      var damageAmount = target._stats["totalHP"] * 0.25;
+      
+      if (damageAmount > this._currentStats["totalAttack"] * 30) {
+        damageAmount = this._currentStats["totalAttack"] * 30;
+      }
+      
+      var damageResult = {
+        damageAmount: damageAmount, 
+        critted: 0, 
+        blocked: 0, 
+        damageSource: "mark", 
+        damageType: "hpPercent", 
+        e5Description: ""
+      };
+      
+      result += target.removeDebuff("Balance Mark");
+      result += target.takeDamage(this, "Balance Mark", damageResult);
+    }
+    
+    return result;
+  }
+  
+  
+  endOfRound() {
+    var result = "";
+    var healAmount = 0;
+    
+    if (!("Seal of Light" in this._debuffs)) {
+      if ("Fury of Justice" in this._buffs) {
+        healAmount = damageInRound * 0.35;
+        result += "<div><span class='skill'>Fury of Justice</span> heal triggered.</div>";
+        result += this.getHeal(this, healAmount);
+        result += this.removeBuff("Fury of Justice");
+      }
+      
+      if (!(this.isUnderStandardControl())) {
+        var damageResult = {};
+        var targets = getAllTargets(this, this._enemies);
+        
+        for (var i=0; i<targets.length; i++) {
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            this._rng = Math.random();
+            damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
+            result += targets[i].takeDamage(this, "Final Verdict", damageResult);
+            
+            if (targets[i]._currentStats["totalHP"] > 0) {
+              result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
+            }
+          }
+        }
+        
+        healAmount = this._stats["totalHP"] * 0.15;
+        result += this.getHeal(this, healAmount);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var additionalDamageResult = {damageAmount: 0};
+    var target = getHighestHPTarget(this, this._enemies);
+    var additionalDamage = 0;
+    
+    if (target._heroName != "None") {
+      damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.2, "basic", "normal");
+      result = target.takeDamage(this, "Basic Attack", damageResult);
+      
+      if (target._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
+        additionalDamage = target._stats["totalHP"] * 0.2;
+        if (additionalDamage > this._currentStats["totalAttack"] * 15) {
+          additionalDamage = this._currentStats["totalAttack"] * 15;
+        }
+        
+        additionalDamageResult = {
+          damageAmount: additionalDamage, 
+          critted: 0, 
+          blocked: 0, 
+          damageSource: "basic", 
+          damageType: "hpPercent", 
+          e5Description: ""
+        };
+        
+        result += target.takeDamage(this, "Fury of Justice", additionalDamageResult);
+      }
+      
+      basicQueue.push([this, target, damageResult["damageAmount"] + additionalDamage, damageResult["critted"]]);
+    }
+    
+    result += this.getBuff(this, "Fury of Justice", 99, {});
+    
+    return result;
+    
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {
+      numTargets = targets.length;
+    }
+    
+    for (var i=0; i<numTargets; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.68, 1, 1, 0);
+      result += targets[i].takeDamage(this, "Order Restore", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        targets[i].getDebuff(this, "Balance Mark", 3, {});
+      }
+      
+      activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+    }
+    
+    return result;
+    
   }
 }
 
@@ -543,7 +673,7 @@ class Carrie extends hero {
           "critted": false,
           "blocked": false,
           "damageSource": "passive",
-          "damageType": "normal",
+          "damageType": "hpPercent",
           "e5Description": ""
         };
         result += target.takeDamage(this, "Shadowy Spirit", damageResult);
@@ -769,15 +899,16 @@ class Tara extends hero {
     
     if (this.heroDesc() == e[0][0].heroDesc() && !(this.isUnderStandardControl()) && !("Seal of Light" in this._debuffs)) {
       var damageResult = {};
+      var targets = getAllTargets(this, this._enemies);
       
-      for (var i=0; i<this._enemies.length; i++) {
-        if (this._enemies[i]._currentStats["totalHP"] > 0) {
+      for (var i=0; i<targets.length; i++) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
           this._rng = Math.random();
-          damageResult = this.calcDamage(this._enemies[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 1, 1, 0);
-          result += this._enemies[i].takeDamage(this, "Fluctuation of Light", damageResult);
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 1, 1, 0);
+          result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
           
           if (Math.random() < 0.3) {
-            result += this._enemies[i].getDebuff(this, "Power of Light", 99, {});
+            result += targets[i].getDebuff(this, "Power of Light", 99, {});
           }
         }
       }

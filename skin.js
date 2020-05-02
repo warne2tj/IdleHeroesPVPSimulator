@@ -1,4 +1,11 @@
 var skins = {
+  "Aida": {
+    "Dark Eclipse": {controlImmune: 0.05, hpPercent: 0.03, attackPercent: 0.03},
+    "Legendary Dark Eclipse": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
+    "Luo River Lady": {speed: 4, hpPercent: 0.05, damageReduce: 0.03},
+    "Legendary Luo River Lady": {speed: 6, hpPercent: 0.08, damageReduce: 0.04}
+  },
+  
   "Amen-Ra": {
     "Dread Puppet": {speed: 4, hpPercent: 0.05, damageReduce:0.04},
     "Legendary Dread Puppet": {speed: 6, hpPercent: 0.08, damageReduce:0.04},
