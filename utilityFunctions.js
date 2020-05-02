@@ -97,41 +97,53 @@ function getRandomTargets(source, arrTargets) {
 }
 
 
-function getFirstTarget(source, arrTargets) {
-  // get first living target
+function getLowestHPTargets(source, arrTargets) {
+  // get living targets with lowest current HP
+  var copyTargets = [];
+  
   for (var i=0; i<arrTargets.length; i++) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      return arrTargets[i];
+      copyTargets.push(arrTargets[i]);
     }
   }
   
-  return new hero("None");
+  copyTargets.sort(function(a,b) {
+    if (a._currentStats["totalHP"] > b._currentStats["totalHP"]) {
+      return 1;
+    } else if (a._currentStats["totalHP"] < b._currentStats["totalHP"]) {
+      return -1;
+    } else if (a._heroPos < b._heroPos) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+  
+  return copyTargets;
 }
 
 
-function getLowestHPTarget(source, arrTargets) {
-  // get first living target with lowest current HP
-  var target = new hero("None");
+function getHighestHPTargets(source, arrTargets) {
+  // get living target with highest current HP
+  var copyTargets = [];
   
   for (var i=0; i<arrTargets.length; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0 && (target._heroName == "None" || arrTargets[i]._currentStats["totalHP"] < target._currentStats["totalHP"])) {
-      target = arrTargets[i];
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      copyTargets.push(arrTargets[i]);
     }
   }
   
-  return target;
-}
-
-
-function getHighestHPTarget(source, arrTargets) {
-  // get first living target with highest current HP
-  var target = new hero("None");
-  
-  for (var i=0; i<arrTargets.length; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0 && (target._heroName == "None" || arrTargets[i]._currentStats["totalHP"] > target._currentStats["totalHP"])) {
-      target = arrTargets[i];
+  copyTargets.sort(function(a,b) {
+    if (a._currentStats["totalHP"] > b._currentStats["totalHP"]) {
+      return -1;
+    } else if (a._currentStats["totalHP"] < b._currentStats["totalHP"]) {
+      return 1;
+    } else if (a._heroPos < b._heroPos) {
+      return -1;
+    } else {
+      return 1;
     }
-  }
+  });
   
-  return target;
+  return copyTargets;
 }
