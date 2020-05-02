@@ -557,11 +557,10 @@ class hero {
   
   getHeal(source, amount) {
     var result = "";
-    var healEffect = 1 + source._currentStats["healEffect"];
     var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
     if (effectBeingHealed < 0) { effectBeingHealed = 0; }
     
-    var amountHealed = Math.round(amount * healEffect * effectBeingHealed);
+    var amountHealed = Math.round(amount * effectBeingHealed);
     
       
     if (!(isMonster(source)) && "Healing Curse" in this._debuffs) {
@@ -1090,12 +1089,17 @@ class hero {
   doBasic() {
     var result = "";
     var damageResult = {};
-    var target = getFirstTarget(this, this._enemies);
+    var targets = getAllTargets(this, this._enemies);
+    var maxTargets = 1;
     
-    if (target._heroName != "None") {
-      damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "basic", "normal");
-      result += target.takeDamage(this, "Basic Attack", damageResult);
-      basicQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    if (targets.length < maxTargets) {
+      maxTargets = targets.length;
+    }
+    
+    for (var i=0; i<maxTargets; i++) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal");
+      result += targets[i].takeDamage(this, "Basic Attack", damageResult);
+      basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
     }
     
     return result;
@@ -1105,12 +1109,17 @@ class hero {
   doActive() { 
     var result = "";
     var damageResult = {};
-    var target = getFirstTarget(this, this._enemies);
+    var targets = getAllTargets(this, this._enemies);
+    var maxTargets = 1;
     
-    if (target._heroName != "None") {
-      damageResult = this.calcDamage(target, this._currentStats["totalAttack"], "active", "normal", 1.5);
-      result += target.takeDamage(this, "Active Template", damageResult);
-      activeQueue.push([this, target, damageResult["damageAmount"], damageResult["critted"]]);
+    if (targets.length < maxTargets) {
+      maxTargets = targets.length;
+    }
+    
+    for (var i=0; i<maxTargets; i++) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
+      result += targets[i].takeDamage(this, "Active Template", damageResult);
+      activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
     }
     
     return result;

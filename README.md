@@ -14,7 +14,7 @@ Implemented Heroes:
   * Amen-Ra
   * Garuda
   * Aida
-  * Belrain (up next)
+  * Belrain
   
   
 Implemented Monsters:
