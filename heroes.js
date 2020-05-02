@@ -559,7 +559,10 @@ class hero {
     var result = "";
     var healEffect = 1 + source._currentStats["healEffect"];
     var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
+    if (effectBeingHealed < 0) { effectBeingHealed = 0; }
+    
     var amountHealed = Math.round(amount * healEffect * effectBeingHealed);
+    
       
     if (!(isMonster(source)) && "Healing Curse" in this._debuffs) {
       var debuffKeys = Object.keys(this._debuffs["Healing Curse"]);
@@ -973,48 +976,15 @@ class hero {
   
   passiveStats() { return; }
   eventAllyBasic(e) { return ""; }
+  eventEnemyBasic(e) { return ""; }
   eventAllyActive(e) { return ""; }
+  eventEnemyActive(e) { return ""; }
   eventAllyDied(e) { return ""; }
   eventEnemyDied(e) { return ""; }
   startOfRound() { return ""; }
   endOfRound() { return ""; }
   
   
-  eventEnemyBasic(e) { 
-    var result = "";
-    
-    if (e[0][1].heroDesc() == this.heroDesc()) {
-      // this hero got attacked with basic attack, gain energy
-      if (e[0][2] > 0) {
-        if (e[0][3] == true) {
-          result += this.getEnergy(this, 20);
-        } else {
-          result += this.getEnergy(this, 10);
-        }
-      }
-    }
-    
-    return result;
-  }
-  
-  
-  eventEnemyActive(e) { 
-    var result = "";
-    
-    if (e[0][1].heroDesc() == this.heroDesc()) {
-      // this hero got attacked with active, gain energy
-      if (e[0][2] > 0) {
-        if (e[0][3] == true) {
-          result += this.getEnergy(this, 20);
-        } else {
-          result += this.getEnergy(this, 10);
-        }
-      }
-    }
-    
-    return result;
-  }
-
   
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
@@ -1047,7 +1017,7 @@ class hero {
         result += this.removeBuff("Guardian Shadow");
       }
     } else {
-      
+      damageInRound += damageResult["damageAmount"];
       
       if (this._currentStats["totalHP"] <= damageResult["damageAmount"]) {
         // hero would die, check for unbending will

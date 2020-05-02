@@ -121,3 +121,17 @@ function getLowestHPTarget(source, arrTargets) {
   
   return target;
 }
+
+
+function getHighestHPTarget(source, arrTargets) {
+  // get first living target with highest current HP
+  var target = new hero("None");
+  
+  for (var i=0; i<arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0 && (target._heroName == "None" || arrTargets[i]._currentStats["totalHP"] > target._currentStats["totalHP"])) {
+      target = arrTargets[i];
+    }
+  }
+  
+  return target;
+}
