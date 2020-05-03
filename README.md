@@ -3,7 +3,7 @@ Idle Heroes Battle Simulator version Alpha
 
 
 Description:
-  Simulator for PVP battles in Idle Heroes. 
+  Simulator for PvP battles in Idle Heroes. An attempt to fully and accurately simulate the numbers involved in PvP combat.
   
   
 Implemented Heroes:
@@ -74,10 +74,9 @@ No Plans to Implement:
   
 To Do List
   * ----------- Priority 1 ------------
-  * subclass top tier heroes
-  * subclass mid tier heroes
-  * ----------- Priority 2 ------------
+  * subclass heroes
   * allow for 10*-E5 of different levels
+  * ----------- Priority 2 ------------
   * implement rest of monsters
   * add swap, copy, move functionality for team management
   * implement celestial island
@@ -111,6 +110,8 @@ Hero Mechanics:
     + Can you crit/block against an active shield?
   * Aida
     + Does final verdict passive still happen if under cc?
+  * Belrain
+    + Does her speed buff change order of attack? Or is that determined at the beginning of the round and won't affect order until next round?
     
 
 Mechanics:
@@ -119,11 +120,9 @@ Mechanics:
     + then applying percentage modifiers one source at a time in a specific order 
     + with a math.floor in between
     + current best guess on order: enable level bonus, enable selected skills, equipment, set bonus, skin, guild tech, passive, artifact, stone
-  * Combat Damage
-    + Numbers in game combat are off by 0.0058%. After testing multiple methods of accounting for this small error, the only thing I can think of is that it is due to a full recalculation of the attack stat during combat that uses a different order from what is displayed to the user.
   * Leveling
     + base stats are different at 5*, 6*, and 10*
-    + increases by usually 10% of base stats per level, some stats for some heroes grow at a different amount
+    + increases by usually 10% of base stats per level, some stats for some heroes grow at a different rate
     + except speed, speed increases a flat 2 per level
     + each tier adds an additive percentage bonus to stats
     + 20% for hp and attack, 10% for speed

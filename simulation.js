@@ -132,7 +132,7 @@ function runSim() {
               
               
               // process active queue
-              temp = alertDidActive(activeQueue);
+              temp = alertDidActive(orderOfAttack[orderNum], activeQueue);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
             } else {
@@ -145,7 +145,7 @@ function runSim() {
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
               // process basic queue
-              temp = alertDidBasic(basicQueue);
+              temp = alertDidBasic(orderOfAttack[orderNum], basicQueue);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
             }
           }
@@ -167,6 +167,7 @@ function runSim() {
       if(numSims == 1) {oCombatLog.innerHTML += "<p></p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";}
       
       
+      // attack first
       // handle monster stuff
       if (attMonster._monsterName != "None") {
         monsterResult = "<p></p><div>" + attMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
@@ -186,6 +187,57 @@ function runSim() {
       someoneWon = checkForWin();
       if (someoneWon != "") {break;}
       
+      
+      // handle buffs and debuffs
+      if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
+      for (var h in attHeroes) {
+        temp = attHeroes[h].tickBuffs();
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      }
+      
+      for (var h in attHeroes) {
+        temp = attHeroes[h].tickDebuffs();
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      }
+      
+      temp = processDeathQueue(oCombatLog);
+      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
+      
+      
+      // get number of living heroes for shared fate enable
+      numLiving = 0;
+      if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
+      for (var h in orderOfAttack) {
+        if (orderOfAttack[h]._currentStats["totalHP"] > 0) { numLiving++; }
+      }
+      
+      // trigger E3 enables
+      for (var h in attHeroes) {
+        if (attHeroes[h]._currentStats["totalHP"] > 0) { 
+          temp = attHeroes[h].tickEnable3(numLiving);
+          if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        }
+      }
+      
+      // trigger hero end of round abilities
+      for (var h in attHeroes) {
+        temp = attHeroes[h].endOfRound();
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      }
+      
+      temp = processDeathQueue(oCombatLog);
+      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
+      
+      
+      
+      // defender second
+      // handle monster stuff
       if (defMonster._monsterName != "None") {
         monsterResult = "<p></p><div>" + defMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
         defMonster._energy += 20;
@@ -207,13 +259,13 @@ function runSim() {
       
       // handle buffs and debuffs
       if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-      for (var h in orderOfAttack) {
-        temp = orderOfAttack[h].tickBuffs();
+      for (var h in defHeroes) {
+        temp = defHeroes[h].tickBuffs();
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
-      for (var h in orderOfAttack) {
-        temp = orderOfAttack[h].tickDebuffs();
+      for (var h in defHeroes) {
+        temp = defHeroes[h].tickDebuffs();
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
@@ -232,16 +284,16 @@ function runSim() {
       }
       
       // trigger E3 enables
-      for (var h in orderOfAttack) {
-        if (orderOfAttack[h]._currentStats["totalHP"] > 0) { 
-          temp = orderOfAttack[h].tickEnable3(numLiving);
+      for (var h in defHeroes) {
+        if (defHeroes[h]._currentStats["totalHP"] > 0) { 
+          temp = defHeroes[h].tickEnable3(numLiving);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
       }
       
       // trigger hero end of round abilities
-      for (var h in orderOfAttack) {
-        temp = orderOfAttack[h].endOfRound();
+      for (var h in defHeroes) {
+        temp = defHeroes[h].endOfRound();
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
@@ -345,10 +397,9 @@ function runSim() {
 // alerters to trigger other heroes in response to an action
 
 // tell all heroes a hero did a basic attack and the outcome
-function alertDidBasic(e) {
+function alertDidBasic(source, e) {
   var result = "";
   var temp = "";
-  var source = e[0][0];
   var livingAllies = [];
   var livingEnemies = [];
   
@@ -402,10 +453,9 @@ function alertDidBasic(e) {
 
 
 // tell all heroes a hero did an active and the outcome
-function alertDidActive(e) {
+function alertDidActive(source, e) {
   var result = "";
   var temp = "";
-  var source = e[0][0];
   var livingAllies = [];
   var livingEnemies = [];
   

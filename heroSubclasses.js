@@ -989,18 +989,20 @@ class Tara extends hero {
   eventAllyBasic(e) {
     var result = "";
     
-    if (this.heroDesc() == e[0][0].heroDesc() && !(this.isUnderStandardControl()) && !("Seal of Light" in this._debuffs)) {
-      var damageResult = {};
-      var targets = getAllTargets(this, this._enemies);
-      
-      for (var i=0; i<targets.length; i++) {
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          this._rng = Math.random();
-          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 1, 1, 0);
-          result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
-          
-          if (Math.random() < 0.3) {
-            result += targets[i].getDebuff(this, "Power of Light", 99, {});
+    if (e.length > 0) {
+      if (this.heroDesc() == e[0][0].heroDesc() && !(this.isUnderStandardControl()) && !("Seal of Light" in this._debuffs)) {
+        var damageResult = {};
+        var targets = getAllTargets(this, this._enemies);
+        
+        for (var i=0; i<targets.length; i++) {
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            this._rng = Math.random();
+            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 1, 1, 0);
+            result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
+            
+            if (Math.random() < 0.3) {
+              result += targets[i].getDebuff(this, "Power of Light", 99, {});
+            }
           }
         }
       }
@@ -1053,6 +1055,7 @@ class Tara extends hero {
         
         result += targets[0].getDebuff(this, "Power of Light", 99, {});
       }
+      activeQueue.push([this, targets[0], damageResult["damageAmount"] * (numAdditionalAttacks + 1), damageResult["critted"]]);
       
       targets = getAllTargets(this, this._enemies);
       for (var h in targets) {
@@ -1061,7 +1064,6 @@ class Tara extends hero {
         }
       }
       
-      activeQueue.push([this, targets[0], damageResult["damageAmount"] * (numAdditionalAttacks + 1), damageResult["critted"]]);
     }
       
     result += this.getBuff(this, "Tara Holy Damage Buff", 99, {holyDamage: 0.5});

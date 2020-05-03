@@ -282,7 +282,7 @@ class hero {
     };
     
     var heroCount = 0;
-    
+
     for (var x = 0; x < arrToUse.length; x++) {
       if (arrToUse[x]._heroFaction != "") {
         factionCount[arrToUse[x]._heroFaction] += 1;
