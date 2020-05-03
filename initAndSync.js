@@ -202,6 +202,8 @@ function updateHero(heroPos, prefix) {
     } else {
       arrToUse = defHeroes;
     }
+    
+    arrToUse[heroPos]._heroLevel = document.getElementById(prefix + "Hero" + heroPos + "Level").value;
   
     arrToUse[heroPos]._weapon = document.getElementById(prefix + "Hero" + heroPos + "Weapon").value;
     arrToUse[heroPos]._accessory = document.getElementById(prefix + "Hero" + heroPos + "Accessory").value;

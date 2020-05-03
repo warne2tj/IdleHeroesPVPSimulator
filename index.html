@@ -132,6 +132,12 @@
 	"attTechPriestfreezeImmune": "1",
 	"attTechPriestpetrifyImmune": "10",
 	"attTechPriesttwineImmune": "1",
+	"attHero0Level": "330",
+	"attHero1Level": "290",
+	"attHero2Level": "0",
+	"attHero3Level": "0",
+	"attHero4Level": "0",
+	"attHero5Level": "0",
 	"defTechWarriorhpPercent": "60",
 	"defTechWarriorattackPercent": "50",
 	"defTechWarriorcrit": "40",
@@ -212,12 +218,18 @@
 	"defTechPriestfreezeImmune": "1",
 	"defTechPriestpetrifyImmune": "10",
 	"defTechPriesttwineImmune": "1",
-	"attAvatarFrame": "IDA Maverick +2",
-	"attMonster": "Phoenix",
+	"defHero0Level": "330",
+	"defHero1Level": "0",
+	"defHero2Level": "0",
+	"defHero3Level": "0",
+	"defHero4Level": "0",
+	"defHero5Level": "0",
+	"attAvatarFrame": "None",
+	"attMonster": "None",
 	"attHero0Name": "Carrie",
 	"attHero0Skin": "Little Red Riding Hood",
-	"attHero0Stone": "S3 Speed, Attack",
-	"attHero0Artifact": "Augustus Magic Ball",
+	"attHero0Stone": "S3 Speed, HP",
+	"attHero0Artifact": "Magic Source",
 	"attHero0Weapon": "Minstrel's Bow",
 	"attHero0Accessory": "Minstrel's Ring",
 	"attHero0Armor": "Minstrel's Cape",
@@ -227,17 +239,17 @@
 	"attHero0Enable3": "Purify",
 	"attHero0Enable4": "Growth",
 	"attHero0Enable5": "UnbendingWill",
-	"attHero1Name": "None",
-	"attHero1Skin": "None",
-	"attHero1Stone": "None",
-	"attHero1Artifact": "None",
-	"attHero1Weapon": "None",
-	"attHero1Accessory": "None",
-	"attHero1Armor": "None",
-	"attHero1Shoe": "None",
-	"attHero1Enable1": "None",
-	"attHero1Enable2": "None",
-	"attHero1Enable3": "None",
+	"attHero1Name": "Belrain",
+	"attHero1Skin": "Christmas Tiny Reindeer",
+	"attHero1Stone": "S3 Speed, Attack",
+	"attHero1Artifact": "Magic Source",
+	"attHero1Weapon": "Oracle's Staff",
+	"attHero1Accessory": "Ring of the Oracle",
+	"attHero1Armor": "Oracle's Cape",
+	"attHero1Shoe": "Oracle's Boots",
+	"attHero1Enable1": "Growth",
+	"attHero1Enable2": "Shelter",
+	"attHero1Enable3": "Purify",
 	"attHero1Enable4": "None",
 	"attHero1Enable5": "None",
 	"attHero2Name": "None",
@@ -845,6 +857,11 @@
           <div class="col-25"><label for="attHero0Name">Hero: </label></div>
           <div class="col-75"><select id="attHero0Name" onchange="changeHero(0, 'att');"></select></div>
         </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="attHero0Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="attHero0Level" onchange="updateHero(0, 'att');" /></div>
+        </div>
             
         <div class="row">
           <div class="col-25"><label for="attHero0Skin">Skin: </label></div>
@@ -956,6 +973,11 @@
         <div class="row">
           <div class="col-25"><label for="attHero1Name">Hero: </label></div>
           <div class="col-75"><select id="attHero1Name" onchange="changeHero(1, 'att');"></select></div>
+        </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="attHero1Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="attHero1Level" onchange="updateHero(1, 'att');" /></div>
         </div>
             
         <div class="row">
@@ -1069,6 +1091,11 @@
           <div class="col-25"><label for="attHero2Name">Hero: </label></div>
           <div class="col-75"><select id="attHero2Name" onchange="changeHero(2, 'att');"></select></div>
         </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="attHero2Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="attHero2Level" onchange="updateHero(2, 'att');" /></div>
+        </div>
             
         <div class="row">
           <div class="col-25"><label for="attHero2Skin">Skin: </label></div>
@@ -1180,6 +1207,11 @@
         <div class="row">
           <div class="col-25"><label for="attHero3Name">Hero: </label></div>
           <div class="col-75"><select id="attHero3Name" onchange="changeHero(3, 'att');"></select></div>
+        </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="attHero3Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="attHero3Level" onchange="updateHero(3, 'att');" /></div>
         </div>
             
         <div class="row">
@@ -1293,6 +1325,11 @@
           <div class="col-25"><label for="attHero4Name">Hero: </label></div>
           <div class="col-75"><select id="attHero4Name" onchange="changeHero(4, 'att');"></select></div>
         </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="attHero4Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="attHero4Level" onchange="updateHero(4, 'att');" /></div>
+        </div>
             
         <div class="row">
           <div class="col-25"><label for="attHero4Skin">Skin: </label></div>
@@ -1404,6 +1441,11 @@
         <div class="row">
           <div class="col-25"><label for="attHero5Name">Hero: </label></div>
           <div class="col-75"><select id="attHero5Name" onchange="changeHero(5, 'att');"></select></div>
+        </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="attHero5Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="attHero5Level" onchange="updateHero(5, 'att');" /></div>
         </div>
             
         <div class="row">
@@ -1977,6 +2019,11 @@
           <div class="col-25"><label for="defHero0Name">Hero: </label></div>
           <div class="col-75"><select id="defHero0Name" onchange="changeHero(0, 'def');"></select></div>
         </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="defHero0Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="defHero0Level" onchange="updateHero(0, 'def');" /></div>
+        </div>
             
         <div class="row">
           <div class="col-25"><label for="defHero0Skin">Skin: </label></div>
@@ -2088,6 +2135,11 @@
         <div class="row">
           <div class="col-25"><label for="defHero1Name">Hero: </label></div>
           <div class="col-75"><select id="defHero1Name" onchange="changeHero(1, 'def');"></select></div>
+        </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="defHero1Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="defHero1Level" onchange="updateHero(1, 'def');" /></div>
         </div>
             
         <div class="row">
@@ -2201,6 +2253,11 @@
           <div class="col-25"><label for="defHero2Name">Hero: </label></div>
           <div class="col-75"><select id="defHero2Name" onchange="changeHero(2, 'def');"></select></div>
         </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="defHero2Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="defHero2Level" onchange="updateHero(2, 'def');" /></div>
+        </div>
             
         <div class="row">
           <div class="col-25"><label for="defHero2Skin">Skin: </label></div>
@@ -2312,6 +2369,11 @@
         <div class="row">
           <div class="col-25"><label for="defHero3Name">Hero: </label></div>
           <div class="col-75"><select id="defHero3Name" onchange="changeHero(3, 'def');"></select></div>
+        </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="defHero3Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="defHero3Level" onchange="updateHero(3, 'def');" /></div>
         </div>
             
         <div class="row">
@@ -2425,6 +2487,11 @@
           <div class="col-25"><label for="defHero4Name">Hero: </label></div>
           <div class="col-75"><select id="defHero4Name" onchange="changeHero(4, 'def');"></select></div>
         </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="defHero4Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="defHero4Level" onchange="updateHero(4, 'def');" /></div>
+        </div>
             
         <div class="row">
           <div class="col-25"><label for="defHero4Skin">Skin: </label></div>
@@ -2536,6 +2603,11 @@
         <div class="row">
           <div class="col-25"><label for="defHero5Name">Hero: </label></div>
           <div class="col-75"><select id="defHero5Name" onchange="changeHero(5, 'def');"></select></div>
+        </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="defHero5Level">Level: </label></div>
+          <div class="col-75"><input type="text" id="defHero5Level" onchange="updateHero(5, 'def');" /></div>
         </div>
             
         <div class="row">
