@@ -1053,6 +1053,7 @@ class Tara extends hero {
         
         result += targets[0].getDebuff(this, "Power of Light", 99, {});
       }
+      activeQueue.push([this, targets[0], damageResult["damageAmount"] * (numAdditionalAttacks + 1), damageResult["critted"]]);
       
       targets = getAllTargets(this, this._enemies);
       for (var h in targets) {
@@ -1061,7 +1062,6 @@ class Tara extends hero {
         }
       }
       
-      activeQueue.push([this, targets[0], damageResult["damageAmount"] * (numAdditionalAttacks + 1), damageResult["critted"]]);
     }
       
     result += this.getBuff(this, "Tara Holy Damage Buff", 99, {holyDamage: 0.5});

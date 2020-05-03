@@ -112,7 +112,7 @@ function runMassLoop() {
     }
     
     simRunning = true;
-    oLog.innerHTML += "<p>Starting mass simulation.</p>";
+    oLog.innerHTML = "<p>Starting mass simulation.</p>";
     
     // start first matchup
     setTimeout(nextMatchup(0, 1), 1);
@@ -122,15 +122,37 @@ function runMassLoop() {
 
 function nextMatchup(attIndex, defIndex) {
   var oLog = document.getElementById("summaryLog");
+  var numSims = document.getElementById("numSims").value;
   
   if (attIndex >= allTeams.length) {
+    var summary = "";
+    var totalFights = (allTeams.length - 1) * numSims;
+    
+    teamNames.sort(function(a,b) {
+      if (a[2] > b[2]) {
+        return -1;
+      } else if (a[2] < b[2]) {
+        return 1;
+      } else if (a[3] > b[3]) {
+        return -1;
+      } else if (a[3] < b[3]) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    
+    for (var p = 0; p < teamNames.length; p++) {
+      summary += "<div>Team " + teamNames[p][0] + " - Attack win rate(" + formatNum(Math.round(teamNames[p][2] / totalFights * 100, 2)) + "%), Defense win rate(" + formatNum(Math.round(teamNames[p][3] / totalFights * 100, 2)) + "%)</div>";
+    }
+    
     simRunning = false;
-    oLog.innerHTML += "<p>Mass simulation finished.</p>";
+    oLog.innerHTML += "<p>Mass simulation finished.</p>" + summary;
+    
   } else {
     if (attIndex != defIndex) {
       var numWins = 0;
-      var numSims = document.getElementById("numSims").value;
-      
+
       attHeroes = allTeams[attIndex];
       defHeroes = allTeams[defIndex];
       
@@ -141,15 +163,20 @@ function nextMatchup(attIndex, defIndex) {
         attHeroes[p]._attOrDef = "att";
         attHeroes[p]._allies = attHeroes;
         attHeroes[p]._enemies = defHeroes;
-        attHeroes[p].updateCurrentStats();
-        
+ 
         defHeroes[p]._attOrDef = "def";
         defHeroes[p]._allies = defHeroes;
         defHeroes[p]._enemies = attHeroes;
+      }
+      
+      for (var p = 0; p < 6; p++) {
+        attHeroes[p].updateCurrentStats();
         defHeroes[p].updateCurrentStats();
       }
       
       numWins = runSim();
+      teamNames[attIndex][2] += numWins;
+      teamNames[defIndex][3] += numSims - numWins;
       
       oLog.innerHTML += "<p><span class='att'>" + teamNames[attIndex][0] + "</span> versus <span class='def'>" + teamNames[defIndex][0] + "</span>: Won " + formatNum(numWins) + " out of " + formatNum(numSims) + ".</p>";
     }
