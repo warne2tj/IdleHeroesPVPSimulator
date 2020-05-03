@@ -5,9 +5,9 @@ class hero {
     this._heroPos = iHeroPos;
     this._attOrDef = attOrDef;
     this._heroFaction = baseHeroStats[sHeroName]["heroFaction"];
-    this._starLevel = baseHeroStats[sHeroName]["starLevel"];
-    this._heroLevel = baseHeroStats[sHeroName]["heroLevel"];
     this._heroClass = baseHeroStats[sHeroName]["heroClass"];
+    this._starLevel = 0;
+    this._heroLevel = 0;
     
     this._stats = {};
     this._currentStats = {};
@@ -54,8 +54,27 @@ class hero {
     var arrLimits = [this._heroClass, this._heroFaction];
     var keySet = "";
     
+    if (this._heroLevel > 310) {
+      this._starLevel = 15;
+    } else if (this._heroLevel > 290) {
+      this._starLevel = 14;
+    } else if (this._heroLevel > 270) {
+      this._starLevel = 13;
+    } else if (this._heroLevel > 260) {
+      this._starLevel = 12;
+    } else if (this._heroLevel > 250) {
+      this._starLevel = 11;
+    } else {
+      this._starLevel = 10;
+    }
+    
     // start with base stats
-    this._stats = Object.assign({}, baseHeroStats[this._heroName]["stats"]);
+    var baseStats = baseHeroStats[this._heroName]["stats"];
+    this._stats["hp"] = Math.floor((baseStats["baseHP"] + (this._heroLevel - 1) * baseStats["growHP"]) * 2.2);
+    this._stats["attack"] = Math.floor((baseStats["baseAttack"] + (this._heroLevel - 1) * baseStats["growAttack"]) * 2.2);
+    this._stats["armor"] = Math.floor(baseStats["baseArmor"] + (this._heroLevel - 1) * baseStats["growArmor"]);
+    this._stats["speed"] = Math.floor((baseStats["baseSpeed"] + (this._heroLevel - 1) * baseStats["growSpeed"]) * 1.6);
+    
     this._stats["totalHP"] = this._stats["hp"];
     this._stats["totalAttack"] = this._stats["attack"];
     this._stats["totalArmor"] = this._stats["armor"];
@@ -102,42 +121,48 @@ class hero {
     
     
     // apply enables
-    switch(this._enable1) {
-      case "Vitality":
-        this.applyStatChange({hpPercent: 0.12}, "enable1");
-        break;
-        
-      case "Mightiness":
-        this.applyStatChange({attackPercent: 0.08}, "enable1");
-        break;
-        
-      case "Growth":
-        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable1");
-        break;
+    if (this._starLevel >= 11) {
+      switch(this._enable1) {
+        case "Vitality":
+          this.applyStatChange({hpPercent: 0.12}, "enable1");
+          break;
+          
+        case "Mightiness":
+          this.applyStatChange({attackPercent: 0.08}, "enable1");
+          break;
+          
+        case "Growth":
+          this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable1");
+          break;
+      }
     }
     
-    switch(this._enable2) {
-      case "Shelter":
-        this.applyStatChange({critDamageReduce: 0.15}, "enable2");
-        break;
-        
-      case "Vitality2":
-        this.applyStatChange({effectBeingHealed: 0.15}, "enable2");
-        break;
+    if (this._starLevel >= 12) {
+      switch(this._enable2) {
+        case "Shelter":
+          this.applyStatChange({critDamageReduce: 0.15}, "enable2");
+          break;
+          
+        case "Vitality2":
+          this.applyStatChange({effectBeingHealed: 0.15}, "enable2");
+          break;
+      }
     }
     
-    switch(this._enable4) {
-      case "Vitality":
-        this.applyStatChange({hpPercent: 0.12}, "enable4");
-        break;
-        
-      case "Mightiness":
-        this.applyStatChange({attackPercent: 0.08}, "enable4");
-        break;
-        
-      case "Growth":
-        this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable4");
-        break;
+    if (this._starLevel >= 14) {
+      switch(this._enable4) {
+        case "Vitality":
+          this.applyStatChange({hpPercent: 0.12}, "enable4");
+          break;
+          
+        case "Mightiness":
+          this.applyStatChange({attackPercent: 0.08}, "enable4");
+          break;
+          
+        case "Growth":
+          this.applyStatChange({hpPercent: 0.05, attackPercent: 0.03, speed: 20}, "enable4");
+          break;
+      }
     }
     
     
@@ -324,12 +349,12 @@ class hero {
   
   applyStatChange(arrStats, strSource) {
     for (var strStatName in arrStats) {
-      if (strStatName == "attackPercent") {
-        this._attackMultipliers[strSource] = 1 + arrStats[strStatName];
+      if (strStatName == "attackPercent" || strStatName == "attackPercent2") {
+        this._attackMultipliers[strSource + ":" + strStatName] = 1 + arrStats[strStatName];
       } else if (strStatName == "hpPercent") {
-        this._hpMultipliers[strSource] = 1 + arrStats[strStatName];
+        this._hpMultipliers[strSource + ":" + strStatName] = 1 + arrStats[strStatName];
       } else if (strStatName == "armorPercent") {
-        this._armorMultipliers[strSource] = 1 + arrStats[strStatName];
+        this._armorMultipliers[strSource + ":" + strStatName] = 1 + arrStats[strStatName];
       } else {
         this._stats[strStatName] += arrStats[strStatName];
       }

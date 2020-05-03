@@ -3,6 +3,8 @@ var defHeroes = [];
 var allTeams = [];
 var teamNames = [];
 var simRunning = false;
+var attIndex = 0;
+var defIndex = 1;
   
   
 function initialize() {
@@ -67,35 +69,38 @@ function runMassLoop() {
     
     allTeams = [];
     teamNames = [];
+    attIndex = 0;
+    defIndex = 1;
     
     for (var t in jsonConfig) {
       team = [];
       
-      for (var p = 0; p < 60; p += 10) {
-        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], 1 + (p % 10), "");
+      for (var p = 0; p < 66; p += 11) {
+        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], 1 + (p % 11), "");
         
-        tHero._skin = jsonConfig[t][p+1];
-        tHero._stone = jsonConfig[t][p+3];
-        tHero._artifact = jsonConfig[t][p+4];
-        tHero._enable1 = jsonConfig[t][p+5];
-        tHero._enable2 = jsonConfig[t][p+6];
-        tHero._enable3 = jsonConfig[t][p+7];
-        tHero._enable4 = jsonConfig[t][p+8];
-        tHero._enable5 = jsonConfig[t][p+9];
+        tHero._heroLevel = jsonConfig[t][p+1];
+        tHero._skin = jsonConfig[t][p+2];
+        tHero._stone = jsonConfig[t][p+4];
+        tHero._artifact = jsonConfig[t][p+5];
+        tHero._enable1 = jsonConfig[t][p+6];
+        tHero._enable2 = jsonConfig[t][p+7];
+        tHero._enable3 = jsonConfig[t][p+8];
+        tHero._enable4 = jsonConfig[t][p+9];
+        tHero._enable5 = jsonConfig[t][p+10];
         
-        if (jsonConfig[t][p+2] == "Class Gear") { 
+        if (jsonConfig[t][p+3] == "Class Gear") { 
           tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
           tHero._armor = classGearMapping[tHero._heroClass]["armor"];
           tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
           tHero._accessory = classGearMapping[tHero._heroClass]["accessory"];
           
-        } else if (jsonConfig[t][p+2] == "Split HP") { 
+        } else if (jsonConfig[t][p+3] == "Split HP") { 
           tHero._weapon = "6* Thorny Flame Whip";
           tHero._armor = classGearMapping[tHero._heroClass]["armor"];
           tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
           tHero._accessory = "6* Flame Necklace";
           
-        } else if (jsonConfig[t][p+2] == "Split Attack") { 
+        } else if (jsonConfig[t][p+3] == "Split Attack") { 
           tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
           tHero._armor = "6* Flame Armor";
           tHero._shoe = "6* Flame Boots";
@@ -108,19 +113,19 @@ function runMassLoop() {
       allTeams.push(team);
       
       // [team name, monster, wins on attack, wins on defense]
-      teamNames.push([t, jsonConfig[t][60], 0, 0]);
+      teamNames.push([t, jsonConfig[t][66], 0, 0]);
     }
     
     simRunning = true;
     oLog.innerHTML = "<p>Starting mass simulation.</p>";
     
     // start first matchup
-    setTimeout(nextMatchup(0, 1), 1);
+    setTimeout(nextMatchup, 1);
   }
 }
 
 
-function nextMatchup(attIndex, defIndex) {
+function nextMatchup() {
   var oLog = document.getElementById("summaryLog");
   var numSims = document.getElementById("numSims").value;
   
@@ -188,6 +193,6 @@ function nextMatchup(attIndex, defIndex) {
       defIndex = 0;
     }
     
-    setTimeout(nextMatchup(attIndex, defIndex), 1);
+    setTimeout(nextMatchup, 1);
   }
 }

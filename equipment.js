@@ -38,7 +38,7 @@ var weapons = {
     set: "",
     stats: {attack: 3704, attackPercent: 0.07},
     limit: "Priest",
-    limitStats: {attackPercent: 0.06, attackPercent: 0.05}
+    limitStats: {attackPercent: 0.06, attackPercent2: 0.05}
   },
   
   "6* Thorny Flame Whip": {

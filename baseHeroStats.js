@@ -5,112 +5,128 @@ var baseHeroStats = {
   "None": {
     className: hero,
     heroFaction: "",
-    starLevel: 0,
-    heroLevel: 0,
     heroClass: "",
     stats: {
-      hp: 0,
-      attack: 0,
-      armor: 0,
-      speed: 0
+      baseHP: 0,
+      baseAttack: 0,
+      baseArmor: 0,
+      baseSpeed: 0,
+      growHP: 0,
+      growAttack: 0,
+      growArmor: 0,
+      growSpeed: 0
     }
   },
   
   "Aida": {
     className: Aida,
     heroFaction: "Light",
-    starLevel: 15,
-    heroLevel: 330,
     heroClass: "Mage",
     stats: {
-      hp: 539511,
-      attack: 38184,
-      armor: 1966,
-      speed: 1414
+      baseHP: 7234,
+      baseAttack: 512,
+      baseArmor: 58,
+      baseSpeed: 226,
+      growHP: 723.4,
+      growAttack: 51.2,
+      growArmor: 5.8,
+      growSpeed: 2
     }
   },
   
   "Amen-Ra": {
     className: AmenRa,
     heroFaction: "Dark",
-    starLevel: 15,
-    heroLevel: 330,
     heroClass: "Priest",
     stats: {
-      hp: 670175,
-      attack: 25352,
-      armor: 2067,
-      speed: 1428
+      baseHP: 8986,
+      baseAttack: 338,
+      baseArmor: 61,
+      baseSpeed: 235,
+      growHP: 898.6,
+      growAttack: 34,
+      growArmor: 6.1,
+      growSpeed: 2
     }
   },
   
   "Belrain": {
     className: Belrain,
     heroFaction: "Light",
-    starLevel: 15,
-    heroLevel: 330,
     heroClass: "Priest",
     stats: {
-      hp: 531531,
-      attack: 28787,
-      armor: 2034,
-      speed: 1388
+      baseHP: 7127,
+      baseAttack: 386,
+      baseArmor: 60,
+      baseSpeed: 210,
+      growHP: 712.7,
+      growAttack: 38.6,
+      growArmor: 6,
+      growSpeed: 2
     }
   },
   
   "Carrie": {
     className: Carrie,
     heroFaction: "Dark",
-    starLevel: 15,
-    heroLevel: 330,
     heroClass: "Ranger",
     stats: {
-      hp: 721934,
-      attack: 25580,
-      armor: 2034,
-      speed: 1414
+      baseHP: 9680,
+      baseAttack: 343,
+      baseArmor: 60,
+      baseSpeed: 226,
+      growHP: 968,
+      growAttack: 34.3,
+      growArmor: 6,
+      growSpeed: 2
     }
   },
   
   "Garuda": {
     className: Garuda,
     heroFaction: "Forest",
-    starLevel: 15,
-    heroLevel: 330,
     heroClass: "Warrior",
     stats: {
-      hp: 611705,
-      attack: 26326,
-      armor: 2101,
-      speed: 1428
+      baseHP: 8202,
+      baseAttack: 353,
+      baseArmor: 62,
+      baseSpeed: 235,
+      growHP: 820.2,
+      growAttack: 35.3,
+      growArmor: 6.2,
+      growSpeed: 2
     }
   },
   
   "Penny": {
     className: Penny,
     heroFaction: "Fortress",
-    starLevel: 15,
-    heroLevel: 330,
     heroClass: "Ranger",
     stats: {
-      hp: 591941,
-      attack: 29608,
-      armor: 2034,
-      speed: 1430
+      baseHP: 7937,
+      baseAttack: 397,
+      baseArmor: 60,
+      baseSpeed: 236,
+      growHP: 793.7,
+      growAttack: 39.7,
+      growArmor: 6,
+      growSpeed: 2
     }
   },
   
   "Tara": {
     className: Tara,
     heroFaction: "Light",
-    starLevel: 15,
-    heroLevel: 330,
     heroClass: "Warrior",
     stats: {
-      hp: 671965,
-      attack: 25352,
-      armor: 2067,
-      speed: 1428
+      baseHP: 9010,
+      baseAttack: 338,
+      baseArmor: 61,
+      baseSpeed: 235,
+      growHP: 901,
+      growAttack: 34,
+      growArmor: 6.1,
+      growSpeed: 2
     }
   }
 };
