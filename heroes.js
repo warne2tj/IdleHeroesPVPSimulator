@@ -249,9 +249,9 @@ class hero {
     this.applyStatChange(stones[this._stone], "stone");
     
     
-    // implement monster
-    var monsterName = document.getElementById(this._attOrDef + "Monster").value;
-    this.applyStatChange(baseMonsterStats[monsterName]["stats"], "monster");
+    // avatar frame
+    var sAvatarFrame = document.getElementById(this._attOrDef + "AvatarFrame").value;
+    this.applyStatChange(avatarFrames[sAvatarFrame], "avatarFrame");
     
     
     // aura
@@ -263,7 +263,7 @@ class hero {
     }
     
     var arrIdentical = {
-      0: {},
+      0: {hpPercent: 0, attackPercent: 0},
       1: {hpPercent: 0.02, attackPercent: 0.015},
       2: {hpPercent: 0.05, attackPercent: 0.035},
       3: {hpPercent: 0.08, attackPercent: 0.055},
@@ -289,11 +289,16 @@ class hero {
         heroCount++;
       }
     }
-    
+      
+    var factionHPBonus = 0;
+    var factionAttackBonus = 0;
     if (heroCount == 6) {
       for (var x in factionCount) {
-        this.applyStatChange(arrIdentical[factionCount[x]], "faction" + x);
+        factionHPBonus += arrIdentical[factionCount[x]]["hpPercent"];
+        factionAttackBonus += arrIdentical[factionCount[x]]["attackPercent"];
       }
+      
+      this.applyStatChange({hpPercent: factionHPBonus, attackPercent: factionAttackBonus}, "factionAura");
     
       var addBonuses = {
         damageReduce: 0.02 * (factionCount["Shadow"] + factionCount["Fortress"] + factionCount["Abyss"] + factionCount["Forest"]),
@@ -303,9 +308,9 @@ class hero {
     }
     
     
-    // avatar frame
-    var sAvatarFrame = document.getElementById(this._attOrDef + "AvatarFrame").value;
-    this.applyStatChange(avatarFrames[sAvatarFrame], "avatarFrame");
+    // implement monster
+    var monsterName = document.getElementById(this._attOrDef + "Monster").value;
+    this.applyStatChange(baseMonsterStats[monsterName]["stats"], "monster");
     
     
     // future: implement celestial island

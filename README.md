@@ -17,12 +17,35 @@ Implemented Heroes:
   * Belrain
   
   
+Upcoming Heroes
+  * Penny
+  * Horus
+  * Aspen
+  * Dark Arthindol
+  * Amuvor
+  * Faithblade
+  * Kroos
+  * Mihm
+  * Ithaqua
+  * Delacium
+  * Nakia
+  * Unimax
+  * Gustin
+  * Elyvia
+  * Cthuga
+  * Michelle
+  
+  
 Implemented Monsters:
   * Deer
   * Phoenix
   
   
 No Plans to Implement:
+  * Valkryie
+  * Oberon
+  * Asmodel
+  * King Barton
   * Ormus
   * Emily
   * Aidan
