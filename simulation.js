@@ -337,6 +337,8 @@ function runSim() {
   oCombatLog.innerHTML += "</p>";
   
   oCombatLog.scrollTop = 0;
+  
+  return winCount;
 }
 
 

@@ -248,3 +248,42 @@ var setBonus = {
     4: {hpPercent: 0.08}
   }
 };
+
+
+// for mass testing
+var classGearMapping = {
+  "Warrior": {
+    weapon: "Warrior's Epee",
+    armor: "Warrior's Armor",
+    shoe: "Warrior's Boots",
+    accessory: "Warrior's Necklace"
+  },
+  
+  "Mage": {
+    weapon: "Weaver's Staff",
+    armor: "Weaver's Robe",
+    shoe: "Weaver's Boots",
+    accessory: "Weaver's Necklace"
+  },
+  
+  "Ranger": {
+    weapon: "Minstrel's Bow",
+    armor: "Minstrel's Cape",
+    shoe: "Minstrel's Boots",
+    accessory: "Minstrel's Ring"
+  },
+  
+  "Assassin": {
+    weapon: "Assassin's Blade",
+    armor: "Assassin's Cape",
+    shoe: "Assassin's Boots",
+    accessory: "Assassin's Ring"
+  },
+  
+  "Priest": {
+    weapon: "Oracle's Staff",
+    armor: "Oracle's Cape",
+    shoe: "Oracle's Boots",
+    accessory: "Ring of the Oracle"
+  }
+};

@@ -8,7 +8,7 @@ var baseMonsterStats = {
     className: mDeer,
     stats: {
       attack: 9604,
-      hp: 231808,
+      hp: 231805,
       armorPercent: 0.2,
       block: 0.15,
       speed: 220,

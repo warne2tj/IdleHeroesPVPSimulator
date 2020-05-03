@@ -25,6 +25,13 @@ var skins = {
     "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04}
   },
   
+  "Garuda": {
+    "Super Harvest": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
+    "Legendary Super Harvest": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04},
+    "Law of the West": {holyDamage: 0.06, damageReduce: 0.04, critDamage: 0.05},
+    "Legendary Law of the West": {holyDamage: 0.1, damageReduce: 0.05, critDamage: 0.1}
+  },
+  
   "Tara": {
     "Heroic Knight": {damageReduce: 0.04, controlImmune: 0.04, speed: 4},
     "Legendary Heroic Knight": {damageReduce: 0.05, controlImmune: 0.06, speed: 6},

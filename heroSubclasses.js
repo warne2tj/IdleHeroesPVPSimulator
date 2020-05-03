@@ -433,7 +433,7 @@ class AmenRa extends hero {
     var targets = getFrontTargets(this, this._enemies);
     var controlPrecision = this._currentStats["controlPrecision"];
     
-    for (i in targets) {
+    for (var i in targets) {
       if (targets[i]._currentStats["totalHP"] > 0) {
         targets[i]._rng = Math.random();
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2);
