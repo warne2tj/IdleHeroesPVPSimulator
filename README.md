@@ -75,7 +75,6 @@ No Plans to Implement:
 To Do List
   * ----------- Priority 1 ------------
   * subclass heroes
-  * allow for 10*-E5 of different levels
   * ----------- Priority 2 ------------
   * implement rest of monsters
   * add swap, copy, move functionality for team management
