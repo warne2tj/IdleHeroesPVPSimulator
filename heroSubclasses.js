@@ -48,9 +48,9 @@ Important Function prototypes
 
   deathQueue[] = push([source, target]) to call the event
   
-  this.eventAllyBasic(e), this.eventAllyActive(e), this.eventAllyDied(e), this.eventEnemyDied(e) = called by all heroes so they can react to an event
+  this.eventAllyBasic(src, e), this.eventAllyActive(src, e), this.eventAllyDied(e), this.eventEnemyDied(e) = called by all heroes so they can react to an event
 
-  this.eventEnemyBasic(e), this.eventEnemyActive(e) = if overridden, call the super() version so the enemy still gains energy on an attack
+  this.eventEnemyBasic(src, e), this.eventEnemyActive(src, e) = if overridden, call the super() version so the enemy still gains energy on an attack
     
 */
 
@@ -386,7 +386,7 @@ class AmenRa extends hero {
   }
   
   
-  eventAllyActive(e) {
+  eventAllyActive(source, e) {
     var result = "";
     var damageResult = {};
     var targets;
@@ -468,6 +468,19 @@ class Aspen extends hero {
     // apply Dark Storm passive
     this.applyStatChange({hpPercent: 0.4, attackPercent: 0.2, crit: 0.35, armorBreak: 0.5}, "PassiveStats");
   }
+  
+  
+  eventAllyActive(source, e) {
+    var result = "";
+    if (source.heroDesc() == this.heroDesc() && !("Seal of Light" in this._debuffs)) {
+      result += this.getBuff(this, "Soul Sacrifice", 99, {attackPercent: 0.15, critDamage: 0.15});
+      result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
+    }
+    return result;
+  }
+  
+  
+  eventAllyBasic(source, e) { return this.eventAllyActive(source, e); }
 }
 
 
@@ -484,10 +497,10 @@ class Belrain extends hero {
   }
   
   
-  eventAllyDied(e) { 
+  eventAllyDied(source, e) { 
     var result = "";
     
-    if (e[1].heroDesc() == this.heroDesc()) {
+    if (source.heroDesc() == this.heroDesc()) {
       var targets = getAllTargets(this, this._allies);
       var healEffect = 1 + this._currentStats["healEffect"];
       var healAmount = Math.round(this._currentStats["totalAttack"] * 4 * healEffect);
@@ -548,6 +561,7 @@ class Belrain extends hero {
       
       if (Math.random() < 0.4) {
         if ("Seal of Light" in targets[i]._debuffs) { result += targets[i].removeDebuff("Seal of Light"); }
+        if ("Horrify" in targets[i]._debuffs) { result += targets[i].removeDebuff("Horrify"); }
         if ("petrify" in targets[i]._debuffs) { result += targets[i].removeDebuff("petrify"); }
         if ("stun" in targets[i]._debuffs) { result += targets[i].removeDebuff("stun"); }
         if ("entangle" in targets[i]._debuffs) { result += targets[i].removeDebuff("entangle"); }
@@ -812,7 +826,7 @@ class Garuda extends hero {
   }
   
   
-  eventAllyBasic(e) {
+  eventAllyBasic(source, e) {
     var result = "";
     
     if (!("Seal of Light" in this._debuffs) && !(this.isUnderStandardControl())) {
@@ -835,8 +849,8 @@ class Garuda extends hero {
   }
   
   
-  eventAllyActive(e) {
-    return this.eventAllyBasic(e);
+  eventAllyActive(source, e) {
+    return this.eventAllyBasic(source, e);
   }
   
   
@@ -923,7 +937,7 @@ class Horus extends hero {
   }
   
   
-  eventEnemyBasic(e) {
+  eventEnemyBasic(source, e) {
     var result = "";
     
     if (!("Seal of Light" in this._debuffs)) {
@@ -931,6 +945,7 @@ class Horus extends hero {
         this._currentStats["blockCount"] = 0;
         
         if ("Seal of Light" in this._debuffs) { result += this.removeDebuff("Seal of Light"); }
+        if ("Horrify" in this._debuffs) { result += this.removeDebuff("Horrify"); }
         if ("petrify" in this._debuffs) { result += this.removeDebuff("petrify"); }
         if ("stun" in this._debuffs) { result += this.removeDebuff("stun"); }
         if ("entangle" in this._debuffs) { result += this.removeDebuff("entangle"); }
@@ -971,12 +986,12 @@ class Horus extends hero {
   }
   
   
-  eventAllyBasic(e) {
-    return this.eventEnemyBasic(e);
+  eventAllyBasic(source, e) {
+    return this.eventEnemyBasic(source, e);
   }
   
   
-  eventEnemyActive(e) {
+  eventEnemyActive(source, e) {
     var result = "";
     
     if (!("Seal of Light" in this._debuffs)) {
@@ -988,8 +1003,8 @@ class Horus extends hero {
   }
   
   
-  eventAllyActive(e) {
-    return this.eventEnemyActive(e);
+  eventAllyActive(source, e) {
+    return this.eventEnemyActive(source, e);
   }
   
   
@@ -1125,11 +1140,11 @@ class Penny extends hero {
   }
   
   
-  eventAllyBasic(e) {
+  eventAllyBasic(source, e) {
     var result = "";
     
     for (var i in e) {
-      if (this.heroDesc() == e[i][0].heroDesc() && e[i][3] == true && !("Seal of Light" in this._debuffs)) {
+      if (this.heroDesc() == source.heroDesc() && e[i][3] == true && !("Seal of Light" in this._debuffs)) {
         var damageResult = {};
         var targets = getAllTargets(this, this._enemies);
         
@@ -1158,8 +1173,8 @@ class Penny extends hero {
   }
   
   
-  eventAllyActive(e) {
-    return this.eventAllyBasic(e);
+  eventAllyActive(source, e) {
+    return this.eventAllyBasic(source, e);
   }
   
   
@@ -1305,23 +1320,21 @@ class Tara extends hero {
   }
   
   
-  eventAllyBasic(e) {
+  eventAllyBasic(source, e) {
     var result = "";
     
-    if (e.length > 0) {
-      if (this.heroDesc() == e[0][0].heroDesc() && !(this.isUnderStandardControl()) && !("Seal of Light" in this._debuffs)) {
-        var damageResult = {};
-        var targets = getAllTargets(this, this._enemies);
-        
-        for (var i=0; i<targets.length; i++) {
-          if (targets[i]._currentStats["totalHP"] > 0) {
-            this._rng = Math.random();
-            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 0, 0, 0);
-            result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
-            
-            if (Math.random() < 0.3) {
-              result += targets[i].getDebuff(this, "Power of Light", 99, {});
-            }
+    if (this.heroDesc() == source.heroDesc() && !(this.isUnderStandardControl()) && !("Seal of Light" in this._debuffs)) {
+      var damageResult = {};
+      var targets = getAllTargets(this, this._enemies);
+      
+      for (var i=0; i<targets.length; i++) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          this._rng = Math.random();
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 0, 0, 0);
+          result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
+          
+          if (Math.random() < 0.3) {
+            result += targets[i].getDebuff(this, "Power of Light", 99, {});
           }
         }
       }
@@ -1331,8 +1344,8 @@ class Tara extends hero {
   }
   
   
-  eventAllyActive(e) {
-    return this.eventAllyBasic(e);
+  eventAllyActive(source, e) {
+    return this.eventAllyBasic(source, e);
   }
   
   

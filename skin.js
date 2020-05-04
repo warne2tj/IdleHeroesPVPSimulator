@@ -13,6 +13,13 @@ var skins = {
     "Legendary Monstrous Tribunal": {hpPercent: 0.06, attackPercent: 0.06, controlImmune: 0.06}
   },
   
+  "Aspen": {
+    "Dragonic Warrior": {hpPercent: 0.05, attackPercent: 0.03, critDamage: 0.05},
+    "Legendary Dragonic Warrior": {hpPercent: 0.08, attackPercent: 0.06, critDamage: 0.075},
+    "Santa": {speed: 4, attackPercent: 0.03, critDamage: 0.05},
+    "Legendary Santa": {speed: 6, attackPercent: 0.06, critDamage: 0.1}
+  },
+  
   "Belrain": {
     "Christmas Tiny Reindeer": {hpPercent: 0.03, attackPercent: 0.03, speed: 4},
     "Legendary Christmas Tiny Reindeer": {hpPercent: 0.06, attackPercent: 0.06, speed: 6},
