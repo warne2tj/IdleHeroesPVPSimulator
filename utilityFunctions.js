@@ -11,6 +11,36 @@ function uuid() {
 }
 
 
+function speedSort(heroA, heroB) {
+  if (heroA._currentStats["speed"] > heroB._currentStats["speed"]) {
+    return -1;
+  } else if (heroA._currentStats["speed"] < heroB._currentStats["speed"]) {
+    return 1;
+  } else if (heroA._attOrDef == "att" && heroB._attOrDef == "def") {
+    return -1;
+  } else if (heroA._attOrDef == "def" && heroB._attOrDef == "att") {
+    return 1;
+  } else if (heroA._heroPos < heroB._heroPos) {
+    return -1;
+  } else {
+    return 1;
+  }
+}
+
+
+function slotSort(heroA, heroB) {
+  if (heroA._attOrDef == "att" && heroB._attOrDef == "def") {
+    return -1;
+  } else if (heroA._attOrDef == "def" && heroB._attOrDef == "att") {
+    return 1;
+  } else if (heroA._heroPos < heroB._heroPos) {
+    return -1;
+  } else {
+    return 1;
+  }
+}
+
+
 function isMonster(source) {
   if ("_monsterName" in source) {
     return true;

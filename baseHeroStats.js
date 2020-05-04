@@ -98,6 +98,22 @@ var baseHeroStats = {
     }
   },
   
+  "Horus": {
+    className: Horus,
+    heroFaction: "Shadow",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 8252,
+      baseAttack: 343,
+      baseArmor: 62,
+      baseSpeed: 227,
+      growHP: 825.2,
+      growAttack: 34.3,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
   "Penny": {
     className: Penny,
     heroFaction: "Fortress",

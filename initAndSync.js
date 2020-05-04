@@ -269,7 +269,10 @@ function createConfig() {
     }
   }
   
-  oConfig.value += "}\n";
+  oConfig.value += "}";
+  oConfig.select();
+  oConfig.setSelectionRange(0, oConfig.value.length);
+  document.execCommand("copy");
 }
 
 
