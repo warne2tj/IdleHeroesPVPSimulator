@@ -485,7 +485,7 @@ class hero {
   
   // can further extend this to account for new mechanics by adding parameters to the end
   // supply a default value so as to not break other calls to this function
-  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1) {
+  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1, dotRounds=0) {
     // Get damage related stats
     var critChance = canCrit * this._currentStats["crit"];
     var critDamage = 2*this._currentStats["critDamage"] + 1.5;
@@ -509,7 +509,11 @@ class hero {
     var e5Desc = "";
     
     if (damageSource == "active") {
-      skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
+      if (["burn", "bleed", "poison"].includes(damageType)) {
+        skillDamage += (this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100)) / (dotRounds + 1);
+      } else {
+        skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
+      }
     }
     
     if (
@@ -528,7 +532,7 @@ class hero {
     if (
       this._enable2 == "LethalFightback" && 
       this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
-      !(["bleed", "poison", "burn"].includes(damageType)) &&
+      !(["burn", "bleed", "poison"].includes(damageType)) &&
       (damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic")
     ) {
       lethalFightback = 1.12;
@@ -541,7 +545,7 @@ class hero {
     
     attackDamage = attackDamage * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning;
     holyDamage = holyDamage * (1-reduceDamage) * (1-classDamageReduce) * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning;    
-    
+    if(damageSource == "dot") {console.log(attackDamage);}
     var blocked = false;
     var critted = false;
     
@@ -946,7 +950,7 @@ class hero {
                 };
                 
                 result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
-                result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "debuff " + b, damageResult) + "</div>";
+                result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
               }
             }
           }
