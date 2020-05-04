@@ -15,10 +15,10 @@ Implemented Heroes:
   * Garuda
   * Aida
   * Belrain
+  * Penny
   
   
 Upcoming Heroes
-  * Penny
   * Horus
   * Aspen
   * Dark Arthindol

@@ -32,6 +32,13 @@ var skins = {
     "Legendary Law of the West": {holyDamage: 0.1, damageReduce: 0.05, critDamage: 0.1}
   },
   
+  "Penny": {
+    "Infinite Joy": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
+    "Legendary Infinite Joy": {controlImmune: 0.06, critDamage: 0.1, hpPercent: 0.06},
+    "Lion and Dragon Dance": {attackPercent: 0.03, controlImmune: 0.05, damageReduce: 0.03},
+    "Legendary Lion and Dragon Dance": {attackPercent: 0.06, controlImmune: 0.06, damageReduce: 0.04},
+  },
+  
   "Tara": {
     "Heroic Knight": {damageReduce: 0.04, controlImmune: 0.04, speed: 4},
     "Legendary Heroic Knight": {damageReduce: 0.05, controlImmune: 0.06, speed: 6},

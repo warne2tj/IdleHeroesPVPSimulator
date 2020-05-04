@@ -15,9 +15,9 @@ Important Notes
 
 Important Function prototypes
 
-  this.calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1)
+  this.calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1, dotRounds=0)
       return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
-      damageSource = passive, active, mark, monster, debuff, other, active2
+      damageSource = passive, active, mark, monster, active2, debuff, other
         debuff: don't know if this damage type is needed, just in case
         active2: does not apply skill damage but applies other skill related effects
         other: does not trigger amenra shield
@@ -250,33 +250,31 @@ class Aida extends hero {
     var healAmount = 0;
     var healEffect = 1 + this._currentStats["healEffect"];
     
+    if ("Fury of Justice" in this._buffs) {
+      healAmount = damageInRound * 0.35 * healEffect;
+      result += "<div><span class='skill'>Fury of Justice</span> heal triggered.</div>";
+      result += this.getHeal(this, healAmount);
+      result += this.removeBuff("Fury of Justice");
+    }
+    
     if (!("Seal of Light" in this._debuffs)) {
-      if ("Fury of Justice" in this._buffs) {
-        healAmount = damageInRound * 0.35 * healEffect;
-        result += "<div><span class='skill'>Fury of Justice</span> heal triggered.</div>";
-        result += this.getHeal(this, healAmount);
-        result += this.removeBuff("Fury of Justice");
-      }
+      var damageResult = {};
+      var targets = getAllTargets(this, this._enemies);
       
-      if (!(this.isUnderStandardControl())) {
-        var damageResult = {};
-        var targets = getAllTargets(this, this._enemies);
-        
-        for (var i=0; i<targets.length; i++) {
+      for (var i=0; i<targets.length; i++) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          this._rng = Math.random();
+          damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
+          result += targets[i].takeDamage(this, "Final Verdict", damageResult);
+          
           if (targets[i]._currentStats["totalHP"] > 0) {
-            this._rng = Math.random();
-            damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
-            result += targets[i].takeDamage(this, "Final Verdict", damageResult);
-            
-            if (targets[i]._currentStats["totalHP"] > 0) {
-              result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
-            }
+            result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
           }
         }
-        
-        healAmount = this._stats["totalHP"] * 0.15 * healEffect;
-        result += this.getHeal(this, healAmount);
       }
+      
+      healAmount = this._stats["totalHP"] * 0.15 * healEffect;
+      result += this.getHeal(this, healAmount);
     }
     
     return result;
@@ -506,7 +504,7 @@ class Belrain extends hero {
   doBasic() {
     var result = super.doBasic();
     var healEffect = 1 + this._currentStats["healEffect"];
-    var healAmount = this._currentStats["totalAttack"] * 2.5 * healEffect;
+    var healAmount = Math.round(this._currentStats["totalAttack"] * 2.5 * healEffect);
     var targets = getLowestHPTargets(this, this._allies);
     var maxTargets = 3;
     
@@ -970,6 +968,161 @@ class Penny extends hero {
     // apply Troublemaker Gene passive
     this.applyStatChange({attackPercent: 0.3, hpPercent: 0.25, crit: 0.3, precision: 1.0}, "PassiveStats");
   }
+  
+  
+  eventAllyBasic(e) {
+    var result = "";
+    
+    for (var i in e) {
+      if (this.heroDesc() == e[i][0].heroDesc() && e[i][3] == true && !("Seal of Light" in this._debuffs)) {
+        var damageResult = {};
+        var targets = getAllTargets(this, this._enemies);
+        
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Eerie Trickery</span> triggered on crit.</div>";
+        
+        for (var h=0; h<targets.length; h++) {
+          if (targets[h]._currentStats["totalHP"] > 0) {
+            damageResult = {
+              damageAmount: e[i][2], 
+              critted: 0, 
+              blocked: 0, 
+              damageSource: "passive", 
+              damageType: "normal", 
+              e5Description: ""
+            };
+            result += targets[h].takeDamage(this, "Eerie Trickery", damageResult);
+          }
+        }
+        
+        result += this.getBuff(this, "Dynamite Armor", 99, {});
+        result += this.getBuff(this, "Reflection Armor", 99, {});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyActive(e) {
+    return this.eventAllyBasic(e);
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = "";
+    var reflectDamageResult = {};
+    var tempDamageAmount = damageResult["damageAmount"];
+    var allDamageReduce = this._currentStats["allDamageReduce"];
+    
+    
+    if (["bleed", "poison", "burn"].includes(damageResult["damageType"])) {
+      var dotReduce = this._currentStats["dotReduce"];
+      tempDamageAmount = tempDamageAmount * (1 - dotReduce);
+    }
+    
+    tempDamageAmount = Math.round(tempDamageAmount * (1-allDamageReduce));
+    
+    
+    if (["active", "active2", "basic"].includes(damageResult["damageSource"]) && "Reflection Armor" in this._buffs && !("Guardian Shadow" in this._buffs)) {
+      damageResult["damageAmount"] = damageResult["damageAmount"] / 2;
+      result += super.takeDamage(source, strAttackDesc, damageResult);
+      
+      result += "<div><span class='skill'>Reflection Armor</span> consumed.</div>";
+      tempDamageAmount = Math.floor(tempDamageAmount / 2);
+      
+      reflectDamageResult = {
+        damageAmount: tempDamageAmount, 
+        critted: 0, 
+        blocked: 0, 
+        damageSource: "passive", 
+        damageType: "normal", 
+        e5Description: ""
+      }
+      
+      result += source.takeDamage(this, "Reflection Armor", reflectDamageResult);
+      this._currentStats["damageHealed"] += tempDamageAmount;
+      
+      delete this._buffs["Reflection Armor"][Object.keys(this._buffs["Reflection Armor"])[0]];
+      
+    } else {
+      result += super.takeDamage(source, strAttackDesc, damageResult);
+    }
+    
+    return result;
+  }
+  
+  
+  getDebuff(source, debuffName, duration, effects) {
+    var result = "";
+    var isControl = isControlEffect(debuffName, effects);
+    
+    if ("Dynamite Armor" in this._buffs && isControl) {
+      var controlImmune = this._currentStats["controlImmune"];
+      
+      if (isControl) {
+        if ((debuffName + "Immune") in this._currentStats) {
+          controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
+        }
+        
+        if (Math.random() < controlImmune && isControl) {
+          result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
+        } else {
+          result += "<div>" + this.heroDesc() + " consumed <span class='skill'>Dynamite Armor</span> to resist <span class='skill'>" + debuffName + "</span>.</div>";
+          delete this._buffs["Dynamite Armor"][Object.keys(this._buffs["Dynamite Armor"])[0]];
+        }
+      }
+    } else {
+      result += super.getDebuff(source, debuffName, duration, effects);
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getFrontTargets(this, this._enemies);
+    
+    for (var i in targets) {
+      if (targets[i]._currentStats["totalHP"] > 0) {
+        targets[i]._rng = Math.random();
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
+        result += targets[i].takeDamage(this, "Gunshot Symphony", damageResult);
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    result += this.getBuff(this, "Gunshot Symphony", 2, {critDamage: 0.4});
+    result += this.getBuff(this, "Reflection Armor", 99, {});
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var burnDamageResult = {};
+    var targets = getHighestHPTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      if (targets[0]._currentStats["totalHP"] > 0) {
+        damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 4.5);
+        result += targets[0].takeDamage(this, "Fatal Fireworks", damageResult);
+        activeQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+        
+        if (damageResult["damageAmount"] > 0 && targets[0]._currentStats["totalHP"] > 0) {
+          burnDamageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "burn", 1.5, 0, 0, 1, 6);
+          result += targets[0].getDebuff(this, "Fatal Fireworks Burn", 6, {burn: Math.round(burnDamageResult["damageAmount"])});
+        }
+      }
+    }
+    
+    result += this.getBuff(this, "Dynamite Armor", 99, {});
+    
+    return result;
+  }
 }
 
 
@@ -997,7 +1150,7 @@ class Tara extends hero {
         for (var i=0; i<targets.length; i++) {
           if (targets[i]._currentStats["totalHP"] > 0) {
             this._rng = Math.random();
-            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 1, 1, 0);
+            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 0, 0, 0);
             result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
             
             if (Math.random() < 0.3) {
