@@ -402,6 +402,18 @@ function alertDidBasic(source, e) {
   var temp = "";
   var livingAllies = [];
   var livingEnemies = [];
+    
+  e.sort(function(a,b) {
+    if (a[1]._attOrDef == "att" && b[1]._attOrDef == "def") {
+      return -1;
+    } else if (a[1]._attOrDef == "def" && b[1]._attOrDef == "att") {
+      return 1;
+    } else if (a[1]._heroPos < b[1]._heroPos) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
   
   
   // enemies get energy after getting hit by basic
@@ -458,6 +470,18 @@ function alertDidActive(source, e) {
   var temp = "";
   var livingAllies = [];
   var livingEnemies = [];
+    
+  e.sort(function(a,b) {
+    if (a[1]._attOrDef == "att" && b[1]._attOrDef == "def") {
+      return -1;
+    } else if (a[1]._attOrDef == "def" && b[1]._attOrDef == "att") {
+      return 1;
+    } else if (a[1]._heroPos < b[1]._heroPos) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
   
   
   // enemies get energy after getting hit by active
@@ -526,6 +550,18 @@ function processDeathQueue(oCombatLog) {
     }
     deathQueue = [];
     
+    copyQueue.sort(function(a,b) {
+      if (a[1]._attOrDef == "att" && b[1]._attOrDef == "def") {
+        return -1;
+      } else if (a[1]._attOrDef == "def" && b[1]._attOrDef == "att") {
+        return 1;
+      } else if (a[1]._heroPos < b[1]._heroPos) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    
     // get currently living attackers and defenders
     livingAttackers = [];
     for (var i = 0; i < attHeroes.length; i++) {
@@ -568,23 +604,6 @@ function processDeathQueue(oCombatLog) {
   }
   
   return result;
-}
-
-
-function speedSort(heroA, heroB) {
-  if (heroA._currentStats["speed"] > heroB._currentStats["speed"]) {
-    return -1;
-  } else if (heroA._currentStats["speed"] < heroB._currentStats["speed"]) {
-    return 1;
-  } else if (heroA._attOrDef == "att" && heroB._attOrDef == "def") {
-    return -1;
-  } else if (heroA._attOrDef == "def" && heroB._attOrDef == "att") {
-    return 1;
-  } else if (heroA._heroPos < heroB._heroPos) {
-    return -1;
-  } else {
-    return 1;
-  }
 }
 
 

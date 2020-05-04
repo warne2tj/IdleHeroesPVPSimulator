@@ -16,10 +16,10 @@ Implemented Heroes:
   * Aida
   * Belrain
   * Penny
+  * Horus
   
   
 Upcoming Heroes
-  * Horus
   * Aspen
   * Dark Arthindol
   * Amuvor
@@ -74,14 +74,17 @@ No Plans to Implement:
   
 To Do List
   * ----------- Priority 1 ------------
-  * subclass heroes
+  * subclass wave 2 heroes (internal list)
+  * setup guild testing
+  * reorganize read me document into github wiki
+  * subclass wave 3 heroes (internal list)
+  * try out genetic algorithm search
   * ----------- Priority 2 ------------
-  * implement rest of monsters
   * add swap, copy, move functionality for team management
+  * implement rest of monsters
   * implement celestial island
   * implement enhanced artifacts
   * ----------- Priority 3 ------------
-  * reorganize read me document into github wiki
   * improve look of hero stat sheet, buff, and debuff descriptions
   * refactor combat log output to read and flow better
   * improve gui (incorporate icons?)
@@ -111,6 +114,11 @@ Hero Mechanics:
     + Does final verdict passive still happen if under cc?
   * Belrain
     + Does her speed buff change order of attack? Or is that determined at the beginning of the round and won't affect order until next round?
+  * Horus
+    + can you block while cc'ed?
+    + does his crimsom contract passive work through seal of light and cc?
+    + does his active proc both if there is only a front line or only a back line?
+    + what does guaranteed crit strike damage mean?
     
 
 Mechanics:

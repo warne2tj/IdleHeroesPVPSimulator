@@ -17,7 +17,7 @@ Important Function prototypes
 
   this.calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1, dotRounds=0)
       return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
-      damageSource = passive, active, mark, monster, active2, debuff, other
+      damageSource = passive, basic, active, mark, monster, active2, debuff, other
         debuff: don't know if this damage type is needed, just in case
         active2: does not apply skill damage but applies other skill related effects
         other: does not trigger amenra shield
@@ -605,8 +605,12 @@ class Carrie extends hero {
       
       // attack % per energy damage seems to be true damage
       if (targets[0]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
+        var additionalDamageAmount = this._currentStats["totalAttack"] * 0.06 * (targets[0]._currentStats["energy"] + 50);
+        if (this._enable2 == "LethalFightback" && this._currentStats["totalHP"] < targets[0]._currentStats["totalHP"]) { additionalDamageAmount *= 1.12;}
+        if (this._enable5 == "BalancedStrike") { additionalDamageAmount *= 1.3;}
+        
         additionalDamageResult = {
-          "damageAmount": this._currentStats["totalAttack"] * 0.06 * (targets[0]._currentStats["energy"] + 50),
+          "damageAmount": additionalDamageAmount,
           "critted": false,
           "blocked": false,
           "damageSource": "other",
@@ -648,8 +652,12 @@ class Carrie extends hero {
       
       // attack % per energy damage seems to be true damage
       if (targets[i]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
+        var additionalDamageAmount = this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"];
+        if (this._enable2 == "LethalFightback" && this._currentStats["totalHP"] < targets[0]._currentStats["totalHP"]) { additionalDamageAmount *= 1.12;}
+        if (this._enable5 == "BalancedStrike") { additionalDamageAmount *= 1.3;}
+        
         additionalDamageResult = {
-          "damageAmount": this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"],
+          "damageAmount": additionalDamageAmount,
           "critted": false,
           "blocked": false,
           "damageSource": "other",
@@ -906,11 +914,158 @@ class Gustin extends hero {
 class Horus extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
     super(sHeroName, iHeroPos, attOrDef);
+    this._stats["blockCount"] = 0;
   }
   
   passiveStats() {
     // apply Corrupted Rebirth passive
     this.applyStatChange({hpPercent: 0.4, attackPercent: 0.3, armorBreak: 0.4, block: 0.6}, "PassiveStats");
+  }
+  
+  
+  eventEnemyBasic(e) {
+    var result = "";
+    
+    if (!("Seal of Light" in this._debuffs)) {
+      if (this._currentStats["blockCount"] >= 3) {
+        this._currentStats["blockCount"] = 0;
+        
+        if ("Seal of Light" in this._debuffs) { result += this.removeDebuff("Seal of Light"); }
+        if ("petrify" in this._debuffs) { result += this.removeDebuff("petrify"); }
+        if ("stun" in this._debuffs) { result += this.removeDebuff("stun"); }
+        if ("entangle" in this._debuffs) { result += this.removeDebuff("entangle"); }
+        if ("freeze" in this._debuffs) { result += this.removeDebuff("freeze"); }
+        
+        
+        var damageAmount = this._stats["totalHP"] * 0.2;
+        var maxDamage = this._currentStats["totalAttack"] * 25;
+        
+        if (damageAmount > maxDamage) { damageAmount = maxDamage; }
+        
+        var damageResult;
+        var targets = getRandomTargets(this, this._enemies);
+        var totalDamage = 0;
+        var maxTargets = 3;
+        
+        if (targets.length < maxTargets) { maxTargets = targets.length; }
+        
+        for (var i = 0; i < maxTargets; i++) {
+          damageResult = {
+            "damageAmount": damageAmount,
+            "critted": false,
+            "blocked": false,
+            "damageSource": "passive",
+            "damageType": "hpPercent",
+            "e5Description": ""
+          };
+          
+          result += targets[i].takeDamage(this, "Crimson Contract", damageResult);
+          totalDamage += damageResult["damageAmount"];
+        }
+        
+        result += this.getHeal(this, totalDamage * 0.4);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyBasic(e) {
+    return this.eventEnemyBasic(e);
+  }
+  
+  
+  eventEnemyActive(e) {
+    var result = "";
+    
+    if (!("Seal of Light" in this._debuffs)) {
+      result += this.getBuff(this, "Descending Raven", 99, {attackPercent: 0.05, critDamage:0.02});
+      result += this.eventEnemyBasic(e);
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyActive(e) {
+    return this.eventEnemyActive(e);
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = super.takeDamage(source, strAttackDesc, damageResult);
+    
+    if (damageResult["blocked"] == true) {
+      this._currentStats["blockCount"]++;
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var bleedDamageResult = {};
+    var additionalDamage = 0;
+    var additionalDamageResult = {damageAmount: 0};
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 3;
+    
+    if (targets.length < numTargets) {
+      numTargets = targets.length;
+    }
+    
+    for (var i=0; i<numTargets; i++) {
+      this._rng = Math.random();
+      
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.06);
+      result += targets[i].takeDamage(this, "Torment of Flesh and Soul", damageResult);
+      
+      
+      if (targets[i]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
+        bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 1, 0, 0, 1, 3);
+        bleedDamageResult["damageAmount"] = Math.round(bleedDamageResult["damageAmount"]);
+        result += targets[i].getDebuff(this, "Torment of Flesh and Soul", 3, {bleed: bleedDamageResult["damageAmount"]});
+      }
+      
+      
+      if (targets[i]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
+        if (targets[i]._heroPos <= 2) {
+          additionalDamage = targets[i]._stats["totalHP"] * 0.15;
+          var maxDamage = this._currentStats["totalAttack"] * 15;
+          if (additionalDamage > maxDamage) { additionalDamage = maxDamage; }
+          
+          additionalDamageResult = {
+            "damageAmount": additionalDamage,
+            "critted": false,
+            "blocked": false,
+            "damageSource": "active",
+            "damageType": "hpPercent",
+            "e5Description": ""
+          };
+          
+          result += targets[i].takeDamage(this, "Torment of Flesh and Soul Front Line", additionalDamageResult);
+        } else if (damageResult["critted"] == true){
+          additionalDamageResult = {
+            "damageAmount": damageResult["damageAmount"] * 1.08,
+            "critted": damageResult["critted"],
+            "blocked": damageResult["blocked"],
+            "damageSource": "active",
+            "damageType": "normal",
+            "e5Description": ""
+          };
+          
+          result += targets[i].takeDamage(this, "Torment of Flesh and Soul Back Line", additionalDamageResult);
+        }
+        
+      }
+      
+      activeQueue.push([this, targets[i], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
+    }
+    
+    return result;
   }
 }
 
@@ -984,8 +1139,8 @@ class Penny extends hero {
           if (targets[h]._currentStats["totalHP"] > 0) {
             damageResult = {
               damageAmount: e[i][2], 
-              critted: 0, 
-              blocked: 0, 
+              critted: false, 
+              blocked: false, 
               damageSource: "passive", 
               damageType: "normal", 
               e5Description: ""
@@ -1032,8 +1187,8 @@ class Penny extends hero {
       
       reflectDamageResult = {
         damageAmount: tempDamageAmount, 
-        critted: 0, 
-        blocked: 0, 
+        critted: false, 
+        blocked: false, 
         damageSource: "passive", 
         damageType: "normal", 
         e5Description: ""
@@ -1042,7 +1197,12 @@ class Penny extends hero {
       result += source.takeDamage(this, "Reflection Armor", reflectDamageResult);
       this._currentStats["damageHealed"] += tempDamageAmount;
       
-      delete this._buffs["Reflection Armor"][Object.keys(this._buffs["Reflection Armor"])[0]];
+      var keyDelete = Object.keys(this._buffs["Reflection Armor"]);
+      if (keyDelete.length <= 1) {
+        delete this._buffs["Reflection Armor"];
+      } else {
+        delete this._buffs["Reflection Armor"][keyDelete[0]];
+      }
       
     } else {
       result += super.takeDamage(source, strAttackDesc, damageResult);
@@ -1068,7 +1228,13 @@ class Penny extends hero {
           result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
         } else {
           result += "<div>" + this.heroDesc() + " consumed <span class='skill'>Dynamite Armor</span> to resist <span class='skill'>" + debuffName + "</span>.</div>";
-          delete this._buffs["Dynamite Armor"][Object.keys(this._buffs["Dynamite Armor"])[0]];
+          
+          var keyDelete = Object.keys(this._buffs["Dynamite Armor"]);
+          if (keyDelete.length <= 1) {
+            delete this._buffs["Dynamite Armor"];
+          } else {
+            delete this._buffs["Dynamite Armor"][keyDelete[0]];
+          }
         }
       }
     } else {

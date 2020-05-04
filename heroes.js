@@ -508,13 +508,18 @@ class hero {
     var factionBonus = 1;
     var e5Desc = "";
     
+    // damage source and damage type overrides
     if (damageSource == "active") {
       if (["burn", "bleed", "poison"].includes(damageType)) {
         skillDamage += (this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100)) / (dotRounds + 1);
       } else {
         skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
       }
+    } else if (["passive", "mark"].includes(damageSource) || ["burn", "bleed", "poison"].includes(damageType)) {
+      critChance = 0;
+      blockChance = 0;
     }
+    
     
     if (
       (factionA == "Abyss" && factionB == "Forest") ||
@@ -570,7 +575,7 @@ class hero {
     }
     
     // E5 Balanced strike
-    if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike") {
+    if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike" && !(["burn", "bleed", "poison"].includes(damageType))) {
       if (critted == false) {
         attackDamage *= 1.3;
         holyDamage *= 1.3;
@@ -746,7 +751,7 @@ class hero {
         } else if (strStatName == "armorPercent") {
           this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
           
-        } else if (strStatName == "burn") {
+        } else if (["burn", "bleed", "poison"].includes(strStatName)) {
           damageResult = {
             damageAmount: effects[strStatName], 
             critted: 0, 
@@ -756,7 +761,7 @@ class hero {
             e5Description: ""
           };
           
-          strDamageResult = this.takeDamage(source, debuffName, damageResult);
+          strDamageResult = this.takeDamage(source, "Debuff " + debuffName, damageResult);
           
         } else {
           this._currentStats[strStatName] -= effects[strStatName];
@@ -834,7 +839,7 @@ class hero {
           this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
         } else if (strStatName == "armorPercent") {
           this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
-        } else if (strStatName == "burn") {
+        } else if (["burn", "bleed", "poison"].includes(strStatName)) {
           // do nothing
         } else {
           this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
@@ -927,7 +932,7 @@ class hero {
                 this._currentStats["totalAttack"] += this._currentStats["fixedAttack"];
               } else if (strStatName == "armorPercent") {
                 this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
-              } else if (strStatName == "burn") {
+              } else if (["burn", "bleed", "poison"].includes(strStatName)) {
                 // do nothing, full burn damage already done
               } else {
                 this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
@@ -939,7 +944,7 @@ class hero {
             stacksLeft++;
             
             for (var strStatName in this._debuffs[b][s]["effects"]) {
-              if (strStatName == "burn") {
+              if (["burn", "bleed", "poison"].includes(strStatName)) {
                 damageResult = {
                   damageAmount: this._debuffs[b][s]["effects"][strStatName], 
                   critted: 0, 
