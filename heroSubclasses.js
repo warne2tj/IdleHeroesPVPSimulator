@@ -1016,6 +1016,103 @@ class Cthuga extends hero {
 
 
 
+// Dark Arthindol
+class DarkArthindol extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+  }
+  
+  
+  passiveStats() {
+    // apply Black Hole passive
+    this.applyStatChange({skillDamage: 1.0, hpPercent: 0.4, speed: 60}, "PassiveStats");
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+    var result = "";
+    var preHP = this._currentStats["totalHP"];
+    
+    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    
+    var postHP = this._currentStats["totalHP"];
+    
+    if (!("Seal of Light" in this._debuffs) && (preHP - postHP)/this._stats["totalHP"] >= 0.03) {
+      result += this.getBuff(this, "Preemptive Defense", 6, {attackPercent: 0.03, skillDamage: 0.05});
+      result += this.getEnergy(this, 10);
+    }
+    
+    return result
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getAllTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
+      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
+      
+      if (damageResult["damageAmount"] > 0 && targets[0]._currentStats["totalHP"] > 0) {
+        result += "<div><span class='skill'>Petrify</span> reduced target's energy by " + formatNum(50) + ".</div>";
+        if (targets[0]._currentStats["energy"] > 50) {
+          targets[0]._currentStats["energy"] -= 50;
+        } else {
+          targets[0]._currentStats["energy"] = 0;
+        }
+        
+        result += targets[0].getDebuff(this, "petrify", 1, {});
+      }
+        
+      if (damageResult["damageAmount"] > 0) {
+        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getAllTargets(this, this._enemies);
+    
+    for (var i=0; i < targets.length; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 0.98);
+      result += targets[i].takeDamage(this, "Chaotic Shade", damageResult);
+      
+      if (damageResult["damageAmount"] > 0 && targets[0]._currentStats["totalHP"] > 0) {
+        if (Math.random() < 0.3) {
+          result += targets[i].getDebuff(this, "petrify", 2, {});
+        }
+        
+        if (Math.random() < 0.3) {
+          result += "<div><span class='skill'>Chaotic Shade</span> reduced target's energy by " + formatNum(30) + ".</div>";
+          if (targets[i]._currentStats["energy"] > 30) {
+            targets[i]._currentStats["energy"] -= 30;
+          } else {
+            targets[i]._currentStats["energy"] = 0;
+          }
+        }
+      }
+      
+      if (damageResult["damageAmount"] > 0) {
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    result += this.getBuff(this, "Chaotic Shade", 2, {damageReduce: 0.4});
+    
+    return result;
+  }
+}
+
+
+
 // Garuda
 class Garuda extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {

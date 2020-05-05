@@ -12,6 +12,7 @@ Implemented Heroes:
   * Amuvor
   * Aspen
   * Carrie
+  * Dark Arthindol
   * Garuda
   * Horus
   * Belrain
@@ -20,7 +21,6 @@ Implemented Heroes:
   
   
 Upcoming Heroes
-  * Dark Arthindol
   * Faithblade
   * Kroos
   * Mihm
@@ -117,6 +117,8 @@ Hero Mechanics:
     + does his crimsom contract passive work through seal of light and cc?
     + does his active proc both if there is only a front line or only a back line?
     + what does guaranteed crit strike damage mean?
+  * Dark Arthindol
+    + Buff seems to trigger only once per instance of taking damage
     
 
 Mechanics:

@@ -38,6 +38,13 @@ var skins = {
     "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04}
   },
   
+  "Dark Arthindol": {
+    "Gone Like a Dream": {speed: 4, attackPercent: 0.03, critDamage: 0.05},
+    "Legendary Gone Like a Dream": {speed: 6, attackPercent: 0.06, critDamage: 0.1},
+    "Revenge Bride": {hpPercent: 0.03, attackPercent: 0.02, skillDamage: 0.1},
+    "Legendar Revenge Bride": {hpPercent: 0.06, attackPercent: 0.04, skillDamage: 0.15},
+  },
+  
   "Garuda": {
     "Super Harvest": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
     "Legendary Super Harvest": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04},
