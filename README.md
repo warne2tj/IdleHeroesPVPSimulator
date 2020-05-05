@@ -9,6 +9,7 @@ Description:
 Implemented Heroes:
   * Aida
   * Amen-Ra
+  * Amuvor
   * Aspen
   * Carrie
   * Garuda
@@ -20,7 +21,6 @@ Implemented Heroes:
   
 Upcoming Heroes
   * Dark Arthindol
-  * Amuvor
   * Faithblade
   * Kroos
   * Mihm
@@ -73,14 +73,14 @@ No Plans to Implement:
 To Do List
   * ----------- Priority 1 ------------
   * subclass wave 2 heroes (internal list)
-  * setup guild testing
+  * implement celestial island buffs
+  * setup testing configs and mass guild testing
   * reorganize read me document into github wiki
   * subclass wave 3 heroes (internal list)
   * try out genetic algorithm search
   * ----------- Priority 2 ------------
   * add swap, copy, move functionality for team management
   * implement rest of monsters
-  * implement celestial island buffs
   * implement enhanced artifacts
   * ----------- Priority 3 ------------
   * improve look of hero stat sheet, buff, and debuff descriptions

@@ -50,6 +50,22 @@ var baseHeroStats = {
     }
   },
   
+  "Amuvor": {
+    className: Amuvor,
+    heroFaction: "Dark",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 7363,
+      baseAttack: 484,
+      baseArmor: 60,
+      baseSpeed: 235,
+      growHP: 736.3,
+      growAttack: 48.4,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
   "Aspen": {
     className: Aspen,
     heroFaction: "Dark",

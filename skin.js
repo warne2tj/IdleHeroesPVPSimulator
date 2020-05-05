@@ -13,6 +13,12 @@ var skins = {
     "Legendary Monstrous Tribunal": {hpPercent: 0.06, attackPercent: 0.06, controlImmune: 0.06}
   },
   
+  "Amuvor": {
+    "Celestial Messenger": {hpPercent: 0.03, armorBreak: 0.05},
+    "Original Sin": {attackPercent: 0.03, crit: 0.02, critDamage: 0.05},
+    "Legendary Original Sin": {attackPercent: 0.06, crit: 0.03, critDamage: 0.075}
+  },
+  
   "Aspen": {
     "Dragonic Warrior": {hpPercent: 0.05, attackPercent: 0.03, critDamage: 0.05},
     "Legendary Dragonic Warrior": {hpPercent: 0.08, attackPercent: 0.06, critDamage: 0.075},
