@@ -135,6 +135,8 @@ function runSim() {
               temp = alertDidActive(orderOfAttack[orderNum], activeQueue);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
+            } else if ("Horrify" in orderOfAttack[orderNum]._debuffs) {
+              if(numSims == 1) {oCombatLog.innerHTML += "<p>" + orderOfAttack[orderNum].heroDesc() + " is Horrified, basic attack skipped.</p>";}
             } else {
               // do basic
               result = orderOfAttack[orderNum].doBasic();
@@ -447,14 +449,14 @@ function alertDidBasic(source, e) {
   
   // alert living allies and enemies
   for (var i = 0; i < livingAllies.length; i++) {
-    temp = livingAllies[i].eventAllyBasic(e);
+    temp = livingAllies[i].eventAllyBasic(source, e);
     if (temp != "") {
       result += "<div>" + temp + "</div>";
     }
   }
   
   for (var i = 0; i < livingEnemies.length; i++) {
-    temp = livingEnemies[i].eventEnemyBasic(e);
+    temp = livingEnemies[i].eventEnemyBasic(source, e);
     if (temp != "") {
       result += "<div>" + temp + "</div>";
     }
@@ -515,14 +517,14 @@ function alertDidActive(source, e) {
   
   // alert living allies and enemies
   for (var i = 0; i < livingAllies.length; i++) {
-    temp = livingAllies[i].eventAllyActive(e);
+    temp = livingAllies[i].eventAllyActive(source, e);
     if (temp != "") {
       result += "<div>" + temp + "</div>";
     }
   }
   
   for (var i = 0; i < livingEnemies.length; i++) {
-    temp = livingEnemies[i].eventEnemyActive(e);
+    temp = livingEnemies[i].eventEnemyActive(source, e);
     if (temp != "") {
       result += "<div>" + temp + "</div>";
     }

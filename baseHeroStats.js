@@ -50,6 +50,22 @@ var baseHeroStats = {
     }
   },
   
+  "Aspen": {
+    className: Aspen,
+    heroFaction: "Dark",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 8986,
+      baseAttack: 338,
+      baseArmor: 61,
+      baseSpeed: 235,
+      growHP: 898.6,
+      growAttack: 34,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
   "Belrain": {
     className: Belrain,
     heroFaction: "Light",

@@ -51,7 +51,7 @@ function isMonster(source) {
 
 
 function isControlEffect(strName, effects) {
-  if (["stun", "petrify", "freeze", "entangle", "Seal of Light"].includes(strName)) {
+  if (["stun", "petrify", "freeze", "entangle", "Seal of Light", "Horrify"].includes(strName)) {
     return true;
   } else if ("petrify" in effects) {
     return true;
@@ -59,7 +59,7 @@ function isControlEffect(strName, effects) {
     return true;
   } else if ("entangle" in effects) {
     return true;
-  } else if ("Seal of Light" in effects) {
+  } else if ("stun" in effects) {
     return true;
   } else {
     return false;
