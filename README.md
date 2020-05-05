@@ -7,20 +7,18 @@ Description:
   
   
 Implemented Heroes:
-  * Foolish
-  * Baade 5 star
-  * Carrie
-  * Tara
-  * Amen-Ra
-  * Garuda
   * Aida
+  * Amen-Ra
+  * Aspen
+  * Carrie
+  * Garuda
+  * Horus
   * Belrain
   * Penny
-  * Horus
+  * Tara
   
   
 Upcoming Heroes
-  * Aspen
   * Dark Arthindol
   * Amuvor
   * Faithblade
@@ -82,7 +80,7 @@ To Do List
   * ----------- Priority 2 ------------
   * add swap, copy, move functionality for team management
   * implement rest of monsters
-  * implement celestial island
+  * implement celestial island buffs
   * implement enhanced artifacts
   * ----------- Priority 3 ------------
   * improve look of hero stat sheet, buff, and debuff descriptions

@@ -7,8 +7,10 @@ Important Notes
       i.e. only sleepless left to resurrect at end of round, kroos attack still heals
   * After doing damage, check that damage amount is greater than 0. If it's 0, then the target was Carrie and she dodged.
   * When overriding events, you might need to check that the target or source of the event is the same as the hero being called
-      Depending on the details of the skill that is. Some react to anyone triggering the event, some only react to themselves.
-  * Rng for a hero's attack is initially generated at the beginning of their turn. Need to regenerate if they do further attacks. 
+      Depending on the details of the skill that is. 
+      Some react to anyone triggering the event, some only react to themselves.
+  * Rng for a hero's attack is initially generated at the beginning of their turn. 
+      Need to regenerate if they do further attacks. 
       But maybe not depending on if subsequent attacks use the same roll. This is an open question.
   
   
@@ -104,7 +106,7 @@ class Baade extends hero {
     for (var i=0; i<maxTargets; i++) {
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.1, "basic", "normal", 1, 0);
       additionalDamage = damageResult["damageAmount"];
-      result = targets[i].takeDamage(this, "Basic Attack", damageResult);
+      result = targets[i].takeDamage(this, "Death Threat", damageResult);
       
       if (targets[i]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
         var outcomeRoll = Math.random();
@@ -126,7 +128,7 @@ class Baade extends hero {
             e5Description: ""
           };
           
-          result += targets[i].takeDamage(this, "Death Threat", additionalDamageResult);
+          result += targets[i].takeDamage(this, "Death Threat 2", additionalDamageResult);
         }
       }
       
@@ -481,6 +483,179 @@ class Aspen extends hero {
   
   
   eventAllyBasic(source, e) { return this.eventAllyActive(source, e); }
+  
+  
+  getBuff(source, buffName, duration, effects) {
+    if ("Shield" in this._buffs && buffName == "Shield") {
+      if (Object.keys(this._buffs["Shield"]).length < 5) {
+        return super.getBuff(source, buffName, duration, effects);
+      } else {
+        return "";
+      }
+    } else {
+      return super.getBuff(source, buffName, duration, effects);
+    }
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var hpDamage = 0;
+    var maxDamage = 0;
+    var hpDamageResult = {damageAmount: 0};
+    var additionalDamage = 0;
+    var additionalDamageResult = {damageAmount: 0};
+    var targets = getLowestHPTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 2, "basic", "normal");
+      result += targets[0].takeDamage(this, "Rage of Shadow", damageResult);
+      
+      if (targets[0]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
+        hpDamage = 0.15 * (targets[0]._stats["totalHP"] - targets[0]._currentStats["totalHP"]);
+        maxDamage = 15 * this._currentStats["totalAttack"];
+        if (hpDamage > maxDamage) { hpDamage = maxDamage; }
+        
+        hpDamageResult = {
+          "damageAmount": hpDamage,
+          "critted": false,
+          "blocked": false,
+          "damageSource": "basic",
+          "damageType": "hpPercent",
+          "e5Description": ""
+        };
+        result += targets[0].takeDamage(this, "Rage of Shadow HP", hpDamageResult);
+        
+        if (targets[0]._currentStats["totalHP"] > 0) {
+          var beforeHorrifyCount = 0;
+          if (!("Horrify" in targets[0]._debuffs)) {
+            beforeHorrifyCount = 0;
+          } else {
+            beforeHorrifyCount = Object.keys(targets[0]._debuffs["Horrify"]).length;
+          }
+          
+          result += targets[0].getDebuff(this, "Horrify", 2, {});
+          
+          var afterHorrifyCount = 0;
+          if (!("Horrify" in targets[0]._debuffs)) {
+            afterHorrifyCount = 0;
+          } else {
+            afterHorrifyCount = Object.keys(targets[0]._debuffs["Horrify"]).length;
+          }
+          
+          if (afterHorrifyCount > beforeHorrifyCount) {
+            result += this.getHeal(this, Math.round(this._currentStats["totalAttack"] * 1.5));
+            result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
+          }
+          
+          if (targets[0]._currentStats["totalHP"] > 0 && (targets[0]._currentStats["totalHP"] / targets[0]._stats["totalHP"]) < 0.35) {
+            additionalDamage = 1.6 * (damageResult["damageAmount"] + hpDamageResult["damageAmount"]);
+
+            additionalDamageResult = {
+              "damageAmount": additionalDamage,
+              "critted": false,
+              "blocked": false,
+              "damageSource": "basic",
+              "damageType": "normal",
+              "e5Description": ""
+            };
+            
+            result += targets[0].takeDamage(this, "Rage of Shadow Below 35%", additionalDamageResult);
+            result += this.getHeal(this, additionalDamageResult["damageAmount"]);
+          }
+        }
+      }
+      
+      basicQueue.push([this, targets[0], damageResult["damageAmount"] + hpDamageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var hpDamage = 0;
+    var maxDamage = 0;
+    var hpDamageResult = {damageAmount: 0};
+    var additionalDamage = 0;
+    var additionalDamageResult = {damageAmount: 0};
+    var targets = getRandomTargets(this, this._enemies);
+    var maxTargets = 4;
+    
+    if (targets.length < maxTargets) {
+      maxTargets = targets.length;
+    }
+    
+    for (var i = 0; i < maxTargets; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.6);
+      result += targets[i].takeDamage(this, "Dread's Coming", damageResult);
+      
+      if (targets[i]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
+        hpDamage = 0.2 * targets[i]._currentStats["totalHP"];
+        maxDamage = 15 * this._currentStats["totalAttack"];
+        if (hpDamage > maxDamage) { hpDamage = maxDamage; }
+        
+        hpDamageResult = {
+          "damageAmount": hpDamage,
+          "critted": false,
+          "blocked": false,
+          "damageSource": "active",
+          "damageType": "hpPercent",
+          "e5Description": ""
+        };
+        result += targets[i].takeDamage(this, "Dread's Coming HP", hpDamageResult);
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          var beforeHorrifyCount = 0;
+          if (!("Horrify" in targets[i]._debuffs)) {
+            beforeHorrifyCount = 0;
+          } else {
+            beforeHorrifyCount = Object.keys(targets[i]._debuffs["Horrify"]).length;
+          }
+          
+          if (Math.random() < 0.5) {
+            result += targets[i].getDebuff(this, "Horrify", 2, {});
+          }
+          
+          var afterHorrifyCount = 0;
+          if (!("Horrify" in targets[i]._debuffs)) {
+            afterHorrifyCount = 0;
+          } else {
+            afterHorrifyCount = Object.keys(targets[i]._debuffs["Horrify"]).length;
+          }
+          
+          if (afterHorrifyCount > beforeHorrifyCount) {
+            result += this.getHeal(this, Math.round(this._currentStats["totalAttack"] * 1.5));
+            result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
+          }
+          
+          if (targets[i]._currentStats["totalHP"] > 0 && (targets[i]._currentStats["totalHP"] / targets[i]._stats["totalHP"]) < 0.35) {
+            additionalDamage = 2.2 * (damageResult["damageAmount"] + hpDamageResult["damageAmount"]);
+
+            additionalDamageResult = {
+              "damageAmount": additionalDamage,
+              "critted": false,
+              "blocked": false,
+              "damageSource": "active",
+              "damageType": "normal",
+              "e5Description": ""
+            };
+            
+            result += targets[i].takeDamage(this, "Dread's Coming Below 35%", additionalDamageResult);
+            result += this.getHeal(this, additionalDamageResult["damageAmount"]);
+          }
+        }
+      }
+      
+      activeQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
+    }
+    
+    return result;
+  }
 }
 
 
