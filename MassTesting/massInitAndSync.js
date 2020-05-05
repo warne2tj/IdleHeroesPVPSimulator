@@ -112,8 +112,8 @@ function runMassLoop() {
       
       allTeams.push(team);
       
-      // [team name, monster, wins on attack, wins on defense]
-      teamNames.push([t, jsonConfig[t][66], 0, 0]);
+      // [team name, monster, wins on attack, wins on defense, weak against team name, weak against lost amount]
+      teamNames.push([t, jsonConfig[t][66], 0, 0, "None", 0]);
     }
     
     simRunning = true;
@@ -148,7 +148,9 @@ function nextMatchup() {
     });
     
     for (var p = 0; p < teamNames.length; p++) {
-      summary += "<div>Team " + teamNames[p][0] + " - Attack win rate(" + formatNum(Math.round(teamNames[p][2] / totalFights * 100, 2)) + "%), Defense win rate(" + formatNum(Math.round(teamNames[p][3] / totalFights * 100, 2)) + "%)</div>";
+      summary += "<div>Team " + teamNames[p][0] + " - Attack win rate (" + formatNum(Math.round(teamNames[p][2] / totalFights * 100, 2)) + "%), "
+      summary += "Defense win rate (" + formatNum(Math.round(teamNames[p][3] / totalFights * 100, 2)) + "%), ";
+      summary += "Weakest against team " + teamNames[p][4] + " (" + formatNum(Math.round(teamNames[p][5] / numSims * 100, 2)) + "%)</div>";
     }
     
     simRunning = false;
@@ -179,11 +181,18 @@ function nextMatchup() {
         defHeroes[p].updateCurrentStats();
       }
       
-      numWins = runSim();
-      teamNames[attIndex][2] += numWins;
-      teamNames[defIndex][3] += numSims - numWins;
+      numAttWins = runSim();
+      numDefWins = numSims - numAttWins;
       
-      oLog.innerHTML += "<p><span class='att'>" + teamNames[attIndex][0] + "</span> versus <span class='def'>" + teamNames[defIndex][0] + "</span>: Won " + formatNum(numWins) + " out of " + formatNum(numSims) + ".</p>";
+      teamNames[attIndex][2] += numAttWins;
+      teamNames[defIndex][3] += numDefWins;
+      
+      if (numAttWins > teamNames[defIndex][5]) {
+        teamNames[defIndex][4] = teamNames[attIndex][0];
+        teamNames[defIndex][5] = numAttWins;
+      }
+      
+      oLog.innerHTML += "<p><span class='att'>" + teamNames[attIndex][0] + "</span> versus <span class='def'>" + teamNames[defIndex][0] + "</span>: Won " + formatNum(numAttWins) + " out of " + formatNum(numSims) + ".</p>";
     }
     
     // start next matchup

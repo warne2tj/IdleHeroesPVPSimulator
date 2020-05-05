@@ -1138,16 +1138,14 @@ class hero {
     var result = "";
     var damageResult = {};
     var targets = getAllTargets(this, this._enemies);
-    var maxTargets = 1;
     
-    if (targets.length < maxTargets) {
-      maxTargets = targets.length;
-    }
-    
-    for (var i=0; i<maxTargets; i++) {
-      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal");
-      result += targets[i].takeDamage(this, "Basic Attack", damageResult);
-      basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
+      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+      }
     }
     
     return result;
@@ -1167,7 +1165,10 @@ class hero {
     for (var i=0; i<maxTargets; i++) {
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
       result += targets[i].takeDamage(this, "Active Template", damageResult);
-      activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      
+      if (damageResult["damageAmount"] > 0) {
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
     }
     
     return result;
