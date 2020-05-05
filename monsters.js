@@ -2,6 +2,7 @@ class monster {
   constructor(sMonsterName, attOrDef) {
     this._monsterName = sMonsterName;
     this._attOrDef = attOrDef;
+    this._heroClass = "monster";
     
     if (attOrDef == "att") {
       this._allies = attHeroes;
@@ -26,6 +27,19 @@ class monster {
   }
   
   
+  calcDamage(target, attackDamage, damageSource, damageType) {
+    return {
+      "damageAmount": attackDamage,
+      "holyDamage": 0, 
+      "critted": false, 
+      "blocked": false, 
+      "damageSource": "monster", 
+      "damageType": damageType, 
+      "e5Description": ""
+    };
+  }
+  
+  
   doActive() {
     var result = "";
     
@@ -47,14 +61,7 @@ class mDeer extends monster {
     if (targets.length < numTargets) {numTargets = targets.length;}
     
     for (var i=0; i < numTargets; i++) {
-      damageResult = {
-        damageAmount: 402068, 
-        critted: 0, 
-        blocked: 0, 
-        damageSource: "monster", 
-        damageType: "normal", 
-        e5Description: ""
-      };
+      damageResult = this.calcDamage(targets[i], 402068, "monster", "true");
       result += targets[i].takeDamage(this, "Emerald Nourishing", damageResult);
     }
     
@@ -87,14 +94,7 @@ class mPhoenix extends monster {
     if (targets.length < numTargets) {numTargets = targets.length;}
     
     for (var i=0; i < numTargets; i++) {
-      damageResult = {
-        damageAmount: 451830, 
-        critted: 0, 
-        blocked: 0, 
-        damageSource: "monster", 
-        damageType: "normal", 
-        e5Description: ""
-      };
+      damageResult = this.calcDamage(targets[i], 451830, "monster", "true");
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
       result += targets[i].getDebuff(this, "Phoenix Burn", 3, {burn: 363465});
     }

@@ -485,40 +485,24 @@ class hero {
   
   // can further extend this to account for new mechanics by adding parameters to the end
   // supply a default value so as to not break other calls to this function
-  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, canBlock=1, armorReduces=1, dotRounds=0) {
+  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0) {
     // Get damage related stats
     var critChance = canCrit * this._currentStats["crit"];
     var critDamage = 2*this._currentStats["critDamage"] + 1.5;
     var precision = this._currentStats["precision"];
     var precisionDamageIncrease = 1;
-    var armorBreak = this._currentStats["armorBreak"] >= 1 ? 1 : this._currentStats["armorBreak"];
     var holyDamageIncrease = this._currentStats["holyDamage"] * .7;
     var holyDamage = attackDamage * holyDamageIncrease;
     var lethalFightback = 1;
     var damageAgainstBurning = 1;
     
-    var armorMitigation = armorReduces * (target._currentStats["totalArmor"] * (1 - armorBreak) / (180 + 20*(target._heroLevel)));
-    var reduceDamage = target._currentStats["damageReduce"] > 0.75 ? 0.75 : target._currentStats["damageReduce"];
     var critDamageReduce = target._currentStats["critDamageReduce"];
-    var classDamageReduce = target._currentStats[this._heroClass.toLowerCase() + "Reduce"];
-    var blockChance = canBlock * (target._currentStats["block"] - precision);
+    var blockChance = target._currentStats["block"] - precision;
     
     var factionA = this._heroFaction;
     var factionB = target._heroFaction;
     var factionBonus = 1;
     var e5Desc = "";
-    
-    // damage source and damage type overrides
-    if (damageSource == "active") {
-      if (["burn", "bleed", "poison"].includes(damageType)) {
-        skillDamage += (this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100)) / (dotRounds + 1);
-      } else {
-        skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
-      }
-    } else if (["passive", "mark"].includes(damageSource) || ["burn", "bleed", "poison"].includes(damageType)) {
-      critChance = 0;
-      blockChance = 0;
-    }
     
     
     if (
@@ -537,7 +521,7 @@ class hero {
     if (
       this._enable2 == "LethalFightback" && 
       this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
-      !(["burn", "bleed", "poison"].includes(damageType)) &&
+      !(["burn", "bleed", "poison", "hpPercent", "true"].includes(damageType)) &&
       (damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic")
     ) {
       lethalFightback = 1.12;
@@ -548,9 +532,34 @@ class hero {
        damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
-    attackDamage = attackDamage * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning;
-    holyDamage = holyDamage * (1-reduceDamage) * (1-classDamageReduce) * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning;    
-    if(damageSource == "dot") {console.log(attackDamage);}
+    
+    // damage source and damage type overrides
+    if (damageSource == "active") {
+      if (["burn", "bleed", "poison"].includes(damageType)) {
+        skillDamage += (this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100)) / (dotRounds + 1);
+      } else if (!(["hpPercent", "energy", "true"].includes(damageType))) {
+        skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
+      }
+    }
+    
+    if (["passive", "mark"].includes(damageSource) || ["burn", "bleed", "poison"].includes(damageType)) {
+      critChance = 0;
+      blockChance = 0;
+    }
+    
+    if (["hpPercent", "energy", "true"].includes(damageType) || damageSource == "debuff") {
+      precisionDamageIncrease = 1;
+      holyDamage = 0;
+      factionBonus = 1;
+      damageAgainstBurning = 1;
+      critChance = 0;
+      blockChance = 0;
+    }
+    
+    
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning;
+    holyDamage = holyDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning;    
+    
     var blocked = false;
     var critted = false;
     
@@ -575,7 +584,7 @@ class hero {
     }
     
     // E5 Balanced strike
-    if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike" && !(["burn", "bleed", "poison"].includes(damageType))) {
+    if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike" && !(["burn", "bleed", "poison", "hpPercent", "true"].includes(damageType))) {
       if (critted == false) {
         attackDamage *= 1.3;
         holyDamage *= 1.3;
@@ -584,13 +593,20 @@ class hero {
     }
     
     return {
-      "damageAmount": attackDamage + holyDamage, 
+      "damageAmount": attackDamage,
+      "holyDamage": holyDamage, 
       "critted": critted, 
       "blocked": blocked, 
       "damageSource": damageSource, 
       "damageType": damageType, 
       "e5Description": e5Desc
     };
+  }
+  
+  
+  calcHeal(target, healAmount) {
+    var healEffect = this._currentStats["healEffect"] + 1;
+    return healAmount * healEffect;
   }
   
   
@@ -609,14 +625,7 @@ class hero {
       
       result += "<div>Heal from " + source.heroDesc() + " blocked by <span class='skill'>Healing Curse</span>.</div>";
       
-      damageResult = {
-        "damageAmount": amountHealed, 
-        "critted": false, 
-        "blocked": false, 
-        "damageSource": "passive", 
-        "damageType": "normal", 
-        "e5Description": ""
-      };
+      damageResult = debuffStack["source"].calcDamage(this, amountHealed, "passive", "true");
       result += this.takeDamage(debuffStack["source"], "Healing Curse", damageResult);
       
       if (debuffKeys.length <= 1) {
@@ -752,15 +761,8 @@ class hero {
           this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
           
         } else if (["burn", "bleed", "poison"].includes(strStatName)) {
-          damageResult = {
-            damageAmount: effects[strStatName], 
-            critted: 0, 
-            blocked: 0, 
-            damageSource: "debuff", 
-            damageType: strStatName, 
-            e5Description: ""
-          };
-          
+          damageResult = source.calcDamage(this, effects[strStatName], "debuff", "true");
+          damageResult["damageType"] = strStatName;
           strDamageResult = this.takeDamage(source, "Debuff " + debuffName, damageResult);
           
         } else {
@@ -945,15 +947,8 @@ class hero {
             
             for (var strStatName in this._debuffs[b][s]["effects"]) {
               if (["burn", "bleed", "poison"].includes(strStatName)) {
-                damageResult = {
-                  damageAmount: this._debuffs[b][s]["effects"][strStatName], 
-                  critted: 0, 
-                  blocked: 0, 
-                  damageSource: "debuff", 
-                  damageType: strStatName, 
-                  e5Description: ""
-                };
-                
+                damageResult = this._debuffs[b][s]["source"].calcDamage(this, this._debuffs[b][s]["effects"][strStatName], "debuff", "true");
+                damageResult["damageType"] = strStatName;
                 result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
                 result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
               }
@@ -975,7 +970,8 @@ class hero {
     var result = "";
     
     if (this._enable3 == "Resilience") {
-      var healAmount = Math.round(0.15 * (this._stats["totalHP"] - this._currentStats["totalHP"]));
+      var healAmount = this.calcHeal(this, Math.round(0.15 * (this._stats["totalHP"] - this._currentStats["totalHP"])));
+      
       if (healAmount > 0) {
         result += "<div>" + this.heroDesc() + " Resilience triggered.</div>" 
         result += this.getHeal(this, healAmount);
@@ -1024,22 +1020,35 @@ class hero {
   
   
   
-  takeDamage(source, strAttackDesc, damageResult) {
+  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
     var result = "";
     var beforeHP = this._currentStats["totalHP"];
+    
+    var armorBreak = source._currentStats["armorBreak"] >= 1 ? 1 : source._currentStats["armorBreak"];
+    var armorMitigation = armorReduces * (this._currentStats["totalArmor"] * (1 - armorBreak) / (180 + 20*(this._heroLevel)));
+    var reduceDamage = this._currentStats["damageReduce"] > 0.75 ? 0.75 : this._currentStats["damageReduce"];
+    var classDamageReduce = this._currentStats[source._heroClass.toLowerCase() + "Reduce"];
     var allDamageReduce = this._currentStats["allDamageReduce"];
     
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
     
     
+    if (["hpPercent", "energy", "true"].includes(damageResult["damageType"])) {
+      armorMitigation = 0;
+      reduceDamage = 0;
+      classDamageReduce = 0;
+    }
+    
     if (["bleed", "poison", "burn"].includes(damageResult["damageType"])) {
       var dotReduce = this._currentStats["dotReduce"];
       damageResult["damageAmount"] = damageResult["damageAmount"] * (1 - dotReduce);
+      damageResult["holyDamage"] = damageResult["holyDamage"] * (1 - dotReduce);
     }
     
-    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"] * (1-allDamageReduce));
-    
+    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"] * (1-allDamageReduce) * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce));
+    damageResult["holyDamage"] = Math.round(damageResult["holyDamage"] * (1-allDamageReduce) * (1-reduceDamage) * (1-classDamageReduce));
+    damageResult["damageAmount"] += damageResult["holyDamage"];
     
     // amenra shields
     if ("Guardian Shadow" in this._buffs && !(["passive", "mark"].includes(damageResult["damageSource"])) && !(isMonster(source))) {
@@ -1114,7 +1123,7 @@ class hero {
       // balanced strike enable heal
       if ((damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic") && source._enable5 == "BalancedStrike") {
         if (damageResult["critted"] == true) {
-          var healAmount = Math.round(0.15 * (damageResult["damageAmount"]));
+          var healAmount = this.calcHeal(this, Math.round(0.15 * (damageResult["damageAmount"])));
           result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>" + source.getHeal(source, healAmount);
         }
       }
