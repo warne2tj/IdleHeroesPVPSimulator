@@ -114,6 +114,22 @@ var baseHeroStats = {
     }
   },
   
+  "Dark Arthindol": {
+    className: DarkArthindol,
+    heroFaction: "Dark",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 6900,
+      baseAttack: 422,
+      baseArmor: 58,
+      baseSpeed: 207,
+      growHP: 690,
+      growAttack: 42.2,
+      growArmor: 5.8,
+      growSpeed: 2
+    }
+  },
+  
   "Garuda": {
     className: Garuda,
     heroFaction: "Forest",
