@@ -106,7 +106,7 @@ class Baade extends hero {
     for (var i=0; i<maxTargets; i++) {
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.1, "basic", "normal", 1, 0);
       additionalDamage = damageResult["damageAmount"];
-      result = targets[i].takeDamage(this, "Death Threat", damageResult);
+      result = targets[i].takeDamage(this, "Basic Attack", damageResult);
       
       if (targets[i]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
         var outcomeRoll = Math.random();
@@ -128,7 +128,7 @@ class Baade extends hero {
             e5Description: ""
           };
           
-          result += targets[i].takeDamage(this, "Death Threat 2", additionalDamageResult);
+          result += targets[i].takeDamage(this, "Death Threat", additionalDamageResult);
         }
       }
       
@@ -172,7 +172,7 @@ class Baade extends hero {
             damageAmount: additionalDamage, 
             critted: 0, 
             blocked: 0, 
-            damageSource: "active2", 
+            damageSource: "active", 
             damageType: "normal", 
             e5Description: ""
           };
@@ -181,7 +181,7 @@ class Baade extends hero {
         }
       }
       
-      healAmount = Math.round((damageResult["damageAmount"] + additionalDamage) * 0.2 * healEffect);
+      healAmount = Math.round((damageResult["damageAmount"] + additionalDamageResult["damageAmount"]) * 0.2 * healEffect);
       if (healAmount > 0) {
         result += this.getHeal(this, healAmount);
         result += this.getBuff(this, "Nether Strike", 6, {attackPercent: 0.4});
@@ -510,7 +510,7 @@ class Aspen extends hero {
     
     if (targets.length > 0) {
       damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 2, "basic", "normal");
-      result += targets[0].takeDamage(this, "Rage of Shadow", damageResult);
+      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (targets[0]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
         hpDamage = 0.15 * (targets[0]._stats["totalHP"] - targets[0]._currentStats["totalHP"]);
@@ -672,10 +672,10 @@ class Belrain extends hero {
   }
   
   
-  eventAllyDied(source, e) { 
+  eventAllyDied(e) { 
     var result = "";
     
-    if (source.heroDesc() == this.heroDesc()) {
+    if (e[1].heroDesc() == this.heroDesc()) {
       var targets = getAllTargets(this, this._allies);
       var healEffect = 1 + this._currentStats["healEffect"];
       var healAmount = Math.round(this._currentStats["totalAttack"] * 4 * healEffect);
