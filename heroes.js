@@ -947,7 +947,7 @@ class hero {
             
             for (var strStatName in this._debuffs[b][s]["effects"]) {
               if (["burn", "bleed", "poison"].includes(strStatName)) {
-                damageResult = this._debuffs[b][s]["source"].calcDamage(this, this._debuffs[b][s]["effects"][strStatName], "debuff", "true");
+                damageResult = this._debuffs[b][s]["source"].calcDamage(this, this._debuffs[b][s]["effects"][strStatName], "debuff", strStatName);
                 damageResult["damageType"] = strStatName;
                 result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
                 result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
@@ -1024,10 +1024,19 @@ class hero {
     var result = "";
     var beforeHP = this._currentStats["totalHP"];
     
-    var armorBreak = source._currentStats["armorBreak"] >= 1 ? 1 : source._currentStats["armorBreak"];
+    var armorBreak = 0;
+    var classDamageReduce = 0;
+    
+    if (isMonster(source)) {
+      armorBreak = 0;
+      classDamageReduce = 0;
+    } else {
+      armorBreak = source._currentStats["armorBreak"] >= 1 ? 1 : source._currentStats["armorBreak"];
+      classDamageReduce = this._currentStats[source._heroClass.toLowerCase() + "Reduce"];
+    }
+    
     var armorMitigation = armorReduces * (this._currentStats["totalArmor"] * (1 - armorBreak) / (180 + 20*(this._heroLevel)));
     var reduceDamage = this._currentStats["damageReduce"] > 0.75 ? 0.75 : this._currentStats["damageReduce"];
-    var classDamageReduce = this._currentStats[source._heroClass.toLowerCase() + "Reduce"];
     var allDamageReduce = this._currentStats["allDamageReduce"];
     
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";

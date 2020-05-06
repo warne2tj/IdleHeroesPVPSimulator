@@ -33,7 +33,7 @@ class monster {
       "holyDamage": 0, 
       "critted": false, 
       "blocked": false, 
-      "damageSource": "monster", 
+      "damageSource": damageSource, 
       "damageType": damageType, 
       "e5Description": ""
     };
