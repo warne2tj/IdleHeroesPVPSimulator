@@ -117,6 +117,7 @@ Hero Mechanics:
     + does his crimsom contract passive work through seal of light and cc?
     + does his active proc both if there is only a front line or only a back line?
     + what does guaranteed crit strike damage mean?
+    + attacks front line even though none of his skills say so?
   * Dark Arthindol
     + Buff seems to trigger only once per instance of taking damage
     

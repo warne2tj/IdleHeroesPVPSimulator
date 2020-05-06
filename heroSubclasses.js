@@ -1368,6 +1368,25 @@ class Horus extends hero {
     
     return result;
   }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getFrontTargets(this, this._enemies);
+    
+    for (var i=0; i<targets.length; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal");
+      result += targets[i].takeDamage(this, "Basic Attack", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
 }
 
 
