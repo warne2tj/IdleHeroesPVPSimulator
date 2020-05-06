@@ -53,6 +53,12 @@
         <input type="submit" value="Load" onclick="loadConfig();"></input>
         <textarea id="configText" rows="20">
 {
+	"attHolyhpPercent": "1",
+	"attHolyattackPercent": "1",
+	"attHolyspeed": "1",
+	"attEvilhpPercent": "5",
+	"attEvilattackPercent": "5",
+	"attEvilspeed": "5",
 	"attTechWarriorhpPercent": "60",
 	"attTechWarriorattackPercent": "50",
 	"attTechWarriorcrit": "40",
@@ -97,9 +103,9 @@
 	"attTechRangerantiMage": "20",
 	"attTechRangerantiAssassin": "0",
 	"attTechRangerantiPriest": "0",
-	"attTechRangerstunImmune": "6",
+	"attTechRangerstunImmune": "10",
 	"attTechRangerfreezeImmune": "1",
-	"attTechRangerpetrifyImmune": "6",
+	"attTechRangerpetrifyImmune": "10",
 	"attTechRangertwineImmune": "1",
 	"attTechAssassinhpPercent": "60",
 	"attTechAssassincritDamage": "50",
@@ -135,10 +141,16 @@
 	"attTechPriesttwineImmune": "1",
 	"attHero0Level": "330",
 	"attHero1Level": "290",
-	"attHero2Level": "0",
-	"attHero3Level": "0",
-	"attHero4Level": "0",
-	"attHero5Level": "0",
+	"attHero2Level": "330",
+	"attHero3Level": "330",
+	"attHero4Level": "330",
+	"attHero5Level": "330",
+	"defHolyhpPercent": "1",
+	"defHolyattackPercent": "1",
+	"defHolyspeed": "1",
+	"defEvilhpPercent": "5",
+	"defEvilattackPercent": "5",
+	"defEvilspeed": "5",
 	"defTechWarriorhpPercent": "60",
 	"defTechWarriorattackPercent": "50",
 	"defTechWarriorcrit": "40",
@@ -183,9 +195,9 @@
 	"defTechRangerantiMage": "20",
 	"defTechRangerantiAssassin": "0",
 	"defTechRangerantiPriest": "0",
-	"defTechRangerstunImmune": "6",
+	"defTechRangerstunImmune": "10",
 	"defTechRangerfreezeImmune": "1",
-	"defTechRangerpetrifyImmune": "6",
+	"defTechRangerpetrifyImmune": "10",
 	"defTechRangertwineImmune": "1",
 	"defTechAssassinhpPercent": "60",
 	"defTechAssassincritDamage": "50",
@@ -219,14 +231,14 @@
 	"defTechPriestfreezeImmune": "1",
 	"defTechPriestpetrifyImmune": "10",
 	"defTechPriesttwineImmune": "1",
-	"defHero0Level": "330",
-	"defHero1Level": "0",
-	"defHero2Level": "0",
-	"defHero3Level": "0",
-	"defHero4Level": "0",
-	"defHero5Level": "0",
-	"attAvatarFrame": "None",
-	"attMonster": "None",
+	"defHero0Level": "250",
+	"defHero1Level": "330",
+	"defHero2Level": "330",
+	"defHero3Level": "330",
+	"defHero4Level": "330",
+	"defHero5Level": "330",
+	"attAvatarFrame": "IDA Maverick +3",
+	"attMonster": "Phoenix",
 	"attHero0Name": "Carrie",
 	"attHero0Skin": "Little Red Riding Hood",
 	"attHero0Stone": "S3 Speed, HP",
@@ -305,21 +317,21 @@
 	"attHero5Enable3": "None",
 	"attHero5Enable4": "None",
 	"attHero5Enable5": "None",
-	"defAvatarFrame": "IDA Maverick +2",
-	"defMonster": "None",
+	"defAvatarFrame": "IDA Maverick +3",
+	"defMonster": "Phoenix",
 	"defHero0Name": "Belrain",
 	"defHero0Skin": "None",
-	"defHero0Stone": "S3 Speed, HP",
-	"defHero0Artifact": "Augustus Magic Ball",
+	"defHero0Stone": "S3 Crit, Precision",
+	"defHero0Artifact": "Antlers Cane",
 	"defHero0Weapon": "Minstrel's Bow",
 	"defHero0Accessory": "Minstrel's Ring",
 	"defHero0Armor": "Minstrel's Cape",
 	"defHero0Shoe": "Minstrel's Boots",
-	"defHero0Enable1": "Growth",
-	"defHero0Enable2": "LethalFightback",
-	"defHero0Enable3": "Purify",
-	"defHero0Enable4": "Growth",
-	"defHero0Enable5": "UnbendingWill",
+	"defHero0Enable1": "None",
+	"defHero0Enable2": "None",
+	"defHero0Enable3": "None",
+	"defHero0Enable4": "None",
+	"defHero0Enable5": "None",
 	"defHero1Name": "None",
 	"defHero1Skin": "None",
 	"defHero1Stone": "None",
@@ -404,6 +416,44 @@
         <div class="row">
           <div class="col-25"><label for="attMonster">Monster:</label></div>
           <div class="col-75"><select id="attMonster" onchange="updateAttackers();"></select></div>
+        </div>
+        
+        <h4>Celestial Island Statues</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attHolyhpPercent">Holy HP: </label></div>
+              <div class="column"><input type="text" id="attHolyhpPercent" onchange="updateAttackers();" value="0" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attHolyattackPercent">Holy Attack: </label></div>
+              <div class="column"><input type="text" id="attHolyattackPercent" onchange="updateAttackers();" value="0" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attHolyspeed">Holy Speed: </label></div>
+              <div class="column"><input type="text" id="attHolyspeed" onchange="updateAttackers();" value="0" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attEvilhpPercent">Evil HP: </label></div>
+              <div class="column"><input type="text" id="attEvilhpPercent" onchange="updateAttackers();" value="0" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attEvilattackPercent">Evil Attack: </label></div>
+              <div class="column"><input type="text" id="attEvilattackPercent" onchange="updateAttackers();" value="0" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attEvilspeed">Evil Speed: </label></div>
+              <div class="column"><input type="text" id="attEvilspeed" onchange="updateAttackers();" value="0" size="3"/></div>
+            </div>
+          </div>
         </div>
         
         <h4>Warrior Tech</h4>
@@ -1566,6 +1616,44 @@
         <div class="row">
           <div class="col-25"><label for="defMonster">Monster:</label></div>
           <div class="col-75"><select id="defMonster" onchange="updateDefenders();"></select></div>
+        </div>
+        
+        <h4>Celestial Island Statues</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defHolyhpPercent">Holy HP: </label></div>
+              <div class="column"><input type="text" id="defHolyhpPercent" onchange="updateDefenders();" value="0" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defHolyattackPercent">Holy Attack: </label></div>
+              <div class="column"><input type="text" id="defHolyattackPercent" onchange="updateDefenders();" value="0" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defHolyspeed">Holy Speed: </label></div>
+              <div class="column"><input type="text" id="defHolyspeed" onchange="updateDefenders();" value="0" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defEvilhpPercent">Evil HP: </label></div>
+              <div class="column"><input type="text" id="defEvilhpPercent" onchange="updateDefenders();" value="0" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defEvilattackPercent">Evil Attack: </label></div>
+              <div class="column"><input type="text" id="defEvilattackPercent" onchange="updateDefenders();" value="0" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defEvilspeed">Evil Speed: </label></div>
+              <div class="column"><input type="text" id="defEvilspeed" onchange="updateDefenders();" value="0" size="3"/></div>
+            </div>
+          </div>
         </div>
         
         <h4>Warrior Tech</h4>
@@ -2739,7 +2827,6 @@
       <div>+ Horus</div>
       <div>+ Penny</div>
       <div>+ Tara</div>
-      <div>+ Up Next: Dark Arthindol</div>
     </p>
   </div>
   

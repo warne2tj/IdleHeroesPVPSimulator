@@ -333,12 +333,24 @@ class hero {
     }
     
     
-    // implement monster
+    // monster
     var monsterName = document.getElementById(this._attOrDef + "Monster").value;
     this.applyStatChange(baseMonsterStats[monsterName]["stats"], "monster");
     
     
-    // future: implement celestial island
+    // celestial island statues
+    var statuePrefix = this._attOrDef;
+    if (["Light", "Forest", "Fortress"].includes(this._heroFaction)) {
+      statuePrefix += "Holy";
+    } else {
+      statuePrefix += "Evil";
+    }
+    
+    var statueStats = {};
+    statueStats["speed"] = 2 * document.getElementById(statuePrefix + "speed").value;
+    statueStats["hpPercent"] = 0.01 * document.getElementById(statuePrefix + "hpPercent").value;
+    statueStats["attackPercent"] = 0.005 * document.getElementById(statuePrefix + "attackPercent").value;
+    this.applyStatChange(statueStats, "statue");
     
     
     this._stats["totalHP"] = this.calcHP();

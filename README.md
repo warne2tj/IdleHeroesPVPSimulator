@@ -2,85 +2,49 @@
 Idle Heroes Battle Simulator version Alpha
 
 
-Description:
+Description
   Simulator for PvP battles in Idle Heroes. An attempt to fully and accurately simulate the numbers involved in PvP combat.
   
   
-Implemented Heroes:
+Implemented Heroes
   * Aida
   * Amen-Ra
   * Amuvor
   * Aspen
+  * Belrain
   * Carrie
   * Dark Arthindol
   * Garuda
   * Horus
-  * Belrain
   * Penny
   * Tara
   
   
 Upcoming Heroes
-  * Faithblade
+  * Unimax
   * Kroos
   * Mihm
   * Ithaqua
   * Delacium
   * Nakia
-  * Unimax
   * Gustin
   * Elyvia
-  * Cthuga
-  * Michelle
+  * Oberon
   
   
-Implemented Monsters:
+Implemented Monsters
   * Deer
   * Phoenix
-  
-  
-No Plans to Implement:
-  * Valkryie
-  * Oberon
-  * Asmodel
-  * King Barton
-  * Ormus
-  * Emily
-  * Aidan
-  * Das Moge
-  * Jahra
-  * Sigmund
-  * Valentino
-  * Flame Strike
-  * Xia
-  * Vesa
-  * Starlight
-  * Skerei
-  * Walter
-  * Gerke
-  * Sleepless
-  * Corpsedemon
-  * Kamath
-  * Barea
-  * Queen
-  * Heartwatcher
-  * Rosa
-  * Baade
-  * Groo
-  * Blood Blade
 
   
 To Do List
   * ----------- Priority 1 ------------
-  * subclass wave 2 heroes (internal list)
-  * implement celestial island buffs
-  * setup testing configs and mass guild testing
-  * reorganize read me document into github wiki
-  * subclass wave 3 heroes (internal list)
   * try out genetic algorithm search
+  * subclass more heroes
   * ----------- Priority 2 ------------
-  * add swap, copy, move functionality for team management
+  * reorganize read me document into github wiki
   * implement rest of monsters
+  * add swap, copy, move functionality for team management
   * implement enhanced artifacts
   * ----------- Priority 3 ------------
   * improve look of hero stat sheet, buff, and debuff descriptions
@@ -90,10 +54,6 @@ To Do List
   
 Hero Mechanics:
   * TBD as heroes are implemented
-  * Baade 5* vs. Foolish
-    + Attack amount always the same
-    + Is the second part of the last passive another source of damage?
-    + So additional damage does not trigger if hero dies from first part?
   * Carrie
     + Dodge, is it all or nothing? Do basics or actives that do multiple attacks dodge all or is each attack evaulated separately? Ex: Garuda.
     + Her percent attack per energy is true damage?
@@ -193,14 +153,3 @@ Mechanics:
   * Enable5 skills
     + does balanced strike count as a separate source of attack?
     + unbending will: is this a buff that can be cleansed? ie by Gustin
-  
-  
-Far far far future functionality*:
-  * i.e. may never get around to doing this
-  * Utilize natural selection algorithm:
-    + auto generate configurations
-    + pit them against each other
-    + most successful configurations "mate" and produce offspring for next generation
-    + clone 20%, crossover 40%, mutation rate per gene: 1%?
-    + other 40% sample from lower tiers to maintain genetic diversity
-    + repeat
