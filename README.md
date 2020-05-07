@@ -18,10 +18,10 @@ Implemented Heroes
   * Horus
   * Penny
   * Tara
+  * Unimax
   
   
 Upcoming Heroes
-  * Unimax
   * Kroos
   * Mihm
   * Ithaqua
@@ -41,8 +41,9 @@ To Do List
   * ----------- Priority 1 ------------
   * subclass more heroes
   * ----------- Priority 2 ------------
-  * reorganize read me document into github wiki
+  * create targeted GA
   * implement rest of monsters
+  * reorganize read me document into github wiki
   * add swap, copy, move functionality for team management
   * implement enhanced artifacts
   * ----------- Priority 3 ------------
@@ -79,6 +80,8 @@ Hero Mechanics:
     + attacks front line even though none of his skills say so?
   * Dark Arthindol
     + Buff seems to trigger only once per instance of taking damage
+  * Unimax
+    + Is the attack steal against base attack or total attack? Is is then added to his base attack? or is it a flat bonus?
     
 
 Mechanics:

@@ -166,7 +166,7 @@ function nextMatchup() {
     }
     
     simRunning = false;
-    oLog.innerHTML += "<p>Mass simulation finished.</p>" + summary;
+    document.getElementById("generationLog").innerHTML += "<p>Mass simulation finished.</p>" + summary;
     
     evolve(teamKeys);
     
@@ -561,7 +561,7 @@ function evolve(teamKeys) {
       }
     }
     
-    dnaString1 += "\n  \"" + child1[60] + "\"\n],"
+    dnaString1 += "\n  \"" + child1[60] + "\"\n],\n"
     oConfig.value += dnaString1;
     
     
@@ -575,7 +575,7 @@ function evolve(teamKeys) {
       }
     }
     
-    dnaString2 += "\n  \"" + child2[60] + "\"\n],"
+    dnaString2 += "\n  \"" + child2[60] + "\"\n],\n"
     oConfig.value += dnaString2;
   }
   
@@ -1041,7 +1041,7 @@ function evolve(teamKeys) {
       }
     }
     
-    dnaString1 += "\n  \"" + child1[60] + "\"\n],"
+    dnaString1 += "\n  \"" + child1[60] + "\"\n],\n"
     oConfig.value += dnaString1;
     
     
@@ -1055,10 +1055,10 @@ function evolve(teamKeys) {
       }
     }
     
-    if (t == 11) {
-      dnaString2 += "\n  \"" + child2[60] + "\"\n]"
+    if (t == 99) {
+      dnaString2 += "\n  \"" + child2[60] + "\"\n]\n"
     } else {
-      dnaString2 += "\n  \"" + child2[60] + "\"\n],"
+      dnaString2 += "\n  \"" + child2[60] + "\"\n],\n"
     }
   
   
@@ -1066,8 +1066,10 @@ function evolve(teamKeys) {
   }
   
 
-  oConfig.value += "\n}";
+  oConfig.value += "}";
   oConfig.select();
   oConfig.setSelectionRange(0, oConfig.value.length);
   document.execCommand("copy");
+  
+  runMassLoop();
 }
