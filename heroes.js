@@ -1138,6 +1138,7 @@ class hero {
       result += "<div>Damage prevented by <span class='skill'>Guardian Shadow</span>.</div>";
       result += this.getHeal(this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]);
       this._buffs["Guardian Shadow"][keyDelete[0]]["source"]._currentStats["damageHealed"] += 2 * damageResult["damageAmount"];
+      damageResult["damageAmount"] = 1;
       
       delete this._buffs["Guardian Shadow"][keyDelete[0]];
       
@@ -1154,11 +1155,13 @@ class hero {
           this._currentStats["unbendingWillStacks"] = 3;
           this._currentStats["damageHealed"] += damageResult["damageAmount"];
           result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
+          damageResult["damageAmount"] = 1;
           
         } else if (this._currentStats["unbendingWillStacks"] > 0 && damageResult["damageSource"] != "mark") {
           this._currentStats["unbendingWillStacks"] -= 1;
           this._currentStats["damageHealed"] += damageResult["damageAmount"];
           result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
+          damageResult["damageAmount"] = 1;
           
           if (this._currentStats["unbendingWillStacks"] == 0) {
             result += "<div><span class='skill'>Unbending Will</span> ended.</div>";
