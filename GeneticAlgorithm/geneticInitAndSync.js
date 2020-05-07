@@ -76,7 +76,7 @@ function runMassLoop() {
       allTeams[teamIndex] = {};
       allTeams[teamIndex]["dna"] = jsonConfig[t];
       allTeams[teamIndex]["teamName"] = t;
-      allTeams[teamIndex]["pet"] = jsonConfig[t][66];
+      allTeams[teamIndex]["pet"] = jsonConfig[t][60];
       allTeams[teamIndex]["attWins"] = 0;
       allTeams[teamIndex]["defWins"] = 0;
       allTeams[teamIndex]["weakAgainst"] = "None";
@@ -85,33 +85,33 @@ function runMassLoop() {
       team = [];
       species = "";
       
-      for (var p = 0; p < 66; p += 11) {
+      for (var p = 0; p < 60; p += 10) {
         species += jsonConfig[t][p] + ", ";
-        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], 1 + (p % 11), "");
+        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], 1 + (p % 10), "");
         
-        tHero._heroLevel = jsonConfig[t][p+1];
-        tHero._skin = jsonConfig[t][p+2];
-        tHero._stone = jsonConfig[t][p+4];
-        tHero._artifact = jsonConfig[t][p+5];
-        tHero._enable1 = jsonConfig[t][p+6];
-        tHero._enable2 = jsonConfig[t][p+7];
-        tHero._enable3 = jsonConfig[t][p+8];
-        tHero._enable4 = jsonConfig[t][p+9];
-        tHero._enable5 = jsonConfig[t][p+10];
+        tHero._heroLevel = 330;
+        tHero._skin = jsonConfig[t][p+1];
+        tHero._stone = jsonConfig[t][p+3];
+        tHero._artifact = jsonConfig[t][p+4];
+        tHero._enable1 = jsonConfig[t][p+5];
+        tHero._enable2 = jsonConfig[t][p+6];
+        tHero._enable3 = jsonConfig[t][p+7];
+        tHero._enable4 = jsonConfig[t][p+8];
+        tHero._enable5 = jsonConfig[t][p+9];
         
-        if (jsonConfig[t][p+3] == "Class Gear") { 
+        if (jsonConfig[t][p+2] == "Class Gear") { 
           tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
           tHero._armor = classGearMapping[tHero._heroClass]["armor"];
           tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
           tHero._accessory = classGearMapping[tHero._heroClass]["accessory"];
           
-        } else if (jsonConfig[t][p+3] == "Split HP") { 
+        } else if (jsonConfig[t][p+2] == "Split HP") { 
           tHero._weapon = "6* Thorny Flame Whip";
           tHero._armor = classGearMapping[tHero._heroClass]["armor"];
           tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
           tHero._accessory = "6* Flame Necklace";
           
-        } else if (jsonConfig[t][p+3] == "Split Attack") { 
+        } else if (jsonConfig[t][p+2] == "Split Attack") { 
           tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
           tHero._armor = "6* Flame Armor";
           tHero._shoe = "6* Flame Boots";
@@ -168,6 +168,8 @@ function nextMatchup() {
     simRunning = false;
     oLog.innerHTML += "<p>Mass simulation finished.</p>" + summary;
     
+    evolve(teamKeys);
+    
   } else {
     if (attIndex != defIndex) {
       var numWins = 0;
@@ -204,7 +206,7 @@ function nextMatchup() {
         allTeams[defIndex]["weakAgainstWins"] = numAttWins;
       }
       
-      oLog.innerHTML += "<p><span class='att'>" + allTeams[attIndex]["teamName"] + " (" + allTeams[attIndex]["species"] + ")</span> versus <span class='def'>" + allTeams[defIndex]["teamName"] + " (" + allTeams[defIndex]["species"] + ")</span>: Won " + formatNum(numAttWins) + " out of " + formatNum(numSims) + ".</p>";
+      oLog.innerHTML += "<div><span class='att'>" + allTeams[attIndex]["teamName"] + " (" + allTeams[attIndex]["species"] + ")</span> versus <span class='def'>" + allTeams[defIndex]["teamName"] + " (" + allTeams[defIndex]["species"] + ")</span>: Won " + formatNum(numAttWins) + " out of " + formatNum(numSims) + ".</div>";
     }
     
     // start next matchup
@@ -212,8 +214,860 @@ function nextMatchup() {
     if (defIndex == teamKeys.length) {
       attIndex++;
       defIndex = 0;
+      oLog.innerHTML = "";
     }
     
     setTimeout(nextMatchup, 1);
   }
+}
+
+
+function createRandomTeams() {
+  var heroNames = Object.keys(baseHeroStats);
+  var heroName = "";
+  var skinNames;
+  var legendarySkins;
+  var stoneNames = Object.keys(stones);
+  var artifactNames = Object.keys(artifacts);
+  var monsterNames = Object.keys(baseMonsterStats);
+  var oConfig = document.getElementById("configText");
+  
+  var equipments = ["Class Gear", "Split HP", "Split Attack"];
+  var enables1 = ["Vitality", "Mightiness", "Growth"];
+  var enables2 = ["Shelter", "LethalFightback", "Vitality2"];
+  var enables3 = ["Resilience", "SharedFate", "Purify"];
+  var enables4 = ["Vitality", "Mightiness", "Growth"];
+  var enables5 = ["BalancedStrike", "UnbendingWill"];
+  
+  oConfig.value = "{\n";
+  
+  for(i=0; i<100; i++) {
+    oConfig.value += "\"" + i + "\": [\n";
+    
+    for (h=1; h<=6; h++) {
+      heroName = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
+      oConfig.value += "  \"" + heroName + "\", ";
+      
+      skinNames = Object.keys(skins[heroName]);
+      legendarySkins = [];
+      for (var s in skinNames) {
+        if (skinNames[s].substring(0, 9) == "Legendary") {
+          legendarySkins.push(skinNames[s]);
+        }
+      }
+      oConfig.value += "\"" + legendarySkins[Math.floor(Math.random() * legendarySkins.length)] + "\", ";
+      
+      oConfig.value += "\"" + equipments[Math.floor(Math.random() * equipments.length)] + "\", ";
+      oConfig.value += "\"" + stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1] + "\", ";
+      oConfig.value += "\"" + artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1] + "\", ";
+      oConfig.value += "\"" + enables1[Math.floor(Math.random() * enables1.length)] + "\", ";
+      oConfig.value += "\"" + enables2[Math.floor(Math.random() * enables2.length)] + "\", ";
+      oConfig.value += "\"" + enables3[Math.floor(Math.random() * enables3.length)] + "\", ";
+      oConfig.value += "\"" + enables4[Math.floor(Math.random() * enables4.length)] + "\", ";
+      oConfig.value += "\"" + enables5[Math.floor(Math.random() * enables5.length)] + "\",\n";
+    }
+    
+    oConfig.value += "  \"" + monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1] + "\"\n";
+    
+    if (i<99) {
+      oConfig.value += "],\n";
+    } else {
+      oConfig.value += "]\n";
+    }
+  }
+  
+  oConfig.value += "}";
+  oConfig.select();
+  oConfig.setSelectionRange(0, oConfig.value.length);
+  document.execCommand("copy");
+}
+
+
+function evolve(teamKeys) {
+  var t=0;
+  var oConfig = document.getElementById("configText");
+  var mutationRate = 0.01;
+  var posSwapRate = 0.10;
+  var temp = "";
+  var pos1 = 0;
+  var pos2 = 0;
+  
+  var parentA;
+  var parentB;
+  var dna1;
+  var dna2;
+  var child1;
+  var child2;
+  var dnaString1;
+  var dnaString2;
+  var crossOver;
+  
+  var heroNames = Object.keys(baseHeroStats);
+  var heroName = "";
+  var skinNames;
+  var legendarySkins;
+  var stoneNames = Object.keys(stones);
+  var artifactNames = Object.keys(artifacts);
+  var monsterNames = Object.keys(baseMonsterStats);
+  
+  var equipments = ["Class Gear", "Split HP", "Split Attack"];
+  var enables1 = ["Vitality", "Mightiness", "Growth"];
+  var enables2 = ["Shelter", "LethalFightback", "Vitality2"];
+  var enables3 = ["Resilience", "SharedFate", "Purify"];
+  var enables4 = ["Vitality", "Mightiness", "Growth"];
+  var enables5 = ["BalancedStrike", "UnbendingWill"];
+  
+  oConfig.value = "{\n";
+  
+  
+  // clone top 20
+  for (t=0; t<20; t++) {
+    dna1 = allTeams[teamKeys[t]]["dna"];
+    dnaString1 = "\"" + t + "\": [\n";
+    
+    for (var h=0; h<6; h++) {
+      dnaString1 += " ";
+      
+      for (var g=0; g<10; g++) {
+        dnaString1 += " \"" + dna1[h*10 + g] + "\",";
+      }
+      
+      dnaString1 += "\n";
+    }
+    
+    dnaString1 += "  \"" + dna1[60] + "\"\n],\n"
+    oConfig.value += dnaString1;
+  }
+  
+  
+  // breed next 50 from top 20
+  for (t=20; t<70; t++) {
+    parentA = Math.floor(Math.random() * 20);
+    dna1 = allTeams[teamKeys[parentA]]["dna"];
+    
+    parentB = Math.floor(Math.random() * 20);
+    while (parentA == parentB) {
+      parentB = Math.floor(Math.random() * 20);
+    }
+    dna2 = allTeams[teamKeys[parentB]]["dna"];
+    
+    
+    // breed
+    crossOver = Math.floor(Math.random() * 60) + 1;
+    if (crossOver % 10 == 1) { crossOver++; }
+    child1 = [];
+    child2 = [];
+    
+    for (var g = 0; g < crossOver; g++) {
+      child1.push(dna1[g]);
+      child2.push(dna2[g]);
+    }
+    
+    for (var g = crossOver; g < 60; g++) {
+      child1.push(dna2[g]);
+      child2.push(dna1[g]);
+    }
+    
+    if (crossOver == 60) {
+      child1.push(dna2[60]);
+      child2.push(dna1[60]);
+    } else {
+      child1.push(dna1[60]);
+      child2.push(dna2[60]);
+    }
+    
+    
+    // mutate child 1 genes
+    for (var g = 0; g < 60; g++) {
+      if (Math.random() < mutationRate) {
+        switch(g % 10) {
+          case 0:
+            child1[g] = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
+            
+            skinNames = Object.keys(child1[g]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child1[g+1] = skinName;
+            break;
+            
+          case 1:
+            skinNames = Object.keys(child1[g-1]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child1[g] = skinName;
+            break;
+            
+          case 2:
+            child1[g] = equipments[Math.floor(Math.random() * equipments.length)];
+            break;
+            
+          case 3:
+            child1[g] = stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1];
+            break;
+            
+          case 4:
+            child1[g] = artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1];
+            break;
+            
+          case 5:
+            child1[g] = enables1[Math.floor(Math.random() * enables1.length)];
+            break;
+            
+          case 6:
+            child1[g] = enables2[Math.floor(Math.random() * enables2.length)];
+            break;
+            
+          case 7:
+            child1[g] = enables3[Math.floor(Math.random() * enables3.length)];
+            break;
+            
+          case 8:
+            child1[g] = enables4[Math.floor(Math.random() * enables4.length)];
+            break;
+            
+          case 9:
+            child1[g] = enables5[Math.floor(Math.random() * enables5.length)];
+            break;
+        }
+      }
+    }
+    
+    // mutate child 1 pet
+    if (Math.random() < mutationRate) {
+      child1[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
+    }
+    
+    
+    // mutate child 2 genes
+    for (var g = 0; g < 60; g++) {
+      if (Math.random() < mutationRate) {
+        switch(g % 10) {
+          case 0:
+            child2[g] = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
+            
+            skinNames = Object.keys(child2[g]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child2[g+1] = skinName;
+            break;
+            
+          case 1:
+            skinNames = Object.keys(child2[g-1]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child2[g] = skinName;
+            break;
+            
+          case 2:
+            child2[g] = equipments[Math.floor(Math.random() * equipments.length)];
+            break;
+            
+          case 3:
+            child2[g] = stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1];
+            break;
+            
+          case 4:
+            child2[g] = artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1];
+            break;
+            
+          case 5:
+            child2[g] = enables1[Math.floor(Math.random() * enables1.length)];
+            break;
+            
+          case 6:
+            child2[g] = enables2[Math.floor(Math.random() * enables2.length)];
+            break;
+            
+          case 7:
+            child2[g] = enables3[Math.floor(Math.random() * enables3.length)];
+            break;
+            
+          case 8:
+            child2[g] = enables4[Math.floor(Math.random() * enables4.length)];
+            break;
+            
+          case 9:
+            child2[g] = enables5[Math.floor(Math.random() * enables5.length)];
+            break;
+        }
+      }
+    }
+    
+    // mutate child 2 pet
+    if (Math.random() < mutationRate) {
+      child2[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
+    }
+    
+    
+    // position swap for child 1
+    if (Math.random() < posSwapRate) {
+      pos1 = Math.floor(Math.random() * 6);
+      pos2 = Math.floor(Math.random() * 6);
+      while (pos1 == pos2) {
+        pos2 = Math.floor(Math.random() * 6);
+      }
+      
+      for (var g=0; g<10; g++) {
+        temp = child1[pos1*10 + g];
+        child1[pos1*10 + g] = child1[pos2*10 + g];
+        child1[pos2*10 + g] = temp;
+      }
+    }
+    
+    
+    // position swap for child 2
+    if (Math.random() < posSwapRate) {
+      pos1 = Math.floor(Math.random() * 6);
+      pos2 = Math.floor(Math.random() * 6);
+      while (pos1 == pos2) {
+        pos2 = Math.floor(Math.random() * 6);
+      }
+      
+      for (var g=0; g<10; g++) {
+        temp = child2[pos1*10 + g];
+        child2[pos1*10 + g] = child2[pos2*10 + g];
+        child2[pos2*10 + g] = temp;
+      }
+    }
+    
+    
+    // output child genes
+    dnaString1 = "\"" + t + "\": [";
+    for (var h=0; h<6; h++) {
+      dnaString1 += "\n ";
+      
+      for (var g=0; g<10; g++) {
+        dnaString1 += " \"" + child1[h*10 + g] + "\",";
+      }
+    }
+    
+    dnaString1 += "\n  \"" + child1[60] + "\"\n],"
+    oConfig.value += dnaString1;
+    
+    
+    t++;
+    dnaString2 = "\"" + t + "\": [";
+    for (var h=0; h<6; h++) {
+      dnaString2 += "\n ";
+      
+      for (var g=0; g<10; g++) {
+        dnaString2 += " \"" + child2[h*10 + g] + "\",";
+      }
+    }
+    
+    dnaString2 += "\n  \"" + child2[60] + "\"\n],"
+    oConfig.value += dnaString2;
+  }
+  
+  
+  // breed next 20 from 21-50
+  for (t=70; t<90; t++) {
+    parentA = Math.floor(Math.random() * 30) + 20;
+    dna1 = allTeams[teamKeys[parentA]]["dna"];
+    
+    parentB = Math.floor(Math.random() * 30) + 20;
+    while (parentA == parentB) {
+      parentB = Math.floor(Math.random() * 30) + 20;
+    }
+    dna2 = allTeams[teamKeys[parentB]]["dna"];
+    
+    
+    // breed
+    crossOver = Math.floor(Math.random() * 60) + 1;
+    if (crossOver % 10 == 1) { crossOver++; }
+    child1 = [];
+    child2 = [];
+    
+    for (var g = 0; g < crossOver; g++) {
+      child1.push(dna1[g]);
+      child2.push(dna2[g]);
+    }
+    
+    for (var g = crossOver; g < 60; g++) {
+      child1.push(dna2[g]);
+      child2.push(dna1[g]);
+    }
+    
+    if (crossOver == 60) {
+      child1.push(dna2[60]);
+      child2.push(dna1[60]);
+    } else {
+      child1.push(dna1[60]);
+      child2.push(dna2[60]);
+    }
+    
+    
+    // mutate child 1 genes
+    for (var g = 0; g < 60; g++) {
+      if (Math.random() < mutationRate) {
+        switch(g % 10) {
+          case 0:
+            child1[g] = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
+            
+            skinNames = Object.keys(child1[g]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child1[g+1] = skinName;
+            break;
+            
+          case 1:
+            skinNames = Object.keys(child1[g-1]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child1[g] = skinName;
+            break;
+            
+          case 2:
+            child1[g] = equipments[Math.floor(Math.random() * equipments.length)];
+            break;
+            
+          case 3:
+            child1[g] = stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1];
+            break;
+            
+          case 4:
+            child1[g] = artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1];
+            break;
+            
+          case 5:
+            child1[g] = enables1[Math.floor(Math.random() * enables1.length)];
+            break;
+            
+          case 6:
+            child1[g] = enables2[Math.floor(Math.random() * enables2.length)];
+            break;
+            
+          case 7:
+            child1[g] = enables3[Math.floor(Math.random() * enables3.length)];
+            break;
+            
+          case 8:
+            child1[g] = enables4[Math.floor(Math.random() * enables4.length)];
+            break;
+            
+          case 9:
+            child1[g] = enables5[Math.floor(Math.random() * enables5.length)];
+            break;
+        }
+      }
+    }
+    
+    // mutate child 1 pet
+    if (Math.random() < mutationRate) {
+      child1[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
+    }
+    
+    
+    // mutate child 2 genes
+    for (var g = 0; g < 60; g++) {
+      if (Math.random() < mutationRate) {
+        switch(g % 10) {
+          case 0:
+            child2[g] = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
+            
+            skinNames = Object.keys(child2[g]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child2[g+1] = skinName;
+            break;
+            
+          case 1:
+            skinNames = Object.keys(child2[g-1]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child2[g] = skinName;
+            break;
+            
+          case 2:
+            child2[g] = equipments[Math.floor(Math.random() * equipments.length)];
+            break;
+            
+          case 3:
+            child2[g] = stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1];
+            break;
+            
+          case 4:
+            child2[g] = artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1];
+            break;
+            
+          case 5:
+            child2[g] = enables1[Math.floor(Math.random() * enables1.length)];
+            break;
+            
+          case 6:
+            child2[g] = enables2[Math.floor(Math.random() * enables2.length)];
+            break;
+            
+          case 7:
+            child2[g] = enables3[Math.floor(Math.random() * enables3.length)];
+            break;
+            
+          case 8:
+            child2[g] = enables4[Math.floor(Math.random() * enables4.length)];
+            break;
+            
+          case 9:
+            child2[g] = enables5[Math.floor(Math.random() * enables5.length)];
+            break;
+        }
+      }
+    }
+    
+    // mutate child 2 pet
+    if (Math.random() < mutationRate) {
+      child2[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
+    }
+    
+    
+    // position swap for child 1
+    if (Math.random() < posSwapRate) {
+      pos1 = Math.floor(Math.random() * 6);
+      pos2 = Math.floor(Math.random() * 6);
+      while (pos1 == pos2) {
+        pos2 = Math.floor(Math.random() * 6);
+      }
+      
+      for (var g=0; g<10; g++) {
+        temp = child1[pos1*10 + g];
+        child1[pos1*10 + g] = child1[pos2*10 + g];
+        child1[pos2*10 + g] = temp;
+      }
+    }
+    
+    
+    // position swap for child 2
+    if (Math.random() < posSwapRate) {
+      pos1 = Math.floor(Math.random() * 6);
+      pos2 = Math.floor(Math.random() * 6);
+      while (pos1 == pos2) {
+        pos2 = Math.floor(Math.random() * 6);
+      }
+      
+      for (var g=0; g<10; g++) {
+        temp = child2[pos1*10 + g];
+        child2[pos1*10 + g] = child2[pos2*10 + g];
+        child2[pos2*10 + g] = temp;
+      }
+    }
+    
+    
+    // output child genes
+    dnaString1 = "\"" + t + "\": [";
+    for (var h=0; h<6; h++) {
+      dnaString1 += "\n ";
+      
+      for (var g=0; g<10; g++) {
+        dnaString1 += " \"" + child1[h*10 + g] + "\",";
+      }
+    }
+    
+    dnaString1 += "\n  \"" + child1[60] + "\"\n],"
+    oConfig.value += dnaString1;
+    
+    
+    t++;
+    dnaString2 = "\"" + t + "\": [";
+    for (var h=0; h<6; h++) {
+      dnaString2 += "\n ";
+      
+      for (var g=0; g<10; g++) {
+        dnaString2 += " \"" + child2[h*10 + g] + "\",";
+      }
+    }
+    
+    dnaString2 += "\n  \"" + child2[60] + "\"\n],"
+    oConfig.value += dnaString2;
+  }
+  
+  
+  // breed last 10 from 51-100
+  for (t=90; t<100; t++) {
+    parentA = Math.floor(Math.random() * 50) + 50;
+    dna1 = allTeams[teamKeys[parentA]]["dna"];
+    
+    parentB = Math.floor(Math.random() * 50) + 50;
+    while (parentA == parentB) {
+      parentB = Math.floor(Math.random() * 50) + 50;
+    }
+    dna2 = allTeams[teamKeys[parentB]]["dna"];
+    
+    
+    // breed
+    crossOver = Math.floor(Math.random() * 60) + 1;
+    if (crossOver % 10 == 1) { crossOver++; }
+    child1 = [];
+    child2 = [];
+    
+    for (var g = 0; g < crossOver; g++) {
+      child1.push(dna1[g]);
+      child2.push(dna2[g]);
+    }
+    
+    for (var g = crossOver; g < 60; g++) {
+      child1.push(dna2[g]);
+      child2.push(dna1[g]);
+    }
+    
+    if (crossOver == 60) {
+      child1.push(dna2[60]);
+      child2.push(dna1[60]);
+    } else {
+      child1.push(dna1[60]);
+      child2.push(dna2[60]);
+    }
+    
+    
+    // mutate child 1 genes
+    for (var g = 0; g < 60; g++) {
+      if (Math.random() < mutationRate) {
+        switch(g % 10) {
+          case 0:
+            child1[g] = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
+            
+            skinNames = Object.keys(child1[g]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child1[g+1] = skinName;
+            break;
+            
+          case 1:
+            skinNames = Object.keys(child1[g-1]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child1[g] = skinName;
+            break;
+            
+          case 2:
+            child1[g] = equipments[Math.floor(Math.random() * equipments.length)];
+            break;
+            
+          case 3:
+            child1[g] = stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1];
+            break;
+            
+          case 4:
+            child1[g] = artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1];
+            break;
+            
+          case 5:
+            child1[g] = enables1[Math.floor(Math.random() * enables1.length)];
+            break;
+            
+          case 6:
+            child1[g] = enables2[Math.floor(Math.random() * enables2.length)];
+            break;
+            
+          case 7:
+            child1[g] = enables3[Math.floor(Math.random() * enables3.length)];
+            break;
+            
+          case 8:
+            child1[g] = enables4[Math.floor(Math.random() * enables4.length)];
+            break;
+            
+          case 9:
+            child1[g] = enables5[Math.floor(Math.random() * enables5.length)];
+            break;
+        }
+      }
+    }
+    
+    // mutate child 1 pet
+    if (Math.random() < mutationRate) {
+      child1[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
+    }
+    
+    
+    // mutate child 2 genes
+    for (var g = 0; g < 60; g++) {
+      if (Math.random() < mutationRate) {
+        switch(g % 10) {
+          case 0:
+            child2[g] = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
+            
+            skinNames = Object.keys(child2[g]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child2[g+1] = skinName;
+            break;
+            
+          case 1:
+            skinNames = Object.keys(child2[g-1]);
+            legendarySkins = [];
+            for (var s in skinNames) {
+              if (skinNames[s].substring(0, 9) == "Legendary") {
+                legendarySkins.push(skinNames[s]);
+              }
+            }
+            skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+            child2[g] = skinName;
+            break;
+            
+          case 2:
+            child2[g] = equipments[Math.floor(Math.random() * equipments.length)];
+            break;
+            
+          case 3:
+            child2[g] = stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1];
+            break;
+            
+          case 4:
+            child2[g] = artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1];
+            break;
+            
+          case 5:
+            child2[g] = enables1[Math.floor(Math.random() * enables1.length)];
+            break;
+            
+          case 6:
+            child2[g] = enables2[Math.floor(Math.random() * enables2.length)];
+            break;
+            
+          case 7:
+            child2[g] = enables3[Math.floor(Math.random() * enables3.length)];
+            break;
+            
+          case 8:
+            child2[g] = enables4[Math.floor(Math.random() * enables4.length)];
+            break;
+            
+          case 9:
+            child2[g] = enables5[Math.floor(Math.random() * enables5.length)];
+            break;
+        }
+      }
+    }
+    
+    // mutate child 2 pet
+    if (Math.random() < mutationRate) {
+      child2[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
+    }
+    
+    
+    // position swap for child 1
+    if (Math.random() < posSwapRate) {
+      pos1 = Math.floor(Math.random() * 6);
+      pos2 = Math.floor(Math.random() * 6);
+      while (pos1 == pos2) {
+        pos2 = Math.floor(Math.random() * 6);
+      }
+      
+      for (var g=0; g<10; g++) {
+        temp = child1[pos1*10 + g];
+        child1[pos1*10 + g] = child1[pos2*10 + g];
+        child1[pos2*10 + g] = temp;
+      }
+    }
+    
+    
+    // position swap for child 2
+    if (Math.random() < posSwapRate) {
+      pos1 = Math.floor(Math.random() * 6);
+      pos2 = Math.floor(Math.random() * 6);
+      while (pos1 == pos2) {
+        pos2 = Math.floor(Math.random() * 6);
+      }
+      
+      for (var g=0; g<10; g++) {
+        temp = child2[pos1*10 + g];
+        child2[pos1*10 + g] = child2[pos2*10 + g];
+        child2[pos2*10 + g] = temp;
+      }
+    }
+    
+    
+    // output child genes
+    dnaString1 = "\"" + t + "\": [";
+    for (var h=0; h<6; h++) {
+      dnaString1 += "\n ";
+      
+      for (var g=0; g<10; g++) {
+        dnaString1 += " \"" + child1[h*10 + g] + "\",";
+      }
+    }
+    
+    dnaString1 += "\n  \"" + child1[60] + "\"\n],"
+    oConfig.value += dnaString1;
+    
+    
+    t++;
+    dnaString2 = "\"" + t + "\": [";
+    for (var h=0; h<6; h++) {
+      dnaString2 += "\n ";
+      
+      for (var g=0; g<10; g++) {
+        dnaString2 += " \"" + child2[h*10 + g] + "\",";
+      }
+    }
+    
+    if (t == 11) {
+      dnaString2 += "\n  \"" + child2[60] + "\"\n]"
+    } else {
+      dnaString2 += "\n  \"" + child2[60] + "\"\n],"
+    }
+  
+  
+    oConfig.value += dnaString2;
+  }
+  
+
+  oConfig.value += "\n}";
+  oConfig.select();
+  oConfig.setSelectionRange(0, oConfig.value.length);
+  document.execCommand("copy");
 }

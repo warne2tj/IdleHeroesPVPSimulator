@@ -39,7 +39,6 @@ Implemented Monsters
   
 To Do List
   * ----------- Priority 1 ------------
-  * try out genetic algorithm search
   * subclass more heroes
   * ----------- Priority 2 ------------
   * reorganize read me document into github wiki
