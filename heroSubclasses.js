@@ -233,13 +233,6 @@ class Aida extends hero {
     var healAmount = 0;
     
     if (this._currentStats["totalHP"] > 0) {
-      if ("Fury of Justice" in this._buffs) {
-        healAmount = this.calcHeal(this, damageInRound * 0.35);
-        result += "<div><span class='skill'>Fury of Justice</span> heal triggered.</div>";
-        result += this.getHeal(this, healAmount);
-        result += this.removeBuff("Fury of Justice");
-      }
-      
       if (!("Seal of Light" in this._debuffs)) {
         var damageResult = {};
         var targets = getAllTargets(this, this._enemies);
@@ -272,6 +265,7 @@ class Aida extends hero {
     var targets = getHighestHPTargets(this, this._enemies);
     var additionalDamage = 0;
     var maxTargets = 1;
+    var healAmount = 0;
     
     if (targets.length < maxTargets) {
       maxTargets = targets.length;
@@ -296,7 +290,11 @@ class Aida extends hero {
       }
     }
     
-    result += this.getBuff(this, "Fury of Justice", 99, {});
+    
+    if (damageResult["damageAmount"] > 0) {
+      healAmount = this.calcHeal(this, (damageResult["damageAmount"] + additionalDamageResult["damageAmount"]) * 0.35);
+      result += this.getHeal(this, healAmount);
+    }
     
     return result;
     
