@@ -19,7 +19,7 @@ Important Function prototypes
 
   this.calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0)
       return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
-      damageSource = passive, basic, active, mark, monster, active2, debuff
+      damageSource = passive, basic, active, mark, monster, basic2, active2, debuff
         active2: does not apply skill damage but applies other skill related effects
       damageType = normal, burn, bleed, poison, hpPercent, energy, true
 
@@ -45,14 +45,18 @@ Important Function prototypes
   this.isUnderStandardControl()
   
   isControlEffect(strName, effects)
+  
+  startOfRound(roundNum)
+  
+  endOfRound(roundNum)
 
   basicQueue[], activeQueue[] = push([source, target, damageAmount, critted]) to call the event
 
   deathQueue[] = push([source, target]) to call the event
   
-  this.eventAllyBasic(src, e), this.eventAllyActive(src, e), this.eventAllyDied(e), this.eventEnemyDied(e) = called by all heroes so they can react to an event
+  this.eventAllyBasic(source, e), this.eventAllyActive(source, e), this.eventAllyDied(e), this.eventEnemyDied(e) = called by all heroes so they can react to an event
 
-  this.eventEnemyBasic(src, e), this.eventEnemyActive(src, e) = if overridden, call the super() version so the enemy still gains energy on an attack
+  this.eventEnemyBasic(source, e), this.eventEnemyActive(source, e) = if overridden, call the super() version so the enemy still gains energy on an attack
     
 */
 
@@ -224,35 +228,37 @@ class Aida extends hero {
   }
   
   
-  endOfRound() {
+  endOfRound(roundNum) {
     var result = "";
     var healAmount = 0;
     
-    if ("Fury of Justice" in this._buffs) {
-      healAmount = this.calcHeal(this, damageInRound * 0.35);
-      result += "<div><span class='skill'>Fury of Justice</span> heal triggered.</div>";
-      result += this.getHeal(this, healAmount);
-      result += this.removeBuff("Fury of Justice");
-    }
-    
-    if (!("Seal of Light" in this._debuffs)) {
-      var damageResult = {};
-      var targets = getAllTargets(this, this._enemies);
-      
-      for (var i=0; i<targets.length; i++) {
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          this._rng = Math.random();
-          damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
-          result += targets[i].takeDamage(this, "Final Verdict", damageResult);
-          
-          if (targets[i]._currentStats["totalHP"] > 0) {
-            result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
-          }
-        }
+    if (this._currentStats["totalHP"] > 0) {
+      if ("Fury of Justice" in this._buffs) {
+        healAmount = this.calcHeal(this, damageInRound * 0.35);
+        result += "<div><span class='skill'>Fury of Justice</span> heal triggered.</div>";
+        result += this.getHeal(this, healAmount);
+        result += this.removeBuff("Fury of Justice");
       }
       
-      healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.15);
-      result += this.getHeal(this, healAmount);
+      if (!("Seal of Light" in this._debuffs)) {
+        var damageResult = {};
+        var targets = getAllTargets(this, this._enemies);
+        
+        for (var i=0; i<targets.length; i++) {
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            this._rng = Math.random();
+            damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
+            result += targets[i].takeDamage(this, "Final Verdict", damageResult);
+            
+            if (targets[i]._currentStats["totalHP"] > 0) {
+              result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
+            }
+          }
+        }
+        
+        healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.15);
+        result += this.getHeal(this, healAmount);
+      }
     }
     
     return result;
@@ -674,7 +680,7 @@ class Aspen extends hero {
             beforeHorrifyCount = Object.keys(targets[i]._debuffs["Horrify"]).length;
           }
           
-          if (Math.random() < 0.5) {
+          if (Math.random() < 0.5 + this._currentStats["controlPrecision"]) {
             result += targets[i].getDebuff(this, "Horrify", 2, {});
           }
           
@@ -794,6 +800,8 @@ class Belrain extends hero {
       if (Math.random() < 0.4) {
         if ("Seal of Light" in targets[i]._debuffs) { result += targets[i].removeDebuff("Seal of Light"); }
         if ("Horrify" in targets[i]._debuffs) { result += targets[i].removeDebuff("Horrify"); }
+        if ("Taunt" in targets[i]._debuffs) { result += targets[i].removeDebuff("Taunt"); }
+        if ("Silence" in targets[i]._debuffs) { result += targets[i].removeDebuff("Silence"); }
         if ("petrify" in targets[i]._debuffs) { result += targets[i].removeDebuff("petrify"); }
         if ("stun" in targets[i]._debuffs) { result += targets[i].removeDebuff("stun"); }
         if ("entangle" in targets[i]._debuffs) { result += targets[i].removeDebuff("entangle"); }
@@ -953,7 +961,7 @@ class Carrie extends hero {
   }
   
   
-  startOfRound() {
+  startOfRound(roundNum) {
     var result = "";
     
     if (this._currentStats["totalHP"] <= 0) {
@@ -969,7 +977,7 @@ class Carrie extends hero {
   }
   
   
-  endOfRound() {
+  endOfRound(roundNum) {
     var result = "";
     
     if (this._currentStats["totalHP"] <= 0) {
@@ -1086,7 +1094,7 @@ class DarkArthindol extends hero {
       result += targets[i].takeDamage(this, "Chaotic Shade", damageResult);
       
       if (damageResult["damageAmount"] > 0 && targets[0]._currentStats["totalHP"] > 0) {
-        if (Math.random() < 0.3) {
+        if (Math.random() < 0.3 + this._currentStats["controlPrecision"]) {
           result += targets[i].getDebuff(this, "petrify", 2, {});
         }
         
@@ -1252,6 +1260,8 @@ class Horus extends hero {
         
         if ("Seal of Light" in this._debuffs) { result += this.removeDebuff("Seal of Light"); }
         if ("Horrify" in this._debuffs) { result += this.removeDebuff("Horrify"); }
+        if ("Taunt" in this._debuffs) { result += this.removeDebuff("Taunt"); }
+        if ("Silence" in this._debuffs) { result += this.removeDebuff("Silence"); }
         if ("petrify" in this._debuffs) { result += this.removeDebuff("petrify"); }
         if ("stun" in this._debuffs) { result += this.removeDebuff("stun"); }
         if ("entangle" in this._debuffs) { result += this.removeDebuff("entangle"); }
@@ -1725,8 +1735,115 @@ class UniMax3000 extends hero {
     super(sHeroName, iHeroPos, attOrDef);
   }
   
+  
   passiveStats() {
     // apply Machine Forewarning passive
     this.applyStatChange({armorPercent: 0.3, hpPercent: 0.4, attackPercent: 0.25, controlImmune: 0.3, energy: 50}, "PassiveStats");
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] > 0 && !("Seal of Light" in this._debuffs)) {
+      var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.2);
+      
+      result += this.getHeal(this, healAmount);
+      result += this.getHeal(this, healAmount);
+      result += this.getHeal(this, healAmount);
+      
+      if (roundNum == 4) {
+        if ("Seal of Light" in this._debuffs) { result += this.removeDebuff("Seal of Light"); }
+        if ("Horrify" in this._debuffs) { result += this.removeDebuff("Horrify"); }
+        if ("Taunt" in this._debuffs) { result += this.removeDebuff("Taunt"); }
+        if ("Silence" in this._debuffs) { result += this.removeDebuff("Silence"); }
+        if ("petrify" in this._debuffs) { result += this.removeDebuff("petrify"); }
+        if ("stun" in this._debuffs) { result += this.removeDebuff("stun"); }
+        if ("entangle" in this._debuffs) { result += this.removeDebuff("entangle"); }
+        if ("freeze" in this._debuffs) { result += this.removeDebuff("freeze"); }
+        
+        result += this.getBuff(this, "Energy Overload", 99, {critDamage: 0.5});
+        result += this.getBuff(this, "Rampage", 99, {crit: 1.0});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1) {
+    var result = "";
+    
+    if ("Rampage" in this._buffs) {
+      result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, canCrit, dotRounds, 0);
+    } else {
+      result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, canCrit, dotRounds, canBlock);
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyBasic(source, e) {
+    var result = "";
+    
+    for (var i in e) {
+      if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0 && e[i][1].heroDesc() == this.heroDesc()) {
+        var attackStolen = Math.floor(source._currentStats["totalAttack"] * 0.2);
+        
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Frenzied Taunt</span> triggered.</div>"
+        result += source.getDebuff(this, "Frenzied Taunt", 2, {attackPercent: 0.2});
+        result += this.getBuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
+        
+        if (Math.random() < 0.3 + this._currentStats["controlPrecision"]) {
+          result += source.getDebuff(this, "Taunt", 2, {});
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyActive(source, e) {
+    return this.eventEnemyBasic(source, e);
+  }
+  
+  
+  doBasic() {
+    var result = super.doBasic();
+    var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.5);
+    
+    result += this.getBuff(this, "Frenzied Taunt", 2, {heal: healAmount});
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getBackTargets(this, this._enemies);
+    
+    for (var i=0; i<targets.length; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 4.2);
+      result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] * 2, damageResult["critted"]]);
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
+        }
+        
+        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.5 + this._currentStats["controlPrecision"]) {
+          result += targets[i].getDebuff(this, "Taunt", 2, {});
+        }
+      }
+    }
+    
+    result += this.getBuff(this, "Iron Whirlwind", 2, {allDamageReduce: 0.2});
+    
+    return result;
   }
 }

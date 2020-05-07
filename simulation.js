@@ -78,10 +78,16 @@ function runSim() {
       orderOfAttack.sort(speedSort);
       
       // trigger hero start of round abilities
-      for (var h in orderOfAttack) {
-        temp = orderOfAttack[h].startOfRound();
+      for (var h in attHeroes) {
+        temp = attHeroes[h].startOfRound(roundNum);
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
+      
+      for (var h in defHeroes) {
+        temp = defHeroes[h].startOfRound(roundNum);
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      }
+      
       
       for (var orderNum = 0; orderNum < orderOfAttack.length; orderNum++) {
         // @ start of hero action
@@ -226,7 +232,7 @@ function runSim() {
       
       // trigger hero end of round abilities
       for (var h in attHeroes) {
-        temp = attHeroes[h].endOfRound();
+        temp = attHeroes[h].endOfRound(roundNum);
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
@@ -295,7 +301,7 @@ function runSim() {
       
       // trigger hero end of round abilities
       for (var h in defHeroes) {
-        temp = defHeroes[h].endOfRound();
+        temp = defHeroes[h].endOfRound(roundNum);
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       

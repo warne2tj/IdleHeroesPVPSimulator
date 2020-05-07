@@ -192,5 +192,21 @@ var baseHeroStats = {
       growArmor: 6.1,
       growSpeed: 2
     }
+  },
+  
+  "UniMax-3000": {
+    className: UniMax3000,
+    heroFaction: "Fortress",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 9100,
+      baseAttack: 306,
+      baseArmor: 82,
+      baseSpeed: 248,
+      growHP: 910,
+      growAttack: 30.6,
+      growArmor: 8.5,
+      growSpeed: 2
+    }
   }
 };

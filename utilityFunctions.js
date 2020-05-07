@@ -51,7 +51,7 @@ function isMonster(source) {
 
 
 function isControlEffect(strName, effects) {
-  if (["stun", "petrify", "freeze", "entangle", "Seal of Light", "Horrify"].includes(strName)) {
+  if (["stun", "petrify", "freeze", "entangle", "Silence", "Taunt", "Seal of Light", "Horrify"].includes(strName)) {
     return true;
   } else if ("petrify" in effects) {
     return true;
@@ -68,43 +68,75 @@ function isControlEffect(strName, effects) {
 
 
 function getFrontTargets(source, arrTargets) {
-  var targets = [];
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
   
   if (arrTargets[0]._currentStats["totalHP"] > 0) {
-    targets.push(arrTargets[0]);
+    copyTargets.push(arrTargets[0]);
   }
   if (arrTargets[1]._currentStats["totalHP"] > 0) {
-    targets.push(arrTargets[1]);
+    copyTargets.push(arrTargets[1]);
   }
   
-  if (targets.length == 0) {
+  if (copyTargets.length == 0) {
     for (var h=2; h<arrTargets.length; h++) {
       if (arrTargets[h]._currentStats["totalHP"] > 0) {
-        targets.push(arrTargets[h]);
+        copyTargets.push(arrTargets[h]);
       }
     }
   }
   
-  return targets;
+  return copyTargets;
+}
+
+
+function getBackTargets(source, arrTargets) {
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
+  for (var h=2; h<arrTargets.length; h++) {
+    if (arrTargets[h]._currentStats["totalHP"] > 0) {
+      copyTargets.push(arrTargets[h]);
+    }
+  }
+  
+  if (copyTargets.length == 0) {
+    for (var h=0; h<2; h++) {
+      if (arrTargets[h]._currentStats["totalHP"] > 0) {
+        copyTargets.push(arrTargets[h]);
+      }
+    }
+  }
+  
+  return copyTargets;
 }
 
 
 function getAllTargets(source, arrTargets) {
-  // in anticipation of Unimax
-  var livingTargets = [];
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
   
   for (var i=0; i<arrTargets.length; i++) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      livingTargets.push(arrTargets[i]);
+      copyTargets.push(arrTargets[i]);
     }
   }
   
-  return livingTargets;
+  return copyTargets;
 }
 
 
 function getRandomTargets(source, arrTargets) {
   var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
   
   for (var i=0; i<arrTargets.length; i++) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
@@ -130,6 +162,9 @@ function getRandomTargets(source, arrTargets) {
 function getLowestHPTargets(source, arrTargets) {
   // get living targets with lowest current HP
   var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
   
   for (var i=0; i<arrTargets.length; i++) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
@@ -157,6 +192,9 @@ function getHighestHPTargets(source, arrTargets) {
   // get living target with highest current HP
   var copyTargets = [];
   
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
   for (var i=0; i<arrTargets.length; i++) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       copyTargets.push(arrTargets[i]);
@@ -176,4 +214,22 @@ function getHighestHPTargets(source, arrTargets) {
   });
   
   return copyTargets;
+}
+
+
+function getTauntedTargets(source, arrTargets) {
+  var copyTargets = [];
+  
+  if (!(isMonster(source))) {
+    if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
+      for (var s in source._debuffs["Taunt"]) {
+        if (source._debuffs["Taunt"][s]["source"]._currentStats["totalHP"] > 0) {
+          copyTargets.push(source._debuffs["Taunt"][s]["source"]);
+          return copyTargets;
+        }
+      }
+    }
+  }
+  
+  return arrTargets;
 }

@@ -71,5 +71,10 @@ var skins = {
     "Legendary Heroic Knight": {damageReduce: 0.05, controlImmune: 0.06, speed: 6},
     "Spirit of Creation": {holyDamage: 0.06, attackPercent: 0.03, hpPercent: 0.03},
     "Legendary Spirit of Creation": {holyDamage: 0.1, attackPercent: 0.06, hpPercent: 0.06}
+  },
+  
+  "UniMax-3000": {
+    "League MVP": {controlImmune: 0.05, hpPercent: 0.03, attackPercent: 0.03},
+    "Legendary League MVP": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
   }
 };
