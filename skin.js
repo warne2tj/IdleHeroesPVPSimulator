@@ -45,6 +45,11 @@ var skins = {
     "Legendar Revenge Bride": {hpPercent: 0.06, attackPercent: 0.04, skillDamage: 0.15},
   },
   
+  "Delacium": {
+    "Jellybane": {hpPercent: 0.03, attackPercent: 0.03, crit: 0.2},
+    "Legendary Jellybane": {hpPercent: 0.06, attackPercent: 0.06, crit: 0.3}
+  },
+  
   "Garuda": {
     "Super Harvest": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
     "Legendary Super Harvest": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04},

@@ -14,6 +14,7 @@ Implemented Heroes
   * Belrain
   * Carrie
   * Dark Arthindol
+  * Delacium
   * Garuda
   * Horus
   * Penny
@@ -25,7 +26,6 @@ Upcoming Heroes
   * Kroos
   * Mihm
   * Ithaqua
-  * Delacium
   * Nakia
   * Gustin
   * Elyvia
@@ -82,6 +82,8 @@ Hero Mechanics:
     + Buff seems to trigger only once per instance of taking damage
   * Unimax
     + Is the attack steal against base attack or total attack? Is is then added to his base attack? or is it a flat bonus?
+  * Delacium
+    + What is considered a unique debuff? Is a skill that applies 2 effects considered 2 debuffs or one?
     
 
 Mechanics:
