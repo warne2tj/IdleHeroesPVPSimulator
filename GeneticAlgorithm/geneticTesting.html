@@ -34,13 +34,18 @@
     
     <div class="row">
       <div class="log column" id="summaryLog"></div>
-      <div class="log column" id="generationLog"></div>
+      <div class="column"><textarea id="generationLog" rows="25"></textarea></div>
     </div>
     
     <div>
       <label for="numSims">Number of Simulations to Run per Team:</label>
-      <input type="text" id="numSims" size="3" value="100" />
+      <input type="text" id="numSims" size="3" value="50" />
       <input type="submit" value="Run" onclick="runMassLoop();"></input>
+    </div>
+    
+    <div>
+      <label for="genCount">Generation:</label>
+      <input type="text" id="genCount" size="3" value="0" />
     </div>
   </div>  
   
@@ -48,8 +53,13 @@
   <button class="accordion colorC">Teams</button>
   <div class="panel">
     <div>
-      <div>Put data of teams into text area below.</div>
-      <div><input type="submit" value="Create Random Teams" onclick="createRandomTeams();"></input></div>
+      <div>
+        <label for="numCreate">Number of Random Teams to Create:</label>
+        <input type="text" id="numCreate" size="3" value="100" />
+        <input type="submit" value="Create Random Teams" onclick="createRandomTeams();"></input>
+      </div>
+      
+      <div>Put data of teams into text area below or generate them randomly.</div>
       <div>
         <textarea id="configText" rows="20">
 {

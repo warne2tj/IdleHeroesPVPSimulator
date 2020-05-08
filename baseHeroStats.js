@@ -130,6 +130,22 @@ var baseHeroStats = {
     }
   },
   
+  "Delacium": {
+    className: Delacium,
+    heroFaction: "Abyss",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 7587,
+      baseAttack: 433,
+      baseArmor: 63,
+      baseSpeed: 226,
+      growHP: 758.7,
+      growAttack: 43.3,
+      growArmor: 6.3,
+      growSpeed: 2
+    }
+  },
+  
   "Garuda": {
     className: Garuda,
     heroFaction: "Forest",

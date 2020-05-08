@@ -50,18 +50,47 @@ function isMonster(source) {
 }
 
 
-function isControlEffect(strName, effects) {
+function isControlEffect(strName, effects={}) {
   if (["stun", "petrify", "freeze", "entangle", "Silence", "Taunt", "Seal of Light", "Horrify"].includes(strName)) {
     return true;
-  } else if ("petrify" in effects) {
-    return true;
-  } else if ("freeze" in effects) {
-    return true;
-  } else if ("entangle" in effects) {
-    return true;
-  } else if ("stun" in effects) {
+  } else {
+    return false;
+  }
+}
+
+
+function isDot(strName, effects) {
+  if (["burn", "bleed", "poison"].includes(strName)) {
     return true;
   } else {
+    for (var e in effects) {
+      if (["burn", "bleed", "poison"].includes(e)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+}
+
+
+function isAttribute(strName, effects) {
+  var arrAttributes = [
+    "attack", "attackPercent", "armor", "armorPercent", "hp", "hpPercent", "speed",
+    "energy", "precision", "block", "crit", "critDamage", "holyDamage", "armorBreak",
+    "controlImmune", "skillDamage", "damageReduce", "allDamageReduce", "controlPrecision",
+    "healEffect", "effectBeingHealed"
+  ];
+  
+  if (arrAttributes.includes(strName)) {
+    return true;
+  } else {
+    for (var e in effects) {
+      if (arrAttributes.includes(e)) {
+        return true;
+      }
+    }
+    
     return false;
   }
 }

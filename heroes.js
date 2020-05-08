@@ -546,7 +546,7 @@ class hero {
     
     
     // damage source and damage type overrides
-    if (damageSource == "active") {
+    if (damageSource.substring(0, 6) == "active") {
       if (["burn", "bleed", "poison"].includes(damageType)) {
         skillDamage += (this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100)) / (dotRounds + 1);
       } else if (!(["hpPercent", "energy", "true"].includes(damageType))) {
@@ -731,7 +731,7 @@ class hero {
     var result = "";
     var healResult = "";
     
-    if (duration == 99) {
+    if (duration > 15) {
       result += "<div>" + this.heroDesc() + " gained buff <span class='skill'>" + buffName + "</span>.";
     } else if (duration ==1) {
       result += "<div>" + this.heroDesc() + " gained buff <span class='skill'>" + buffName + "</span> for " + formatNum(1) + " round.";
@@ -792,7 +792,7 @@ class hero {
     if (Math.random() < controlImmune && isControl) {
       result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
     } else {
-      if (duration == 99) {
+      if (duration > 15) {
         result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span>.";
       } else if (duration ==1) {
         result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(1) + " round.";
