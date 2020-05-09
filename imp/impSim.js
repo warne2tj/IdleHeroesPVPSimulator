@@ -19,6 +19,10 @@ var startPos;
 var startMushroom1;
 var startMushroom2;
 var startMushroom3;
+var startMoveBackwards;
+var startDoubleStars;
+var startDoubleNextRoll;
+var startRollTwice;
 
 var simRunning = false;
 var totalSims = 1000000;
@@ -51,6 +55,28 @@ function runImpSim() {
     startMushroom1 = parseInt(document.getElementById("mushroom1").value);
     startMushroom2 = parseInt(document.getElementById("mushroom2").value);
     startMushroom3 = parseInt(document.getElementById("mushroom3").value);
+    startMoveBackwards = false;
+    startDoubleStars = false;
+    startDoubleNextRoll = false;
+    startRollTwice = false;
+    
+    switch (document.getElementById("activeTarot").value) {
+      case "MoveBackwards":
+        startMoveBackwards = true;
+        break;
+        
+      case "startDoubleStars":
+        startDoubleStars = true;
+        break;
+        
+      case "startDoubleNextRoll":
+        startDoubleNextRoll = true;
+        break;
+        
+      case "startRollTwice":
+        startRollTwice = true;
+        break;
+    }
     
     setTimeout(nextSimBlock, 1);
   }
@@ -86,10 +112,10 @@ function nextSimBlock() {
       boardState[11] = 2 + startMushroom2;
       boardState[18] = 2 + startMushroom3;
       
-      doubleNextRoll = false;
-      moveBackwards = false;
-      doubleStars = false;
-      rollTwice = false;
+      doubleNextRoll = startDoubleNextRoll;
+      moveBackwards = startMoveBackwards;
+      doubleStars = startDoubleStars;
+      rollTwice = startRollTwice;
       
       
       // simulate
@@ -104,7 +130,7 @@ function nextSimBlock() {
           luckDice--;
           roll = 10;
           
-        } else if (luckDice > 0 && pos != 15 && pos < 20 && pos >= 14) {
+        } else if (luckDice > 0 && pos != 15 && pos < 19 && pos >= 14) {
           luckDice--;
           roll = 20 - pos;
           
@@ -265,8 +291,8 @@ function nextSimBlock() {
     // update results
     var percent;
     for (var i = 0; i < 9; i++) {
-      percent = 100.0 * arrResults[i] / simNum;
-      arrBins[i].innerHTML = percent.toFixed(3) + "%&nbsp;";
+      percent = 100.0 * arrResults[i] / totalSims;
+      arrBins[i].innerHTML = percent.toFixed(4) + "%&nbsp;";
       arrBins[i].style.width = Math.round(percent) + "%";
     }
     
@@ -274,6 +300,6 @@ function nextSimBlock() {
     
   } else {
     simRunning = false;
-    alert("Simulation finished. Average stars is " + (1.0 * totalStars / totalSims).toFixed(3) + ".");
+    alert("Simulation finished. Average stars is " + (1.0 * totalStars / totalSims).toFixed(4) + ".");
   }
 }
