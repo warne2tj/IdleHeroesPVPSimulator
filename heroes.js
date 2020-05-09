@@ -851,69 +851,77 @@ class hero {
   }
 
 
-  removeBuff(strBuffName) {   
+  removeBuff(strBuffName, stack="") {   
     var result = "";
     result += "<div>" + this.heroDesc() + " lost buff <span class='skill'>" + strBuffName + "</span>."
 
     // for each stack
     for (var s in this._buffs[strBuffName]) {
       // remove the effects
-      for (var strStatName in this._buffs[strBuffName][s]["effects"]) {
-        result += " " + strStatName + " " + formatNum(this._buffs[strBuffName][s]["effects"][strStatName]) + ".";
+      if (stack == "" || stack == s) {
+        for (var strStatName in this._buffs[strBuffName][s]["effects"]) {
+          result += " " + strStatName + " " + formatNum(this._buffs[strBuffName][s]["effects"][strStatName]) + ".";
 
-        if (strStatName == "attackPercent") {
-          this._currentStats["totalAttack"] = this.calcCombatAttack();
-          
-        } else if (strStatName == "armorPercent") {
-          this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 + this._buffs[strBuffName][s]["effects"][strStatName]));
-          
-        } else if(strStatName == "heal") {
-          // do nothing, already healed
-        } else {
-          this._currentStats[strStatName] -= this._buffs[strBuffName][s]["effects"][strStatName];
-          
-          if (strStatName == "attack") {
+          if (strStatName == "attackPercent") {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
+            
+          } else if (strStatName == "armorPercent") {
+            this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 + this._buffs[strBuffName][s]["effects"][strStatName]));
+            
+          } else if(strStatName == "heal") {
+            // do nothing, already healed
+          } else {
+            this._currentStats[strStatName] -= this._buffs[strBuffName][s]["effects"][strStatName];
+            
+            if (strStatName == "attack") {
+              this._currentStats["totalAttack"] = this.calcCombatAttack();
+            }
           }
         }
       }
     }
-
-    delete this._buffs[strBuffName];
+    
+    if (Object.keys(this._buffs[strBuffName]).length == 0) {
+      delete this._buffs[strBuffName];
+    }
 
     return result + "</div>";
   }
 
 
-  removeDebuff(strDebuffName) {   
+  removeDebuff(strDebuffName, stack = "") {   
     var result = "";
     result += "<div>" + this.heroDesc() + " lost debuff <span class='skill'>" + strDebuffName + "</span>."
 
     // for each stack
     for (var s in this._debuffs[strDebuffName]) {
       // remove the effects
-      for (var strStatName in this._debuffs[strDebuffName][s]["effects"]) {
-        result += " " + strStatName + " " + formatNum(this._debuffs[strDebuffName][s]["effects"][strStatName]) + ".";
+      if (stack == "" || stack == s) {
+        for (var strStatName in this._debuffs[strDebuffName][s]["effects"]) {
+          result += " " + strStatName + " " + formatNum(this._debuffs[strDebuffName][s]["effects"][strStatName]) + ".";
 
-        if (strStatName == "attackPercent") {
-          this._currentStats["totalAttack"] = this.calcCombatAttack();
-          
-        } else if (strStatName == "armorPercent") {
-          this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
-          
-        } else if (["burn", "bleed", "poison"].includes(strStatName)) {
-          // do nothing
-        } else {
-          this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
-          
-          if (strStatName == "attack") {
+          if (strStatName == "attackPercent") {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
+            
+          } else if (strStatName == "armorPercent") {
+            this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
+            
+          } else if (["burn", "bleed", "poison"].includes(strStatName)) {
+            // do nothing
+          } else {
+            this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
+            
+            if (strStatName == "attack") {
+              this._currentStats["totalAttack"] = this.calcCombatAttack();
+            }
           }
         }
       }
     }
 
-    delete this._debuffs[strDebuffName];
+    if (Object.keys(this._debuffs[strDebuffName]).length == 0) {
+      delete this._debuffs[strDebuffName];
+    }
 
     return result + "</div>";
   }
@@ -1059,13 +1067,15 @@ class hero {
     } else if (this._enable3 == "Purify") {
       var listDebuffs = []; 
       var allDebuffs = Object.keys(this._debuffs);
-      var rng = Math.floor(Math.random() * listDebuffs.length);
+      var rng;
       
       for (var i in allDebuffs) {
-        if (!(["Seal of Light", "Power of Light", "Ghost Possessed"].includes(allDebuffs[i]))) {
+        if (isDispellable(allDebuffs[i])) {
           listDebuffs.push(allDebuffs[i]);
         }
       }
+      
+      rng = Math.floor(Math.random() * listDebuffs.length)
       
       if (listDebuffs.length > 0) {
         this.removeDebuff(listDebuffs[rng]);

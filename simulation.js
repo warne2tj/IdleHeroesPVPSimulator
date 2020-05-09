@@ -200,6 +200,21 @@ function runSim() {
       if (someoneWon != "") {break;}
       
       
+      // trigger hero end of round abilities
+      for (var h in attHeroes) {
+        if (!("Seal of Light" in attHeroes[h]._debuffs)) {
+          temp = attHeroes[h].endOfRound(roundNum);
+          if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        }
+      }
+      
+      temp = processDeathQueue(oCombatLog);
+      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
+      
+      
       // handle buffs and debuffs
       if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
       for (var h in attHeroes) {
@@ -234,14 +249,6 @@ function runSim() {
         }
       }
       
-      // trigger hero end of round abilities
-      for (var h in attHeroes) {
-        if (!("Seal of Light" in attHeroes[h]._debuffs)) {
-          temp = attHeroes[h].endOfRound(roundNum);
-          if(numSims == 1) {oCombatLog.innerHTML += temp;}
-        }
-      }
-      
       temp = processDeathQueue(oCombatLog);
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
       
@@ -262,6 +269,21 @@ function runSim() {
         }
         
         if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+      }
+      
+      temp = processDeathQueue(oCombatLog);
+      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      
+      someoneWon = checkForWin();
+      if (someoneWon != "") {break;}
+      
+      
+      // trigger hero end of round abilities
+      for (var h in defHeroes) {
+        if (!("Seal of Light" in defHeroes[h]._debuffs)) {
+          temp = defHeroes[h].endOfRound(roundNum);
+          if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        }
       }
       
       temp = processDeathQueue(oCombatLog);
@@ -301,14 +323,6 @@ function runSim() {
       for (var h in defHeroes) {
         if (defHeroes[h]._currentStats["totalHP"] > 0) { 
           temp = defHeroes[h].tickEnable3(numLiving);
-          if(numSims == 1) {oCombatLog.innerHTML += temp;}
-        }
-      }
-      
-      // trigger hero end of round abilities
-      for (var h in defHeroes) {
-        if (!("Seal of Light" in defHeroes[h]._debuffs)) {
-          temp = defHeroes[h].endOfRound(roundNum);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
       }

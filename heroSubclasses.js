@@ -1194,6 +1194,155 @@ class Gustin extends hero {
     // apply Shadow Imprint passive
     this.applyStatChange({hpPercent: 0.25, speed: 30, controlImmune: 0.3, effectBeingHealed: 0.3}, "PassiveStats");
   }
+  
+  startOfRound(roundNum) {
+    var targets = getRandomTargets(this, this._enemies);
+    var linked = false;
+    var result = "";
+    
+    if (targets.length > 0) {
+      for (var i = 0; i < targets.length; i++) {
+        if ("Link of Souls" in targets[i]._debuffs) { linked = true; }
+      }
+      
+      if (!(linked)) {
+        result += targets[0].getDebuff(this, "Link of Souls", 99, {});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    var targets = [];
+    
+    if (Math.random() < 0.5) {
+      targets = getRandomTargets(this, this._enemies);
+      var maxTargets = 2;
+      if (targets.length < maxTargets) { maxTargets = targets.length; }
+      
+      for (var i = 0; i < maxTargets; i++) {
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Cloak of Fog</span> reduced " + targets[i].heroDesc() + " energy by " + formatNum(30) + ".</div>";
+        
+        if (targets[i]._currentStats["energy"] < 30) {
+          targets[i]._currentStats["energy"] = 0;
+        } else {
+          targets[i]._currentStats["energy"] -= 30;
+        }
+      }
+    }
+    
+    if ("Demon Totem" in this._buffs) {
+      targets = getLowestHPTargets(this, this._allies);
+      if (targets.length > 0) {
+        var healAmount = this.calcHeal(this, 0.25 * targets[0]._stats["totalHP"]);
+        result += targets[0].getHeal(this, healAmount);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyBasic(source, e) {
+    var result = "";
+    
+    if ("Demon Totem" in this._buffs) {
+      for (var i in e) {
+        if (this._currentStats["demonTotemStacks"] > 0 && Math.random() < 0.6) {
+          this._currentStats["demonTotemStacks"]--;
+          result += "<div>" + this.heroDesc() + " <span class='skill'>Demon Totem</span> triggered dispell.</div>";
+          
+          var listDebuffs = []; 
+          var allDebuffs = Object.keys(e[i][1]._debuffs);
+          var maxDispell = 2;
+          
+          for (var d in allDebuffs) {
+            if (isDispellable(allDebuffs[d])) {
+              listDebuffs.push([allDebuffs[d], Math.random()]);
+            }
+          }
+          
+          listDebuffs.sort(function(a,b) {
+            if (a[1] < b[1]) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          
+          if (listDebuffs.length < maxDispell) { maxDispell = listDebuffs.length; }
+          
+          for (var d = 0; d < maxDispell; d++) {
+            result += e[i][1].removeDebuff(listDebuffs[d][0]);
+          }
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyActive(source, e) {
+    return this.eventEnemyBasic(source, e);
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+    var result = "";
+    var preHP = this._currentStats["totalHP"];
+    
+    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    
+    var postHP = this._currentStats["totalHP"];
+    var damageAmount = 0.70 * (preHP - postHP);
+    
+    if (damageAmount > 0 && source._currentStats["totalHP"] > 0) {
+      var damageResult = this.calcDamage(source, damageAmount, "passive", "true");
+      result += source.takeDamage(this, "Link of Souls", damageResult);
+    }
+    
+    return result
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var maxTargets = 2;
+    
+    if (targets.length < maxTargets) {
+      maxTargets = targets.length;
+    }
+    
+    for (var i=0; i<maxTargets; i++) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2);
+      result += targets[i].takeDamage(this, "Demon Totem", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.60) {
+          for (var b in targets[i]._buffs) {
+            for (var s in targets[i]._buffs[b]) {
+              if (isAttribute(b, targets[i]._buffs[b][s]["effects"])) {
+                result += targets[i].removeBuff(b, s);
+              }
+            }
+          }
+        }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    result += this.getBuff(this, "Demon Totem", 3, {});
+    this._currentStats["demonTotemStacks"] = 4;
+    
+    return result;
+  }
 }
 
 

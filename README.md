@@ -16,6 +16,7 @@ Implemented Heroes
   * Dark Arthindol
   * Delacium
   * Garuda
+  * Gustin
   * Horus
   * Ithaqua
   * Penny
@@ -27,7 +28,6 @@ Upcoming Heroes
   * Kroos
   * Mihm
   * Nakia
-  * Gustin
   * Elyvia
   * Oberon
   
