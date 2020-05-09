@@ -146,6 +146,22 @@ var baseHeroStats = {
     }
   },
   
+  "Elyvia": {
+    className: Elyvia,
+    heroFaction: "Forest",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 7057,
+      baseAttack: 354,
+      baseArmor: 60,
+      baseSpeed: 228,
+      growHP: 705.7,
+      growAttack: 35.4,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
   "Garuda": {
     className: Garuda,
     heroFaction: "Forest",

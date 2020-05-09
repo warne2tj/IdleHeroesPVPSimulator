@@ -50,6 +50,11 @@ var skins = {
     "Legendary Jellybane": {hpPercent: 0.06, attackPercent: 0.06, crit: 0.3}
   },
   
+  "Elyvia": {
+    "Sweet Dance": {hpPercent: 0.03, controlImmune: 0.04, speed: 4},
+    "Legendary Sweet Dance": {hpPercent: 0.06, controlImmune: 0.06, speed: 6},
+  },
+  
   "Garuda": {
     "Super Harvest": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
     "Legendary Super Harvest": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04},
@@ -70,6 +75,8 @@ var skins = {
   },
   
   "Ithaqua": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
   },
   
   "Penny": {

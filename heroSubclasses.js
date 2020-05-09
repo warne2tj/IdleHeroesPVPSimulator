@@ -966,7 +966,7 @@ class Delacium extends hero {
     
     if (targets.length < maxTargets) { maxTargets = targets.length; }
     
-    if (targets.length > 0) {
+    if (targets.length > 0 && this._currentStats["totalHP"] > 0) {
       var validDebuffs = [];
       
       for (var d in targets[0]._debuffs) {
@@ -1081,6 +1081,108 @@ class Delacium extends hero {
       if (damageResult["damageAmount"] > 0) {
         activeQueue.push([this, targets[0], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
       }
+    }
+    
+    return result;
+  }
+}
+
+
+// Elyvia
+class Elyvia extends hero {
+  passiveStats() {
+    // apply Nothing Scare Elyvia passive
+    this.applyStatChange({hpPercent: 0.30, attackPercent: 0.25, effectBeingHealed: 0.30}, "PassiveStats");
+  }
+  
+  
+  eventEnemyBasic(source, e) {
+    var result = "";
+    
+    for (var i in e) {
+      if ("Fairy's Guard" in e[i][1]._buffs) {
+        for (var s in e[i][1]._buffs["Fairy's Guard"]) {
+          var damageResult = e[i][1].calcDamage(e[i][1], e[i][1]._currentStats["totalAttack"] * 3, "passive", "normal");
+          result += source.takeDamage(e[i][1], "Fairy's Guard", damageResult, 0);
+          
+          var healAmount = e[i][1].calcHeal(e[i][1], e[i][1]._currentStats["totalAttack"] * 1.5);
+          result += e[i][1].getHeal(e[i][1], healAmount);
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyActive(source, e) {
+    return this.eventEnemyBasic(source, e);
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] > 0) {
+      var targets = getRandomTargets(this, this._enemies);
+      var speedDiff = 0;
+      
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i]._currentStats["speed"] > this._currentStats["speed"]) {
+          result += "<div>" + this.heroDesc() + " <span class='skill'>Exchange, Not Steal!</span> swapped speed with " + targets[i].heroDesc() + ".</div>";
+          
+          speedDiff = targets[i]._currentStats["speed"] - this._currentStats["speed"];
+          result += this.getBuff(this, "Exchange, Not Steal!", 1, {speed: speedDiff});
+          result += targets[i].getDebuff(this, "Exchange, Not Steal!", 1, {speed: speedDiff});
+        }
+        break;
+      }
+      
+      
+      var targets = getRandomTargets(this, this._allies);
+      if (targets.length > 0) {
+        result += targets[0].getBuff(this, "Fairy's Guard", 2, {});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = super.doBasic();
+    var targets = getRandomTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      if (!("Shrink" in targets[0]._debuffs)) {
+        result += targets[0].getDebuff(this, "Shrink", 2, {allDamageTaken: -0.30, allDamageDealt: 0.50});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 4);
+      result += targets[0].takeDamage(this, "You Miss Lilliput?!", damageResult);
+      
+      if (!("Shrink" in targets[0]._debuffs) && damageResult["damageAmount"] > 0 && targets[0]._currentStats["totalHP"] > 0) {
+        result += targets[0].getDebuff(this, "Shrink", 2, {allDamageTaken: -0.30, allDamageDealt: 0.50});
+      }
+    }
+    
+    var targets = getRandomTargets(this, this._allies);
+    var maxTargets = 3;
+    if (targets.length < maxTargets) { maxTargets = targets.length; }
+    
+    for (var i = 0; i < maxTargets; i++) {
+      result += targets[i].getBuff(this, "Fairy's Guard", 2, {});
     }
     
     return result;
@@ -1218,7 +1320,7 @@ class Gustin extends hero {
     var result = "";
     var targets = [];
     
-    if (Math.random() < 0.5) {
+    if (Math.random() < 0.5 && this._currentStats["totalHP"] > 0) {
       targets = getRandomTargets(this, this._enemies);
       var maxTargets = 2;
       if (targets.length < maxTargets) { maxTargets = targets.length; }
