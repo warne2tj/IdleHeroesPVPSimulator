@@ -15,6 +15,7 @@ Implemented Heroes
   * Carrie
   * Dark Arthindol
   * Delacium
+  * Elyvia
   * Garuda
   * Gustin
   * Horus
@@ -28,8 +29,11 @@ Upcoming Heroes
   * Kroos
   * Mihm
   * Nakia
-  * Elyvia
   * Oberon
+  * Cthuga
+  * Michelle
+  * Emily
+  * Faith Blade
   
   
 Implemented Monsters
@@ -87,6 +91,9 @@ Hero Mechanics:
   * Ithaqua
     + How does ghost possessed interact with taunt?
     + Does ghost possessed trigger other hero's on active abilities?
+  * Elyvia
+    + Is all damage taken a different stat than all damage reduce?
+    + is the speed exchange a buff/debuff effect?
     
 
 Mechanics:

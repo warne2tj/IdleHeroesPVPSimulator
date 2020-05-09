@@ -108,6 +108,8 @@ class hero {
     this._stats["fixedHP"] = 0;
     this._stats["damageAgainstBurning"] = 0.0;
     this._stats["allDamageReduce"] = 0.0;
+    this._stats["allDamageTaken"] = 0.0;
+    this._stats["allDamageDealt"] = 0.0;
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
@@ -507,6 +509,7 @@ class hero {
     var holyDamage = attackDamage * holyDamageIncrease;
     var lethalFightback = 1;
     var damageAgainstBurning = 1;
+    var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
     
     var critDamageReduce = target._currentStats["critDamageReduce"];
     var blockChance = canBlock * (target._currentStats["block"] - precision);
@@ -569,8 +572,8 @@ class hero {
     }
     
     
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning;
-    holyDamage = holyDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning;    
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning * allDamageDealt;
+    holyDamage = holyDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning * allDamageDealt;    
     
     var blocked = false;
     var critted = false;
@@ -1120,6 +1123,7 @@ class hero {
     var armorMitigation = armorReduces * (this._currentStats["totalArmor"] * (1 - armorBreak) / (180 + 20*(this._heroLevel)));
     var reduceDamage = this._currentStats["damageReduce"] > 0.75 ? 0.75 : this._currentStats["damageReduce"];
     var allDamageReduce = this._currentStats["allDamageReduce"];
+    var allDamageTaken = 1 + this._currentStats["allDamageTaken"];
     
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
@@ -1137,8 +1141,8 @@ class hero {
       damageResult["holyDamage"] = damageResult["holyDamage"] * (1 - dotReduce);
     }
     
-    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"] * (1-allDamageReduce) * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce));
-    damageResult["holyDamage"] = Math.round(damageResult["holyDamage"] * (1-allDamageReduce) * (1-reduceDamage) * (1-classDamageReduce));
+    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"] * (1-allDamageReduce) * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * allDamageTaken);
+    damageResult["holyDamage"] = Math.round(damageResult["holyDamage"] * (1-allDamageReduce) * (1-reduceDamage) * (1-classDamageReduce) * allDamageTaken);
     damageResult["damageAmount"] += damageResult["holyDamage"];
     
     // amenra shields
