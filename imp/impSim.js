@@ -104,7 +104,7 @@ function nextSimBlock() {
           luckDice--;
           roll = 10;
           
-        } else if (luckDice > 0 && pos != 15 && pos < 20 && pos >= 14) {
+        } else if (luckDice > 0 && pos != 15 && pos < 19 && pos >= 14) {
           luckDice--;
           roll = 20 - pos;
           
