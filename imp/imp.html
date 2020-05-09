@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Imp's Adventure Simulator</title>
+  
+  <link rel="stylesheet" type="text/css" href="impStyle.css">
+  
+  <script src="impSim.js"></script>
+</head>
+
+
+<body onload="init();">
+  <h1>Imp's Adventure Simulator</h1>
+  
+  <p>
+    <div><label for="">Ordinary Dice: </label><input type="text" id="ordinary" size="2" value="78"></input></div>
+    <div><label for="">Lucky Dice: </label><input type="text" id="lucky" size="2" value="0"></input></div>
+    <div><label for="">Starting Stars: </label><input type="text" id="stars" size="3" value="0"></input></div>
+    
+    <div><label for="">Starting Position: </label><select id="startPos" value="0">
+      <option value="0">Start</option>
+      <option value="1">Spirit Workshop 1</option>
+      <option value="2">Promotion Stone Workshop 1</option>
+      <option value="3">Magic Dust Workshop 1</option>
+      <option value="4">Starry Mushroom 1</option>
+      <option value="5">Wishing Hut</option>
+      <option value="6">3-Star Hero Workshop</option>
+      <option value="7">Spirit Workshop 2</option>
+      <option value="8">Monster Soul Workshop</option>
+      <option value="9">Magic Dust Workshop 2</option>
+      <option value="10">Fortune Hut</option>
+      <option value="11">Starry Mushroom 2</option>
+      <option value="12">Promotion Stone Workshop 2</option>
+      <option value="13">5-Star Hero Workshop</option>
+      <option value="14">Spirit Workshop 2</option>
+      <option value="15">Karma Hut</option>
+      <option value="16">Magic Dust Workshop 3</option>
+      <option value="17">4-Star Hero Workshop</option>
+      <option value="18">Starry Mushroom 3</option>
+      <option value="19">Chaos Stone Workshop</option>
+      <option value="20">Lucky Hut</option>
+    </select></div>
+    
+    <div><label for="">First Starry Mushroom Level: </label><input type="text" id="mushroom1" size="3" value="1"></input></div>
+    <div><label for="">Second Starry Mushroom Level: </label><input type="text" id="mushroom2" size="3" value="1"></input></div>
+    <div><label for="">Third Starry Mushroom Level: </label><input type="text" id="mushroom3" size="3" value="1"></input></div>
+    <div><input type="submit" value="Run a Million Simulations" onclick="runImpSim();"></input></div>
+  </p>
+  
+  <div class="chart">
+    <div class="row">
+      <div class="col1">0-79</div>
+      <div class="col2 container"><div class="bar" id="bin1">&nbsp;</div></div>
+    </div>
+    
+    <div class="row">
+      <div class="col1">80-109</div>
+      <div class="col2 container"><div class="bar" id="bin2">&nbsp;</div></div>
+    </div>
+    
+    <div class="row">
+      <div class="col1">110-139</div>
+      <div class="col2 container"><div class="bar" id="bin3">&nbsp;</div></div>
+    </div>
+    
+    <div class="row">
+      <div class="col1">140-169</div>
+      <div class="col2 container"><div class="bar" id="bin4">&nbsp;</div></div>
+    </div>
+    
+    <div class="row">
+      <div class="col1">170-199</div>
+      <div class="col2 container"><div class="bar" id="bin5">&nbsp;</div></div>
+    </div>
+    
+    <div class="row">
+      <div class="col1">200-229</div>
+      <div class="col2 container"><div class="bar" id="bin6">&nbsp;</div></div>
+    </div>
+    
+    <div class="row">
+      <div class="col1">230-259</div>
+      <div class="col2 container"><div class="bar" id="bin7">&nbsp;</div></div>
+    </div>
+    
+    <div class="row">
+      <div class="col1">260-299</div>
+      <div class="col2 container"><div class="bar" id="bin8">&nbsp;</div></div>
+    </div>
+    
+    <div class="row">
+      <div class="col1">300+</div>
+      <div class="col2 container"><div class="bar" id="bin9">&nbsp;</div></div>
+    </div>
+  </div>  
+  
+</body>
+
+</html>
