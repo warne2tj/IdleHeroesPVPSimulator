@@ -162,6 +162,22 @@ var baseHeroStats = {
     }
   },
   
+  "Gustin": {
+    className: Gustin,
+    heroFaction: "Shadow",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 8252,
+      baseAttack: 343,
+      baseArmor: 62,
+      baseSpeed: 220,
+      growHP: 825.2,
+      growAttack: 34.3,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
   "Horus": {
     className: Horus,
     heroFaction: "Shadow",

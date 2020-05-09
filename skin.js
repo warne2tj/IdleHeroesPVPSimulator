@@ -57,6 +57,11 @@ var skins = {
     "Legendary Law of the West": {holyDamage: 0.1, damageReduce: 0.05, critDamage: 0.1}
   },
   
+  "Gustin": {
+    "Grand Carnival": {controlImmune: 0.05, hpPercent: 0.05, attackPercent: 0.03},
+    "Legendary Grand Carnival": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
+  },
+  
   "Horus": {
     "Bloody War God": {hpPercent: 0.03, attackPercent: 0.03, critDamage: 0.05},
     "Legendary Bloody War God": {hpPercent: 0.06, attackPercent: 0.06, critDamage: 0.075},

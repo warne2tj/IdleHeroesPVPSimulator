@@ -50,6 +50,15 @@ function isMonster(source) {
 }
 
 
+function isDispellable(strName) {
+  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem"].includes(strName)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+
 function isControlEffect(strName, effects={}) {
   if (["stun", "petrify", "freeze", "entangle", "Silence", "Taunt", "Seal of Light", "Horrify"].includes(strName)) {
     return true;
