@@ -1,0 +1,47 @@
+/* Make sure that padding behaves as expected */
+* {box-sizing:border-box}
+
+.chart {
+  width: 50%;
+}
+
+.container {
+  width: 100%;
+  background-color: #fff;
+}
+
+
+.bar {
+  text-align: right;
+  color: black;
+  width: 1%;
+  background-color: #2196F3;
+}
+
+.col1 {
+  float: left;
+  padding: 3px;
+}
+
+.col2 {
+  float: right;
+  width: 80%;
+  padding: 3px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the submit button */
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 5px;
+}
