@@ -17,6 +17,7 @@ Implemented Heroes
   * Delacium
   * Garuda
   * Horus
+  * Ithaqua
   * Penny
   * Tara
   * Unimax
@@ -25,7 +26,6 @@ Implemented Heroes
 Upcoming Heroes
   * Kroos
   * Mihm
-  * Ithaqua
   * Nakia
   * Gustin
   * Elyvia
@@ -84,6 +84,9 @@ Hero Mechanics:
     + Is the attack steal against base attack or total attack? Is is then added to his base attack? or is it a flat bonus?
   * Delacium
     + What is considered a unique debuff? Is a skill that applies 2 effects considered 2 debuffs or one?
+  * Ithaqua
+    + How does ghost possessed interact with taunt?
+    + Does ghost possessed trigger other hero's on active abilities?
     
 
 Mechanics:

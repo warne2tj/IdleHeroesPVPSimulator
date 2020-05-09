@@ -727,7 +727,7 @@ class hero {
   }
   
   
-  getBuff(source, buffName, duration, effects) {
+  getBuff(source, buffName, duration, effects={}) {
     var result = "";
     var healResult = "";
     
@@ -774,7 +774,7 @@ class hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects) {
+  getDebuff(source, debuffName, duration, effects={}) {
     var damageResult = {};
     var strDamageResult = "";
     var result = "";
@@ -1062,7 +1062,7 @@ class hero {
       var rng = Math.floor(Math.random() * listDebuffs.length);
       
       for (var i in allDebuffs) {
-        if (!(["Seal of Light", "Power of Light"].includes(allDebuffs[i]))) {
+        if (!(["Seal of Light", "Power of Light", "Ghost Possessed"].includes(allDebuffs[i]))) {
           listDebuffs.push(allDebuffs[i]);
         }
       }
@@ -1183,6 +1183,15 @@ class hero {
           }
           
           result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>";
+          
+          for (var b in this._buffs) {
+            result += this.removeBuff(b);
+          }
+          
+          for (var d in this._debuffs) {
+            result += this.removeDebuff(d);
+          }
+          
           deathQueue.push([source, this]);
         }
         
