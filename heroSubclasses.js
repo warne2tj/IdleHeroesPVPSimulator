@@ -94,25 +94,23 @@ class Aida extends hero {
     var healAmount = 0;
     
     if (this._currentStats["totalHP"] > 0) {
-      if (!("Seal of Light" in this._debuffs)) {
-        var damageResult = {};
-        var targets = getAllTargets(this, this._enemies);
-        
-        for (var i=0; i<targets.length; i++) {
+      var damageResult = {};
+      var targets = getAllTargets(this, this._enemies);
+      
+      for (var i=0; i<targets.length; i++) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          this._rng = Math.random();
+          damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
+          result += targets[i].takeDamage(this, "Final Verdict", damageResult);
+          
           if (targets[i]._currentStats["totalHP"] > 0) {
-            this._rng = Math.random();
-            damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
-            result += targets[i].takeDamage(this, "Final Verdict", damageResult);
-            
-            if (targets[i]._currentStats["totalHP"] > 0) {
-              result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
-            }
+            result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
           }
         }
-        
-        healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.15);
-        result += this.getHeal(this, healAmount);
       }
+      
+      healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.15);
+      result += this.getHeal(this, healAmount);
     }
     
     return result;
@@ -222,7 +220,7 @@ class AmenRa extends hero {
     var damageResult = {};
     var targets;
     
-    if (!("Seal of Light" in this._debuffs) && !(this.isUnderStandardControl())) {
+    if (!(this.isUnderStandardControl())) {
       for (var i=1; i<=3; i++) {
         targets = getRandomTargets(this, this._enemies);
         
@@ -302,7 +300,7 @@ class Amuvor extends hero {
     var result = "";
     
     // Does not trigger himself on his own active
-    if (!("Seal of Light" in this._debuffs) && this.heroDesc() != source.heroDesc()) {
+    if (this.heroDesc() != source.heroDesc()) {
       result += "<div>" + this.heroDesc() + " <span class='skill'>Energy Oblivion</span> triggered.</div>";
       
       var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 2);
@@ -400,7 +398,7 @@ class Aspen extends hero {
   
   eventAllyActive(source, e) {
     var result = "";
-    if (source.heroDesc() == this.heroDesc() && !("Seal of Light" in this._debuffs)) {
+    if (source.heroDesc() == this.heroDesc()) {
       result += this.getBuff(this, "Soul Sacrifice", 99, {attackPercent: 0.15, critDamage: 0.15});
       result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
     }
@@ -1102,7 +1100,7 @@ class Garuda extends hero {
   eventAllyBasic(source, e) {
     var result = "";
     
-    if (!("Seal of Light" in this._debuffs) && !(this.isUnderStandardControl())) {
+    if (!(this.isUnderStandardControl())) {
       var damageResult = {};
       
       result += "<div>" + this.heroDesc() + " <span class='skill'>Instinct of Hunt</span> passive triggered.</div>";
@@ -1216,41 +1214,39 @@ class Horus extends hero {
   eventEnemyBasic(source, e) {
     var result = "";
     
-    if (!("Seal of Light" in this._debuffs)) {
-      if (this._currentStats["blockCount"] >= 3) {
-        this._currentStats["blockCount"] = 0;
-        
-        if ("Seal of Light" in this._debuffs) { result += this.removeDebuff("Seal of Light"); }
-        if ("Horrify" in this._debuffs) { result += this.removeDebuff("Horrify"); }
-        if ("Taunt" in this._debuffs) { result += this.removeDebuff("Taunt"); }
-        if ("Silence" in this._debuffs) { result += this.removeDebuff("Silence"); }
-        if ("petrify" in this._debuffs) { result += this.removeDebuff("petrify"); }
-        if ("stun" in this._debuffs) { result += this.removeDebuff("stun"); }
-        if ("entangle" in this._debuffs) { result += this.removeDebuff("entangle"); }
-        if ("freeze" in this._debuffs) { result += this.removeDebuff("freeze"); }
-        
-        
-        var damageAmount = this._stats["totalHP"] * 0.2;
-        var maxDamage = this._currentStats["totalAttack"] * 25;
-        
-        if (damageAmount > maxDamage) { damageAmount = maxDamage; }
-        
-        var damageResult;
-        var targets = getRandomTargets(this, this._enemies);
-        var totalDamage = 0;
-        var maxTargets = 3;
-        
-        if (targets.length < maxTargets) { maxTargets = targets.length; }
-        
-        for (var i = 0; i < maxTargets; i++) {
-          damageResult = this.calcDamage(targets[i], damageAmount, "passive", "hpPercent");
-          result += targets[i].takeDamage(this, "Crimson Contract", damageResult);
-          totalDamage += damageResult["damageAmount"];
-        }
-        
-        var healAmount = this.calcHeal(this, totalDamage * 0.4);
-        result += this.getHeal(this, healAmount);
+    if (this._currentStats["blockCount"] >= 3) {
+      this._currentStats["blockCount"] = 0;
+      
+      if ("Seal of Light" in this._debuffs) { result += this.removeDebuff("Seal of Light"); }
+      if ("Horrify" in this._debuffs) { result += this.removeDebuff("Horrify"); }
+      if ("Taunt" in this._debuffs) { result += this.removeDebuff("Taunt"); }
+      if ("Silence" in this._debuffs) { result += this.removeDebuff("Silence"); }
+      if ("petrify" in this._debuffs) { result += this.removeDebuff("petrify"); }
+      if ("stun" in this._debuffs) { result += this.removeDebuff("stun"); }
+      if ("entangle" in this._debuffs) { result += this.removeDebuff("entangle"); }
+      if ("freeze" in this._debuffs) { result += this.removeDebuff("freeze"); }
+      
+      
+      var damageAmount = this._stats["totalHP"] * 0.2;
+      var maxDamage = this._currentStats["totalAttack"] * 25;
+      
+      if (damageAmount > maxDamage) { damageAmount = maxDamage; }
+      
+      var damageResult;
+      var targets = getRandomTargets(this, this._enemies);
+      var totalDamage = 0;
+      var maxTargets = 3;
+      
+      if (targets.length < maxTargets) { maxTargets = targets.length; }
+      
+      for (var i = 0; i < maxTargets; i++) {
+        damageResult = this.calcDamage(targets[i], damageAmount, "passive", "hpPercent");
+        result += targets[i].takeDamage(this, "Crimson Contract", damageResult);
+        totalDamage += damageResult["damageAmount"];
       }
+      
+      var healAmount = this.calcHeal(this, totalDamage * 0.4);
+      result += this.getHeal(this, healAmount);
     }
     
     return result;
@@ -1265,10 +1261,8 @@ class Horus extends hero {
   eventEnemyActive(source, e) {
     var result = "";
     
-    if (!("Seal of Light" in this._debuffs)) {
-      result += this.getBuff(this, "Descending Raven", 99, {attackPercent: 0.05, critDamage:0.02});
-      result += this.eventEnemyBasic(e);
-    }
+    result += this.getBuff(this, "Descending Raven", 99, {attackPercent: 0.05, critDamage:0.02});
+    result += this.eventEnemyBasic(e);
     
     return result;
   }
@@ -1363,6 +1357,160 @@ class Horus extends hero {
 
 
 
+// Ithaqua
+class Ithaqua extends hero {
+  passiveStats() {
+    // apply Ode to Shadow passive
+    this.applyStatChange({attackPercent: 0.35, crit: 0.35, critDamage: 0.5, speed: 60, controlImmune: 0.3}, "PassiveStats");
+  }
+  
+  
+  eventEnemyDied(e) {
+    var result = "";
+    
+    if (!("Seal of Light" in this._debuffs) && e[0].heroDesc() == this.heroDesc()) {
+      var targets = getRandomTargets(this, this._enemies);
+      
+      if (targets.length > 0) {
+        result += targets[0].getDebuff(this, "Ghost Possessed", 3);
+      }
+      
+      result += this.getBuff(this, "Poisonous Blade", 3, {armorBreak: 1.0});
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyActive(source, e) {
+    var result = "";
+    var damageResult = {};
+    
+    if (source.heroDesc() == this.heroDesc()) {
+      for (var i in e) {
+        if (e[i][1]._currentStats["totalHP"] > 0) {
+          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poison");
+          result += e[i][1].getDebuff(this, "Poisonous Blade - Poison", 2, {poison: Math.round(damageResult["damageAmount"])});
+          
+          if (e[i][1]._currentStats["totalHP"] > 0 && e[i][3] == true) {
+            damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleed");
+            result += e[i][1].getDebuff(this, "Poisonous Blade - Bleed", 2, {bleed: Math.round(damageResult["damageAmount"])});
+          }
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyBasic(source, e) {
+    return this.eventAllyActive(source, e);
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getLowestHPTargets(this, this._enemies);
+    var healAmount = 0;
+    
+    for (var i=0; i < this._enemies.length; i++) {
+      if (this._enemies[i]._currentStats["totalHP"] > 0 && "Ghost Possessed" in this._enemies[i]._debuffs) {
+        damageResult = this.calcDamage(this._enemies[i], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
+        result += this._enemies[i].takeDamage(this, "GP - Basic Attack", damageResult);
+        
+        if (damageResult["damageAmount"] > 0) {
+          basicQueue.push([this, this._enemies[i], damageResult["damageAmount"], damageResult["critted"]]);
+          healAmount = this.calcHeal(this, damageResult["damageAmount"]);
+          result += this.getHeal(this, healAmount);
+        }
+        
+        if (this._enemies[i]._currentStats["totalHP"] > 0) {
+          result += this._enemies[i].getDebuff(this, "Ghost Possessed", 3);
+        }
+        
+        this._rng = Math.random();
+      }
+    }
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
+      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        if (targets[0]._currentStats["totalHP"] > 0) {
+          result += targets[0].getDebuff(this, "Ghost Possessed", 3);
+        }
+        
+        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getLowestHPTargets(this, this._enemies);
+    var healAmount = 0;
+    var hpDamage = 0;
+    var hpDamageResult = {damageAmount: 0};
+    
+    for (var i=0; i < this._enemies.length; i++) {
+      if (this._enemies[i]._currentStats["totalHP"] > 0 && "Ghost Possessed" in this._enemies[i]._debuffs) {
+        damageResult = this.calcDamage(this._enemies[i], this._currentStats["totalAttack"], "active", "normal", 4.4);
+        result += this._enemies[i].takeDamage(this, "GP - Ghost Possession", damageResult);
+        
+        if (damageResult["damageAmount"] > 0) {
+          if (this._enemies[i]._currentStats["totalHP"] > 0) {
+            hpDamage = this._enemies[i]._currentStats["totalHP"] * 0.10;
+            if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
+            hpDamageResult = this.calcDamage(this._enemies[i], hpDamage, "active2", "hpPercent");
+            result += this._enemies[i].takeDamage(this, "Ghost Possession HP", hpDamageResult);
+            
+            if (this._enemies[i]._currentStats["totalHP"] > 0) {
+              result += this._enemies[i].getDebuff(this, "Ghost Possessed", 3);
+            }
+          }
+        
+          activeQueue.push([this, this._enemies[0], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+          healAmount = this.calcHeal(this, damageResult["damageAmount"] + hpDamageResult["damageAmount"]);
+          result += this.getHeal(this, healAmount);
+        }
+        
+        this._rng = Math.random();
+      }
+    }
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 4.4);
+      result += targets[0].takeDamage(this, "Ghost Possession", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        if (targets[0]._currentStats["totalHP"] > 0) {
+          hpDamage = targets[0]._currentStats["totalHP"] * 0.10;
+          if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
+          hpDamageResult = this.calcDamage(targets[0], hpDamage, "active2", "hpPercent");
+          result += targets[0].takeDamage(this, "Ghost Possession HP", hpDamageResult);
+          
+          if (targets[0]._currentStats["totalHP"] > 0) {
+            result += targets[0].getDebuff(this, "Ghost Possessed", 3);
+          }
+        }
+        
+        activeQueue.push([this, targets[0], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+}
+
+
+
 // Mihm
 class Mihm extends hero {
   passiveStats() {
@@ -1405,7 +1553,7 @@ class Penny extends hero {
     var result = "";
     
     for (var i in e) {
-      if (this.heroDesc() == source.heroDesc() && e[i][3] == true && !("Seal of Light" in this._debuffs)) {
+      if (this.heroDesc() == source.heroDesc() && e[i][3] == true) {
         var damageResult = {};
         var targets = getAllTargets(this, this._enemies);
         
@@ -1585,7 +1733,7 @@ class Tara extends hero {
   eventAllyBasic(source, e) {
     var result = "";
     
-    if (this.heroDesc() == source.heroDesc() && !(this.isUnderStandardControl()) && !("Seal of Light" in this._debuffs)) {
+    if (this.heroDesc() == source.heroDesc() && !(this.isUnderStandardControl())) {
       var damageResult = {};
       var targets = getAllTargets(this, this._enemies);
       
@@ -1683,7 +1831,7 @@ class UniMax3000 extends hero {
   endOfRound(roundNum) {
     var result = "";
     
-    if (this._currentStats["totalHP"] > 0 && !("Seal of Light" in this._debuffs)) {
+    if (this._currentStats["totalHP"] > 0) {
       var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.2);
       
       result += this.getHeal(this, healAmount);
@@ -1726,7 +1874,7 @@ class UniMax3000 extends hero {
     var result = "";
     
     for (var i in e) {
-      if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0 && e[i][1].heroDesc() == this.heroDesc()) {
+      if (this._currentStats["totalHP"] > 0 && e[i][1].heroDesc() == this.heroDesc()) {
         var attackStolen = Math.floor(source._currentStats["totalAttack"] * 0.2);
         
         result += "<div>" + this.heroDesc() + " <span class='skill'>Frenzied Taunt</span> triggered.</div>"

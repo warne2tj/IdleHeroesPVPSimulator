@@ -64,6 +64,9 @@ var skins = {
     "Legendary Steam Fantasy": {damageReduce: 0.05, attackPercent: 0.06, block: 0.06}
   },
   
+  "Ithaqua": {
+  },
+  
   "Penny": {
     "Infinite Joy": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
     "Legendary Infinite Joy": {controlImmune: 0.06, critDamage: 0.1, hpPercent: 0.06},
