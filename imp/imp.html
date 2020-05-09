@@ -47,6 +47,15 @@
     <div><label for="">First Starry Mushroom Level: </label><input type="text" id="mushroom1" size="3" value="1"></input></div>
     <div><label for="">Second Starry Mushroom Level: </label><input type="text" id="mushroom2" size="3" value="1"></input></div>
     <div><label for="">Third Starry Mushroom Level: </label><input type="text" id="mushroom3" size="3" value="1"></input></div>
+    
+    <div><label for="">Active Tarot: </label><select id="activeTarot" value="0">
+      <option value="None">None</option>
+      <option value="DoubleNextRoll">Double Next Roll</option>
+      <option value="RollTwice">Roll Two Dice on Next Roll</option>
+      <option value="DoubleStars">Get Double Stars on Next Starry Mushroom</option>
+      <option value="MoveBackwards">Move Backwards on Next Roll</option>
+    </select></div>
+    
     <div><input type="submit" value="Run a Million Simulations" onclick="runImpSim();"></input></div>
   </p>
   

@@ -15,7 +15,7 @@
   text-align: right;
   color: black;
   width: 1%;
-  background-color: #2196F3;
+  background-color: #4ea8ec;
 }
 
 .col1 {
@@ -33,6 +33,10 @@
   content: "";
   display: table;
   clear: both;
+}
+
+input {
+  margin: 5px;
 }
 
 /* Style the submit button */
