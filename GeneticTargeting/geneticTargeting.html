@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Idle Heroes Battle Simulator - Genetic Targeting Algorithm</title>
+  
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  
+  <script src="../utilityFunctions.js"></script>
+  <script src="../heroes.js"></script>
+  <script src="../heroSubclasses.js"></script>
+  <script src="../baseHeroStats.js"></script>
+  <script src="../monsters.js"></script>
+  <script src="../baseMonsterStats.js"></script>
+  <script src="../guildTech.js"></script>
+  <script src="../equipment.js"></script>
+  <script src="../stone.js"></script>
+  <script src="../artifact.js"></script>
+  <script src="../skin.js"></script>
+  <script src="../avatarFrame.js"></script>
+  <script src="geneticTargeting.js"></script>
+  <script src="../simulation.js"></script>
+</head>
+
+
+<body onload="initialize();">
+  <h1>Idle Heroes Battle Simulator - Genetic Targeting Algorithm</h1>
+  
+  <div>
+    <h2>Progress Log</h2>
+    <div style="display: none;" class="log" id="combatLog"></div>
+    
+    <div class="row">
+      <div class="log column" id="summaryLog"></div>
+      <div class="column"><textarea id="generationLog" rows="25"></textarea></div>
+    </div>
+    
+    <div>
+      <label for="numSims">Number of Simulations to Run per Team:</label>
+      <input type="text" id="numSims" size="3" value="50" />
+      <input type="submit" value="Run" onclick="runMassLoop();"></input>
+      <input type="submit" value="Stop" onclick="stopLoop=true;"></input>
+    </div>
+    
+    <div>
+      <label for="genCount">Generation:</label>
+      <input type="text" id="genCount" size="3" value="0" />
+    </div>
+  </div>  
+  
+  
+  <button class="accordion colorC">Teams</button>
+  <div class="panel">
+    <div>
+      <div>
+        <label for="numCreate">Number of Random Teams to Create:</label>
+        <input type="text" id="numCreate" size="3" value="200" />
+        <input type="submit" value="Create Random Teams" onclick="createRandomTeams();"></input>
+      </div>
+      
+      <div>Put data of teams into text area below or generate them randomly.</div>
+      
+      <div>Benchmark Team</div>
+      <div>
+        <textarea id="benchmark" rows="15">
+{
+"Benchmark": [
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 Speed, Attack", "Demon Bell", "Growth", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Split HP", "S3 Speed, HP", "Demon Bell", "Growth", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 Speed, Attack", "Demon Bell", "Growth", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Aida", "Legendary Dark Eclipse", "Class Gear", "S3 Speed, Attack", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Aida", "Legendary Dark Eclipse", "Class Gear", "S3 Speed, Attack", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 Speed, Attack", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"],
+"Usable Heroes": [
+  "Aida", "Amen-Ra", "Amuvor", "Aspen", "Belrain", "Dark Arthindol", "Delacium", "Elyvia", 
+  "Garuda", "Gustin", "Horus", "Ithaqua", "Mihm", "Penny", "Tara", "UniMax-3000"
+]
+}
+        </textarea>
+      </div>
+      
+      <div>Trial Teams</div>
+      <div>
+        <textarea id="configText" rows="20"></textarea>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="row">
+    <div class="column">
+      <button class="accordion colorA">Attacker Global Settings</button>
+      <div class="panel">
+        <div class="row">
+          <div class="col-25"><label for="attAvatarFrame">Avatar Frame:</label></div>
+          <div class="col-75"><input type="text" id="attAvatarFrame" value="None" /></div>
+        </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="attMonster">Monster:</label></div>
+          <div class="col-75"><input type="text" id="attMonster" /></div>
+        </div>
+        
+        <h4>Celestial Island Statues</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attHolyhpPercent">Holy HP: </label></div>
+              <div class="column"><input type="text" id="attHolyhpPercent" onchange="updateAttackers();" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attHolyattackPercent">Holy Attack: </label></div>
+              <div class="column"><input type="text" id="attHolyattackPercent" onchange="updateAttackers();" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attHolyspeed">Holy Speed: </label></div>
+              <div class="column"><input type="text" id="attHolyspeed" onchange="updateAttackers();" value="30" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attEvilhpPercent">Evil HP: </label></div>
+              <div class="column"><input type="text" id="attEvilhpPercent" onchange="updateAttackers();" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attEvilattackPercent">Evil Attack: </label></div>
+              <div class="column"><input type="text" id="attEvilattackPercent" onchange="updateAttackers();" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attEvilspeed">Evil Speed: </label></div>
+              <div class="column"><input type="text" id="attEvilspeed" onchange="updateAttackers();" value="30" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        <h4>Warrior Tech</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechWarriorhpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorhpPercent" value="60" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorattackPercent">Attack: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorattackPercent" value="50" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorcrit">Crit: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorcrit" value="40" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorblock">Block: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorblock" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorskillDamage" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorspeed">Speed: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorspeed" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorconstitution" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriormind">Mind: </label></div>
+              <div class="column"><input type="text" id="attTechWarriormind" value="20" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechWarriorantiMage">Anti Mage: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorantiMage" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorantiRanger">Anti Ranger: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorantiRanger" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorantiAssassin">Anti Assassin: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorantiAssassin" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorantiPriest">Anti Priest: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorantiPriest" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorstunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorstunImmune" value="10" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorfreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorfreezeImmune" value="10" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriorpetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="attTechWarriorpetrifyImmune" value="10" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechWarriortwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="attTechWarriortwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <h4>Mage Tech</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechMagehpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="attTechMagehpPercent" value="60" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMageattackPercent">Attack: </label></div>
+              <div class="column"><input type="text" id="attTechMageattackPercent" value="50" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMagecrit">Crit: </label></div>
+              <div class="column"><input type="text" id="attTechMagecrit" value="40" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMageprecision">Precision: </label></div>
+              <div class="column"><input type="text" id="attTechMageprecision" value="30" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMageskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="attTechMageskillDamage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMagespeed">Speed: </label></div>
+              <div class="column"><input type="text" id="attTechMagespeed" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMageconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="attTechMageconstitution" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMagemind">Mind: </label></div>
+              <div class="column"><input type="text" id="attTechMagemind" value="20" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechMageantiWarrior">Anti Warrior: </label></div>
+              <div class="column"><input type="text" id="attTechMageantiWarrior" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMageantiRanger">Anti Ranger: </label></div>
+              <div class="column"><input type="text" id="attTechMageantiRanger" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMageantiAssassin">Anti Assassin: </label></div>
+              <div class="column"><input type="text" id="attTechMageantiAssassin" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMageantiPriest">Anti Priest: </label></div>
+              <div class="column"><input type="text" id="attTechMageantiPriest" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMagestunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="attTechMagestunImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMagefreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="attTechMagefreezeImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMagepetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="attTechMagepetrifyImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechMagetwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="attTechMagetwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <h4>Ranger Tech</h4>
+        
+        <div class="rows">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechRangerhpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="attTechRangerhpPercent" value="60" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerattackPercent">Attack: </label></div>
+              <div class="column"><input type="text" id="attTechRangerattackPercent" value="50" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerblock">Block: </label></div>
+              <div class="column"><input type="text" id="attTechRangerblock" value="40" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerprecision">Precision: </label></div>
+              <div class="column"><input type="text" id="attTechRangerprecision" value="30" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="attTechRangerskillDamage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerspeed">Speed: </label></div>
+              <div class="column"><input type="text" id="attTechRangerspeed" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="attTechRangerconstitution" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangermind">Mind: </label></div>
+              <div class="column"><input type="text" id="attTechRangermind" value="20" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechRangerantiWarrior">Anti Warrior: </label></div>
+              <div class="column"><input type="text" id="attTechRangerantiWarrior" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerantiMage">Anti Mage: </label></div>
+              <div class="column"><input type="text" id="attTechRangerantiMage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerantiAssassin">Anti Assassin: </label></div>
+              <div class="column"><input type="text" id="attTechRangerantiAssassin" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerantiPriest">Anti Priest: </label></div>
+              <div class="column"><input type="text" id="attTechRangerantiPriest" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerstunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="attTechRangerstunImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerfreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="attTechRangerfreezeImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangerpetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="attTechRangerpetrifyImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechRangertwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="attTechRangertwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <h4>Assassin Tech</h4>
+        
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechAssassinhpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinhpPercent" value="60" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassincritDamage">Crit Damage: </label></div>
+              <div class="column"><input type="text" id="attTechAssassincritDamage" value="50" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassincrit">Crit: </label></div>
+              <div class="column"><input type="text" id="attTechAssassincrit" value="40" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinarmorBreak">Armor Break: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinarmorBreak" value="30" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinskillDamage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinspeed">Speed: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinspeed" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinconstitution" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinmind">Mind: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinmind" value="20" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechAssassinantiWarrior">Anti Warrior: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinantiWarrior" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinantiMage">Anti Mage: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinantiMage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinantiRanger">Anti Ranger: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinantiRanger" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinantiPriest">Anti Priest: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinantiPriest" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinstunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinstunImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinfreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinfreezeImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassinpetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="attTechAssassinpetrifyImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechAssassintwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="attTechAssassintwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <h4>Priest Tech</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechPriesthpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="attTechPriesthpPercent" value="60" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestblock">Block: </label></div>
+              <div class="column"><input type="text" id="attTechPriestblock" value="50" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="attTechPriestcrit">Crit: </label></div>
+              <div class="column"><input type="text" id="attTechPriestcrit" value="40" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestspeed">Speed: </label></div>
+              <div class="column"><input type="text" id="attTechPriestspeed" value="30" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="attTechPriestskillDamage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestspeed2">Speed 2: </label></div>
+              <div class="column"><input type="text" id="attTechPriestspeed2" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="attTechPriestconstitution" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestmind">Mind: </label></div>
+              <div class="column"><input type="text" id="attTechPriestmind" value="20" size="3"/></div>
+          </div>
+        </div>
+          
+        <div class="column">
+            <div class="row">
+              <div class="column"><label for="attTechPriestantiWarrior">Anti Warrior: </label></div>
+              <div class="column"><input type="text" id="attTechPriestantiWarrior" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestantiMage">Anti Mage: </label></div>
+              <div class="column"><input type="text" id="attTechPriestantiMage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestantiRanger">Anti Ranger: </label></div>
+              <div class="column"><input type="text" id="attTechPriestantiRanger" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestantiAssassin">Anti Assassin: </label></div>
+              <div class="column"><input type="text" id="attTechPriestantiAssassin" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPrieststunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="attTechPrieststunImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestfreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="attTechPriestfreezeImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriestpetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="attTechPriestpetrifyImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="attTechPriesttwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="attTechPriesttwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
+    <div class="column">
+      <button class="accordion colorB">Defender Global Settings</button>
+      <div class="panel">
+        <div class="row">
+          <div class="col-25"><label for="defAvatarFrame">Avatar Frame:</label></div>
+          <div class="col-75"><input type="text" id="defAvatarFrame" value="None" /></div>
+        </div>
+        
+        <div class="row">
+          <div class="col-25"><label for="defMonster">Monster:</label></div>
+          <div class="col-75"><input type="text" id="defMonster" /></div>
+        </div>
+        
+        <h4>Celestial Island Statues</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defHolyhpPercent">Holy HP: </label></div>
+              <div class="column"><input type="text" id="defHolyhpPercent" onchange="updateDefenders();" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defHolyattackPercent">Holy Attack: </label></div>
+              <div class="column"><input type="text" id="defHolyattackPercent" onchange="updateDefenders();" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defHolyspeed">Holy Speed: </label></div>
+              <div class="column"><input type="text" id="defHolyspeed" onchange="updateDefenders();" value="30" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defEvilhpPercent">Evil HP: </label></div>
+              <div class="column"><input type="text" id="defEvilhpPercent" onchange="updateDefenders();" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defEvilattackPercent">Evil Attack: </label></div>
+              <div class="column"><input type="text" id="defEvilattackPercent" onchange="updateDefenders();" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defEvilspeed">Evil Speed: </label></div>
+              <div class="column"><input type="text" id="defEvilspeed" onchange="updateDefenders();" value="30" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        <h4>Warrior Tech</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechWarriorhpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorhpPercent" value="60" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorattackPercent">Attack: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorattackPercent" value="50" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorcrit">Crit: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorcrit" value="40" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorblock">Block: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorblock" value="30" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorskillDamage" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorspeed">Speed: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorspeed" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorconstitution" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriormind">Mind: </label></div>
+              <div class="column"><input type="text" id="defTechWarriormind" value="20" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechWarriorantiMage">Anti Mage: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorantiMage" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorantiRanger">Anti Ranger: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorantiRanger" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorantiAssassin">Anti Assassin: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorantiAssassin" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorantiPriest">Anti Priest: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorantiPriest" value="20" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorstunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorstunImmune" value="10" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorfreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorfreezeImmune" value="10" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriorpetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="defTechWarriorpetrifyImmune" value="10" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechWarriortwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="defTechWarriortwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <h4>Mage Tech</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechMagehpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="defTechMagehpPercent" value="60" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMageattackPercent">Attack: </label></div>
+              <div class="column"><input type="text" id="defTechMageattackPercent" value="50" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMagecrit">Crit: </label></div>
+              <div class="column"><input type="text" id="defTechMagecrit" value="40" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMageprecision">Precision: </label></div>
+              <div class="column"><input type="text" id="defTechMageprecision" value="30" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMageskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="defTechMageskillDamage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMagespeed">Speed: </label></div>
+              <div class="column"><input type="text" id="defTechMagespeed" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMageconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="defTechMageconstitution" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMagemind">Mind: </label></div>
+              <div class="column"><input type="text" id="defTechMagemind" value="20" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechMageantiWarrior">Anti Warrior: </label></div>
+              <div class="column"><input type="text" id="defTechMageantiWarrior" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMageantiRanger">Anti Ranger: </label></div>
+              <div class="column"><input type="text" id="defTechMageantiRanger" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMageantiAssassin">Anti Assassin: </label></div>
+              <div class="column"><input type="text" id="defTechMageantiAssassin" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMageantiPriest">Anti Priest: </label></div>
+              <div class="column"><input type="text" id="defTechMageantiPriest" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMagestunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="defTechMagestunImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMagefreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="defTechMagefreezeImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMagepetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="defTechMagepetrifyImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechMagetwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="defTechMagetwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <h4>Ranger Tech</h4>
+        
+        <div class="rows">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechRangerhpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="defTechRangerhpPercent" value="60" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerattackPercent">Attack: </label></div>
+              <div class="column"><input type="text" id="defTechRangerattackPercent" value="50" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerblock">Block: </label></div>
+              <div class="column"><input type="text" id="defTechRangerblock" value="40" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerprecision">Precision: </label></div>
+              <div class="column"><input type="text" id="defTechRangerprecision" value="30" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="defTechRangerskillDamage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerspeed">Speed: </label></div>
+              <div class="column"><input type="text" id="defTechRangerspeed" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="defTechRangerconstitution" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangermind">Mind: </label></div>
+              <div class="column"><input type="text" id="defTechRangermind" value="20" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechRangerantiWarrior">Anti Warrior: </label></div>
+              <div class="column"><input type="text" id="defTechRangerantiWarrior" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerantiMage">Anti Mage: </label></div>
+              <div class="column"><input type="text" id="defTechRangerantiMage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerantiAssassin">Anti Assassin: </label></div>
+              <div class="column"><input type="text" id="defTechRangerantiAssassin" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerantiPriest">Anti Priest: </label></div>
+              <div class="column"><input type="text" id="defTechRangerantiPriest" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerstunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="defTechRangerstunImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerfreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="defTechRangerfreezeImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangerpetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="defTechRangerpetrifyImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechRangertwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="defTechRangertwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <h4>Assassin Tech</h4>
+        
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechAssassinhpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinhpPercent" value="60" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassincritDamage">Crit Damage: </label></div>
+              <div class="column"><input type="text" id="defTechAssassincritDamage" value="50" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassincrit">Crit: </label></div>
+              <div class="column"><input type="text" id="defTechAssassincrit" value="40" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinarmorBreak">Armor Break: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinarmorBreak" value="30" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinskillDamage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinspeed">Speed: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinspeed" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinconstitution" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinmind">Mind: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinmind" value="20" size="3"/></div>
+            </div>
+          </div>
+          
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechAssassinantiWarrior">Anti Warrior: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinantiWarrior" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinantiMage">Anti Mage: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinantiMage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinantiRanger">Anti Ranger: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinantiRanger" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinantiPriest">Anti Priest: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinantiPriest" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinstunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinstunImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinfreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinfreezeImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassinpetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="defTechAssassinpetrifyImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechAssassintwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="defTechAssassintwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <h4>Priest Tech</h4>
+          
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechPriesthpPercent">HP: </label></div>
+              <div class="column"><input type="text" id="defTechPriesthpPercent" value="60" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestblock">Block: </label></div>
+              <div class="column"><input type="text" id="defTechPriestblock" value="50" size="3"/></div>
+            </div>
+            
+            <div class="row">
+              <div class="column"><label for="defTechPriestcrit">Crit: </label></div>
+              <div class="column"><input type="text" id="defTechPriestcrit" value="40" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestspeed">Speed: </label></div>
+              <div class="column"><input type="text" id="defTechPriestspeed" value="30" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestskillDamage">Skill Damage: </label></div>
+              <div class="column"><input type="text" id="defTechPriestskillDamage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestspeed2">Speed 2: </label></div>
+              <div class="column"><input type="text" id="defTechPriestspeed2" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestconstitution">Constitution: </label></div>
+              <div class="column"><input type="text" id="defTechPriestconstitution" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestmind">Mind: </label></div>
+              <div class="column"><input type="text" id="defTechPriestmind" value="20" size="3"/></div>
+          </div>
+        </div>
+          
+        <div class="column">
+            <div class="row">
+              <div class="column"><label for="defTechPriestantiWarrior">Anti Warrior: </label></div>
+              <div class="column"><input type="text" id="defTechPriestantiWarrior" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestantiMage">Anti Mage: </label></div>
+              <div class="column"><input type="text" id="defTechPriestantiMage" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestantiRanger">Anti Ranger: </label></div>
+              <div class="column"><input type="text" id="defTechPriestantiRanger" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestantiAssassin">Anti Assassin: </label></div>
+              <div class="column"><input type="text" id="defTechPriestantiAssassin" value="20" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPrieststunImmune">Stun Immune: </label></div>
+              <div class="column"><input type="text" id="defTechPrieststunImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestfreezeImmune">Freeze Immune: </label></div>
+              <div class="column"><input type="text" id="defTechPriestfreezeImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriestpetrifyImmune">Petrify Immune: </label></div>
+              <div class="column"><input type="text" id="defTechPriestpetrifyImmune" value="10" size="3"/></div>
+            </div>
+              
+            <div class="row">
+              <div class="column"><label for="defTechPriesttwineImmune">Twine Immune: </label></div>
+              <div class="column"><input type="text" id="defTechPriesttwineImmune" value="10" size="3"/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

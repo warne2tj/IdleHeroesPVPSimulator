@@ -20,6 +20,7 @@ Implemented Heroes
   * Gustin
   * Horus
   * Ithaqua
+  * Mihm
   * Penny
   * Tara
   * Unimax
@@ -27,7 +28,6 @@ Implemented Heroes
   
 Upcoming Heroes
   * Kroos
-  * Mihm
   * Nakia
   * Oberon
   * Cthuga
@@ -45,7 +45,6 @@ To Do List
   * ----------- Priority 1 ------------
   * implement new heroes as they release
   * subclass more heroes
-  * create targeted GA
   * ----------- Priority 2 ------------
   * implement rest of monsters
   * reorganize read me document into github wiki

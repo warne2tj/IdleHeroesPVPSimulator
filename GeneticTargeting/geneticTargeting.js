@@ -1,10 +1,10 @@
 var attHeroes = [];
 var defHeroes = [];
 var allTeams = {};
+var heroNames = [];
 var simRunning = false;
 var stopLoop = false;
 var attIndex = 0;
-var defIndex = 1;
   
   
 function initialize() {
@@ -64,24 +64,67 @@ function runMassLoop() {
   } else {
     var oConfig = document.getElementById("configText");
     var jsonConfig = JSON.parse(oConfig.value);
+    var jsonBenchmark = JSON.parse(document.getElementById("benchmark").value);
+    var benchmarkDNA = jsonBenchmark["Benchmark"];
     var team;
     var tHero;
     var species;
     var teamIndex = 0;
     
     allTeams = {};
+    defHeroes = [];
     attIndex = 0;
-    defIndex = 1;
     
+    // load benchmark team
+    document.getElementById("defMonster").value = benchmarkDNA[60];
+    
+    for (var p = 0; p < 60; p += 10) {
+      tHero = new baseHeroStats[benchmarkDNA[p]]["className"](benchmarkDNA[p], 1 + (p % 10), "def");
+      
+      tHero._heroLevel = 330;
+      tHero._skin = benchmarkDNA[p+1];
+      tHero._stone = benchmarkDNA[p+3];
+      tHero._artifact = benchmarkDNA[p+4];
+      tHero._enable1 = benchmarkDNA[p+5];
+      tHero._enable2 = benchmarkDNA[p+6];
+      tHero._enable3 = benchmarkDNA[p+7];
+      tHero._enable4 = benchmarkDNA[p+8];
+      tHero._enable5 = benchmarkDNA[p+9];
+      
+      if (benchmarkDNA[p+2] == "Class Gear") { 
+        tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
+        tHero._armor = classGearMapping[tHero._heroClass]["armor"];
+        tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
+        tHero._accessory = classGearMapping[tHero._heroClass]["accessory"];
+        
+      } else if (benchmarkDNA[p+2] == "Split HP") { 
+        tHero._weapon = "6* Thorny Flame Whip";
+        tHero._armor = classGearMapping[tHero._heroClass]["armor"];
+        tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
+        tHero._accessory = "6* Flame Necklace";
+        
+      } else if (benchmarkDNA[p+2] == "Split Attack") { 
+        tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
+        tHero._armor = "6* Flame Armor";
+        tHero._shoe = "6* Flame Boots";
+        tHero._accessory = "6* Flame Necklace";
+      }
+      
+      defHeroes.push(tHero);
+    }
+    
+    for (var p = 0; p < 6; p++) {
+      defHeroes[p].updateCurrentStats();
+    }
+    
+    
+    // load trial teams
     for (var t in jsonConfig) {
       allTeams[teamIndex] = {};
       allTeams[teamIndex]["dna"] = jsonConfig[t];
       allTeams[teamIndex]["teamName"] = t;
       allTeams[teamIndex]["pet"] = jsonConfig[t][60];
       allTeams[teamIndex]["attWins"] = 0;
-      allTeams[teamIndex]["defWins"] = 0;
-      allTeams[teamIndex]["weakAgainst"] = "None";
-      allTeams[teamIndex]["weakAgainstWins"] = 0;
       
       team = [];
       species = "";
@@ -145,16 +188,13 @@ function nextMatchup() {
   
   if (attIndex >= teamKeys.length || stopLoop) {
     var summary = "";
-    var totalFights = (teamKeys.length - 1) * numSims;
+    var totalFights = numSims;
+    
     
     teamKeys.sort(function(a,b) {
       if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {
         return -1;
       } else if (allTeams[a]["attWins"] < allTeams[b]["attWins"]) {
-        return 1;
-      } else if (allTeams[a]["defWins"] > allTeams[b]["defWins"]) {
-        return -1;
-      } else if (allTeams[a]["defWins"] < allTeams[b]["defWins"]) {
         return 1;
       } else {
         return 0;
@@ -162,14 +202,11 @@ function nextMatchup() {
     });
     
     for (var p in teamKeys) {
-      summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") - Attack win rate (" + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%), "
-      summary += "Defense win rate (" + Math.round(allTeams[teamKeys[p]]["defWins"] / totalFights * 100, 2) + "%), ";
-      summary += "Weakest against team " + allTeams[teamKeys[p]]["weakAgainst"] + " (" + Math.round(allTeams[teamKeys[p]]["weakAgainstWins"] / numSims * 100, 2) + "%)\n";
+      summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") attack win rate: " + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%\n"
     }
     
     simRunning = false;
-    document.getElementById("generationLog").value += "Generation " + document.getElementById("genCount").value + " summary.\n" + summary + "\n";
-    
+    document.getElementById("generationLog").value = "Generation " + document.getElementById("genCount").value + " summary.\n" + summary + "\n";
     
     if (stopLoop) { 
       oLog.innerHTML = "<p>Loop stopped by user.</p>" + oLog.innerHTML; 
@@ -178,67 +215,47 @@ function nextMatchup() {
     }
     
   } else {
-    if (attIndex != defIndex) {
-      var numWins = 0;
+    var numWins = 0;
 
-      attHeroes = allTeams[attIndex]["team"];
-      defHeroes = allTeams[defIndex]["team"];
-      
-      document.getElementById("attMonster").value = allTeams[attIndex]["pet"];
-      document.getElementById("defMonster").value = allTeams[defIndex]["pet"];
-      
-      for (var p = 0; p < 6; p++) {
-        attHeroes[p]._attOrDef = "att";
-        attHeroes[p]._allies = attHeroes;
-        attHeroes[p]._enemies = defHeroes;
- 
-        defHeroes[p]._attOrDef = "def";
-        defHeroes[p]._allies = defHeroes;
-        defHeroes[p]._enemies = attHeroes;
-      }
-      
-      for (var p = 0; p < 6; p++) {
-        attHeroes[p].updateCurrentStats();
-        defHeroes[p].updateCurrentStats();
-      }
-      
-      numAttWins = runSim();
-      numDefWins = numSims - numAttWins;
-      
-      allTeams[attIndex]["attWins"] += numAttWins;
-      allTeams[defIndex]["defWins"] += numDefWins;
-      
-      if (numAttWins > allTeams[defIndex]["weakAgainstWins"]) {
-        allTeams[defIndex]["weakAgainst"] = allTeams[attIndex]["teamName"];
-        allTeams[defIndex]["weakAgainstWins"] = numAttWins;
-      }
-      
-      oLog.innerHTML = "<div><span class='att'>" + allTeams[attIndex]["teamName"] + " (" + allTeams[attIndex]["species"] + ")</span> versus <span class='def'>" + allTeams[defIndex]["teamName"] + " (" + allTeams[defIndex]["species"] + ")</span>: Won " + formatNum(numAttWins) + " out of " + formatNum(numSims) + ".</div>" + oLog.innerHTML;
+    attHeroes = allTeams[attIndex]["team"];
+    document.getElementById("attMonster").value = allTeams[attIndex]["pet"];
+
+    for (var p = 0; p < 6; p++) {
+      attHeroes[p]._attOrDef = "att";
+      attHeroes[p]._allies = attHeroes;
+      attHeroes[p]._enemies = defHeroes;
     }
+
+    for (var p = 0; p < 6; p++) {
+      defHeroes[p]._enemies = attHeroes;
+    }
+    
+    for (var p = 0; p < 6; p++) {
+      attHeroes[p].updateCurrentStats();
+    }
+    
+    numAttWins = runSim();
+    allTeams[attIndex]["attWins"] += numAttWins;
+    oLog.innerHTML = "<div><span class='att'>" + allTeams[attIndex]["teamName"] + " (" + allTeams[attIndex]["species"] + ")</span> versus benchmark team. Won " + formatNum(numAttWins) + " out of " + formatNum(numSims) + ".</div>" + oLog.innerHTML;
     
     // start next matchup
-    defIndex++;
-    if (defIndex == teamKeys.length) {
-      attIndex++;
-      defIndex = 0;
-      oLog.innerHTML = "";
-    }
-    
+    attIndex++;
     setTimeout(nextMatchup, 1);
   }
 }
 
 
 function createRandomTeams() {
-  var heroNames = Object.keys(baseHeroStats);
   var heroName = "";
   var skinNames;
   var legendarySkins;
   var stoneNames = Object.keys(stones);
   var monsterNames = Object.keys(baseMonsterStats);
   var oConfig = document.getElementById("configText");
+  var jsonBenchmark = JSON.parse(document.getElementById("benchmark").value);
   var numCreate = parseInt(document.getElementById("numCreate").value);
   
+  heroNames = jsonBenchmark["Usable Heroes"];
   var artifactNames = ["Antlers Cane", "Demon Bell", "Staff Punisher of Immortal", "Magic Stone Sword", "Augustus Magic Ball",
     "The Kiss of Ghost", "Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Ruyi Scepter"];
   var equipments = ["Class Gear", "Split HP", "Split Attack"];
@@ -300,17 +317,12 @@ function evolve(teamKeys) {
   var children = [];
   
   var numCreate = parseInt(document.getElementById("numCreate").value);
-  var i20p = Math.floor(numCreate * 0.2);
-  var i30p = Math.floor(numCreate * 0.3);
-  var i50p = Math.floor(numCreate * 0.5);
-  var i60p = Math.floor(numCreate * 0.6);
-  var i80p = Math.floor(numCreate * 0.8);
-  var i90p = Math.floor(numCreate * 0.9);
+  var i10p = Math.floor(numCreate * 0.1);
   
   oConfig.value = "{\n";
   
   // clone top 20%
-  for (t=0; t<i20p; t++) {
+  for (t=0; t < i10p*2; t++) {
     dna1 = allTeams[teamKeys[t]]["dna"];
     dnaString1 = "\"" + t + "\": [\n";
     
@@ -329,25 +341,25 @@ function evolve(teamKeys) {
   }
   
   
-  // breed next 40% from top 30
-  for (t=i20p; t<i60p; t++) {
-    children = breed(teamKeys, 0, i30p);
+  // breed next 30% from top 30
+  for (t=i10p*2; t < i10p*5; t++) {
+    children = breed(teamKeys, 0, i10p*3, 0.01, 0.20);
     oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
     t++;
     oConfig.value += "\"" + t + "\": [" + children[1] + "\n],\n";
   }
   
-  // breed next 20% from 21-50
-  for (t=i60p; t<i80p; t++) {
-    children = breed(teamKeys, i20p, i50p);
+  // breed next 30% from 21-50
+  for (t=i10p*5; t < i10p*8; t++) {
+    children = breed(teamKeys, i10p*2, i10p*5, 0.05, 0.20);
     oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
     t++;
     oConfig.value += "\"" + t + "\": [" + children[1] + "\n],\n";
   }
   
   // breed last 20% from 51-90
-  for (t=i80p; t<numCreate; t++) {
-    children = breed(teamKeys, i50p, i90p);
+  for (t=i10p*8; t<numCreate; t++) {
+    children = breed(teamKeys, i10p*5, i10p*9, 0.25, 0.20);
     oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
     
     t++;
@@ -365,7 +377,7 @@ function evolve(teamKeys) {
 }
 
 
-function breed(teamKeys, start, end) {
+function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   var parentA;
   var parentB;
   var dna1;
@@ -377,12 +389,9 @@ function breed(teamKeys, start, end) {
   var pos1 = 0;
   var pos2 = 0;
   
-  var mutationRate = 0.01;
-  var posSwapRate = 0.10;
   var temp = "";
   var crossOver;
   
-  var heroNames = Object.keys(baseHeroStats);
   var heroName = "";
   var skinNames;
   var legendarySkins;

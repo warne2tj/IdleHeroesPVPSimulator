@@ -1776,7 +1776,7 @@ class Mihm extends hero {
   
   
   eventAllyDied(e) {
-    return eventEnemyDied(e);
+    return this.eventEnemyDied(e);
   }
   
   
