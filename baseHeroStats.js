@@ -114,6 +114,22 @@ var baseHeroStats = {
     }
   },
   
+  "Cthuga": {
+    className: Cthuga,
+    heroFaction: "Abyss",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 7486,
+      baseAttack: 447,
+      baseArmor: 63,
+      baseSpeed: 218,
+      growHP: 748.6,
+      growAttack: 44.7,
+      growArmor: 6.3,
+      growSpeed: 2
+    }
+  },
+  
   "Dark Arthindol": {
     className: DarkArthindol,
     heroFaction: "Dark",

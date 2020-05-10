@@ -1086,20 +1086,21 @@ class hero {
       
     } else if (this._enable3 == "Purify") {
       var listDebuffs = []; 
-      var allDebuffs = Object.keys(this._debuffs);
       var rng;
       
-      for (var i in allDebuffs) {
-        if (isDispellable(allDebuffs[i])) {
-          listDebuffs.push(allDebuffs[i]);
+      for (var d in this._debuffs) {
+        if (isDispellable(d)) {
+          for (var s in this._debuffs[d]) {
+            listDebuffs.push([d, s]);
+          }
         }
       }
       
       rng = Math.floor(Math.random() * listDebuffs.length)
       
       if (listDebuffs.length > 0) {
-        this.removeDebuff(listDebuffs[rng]);
-        result += "<div>" + this.heroDesc() + " Purify triggered. Removed all stacks of debuff <span class='skill'>" + listDebuffs[rng] + "</span>.</div>";
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Purify</span> removed debuff.</div>";
+        result += this.removeDebuff(listDebuffs[rng][0], listDebuffs[rng][1]);
       }
     }
     
@@ -1169,7 +1170,7 @@ class hero {
       result += "<div>Damage prevented by <span class='skill'>Guardian Shadow</span>.</div>";
       result += this.getHeal(this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]);
       this._buffs["Guardian Shadow"][keyDelete[0]]["source"]._currentStats["damageHealed"] += 2 * damageResult["damageAmount"];
-      damageResult["damageAmount"] = 1;
+      damageResult["damageAmount"] = 0;
       
       delete this._buffs["Guardian Shadow"][keyDelete[0]];
       
@@ -1186,13 +1187,13 @@ class hero {
           this._currentStats["unbendingWillStacks"] = 3;
           this._currentStats["damageHealed"] += damageResult["damageAmount"];
           result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
-          damageResult["damageAmount"] = 1;
+          damageResult["damageAmount"] = 0;
           
         } else if (this._currentStats["unbendingWillStacks"] > 0 && damageResult["damageSource"] != "mark") {
           this._currentStats["unbendingWillStacks"] -= 1;
           this._currentStats["damageHealed"] += damageResult["damageAmount"];
           result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
-          damageResult["damageAmount"] = 1;
+          damageResult["damageAmount"] = 0;
           
           if (this._currentStats["unbendingWillStacks"] == 0) {
             result += "<div><span class='skill'>Unbending Will</span> ended.</div>";
@@ -1267,7 +1268,7 @@ class hero {
       damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
-      if (damageResult["damageAmount"] > 0) {
+      if (!("CarrieDodge" in damageResult)) {
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
@@ -1290,7 +1291,7 @@ class hero {
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
       result += targets[i].takeDamage(this, "Active Template", damageResult);
       
-      if (damageResult["damageAmount"] > 0) {
+      if (!("CarrieDodge" in damageResult)) {
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
