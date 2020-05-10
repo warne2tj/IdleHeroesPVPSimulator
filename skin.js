@@ -79,6 +79,13 @@ var skins = {
     "Legendary Skin Placeholder": {}
   },
   
+  "Mihm": {
+    "Ace Quarterback": {holyDamage: 0.05, attackPercent: 0.02, speed: 4},
+    "Legendary Ace Quarterback": {holyDamage: 0.08, attackPercent: 0.04, speed: 6},
+    "Frost Eye": {hpPercent: 0.03, attackPercent: 0.02, damageReduce: 0.03},
+    "Legendary Frost Eye": {hpPercent: 0.06, attackPercent: 0.04, damageReduce: 0.04}
+  },
+  
   "Penny": {
     "Infinite Joy": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
     "Legendary Infinite Joy": {controlImmune: 0.06, critDamage: 0.1, hpPercent: 0.06},

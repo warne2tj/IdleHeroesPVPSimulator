@@ -68,12 +68,12 @@ function isControlEffect(strName, effects={}) {
 }
 
 
-function isDot(strName, effects) {
-  if (["burn", "bleed", "poison"].includes(strName)) {
+function isDot(strName, effects={}) {
+  if (["burn", "bleed", "poison", "dot"].includes(strName)) {
     return true;
   } else {
     for (var e in effects) {
-      if (["burn", "bleed", "poison"].includes(e)) {
+      if (["burn", "bleed", "poison", "dot"].includes(e)) {
         return true;
       }
     }
@@ -83,7 +83,59 @@ function isDot(strName, effects) {
 }
 
 
-function isAttribute(strName, effects) {
+function isFrontLine(target, arrTargets) {
+  var frontCount = 0;
+  var backCount = 0;
+  
+  for (var i = 0; i < 2; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      frontCount++;
+    }
+  }
+  
+  for (var i = 2; i < arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      backCount++;
+    }
+  }
+  
+  if (frontCount > 0 && target._heroPos < 2) {
+    return true;
+  } else if (frontCount == 0 && target._heroPos >= 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+function isBackLine(target, arrTargets) {
+  var frontCount = 0;
+  var backCount = 0;
+  
+  for (var i = 0; i < 2; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      frontCount++;
+    }
+  }
+  
+  for (var i = 2; i < arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      backCount++;
+    }
+  }
+  
+  if (backCount > 0 && target._heroPos >= 2) {
+    return true;
+  } else if (backCount == 0 && target._heroPos < 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+function isAttribute(strName, effects={}) {
   var arrAttributes = [
     "attack", "attackPercent", "armor", "armorPercent", "hp", "hpPercent", "speed",
     "energy", "precision", "block", "crit", "critDamage", "holyDamage", "armorBreak",

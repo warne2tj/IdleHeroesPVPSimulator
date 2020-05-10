@@ -43,9 +43,10 @@ Implemented Monsters
   
 To Do List
   * ----------- Priority 1 ------------
+  * implement new heroes as they release
   * subclass more heroes
-  * ----------- Priority 2 ------------
   * create targeted GA
+  * ----------- Priority 2 ------------
   * implement rest of monsters
   * reorganize read me document into github wiki
   * add swap, copy, move functionality for team management

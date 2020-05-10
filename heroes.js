@@ -536,7 +536,7 @@ class hero {
     if (
       this._enable2 == "LethalFightback" && 
       this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
-      !(["burn", "bleed", "poison", "hpPercent", "true"].includes(damageType)) &&
+      !(["burn", "bleed", "poison", "dot", "hpPercent", "true"].includes(damageType)) &&
       (damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic")
     ) {
       lethalFightback = 1.12;
@@ -550,14 +550,14 @@ class hero {
     
     // damage source and damage type overrides
     if (damageSource.substring(0, 6) == "active") {
-      if (["burn", "bleed", "poison"].includes(damageType)) {
+      if (isDot(damageType)) {
         skillDamage += (this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100)) / (dotRounds + 1);
       } else if (!(["hpPercent", "energy", "true"].includes(damageType))) {
         skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
       }
     }
     
-    if (["passive", "mark"].includes(damageSource) || ["burn", "bleed", "poison"].includes(damageType)) {
+    if (["passive", "mark"].includes(damageSource) || isDot(damageType)) {
       critChance = 0;
       blockChance = 0;
     }
@@ -599,7 +599,7 @@ class hero {
     }
     
     // E5 Balanced strike
-    if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike" && !(["burn", "bleed", "poison", "hpPercent", "true"].includes(damageType))) {
+    if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike" && !(["burn", "bleed", "poison", "dot", "hpPercent", "true"].includes(damageType))) {
       if (critted == false) {
         attackDamage *= 1.3;
         holyDamage *= 1.3;
@@ -691,6 +691,23 @@ class hero {
         result += this._debuffs["Devouring Mark"][s]["source"].devouringMark(this);
       }
     }
+    
+    return result;
+  }
+  
+  
+  loseEnergy(source, amount) {
+    var result = ""
+    
+    result = "<div>" + source.heroDesc() + " drained from " + this.heroDesc() + " " + formatNum(amount) + " energy. Energy at "; 
+    
+    if (this._currentStats["energy"] < amount) {
+      this._currentStats["energy"] = 0;
+    } else {
+      this._currentStats["energy"] -= amount;
+    }
+    
+    result += formatNum(this._currentStats["energy"]) + ".</div>";
     
     return result;
   }
@@ -823,7 +840,7 @@ class hero {
         } else if (strStatName == "armorPercent") {
           this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
           
-        } else if (["burn", "bleed", "poison"].includes(strStatName)) {
+        } else if (isDot(strStatName)) {
           damageResult = source.calcDamage(this, effects[strStatName], "debuff", "true");
           damageResult["damageType"] = strStatName;
           strDamageResult = this.takeDamage(source, "Debuff " + debuffName, damageResult);
@@ -909,7 +926,7 @@ class hero {
           } else if (strStatName == "armorPercent") {
             this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
             
-          } else if (["burn", "bleed", "poison"].includes(strStatName)) {
+          } else if (isDot(strStatName)) {
             // do nothing
           } else {
             this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
@@ -1013,7 +1030,7 @@ class hero {
               } else if (strStatName == "armorPercent") {
                 this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
                 
-              } else if (["burn", "bleed", "poison"].includes(strStatName)) {
+              } else if (isDot(strStatName)) {
                 // do nothing, full burn damage already done
               } else {
                 this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
@@ -1029,7 +1046,7 @@ class hero {
             stacksLeft++;
             
             for (var strStatName in this._debuffs[b][s]["effects"]) {
-              if (["burn", "bleed", "poison"].includes(strStatName)) {
+              if (isDot(strStatName)) {
                 damageResult = this._debuffs[b][s]["source"].calcDamage(this, this._debuffs[b][s]["effects"][strStatName], "debuff", strStatName);
                 damageResult["damageType"] = strStatName;
                 result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
@@ -1135,7 +1152,7 @@ class hero {
       classDamageReduce = 0;
     }
     
-    if (["bleed", "poison", "burn"].includes(damageResult["damageType"])) {
+    if (isDot(damageResult["damageType"])) {
       var dotReduce = this._currentStats["dotReduce"];
       damageResult["damageAmount"] = damageResult["damageAmount"] * (1 - dotReduce);
       damageResult["holyDamage"] = damageResult["holyDamage"] * (1 - dotReduce);
