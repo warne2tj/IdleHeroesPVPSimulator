@@ -38,6 +38,13 @@ var skins = {
     "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04}
   },
   
+  "Cthuga": {
+    "Devils Night": {hpPercent: 0.03, attackPercent: 0.03, controlImmune: 0.05},
+    "Legendary Devils Night": {hpPercent: 0.06, attackPercent: 0.06, controlImmune: 0.06},
+    "Domineering Boss": {attackPercent: 0.03, controlImmune: 0.05, damageReduce: 0.03},
+    "Legendary Domineering Boss": {attackPercent: 0.06, controlImmune: 0.06, damageReduce: 0.04}
+  },
+  
   "Dark Arthindol": {
     "Gone Like a Dream": {speed: 4, attackPercent: 0.03, critDamage: 0.05},
     "Legendary Gone Like a Dream": {speed: 6, attackPercent: 0.06, critDamage: 0.1},
