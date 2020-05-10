@@ -187,31 +187,40 @@ function nextMatchup() {
   var teamKeys = Object.keys(allTeams);
   
   if (attIndex >= teamKeys.length || stopLoop) {
-    var summary = "";
-    var totalFights = numSims;
-    
-    
-    teamKeys.sort(function(a,b) {
-      if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {
-        return -1;
-      } else if (allTeams[a]["attWins"] < allTeams[b]["attWins"]) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-    
-    for (var p in teamKeys) {
-      summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") attack win rate: " + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%\n"
-    }
-    
     simRunning = false;
-    document.getElementById("generationLog").value = "Generation " + document.getElementById("genCount").value + " summary.\n" + summary + "\n";
     
     if (stopLoop) { 
       oLog.innerHTML = "<p>Loop stopped by user.</p>" + oLog.innerHTML; 
+      
     } else {
-      evolve(teamKeys);
+      var summary = "";
+      var totalFights = numSims;
+      
+      
+      teamKeys.sort(function(a,b) {
+        if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {
+          return -1;
+        } else if (allTeams[a]["attWins"] < allTeams[b]["attWins"]) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      
+      for (var p in teamKeys) {
+        summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") attack win rate: " + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%\n"
+      }
+      
+      document.getElementById("generationLog").value = "Generation " + document.getElementById("genCount").value + " summary.\n" + summary + "\n";
+      
+      if (allTeams[teamKeys[0]]["attWins"] > 0) {
+        evolve(teamKeys);
+      } else {
+        document.getElementById("generationLog").value = "No winning teams found, generating new random cohort.\n\n" + document.getElementById("generationLog").value
+        createRandomTeams();
+      }
+      
+      runMassLoop();
     }
     
   } else {
@@ -373,7 +382,6 @@ function evolve(teamKeys) {
 
   oConfig.value += "}";
   document.getElementById("genCount").value = parseInt(document.getElementById("genCount").value) + 1;
-  runMassLoop();
 }
 
 
