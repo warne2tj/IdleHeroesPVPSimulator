@@ -68,12 +68,12 @@ function isControlEffect(strName, effects={}) {
 }
 
 
-function isDot(strName, effects) {
-  if (["burn", "bleed", "poison"].includes(strName)) {
+function isDot(strName, effects={}) {
+  if (["burn", "bleed", "poison", "dot"].includes(strName)) {
     return true;
   } else {
     for (var e in effects) {
-      if (["burn", "bleed", "poison"].includes(e)) {
+      if (["burn", "bleed", "poison", "dot"].includes(e)) {
         return true;
       }
     }
@@ -83,7 +83,7 @@ function isDot(strName, effects) {
 }
 
 
-function isAttribute(strName, effects) {
+function isAttribute(strName, effects={}) {
   var arrAttributes = [
     "attack", "attackPercent", "armor", "armorPercent", "hp", "hpPercent", "speed",
     "energy", "precision", "block", "crit", "critDamage", "holyDamage", "armorBreak",

@@ -32,14 +32,16 @@ Important Function prototypes
   this.getHeal(source, amount)
 
   this.getEnergy(source, amount)
+  
+  this.loseEnergy(source, amount)
 
   this.getBuff(source, buffName, duration, effects{})
   
-  this.removeBuff(strBuffName)
+  this.removeBuff(strBuffName, stack="")
 
   this.getDebuff(source, debuffName, duration, effects{})
   
-  this.removeDebuff(strDebuffName)
+  this.removeDebuff(strDebuffName, stack="")
   
   this.hasStatus(strStatus)
   
@@ -322,11 +324,9 @@ class Amuvor extends hero {
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (damageResult["damageAmount"] > 0) {
-        result += "<div><span class='skill'>Arcane Imprisonment</span> reduced target's energy by " + formatNum(50) + ".</div>";
-        if (targets[0]._currentStats["energy"] > 50) {
-          targets[0]._currentStats["energy"] -= 50;
-        } else {
-          targets[0]._currentStats["energy"] = 0;
+        if (targets[0]._currentStats["totalHP"] > 0) {
+          result += "<div><span class='skill'>Arcane Imprisonment</span> drained target's energy.</div>";
+          result += targets[0].loseEnergy(this, 50)
         }
         
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
@@ -894,13 +894,8 @@ class DarkArthindol extends hero {
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (damageResult["damageAmount"] > 0 && targets[0]._currentStats["totalHP"] > 0) {
-        result += "<div><span class='skill'>Petrify</span> reduced target's energy by " + formatNum(50) + ".</div>";
-        if (targets[0]._currentStats["energy"] > 50) {
-          targets[0]._currentStats["energy"] -= 50;
-        } else {
-          targets[0]._currentStats["energy"] = 0;
-        }
-        
+        result += "<div><span class='skill'>Petrify</span> drained target's energy.</div>";
+        result += targets[0].loseEnergy(this, 50)
         result += targets[0].getDebuff(this, "petrify", 1, {});
       }
         
@@ -929,12 +924,8 @@ class DarkArthindol extends hero {
         }
         
         if (Math.random() < 0.3) {
-          result += "<div><span class='skill'>Chaotic Shade</span> reduced target's energy by " + formatNum(30) + ".</div>";
-          if (targets[i]._currentStats["energy"] > 30) {
-            targets[i]._currentStats["energy"] -= 30;
-          } else {
-            targets[i]._currentStats["energy"] = 0;
-          }
+          result += "<div><span class='skill'>Chaotic Shade</span> drained target's energy.</div>";
+          result += targets[i].loseEnergy(this, 30);
         }
       }
       
@@ -1326,13 +1317,8 @@ class Gustin extends hero {
       if (targets.length < maxTargets) { maxTargets = targets.length; }
       
       for (var i = 0; i < maxTargets; i++) {
-        result += "<div>" + this.heroDesc() + " <span class='skill'>Cloak of Fog</span> reduced " + targets[i].heroDesc() + " energy by " + formatNum(30) + ".</div>";
-        
-        if (targets[i]._currentStats["energy"] < 30) {
-          targets[i]._currentStats["energy"] = 0;
-        } else {
-          targets[i]._currentStats["energy"] -= 30;
-        }
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Cloak of Fog</span> drained " + targets[i].heroDesc() + " energy.</div>";
+        result += targets[i].loseEnergy(this, 30);
       }
     }
     
@@ -1768,6 +1754,50 @@ class Mihm extends hero {
     // apply Unreal Instinct passive
     this.applyStatChange({hpPercent: 0.4, damageReduce: 0.3, speed: 60, controlImmune: 1.0}, "PassiveStats");
   }
+  
+  
+  eventEnemyDied(e) {
+    var result = "";
+    
+    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0) {
+      var targets = getAllTargets(this, this._enemies);
+      var damageResult = {};
+      
+      for (var i = 0; i < targets.length; i++) {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2, "passive", "dot");
+        result += targets[i].getDebuff(this, "Shadow Fission", 2, {dot: damageResult["damageAmount"]});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyDied(e) {
+    return eventEnemyDied(e);
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getLowestHPTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 1.4, "basic", "normal");
+      result += targets[0].takeDamage(this, "Energy Absorbing", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        if (targets[0]._currentStats["totalHP"] > 0) {
+          result += targets[0].loseEnergy(this, 60);
+        }
+        
+        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
 }
 
 
@@ -1849,7 +1879,7 @@ class Penny extends hero {
       classDamageReduce = 0;
     }
     
-    if (["bleed", "poison", "burn"].includes(damageResult["damageType"])) {
+    if (isDot(damageResult["damageType"])) {
       var dotReduce = this._currentStats["dotReduce"];
       tempDamageAmount = tempDamageAmount * (1 - dotReduce);
     }

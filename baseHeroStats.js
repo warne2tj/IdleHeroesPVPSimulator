@@ -226,6 +226,22 @@ var baseHeroStats = {
     }
   },
   
+  "Mihm": {
+    className: Mihm,
+    heroFaction: "Dark",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 7134,
+      baseAttack: 402,
+      baseArmor: 58,
+      baseSpeed: 226,
+      growHP: 713.4,
+      growAttack: 40.2,
+      growArmor: 5.8,
+      growSpeed: 2
+    }
+  },
+  
   "Penny": {
     className: Penny,
     heroFaction: "Fortress",
