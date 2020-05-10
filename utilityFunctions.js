@@ -83,6 +83,58 @@ function isDot(strName, effects={}) {
 }
 
 
+function isFrontLine(target, arrTargets) {
+  var frontCount = 0;
+  var backCount = 0;
+  
+  for (var i = 0; i < 2; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      frontCount++;
+    }
+  }
+  
+  for (var i = 2; i < arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      backCount++;
+    }
+  }
+  
+  if (frontCount > 0 && target._heroPos < 2) {
+    return true;
+  } else if (frontCount == 0 && target._heroPos >= 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+function isBackLine(target, arrTargets) {
+  var frontCount = 0;
+  var backCount = 0;
+  
+  for (var i = 0; i < 2; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      frontCount++;
+    }
+  }
+  
+  for (var i = 2; i < arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      backCount++;
+    }
+  }
+  
+  if (backCount > 0 && target._heroPos >= 2) {
+    return true;
+  } else if (backCount == 0 && target._heroPos < 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
 function isAttribute(strName, effects={}) {
   var arrAttributes = [
     "attack", "attackPercent", "armor", "armorPercent", "hp", "hpPercent", "speed",

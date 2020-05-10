@@ -1549,7 +1549,7 @@ class Horus extends hero {
       
       
       if (targets[i]._currentStats["totalHP"] > 0 && damageResult["damageAmount"] > 0) {
-        if (targets[i]._heroPos <= 2) {
+        if (isFrontLine(targets[i], this._enemies)) {
           additionalDamage = targets[i]._stats["totalHP"] * 0.15;
           var maxDamage = this._currentStats["totalAttack"] * 15;
           if (additionalDamage > maxDamage) { additionalDamage = maxDamage; }
@@ -1557,7 +1557,9 @@ class Horus extends hero {
           additionalDamageResult = this.calcDamage(targets[i], additionalDamage, "active2", "hpPercent");
           result += targets[i].takeDamage(this, "Torment of Flesh and Soul Front Line", additionalDamageResult);
           
-        } else if (damageResult["critted"] == true){
+        }
+        
+        if (damageResult["critted"] == true && isBackLine(targets[i], this._enemies)){
           additionalDamageResult = this.calcDamage(targets[i], damageResult["damageAmount"] * 1.08, "active2", "true");
           result += targets[i].takeDamage(this, "Torment of Flesh and Soul Back Line", additionalDamageResult);
         }
@@ -1793,6 +1795,35 @@ class Mihm extends hero {
         }
         
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 4);
+      result += targets[0].takeDamage(this, "Collapse Rays", damageResult);
+      
+      if (damageResult["damageAmount"] > 0) {
+        if (targets[0]._currentStats["totalHP"] > 0) {
+          if (isFrontLine(targets[0], this._enemies)) {
+            result += targets[0].getDebuff(this, "Collapse Rays Armor", 3, {armorPercent: 0.75});
+            result += targets[0].getDebuff(this, "petrify", 2);
+          }
+          
+          if (isBackLine(targets[0], this._enemies)) {
+            result += targets[0].getDebuff(this, "Collapse Rays Backline", 3, {attackPercent: 0.30, speed: 80});
+          }
+        }
+        
+        activeQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
