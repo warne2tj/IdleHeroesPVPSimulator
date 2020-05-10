@@ -144,36 +144,36 @@ function nextMatchup() {
   var teamKeys = Object.keys(allTeams);
   
   if (attIndex >= teamKeys.length || stopLoop) {
-    var summary = "";
-    var totalFights = (teamKeys.length - 1) * numSims;
-    
-    teamKeys.sort(function(a,b) {
-      if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {
-        return -1;
-      } else if (allTeams[a]["attWins"] < allTeams[b]["attWins"]) {
-        return 1;
-      } else if (allTeams[a]["defWins"] > allTeams[b]["defWins"]) {
-        return -1;
-      } else if (allTeams[a]["defWins"] < allTeams[b]["defWins"]) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-    
-    for (var p in teamKeys) {
-      summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") - Attack win rate (" + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%), "
-      summary += "Defense win rate (" + Math.round(allTeams[teamKeys[p]]["defWins"] / totalFights * 100, 2) + "%), ";
-      summary += "Weakest against team " + allTeams[teamKeys[p]]["weakAgainst"] + " (" + Math.round(allTeams[teamKeys[p]]["weakAgainstWins"] / numSims * 100, 2) + "%)\n";
-    }
-    
     simRunning = false;
-    document.getElementById("generationLog").value += "Generation " + document.getElementById("genCount").value + " summary.\n" + summary + "\n";
-    
     
     if (stopLoop) { 
       oLog.innerHTML = "<p>Loop stopped by user.</p>" + oLog.innerHTML; 
     } else {
+      var summary = "";
+      var totalFights = (teamKeys.length - 1) * numSims;
+      
+      teamKeys.sort(function(a,b) {
+        if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {
+          return -1;
+        } else if (allTeams[a]["attWins"] < allTeams[b]["attWins"]) {
+          return 1;
+        } else if (allTeams[a]["defWins"] > allTeams[b]["defWins"]) {
+          return -1;
+        } else if (allTeams[a]["defWins"] < allTeams[b]["defWins"]) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      
+      for (var p in teamKeys) {
+        summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") - Attack win rate (" + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%), "
+        summary += "Defense win rate (" + Math.round(allTeams[teamKeys[p]]["defWins"] / totalFights * 100, 2) + "%), ";
+        summary += "Weakest against team " + allTeams[teamKeys[p]]["weakAgainst"] + " (" + Math.round(allTeams[teamKeys[p]]["weakAgainstWins"] / numSims * 100, 2) + "%)\n";
+      }
+      
+      document.getElementById("generationLog").value += "Generation " + document.getElementById("genCount").value + " summary.\n" + summary + "\n";
+      
       evolve(teamKeys);
     }
     
