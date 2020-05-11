@@ -683,6 +683,12 @@ class Carrie extends hero {
       result = super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
     }
     
+    
+    if (this._currentStats["totalHP"] <= 0 && damageResult["damageSource"].substring(0, 7) != "passive") {
+      this._currentStats["spiritPowerStacks"] = 0;
+      result += "<div>" + this.heroDesc() + " became a <span class='skill'>Shadowy Spirit</span>.</div>";
+    }
+    
     return result;
   }
   
@@ -763,9 +769,12 @@ class Carrie extends hero {
     // attack % per energy damage seems to be true damage
     damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 0.1 * target._currentStats["energy"], "mark", "energy");
     result = target.takeDamage(this, "Devouring Mark", damageResult);
-    result += target.removeDebuff("Devouring Mark");
-    result += "<div>Energy set to " + formatNum(0) + ".</div>";
-    target._currentStats["energy"] = 0;
+    
+    if (target._currentStats["totalHP"] > 0) {
+      result += target.removeDebuff("Devouring Mark");
+      result += "<div>Energy set to " + formatNum(0) + ".</div>";
+      target._currentStats["energy"] = 0;
+    }
     
     return result;
   }
@@ -774,17 +783,7 @@ class Carrie extends hero {
   eventAllyDied(e) { 
     var result = "";
     
-    if (e[1].heroDesc() == this.heroDesc()) {
-      for (var buffName in this._buffs) {
-        this.removeBuff(buffName);
-      }
-      for (var debuffName in this._debuffs) {
-        this.removeDebuff(debuffName);
-      }
-      
-      this._currentStats["spiritPowerStacks"] = 0;
-      result = "<div>" + this.heroDesc() + " became a <span class='skill'>Shadowy Spirit</span>.</div>";
-    } else if (this._currentStats["totalHP"] <= 0) {
+    if (this._currentStats["totalHP"] <= 0 && e[1].heroDesc() != this.heroDesc()) {
       this._currentStats["spiritPowerStacks"] += 1;
     }
     
@@ -947,7 +946,6 @@ class Cthuga extends hero {
           }
           
           detonateDamageResult = this.calcDamage(targets[i], detonateDamage, "active2", "true");
-          console.log(detonateDamage + " " + detonateDamageResult["damageAmount"]);
           result += targets[i].takeDamage(this, "Terror Blade Detonate", detonateDamageResult);
         }
       }
@@ -1844,6 +1842,99 @@ class Ithaqua extends hero {
         
         activeQueue.push([this, targets[0], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
       }
+    }
+    
+    return result;
+  }
+}
+
+
+
+// Michelle
+class Michelle extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["revive"] = 1;
+  }
+  
+  
+  passiveStats() {
+    // apply Redemption of Michelle and Light Will passive
+    this.applyStatChange({controlImmune: 1.0, holyDamage: 0.60, attackPercent: 0.30, speed: 40}, "PassiveStats");
+  }
+  
+  
+  startOfRound(roundNum) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] <= 0 && this._currentStats["revive"] == 1) {
+      this._currentStats["revive"] = 0;
+      this._currentStats["totalHP"] = this._stats["totalHP"];
+      this._currentStats["energy"] = 100;
+      result += "<div>" + this.heroDesc() + " has revived with full health and energy.</div>";
+      result += this.getBuff(this, "Blaze of Seraph", 99);
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyBasic(source, e) {
+    var result = "";
+    
+    if ("Blaze of Seraph" in source._buffs) {
+      for (var i = 0; i < e.length; i++) {
+        var damageAmount = e[i][1]._stats["totalHP"] * 0.06;
+        if (damageAmount > this._currentStats["totalAttack"] * 5) {
+          damageAmount = this._currentStats["totalAttack"] * 5;
+        }
+        
+        var damageResult = this.calcDamage(e[i][1], damageAmount, "passive", "hpPercent");
+        result += e[i][1].getDebuff(this, "Blaze of Seraph Burn", 2, {burnHP: Math.round(damageResult["damageAmount"])});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyActive(source, e) {
+    return this.eventAllyBasic(source, e);
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var maxTargets = 4;
+    
+    if (targets.length < maxTargets) {
+      maxTargets = targets.length;
+    }
+    
+    for (var i=0; i<maxTargets; i++) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.98);
+      result += targets[i].takeDamage(this, "Divine Sanction", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.4 + this._currentStats["controlPrecision"]) {
+          result += targets[i].getDebuff(this, "stun", 2);
+        }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    targets = getLowestHPPercentTargets(this, this._allies);
+    if (targets.length > 0) {
+      var healAmount = this.calcHeal(targets[0], this._currentStats["totalAttack"] * 10);
+      result += targets[0].getHeal(this, healAmount);
+    }
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length > 0) {
+      result += targets[0].getBuff(this, "Blaze of Seraph", 3);
     }
     
     return result;

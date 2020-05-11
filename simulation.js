@@ -656,18 +656,18 @@ function checkForWin() {
   
   numOfHeroes = attHeroes.length;
   for (var i = 0; i < numOfHeroes; i++) {
-    if (attHeroes[i]._currentStats["totalHP"] > 0) {
+    if (attHeroes[i]._currentStats["totalHP"] > 0 || attHeroes[i]._currentStats["revive"] == 1) {
       attAlive++;
     }
   }
   
   numOfHeroes = defHeroes.length;
   for (var i = 0; i < numOfHeroes; i++) {
-    if (defHeroes[i]._currentStats["totalHP"] > 0) {
+    if (defHeroes[i]._currentStats["totalHP"] > 0 || defHeroes[i]._currentStats["revive"] == 1) {
       defAlive++;
     }
   }
-  
+
   if (attAlive == 0 && defAlive >= 0) {
     return "def";
   } else if (attAlive > 0 && defAlive == 0) {

@@ -51,7 +51,7 @@ function isMonster(source) {
 
 
 function isDispellable(strName) {
-  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem"].includes(strName)) {
+  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink"].includes(strName)) {
     return false;
   } else {
     return true;
@@ -69,11 +69,11 @@ function isControlEffect(strName, effects={}) {
 
 
 function isDot(strName, effects={}) {
-  if (["burn", "bleed", "poison", "dot"].includes(strName)) {
+  if (["burn", "bleed", "poison", "dot", "burnHP"].includes(strName)) {
     return true;
   } else {
     for (var e in effects) {
-      if (["burn", "bleed", "poison", "dot"].includes(e)) {
+      if (["burn", "bleed", "poison", "dot", "burnHP"].includes(e)) {
         return true;
       }
     }
@@ -266,6 +266,35 @@ function getLowestHPTargets(source, arrTargets) {
     if (a._currentStats["totalHP"] > b._currentStats["totalHP"]) {
       return 1;
     } else if (a._currentStats["totalHP"] < b._currentStats["totalHP"]) {
+      return -1;
+    } else if (a._heroPos < b._heroPos) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+  
+  return copyTargets;
+}
+
+
+function getLowestHPPercentTargets(source, arrTargets) {
+  // get living targets with lowest current HP percent
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
+  for (var i=0; i<arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      copyTargets.push(arrTargets[i]);
+    }
+  }
+  
+  copyTargets.sort(function(a,b) {
+    if (a._currentStats["totalHP"] / a._stats["totalHP"] > b._currentStats["totalHP"] / b._stats["totalHP"]) {
+      return 1;
+    } else if (a._currentStats["totalHP"] / a._stats["totalHP"] < b._currentStats["totalHP"] / b._stats["totalHP"]) {
       return -1;
     } else if (a._heroPos < b._heroPos) {
       return -1;
