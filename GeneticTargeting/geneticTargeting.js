@@ -2,6 +2,7 @@ var attHeroes = [];
 var defHeroes = [];
 var allTeams = {};
 var heroNames = [];
+var maxCopies = 6;
 var simRunning = false;
 var stopLoop = false;
 var attIndex = 0;
@@ -74,6 +75,8 @@ function runMassLoop() {
     allTeams = {};
     defHeroes = [];
     attIndex = 0;
+    maxCopies = jsonBenchmark["Benchmark"]["Max Copies"];
+    heroNames = jsonBenchmark["Usable Heroes"];
     
     // load benchmark team
     document.getElementById("defMonster").value = benchmarkDNA[60];
@@ -264,7 +267,6 @@ function createRandomTeams() {
   var jsonBenchmark = JSON.parse(document.getElementById("benchmark").value);
   var numCreate = parseInt(document.getElementById("numCreate").value);
   
-  heroNames = jsonBenchmark["Usable Heroes"];
   var artifactNames = ["Antlers Cane", "Demon Bell", "Staff Punisher of Immortal", "Magic Stone Sword", "Augustus Magic Ball",
     "The Kiss of Ghost", "Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Ruyi Scepter"];
   var equipments = ["Class Gear", "Split HP", "Split Attack"];
@@ -274,13 +276,37 @@ function createRandomTeams() {
   var enables4 = ["Vitality", "Mightiness", "Growth"];
   var enables5 = ["BalancedStrike", "UnbendingWill"];
   
+  
+  maxCopies = jsonBenchmark["Max Copies"];
+  heroNames = jsonBenchmark["Usable Heroes"];
+  var copyHeroNames = [];
+  for (var i = 0; i < maxCopies; i++) {
+    for (var j = 0; j < heroNames.length; j++) {
+      copyHeroNames.push([heroNames[j], 0]);
+    }
+  }
+  
+  
   oConfig.value = "{\n";
   
   for(i=0; i<numCreate; i++) {
     oConfig.value += "\"" + i + "\": [\n";
     
+    for (j = 0; j < copyHeroNames.length; j++) {
+      copyHeroNames[j][1] = Math.random();
+    }
+    
+    copyHeroNames.sort(function(a,b) {
+      if (a[1] < b[1]) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    
+    
     for (h=1; h<=6; h++) {
-      heroName = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
+      heroName = copyHeroNames[h-1][0];
       oConfig.value += "  \"" + heroName + "\", ";
       
       skinNames = Object.keys(skins[heroName]);
@@ -521,6 +547,8 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
     child1[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
   }
   
+  child1 = dedupeChild(dna1, dna2, child1);
+  
   
   // mutate child 2 genes
   for (var g = 0; g < 60; g++) {
@@ -529,7 +557,7 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
         case 0:
           child2[g] = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
           
-          skinNames = Object.keys(child2[g]);
+          skinNames = Object.keys(skins[child2[g]]);
           legendarySkins = [];
           for (var s in skinNames) {
             if (skinNames[s].substring(0, 9) == "Legendary") {
@@ -541,7 +569,7 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
           break;
           
         case 1:
-          skinNames = Object.keys(child2[g-1]);
+          skinNames = Object.keys(skins[child2[g-1]]);
           legendarySkins = [];
           for (var s in skinNames) {
             if (skinNames[s].substring(0, 9) == "Legendary") {
@@ -591,6 +619,8 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   if (Math.random() < mutationRate) {
     child2[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
   }
+  
+  child2 = dedupeChild(dna1, dna2, child2);
   
   
   // position swap for child 1
@@ -648,4 +678,71 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   dnaString2 += "\n  \"" + child2[60] + "\"";
   
   return [dnaString1, dnaString2];
+}
+
+
+function dedupeChild(dna1, dna2, child) {
+  var objHeroes = {};
+  var parentHeroes = [];
+  var parentToUse;
+  
+  for (var i = 0; i < 6; i++) {
+    parentHeroes.push([1, i*10, Math.random(), dna1[i*10]]);
+    parentHeroes.push([2, i*10, Math.random(), dna2[i*10]]);
+  }
+  
+  parentHeroes.sort(function(a,b) {
+    if (a[2] < b[2]) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+  
+  for (var i = 0; i < 6; i++) {
+    if (child[i*10] in objHeroes) {
+      if (objHeroes[child[i*10]] < maxCopies) {
+        objHeroes[child[i*10]]++;
+      } else {
+        // current child hero exceeds max copies limit, get a differnt one from the parent
+        for (var p = 0; p < 12; p++) {
+          if (parentHeroes[p][3] in objHeroes) {
+            if (objHeroes[parentHeroes[p][3]] < maxCopies) {
+              // parent hero won't exceed max copies if used
+              for (var g = 0; g < 10; g++) {
+                if (parentHeroes[p][0] == 1) {
+                  parentToUse = dna1;
+                } else {
+                  parentToUse = dna2;
+                }
+                
+                child[i*10 + g] = parentToUse[parentHeroes[p][1] + g];
+              }
+              
+              objHeroes[parentHeroes[p][3]]++;
+              break;
+            }
+          } else {
+            // parent hero not in current list of heroes, use them
+            for (var g = 0; g < 10; g++) {
+              if (parentHeroes[p][0] == 1) {
+                parentToUse = dna1;
+              } else {
+                parentToUse = dna2;
+              }
+              
+              child[i*10 + g] = parentToUse[parentHeroes[p][1] + g];
+            }
+            
+            objHeroes[parentHeroes[p][3]] = 1;
+            break;
+          }
+        }
+      }
+    } else {
+      objHeroes[child[i*10]] = 1;
+    }
+  }
+  
+  return child;
 }

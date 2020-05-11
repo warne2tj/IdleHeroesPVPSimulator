@@ -15,6 +15,8 @@ class hero {
     this._hpMultipliers = {};
     this._armorMultipliers = {};
     
+    this._stats["revive"] = 0;
+    
     // set equipment
     this._stone = "None";
     this._artifact = "None";
@@ -674,7 +676,7 @@ class hero {
   
   
   getEnergy(source, amount) {
-    var result = ""
+    var result = "";
     
     if (this._currentStats["totalHP"] > 0) {
       if (this.heroDesc() == source.heroDesc()) {
@@ -1147,7 +1149,7 @@ class hero {
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
     
     
-    if (["hpPercent", "energy", "true"].includes(damageResult["damageType"])) {
+    if (["hpPercent", "energy", "true", "burnHP"].includes(damageResult["damageType"])) {
       armorMitigation = 0;
       reduceDamage = 0;
       classDamageReduce = 0;

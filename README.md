@@ -13,6 +13,7 @@ Implemented Heroes
   * Aspen
   * Belrain
   * Carrie
+  * Cthuga
   * Dark Arthindol
   * Delacium
   * Elyvia
@@ -20,6 +21,7 @@ Implemented Heroes
   * Gustin
   * Horus
   * Ithaqua
+  * Michelle
   * Mihm
   * Penny
   * Tara
@@ -30,8 +32,6 @@ Upcoming Heroes
   * Kroos
   * Nakia
   * Oberon
-  * Cthuga
-  * Michelle
   * Emily
   * Faith Blade
   
@@ -47,9 +47,11 @@ To Do List
   * subclass more heroes
   * ----------- Priority 2 ------------
   * implement rest of monsters
+  * create landing page for simulators
   * reorganize read me document into github wiki
   * add swap, copy, move functionality for team management
   * implement enhanced artifacts
+  * do cleanup on damage type, damage sources, buff types, debuff types
   * ----------- Priority 3 ------------
   * improve look of hero stat sheet, buff, and debuff descriptions
   * refactor combat log output to read and flow better

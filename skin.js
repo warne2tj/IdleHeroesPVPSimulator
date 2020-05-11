@@ -86,6 +86,13 @@ var skins = {
     "Legendary Skin Placeholder": {}
   },
   
+  "Michelle": {
+    "Seraph": {hpPercent: 0.05, damageReduce: 0.03},
+    "Legendary Seraph": {hpPercent: 0.08, damageReduce: 0.04},
+    "True Love Queen": {hpPercent: 0.05, attackPercent: 0.03, speed: 4},
+    "Legendary True Love Queen": {hpPercent: 0.08, attackPercent: 0.06, speed: 6}
+  },
+  
   "Mihm": {
     "Ace Quarterback": {holyDamage: 0.05, attackPercent: 0.02, speed: 4},
     "Legendary Ace Quarterback": {holyDamage: 0.08, attackPercent: 0.04, speed: 6},
