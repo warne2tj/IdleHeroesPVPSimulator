@@ -178,6 +178,22 @@ var baseHeroStats = {
     }
   },
   
+  "Emily": {
+    className: Emily,
+    heroFaction: "Fortress",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 7005,
+      baseAttack: 356,
+      baseArmor: 63,
+      baseSpeed: 195,
+      growHP: 700.5,
+      growAttack: 36,
+      growArmor: 6.3,
+      growSpeed: 2
+    }
+  },
+  
   "Garuda": {
     className: Garuda,
     heroFaction: "Forest",

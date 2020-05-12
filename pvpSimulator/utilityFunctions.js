@@ -69,11 +69,11 @@ function isControlEffect(strName, effects={}) {
 
 
 function isDot(strName, effects={}) {
-  if (["burn", "bleed", "poison", "dot", "burnHP"].includes(strName)) {
+  if (["burn", "bleed", "poison", "dot", "burnTrue"].includes(strName)) {
     return true;
   } else {
     for (var e in effects) {
-      if (["burn", "bleed", "poison", "dot", "burnHP"].includes(e)) {
+      if (["burn", "bleed", "poison", "dot", "burnTrue"].includes(e)) {
         return true;
       }
     }

@@ -866,7 +866,7 @@ class Cthuga extends hero {
     
     result = super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
     
-    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0 && !(isMonster(source))) {
+    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0 && !(isMonster(source)) && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
       if (source.hasStatus("burn")) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Soul Shackle</span> triggered.</div>";
         result += this.getBuff(this, "Soul Shackle Attack", 3, {attackPercent: 0.10});
@@ -878,7 +878,7 @@ class Cthuga extends hero {
       }
     }
     
-    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0) {
+    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0 && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
       var burnDamageResult = {};
       var bleedDamageResult = {};
       var targets = getRandomTargets(this, this._enemies);
@@ -1281,6 +1281,100 @@ class Elyvia extends hero {
 }
 
 
+// Emily
+class Emily extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["courageousTriggered"] = 0;
+  }
+  
+  
+  passiveStats() {
+    // apply Spiritual Blessing passive
+    this.applyStatChange({hpPercent: 0.40, speed: 50}, "PassiveStats");
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+    var result = "";
+    
+    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    
+    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] < 0.50 && this._currentStats["courageousTriggered"] == 0) {
+      this._currentStats["courageousTriggered"] = 1;
+      result += "<div>" + this.heroDesc() + " <span class='skill>Courageous</span> triggered.</div>";
+      
+      var targets = getAllTargets(this, this._allies);
+      for (var h in targets) {
+        result += targets[h].getBuff(this, "Courageous", 3, {attackPercent: 0.29});
+      }
+      
+      targets = getAllTargets(this, this._enemies);
+      for (var h in targets) {
+        result += targets[h].getDebuff(this, "Courageous", 3, {armorPercent: 0.29});
+      }
+    }
+    
+    return result
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var maxTargets = 3;
+    
+    if (targets.length < maxTargets) { maxTargets = targets.length; }
+    
+    for (var i = 0; i < maxTargets; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.8, "basic", "normal");
+      result += targets[i].takeDamage(this, "Element Fission", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          result += targets[i].getDebuff(this, "Element Fission", 3, {crit: 0.20});
+        }
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getAllTargets(this, this._enemies);
+    
+    for (var i=0; i < targets.length; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.16);
+      result += targets[i].takeDamage(this, "Nether Nightmare", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          result += targets[i].getDebuff(this, "Nether Nightmare", 3, {precision: 0.40});
+        }
+        
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    targets = getAllTargets(this, this._allies);
+    for (var i=0; i < targets.length; i++) {
+      result += targets[i].getBuff(this, "Nether Nightmare", 3, {speed: 30, attackPercent: 0.20});
+    }
+    
+    return result;
+  }
+}
+
+
 
 // Garuda
 class Garuda extends hero {
@@ -1488,7 +1582,7 @@ class Gustin extends hero {
     var postHP = this._currentStats["totalHP"];
     var damageAmount = 0.70 * (preHP - postHP);
     
-    if (damageAmount > 0 && source._currentStats["totalHP"] > 0) {
+    if (damageAmount > 0 && source._currentStats["totalHP"] > 0  && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
       var damageResult = this.calcDamage(source, damageAmount, "passive", "true");
       result += source.takeDamage(this, "Link of Souls", damageResult);
     }
@@ -1890,7 +1984,7 @@ class Michelle extends hero {
         }
         
         var damageResult = this.calcDamage(e[i][1], damageAmount, "passive", "hpPercent");
-        result += e[i][1].getDebuff(this, "Blaze of Seraph Burn", 2, {burnHP: Math.round(damageResult["damageAmount"])});
+        result += e[i][1].getDebuff(this, "Blaze of Seraph Burn", 2, {burnTrue: Math.round(damageResult["damageAmount"])});
       }
     }
     

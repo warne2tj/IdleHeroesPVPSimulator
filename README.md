@@ -17,6 +17,7 @@ Implemented Heroes
   * Dark Arthindol
   * Delacium
   * Elyvia
+  * Emily
   * Garuda
   * Gustin
   * Horus
@@ -32,7 +33,6 @@ Upcoming Heroes
   * Kroos
   * Nakia
   * Oberon
-  * Emily
   * Faith Blade
   
   

@@ -6,8 +6,8 @@ body {
 h1 {
   text-align: center;
   color: #333;
-  font-weight: 400;
-  font-size: 40px;
+  font-weight: bold;
+  font-size: 48px;
 }
 
 h2, div, p {
@@ -19,7 +19,8 @@ h2, div, p {
 .banner {
   background-color: #00a0fa;
 	border-radius: 10px;
-  padding: 20px;
+  margin-bottom: 2em;
+  padding: 2em;
 }
 
 

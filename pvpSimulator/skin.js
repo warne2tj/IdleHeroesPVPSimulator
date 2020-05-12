@@ -62,6 +62,11 @@ var skins = {
     "Legendary Sweet Dance": {hpPercent: 0.06, controlImmune: 0.06, speed: 6},
   },
   
+  "Emily": {
+    "Fractured Rose": {hpPercent: 0.03, block: 0.04, speed: 4},
+    "Legendary Fractured Rose": {hpPercent: 0.06, block: 0.06, speed: 6}
+  },
+  
   "Garuda": {
     "Super Harvest": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
     "Legendary Super Harvest": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04},
