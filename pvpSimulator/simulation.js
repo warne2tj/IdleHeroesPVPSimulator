@@ -108,12 +108,12 @@ function runSim() {
             
             // decide on action
             if (orderOfAttack[orderNum]._currentStats["energy"] >= 100) {
+              // set hero energy to 0
+              orderOfAttack[orderNum]._currentStats["energy"] = 0;
+              
               // do active
               result = orderOfAttack[orderNum].doActive();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
-              
-              // set hero energy to 0 after doing active
-              orderOfAttack[orderNum]._currentStats["energy"] = 0;
               
               // monster gains energy from hero active
               if (orderOfAttack[orderNum]._attOrDef == "att") {

@@ -22,6 +22,7 @@ Implemented Heroes
   * Gustin
   * Horus
   * Ithaqua
+  * Kroos
   * Michelle
   * Mihm
   * Penny
@@ -30,10 +31,9 @@ Implemented Heroes
   
   
 Upcoming Heroes
-  * Kroos
-  * Nakia
   * Oberon
   * Faith Blade
+  * Nakia
   
   
 Implemented Monsters
