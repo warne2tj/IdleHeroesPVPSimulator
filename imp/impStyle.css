@@ -11,6 +11,18 @@ h1 {
 }
 
 
+h4 {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+
+p {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+
 .banner {
   margin-bottom: 2em;
   padding: 2em;
