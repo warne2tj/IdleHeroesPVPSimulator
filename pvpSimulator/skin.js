@@ -91,6 +91,11 @@ var skins = {
     "Legendary Skin Placeholder": {}
   },
   
+  "Kroos": {
+    "Mourners": {hpPercent: 0.03, damageReduce: 0.03, speed: 4},
+    "Legendary Mourners": {hpPercent: 0.06, damageReduce: 0.04, speed: 6}
+  },
+  
   "Michelle": {
     "Seraph": {hpPercent: 0.05, damageReduce: 0.03},
     "Legendary Seraph": {hpPercent: 0.08, damageReduce: 0.04},

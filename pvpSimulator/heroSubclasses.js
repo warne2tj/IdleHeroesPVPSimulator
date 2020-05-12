@@ -1943,6 +1943,113 @@ class Ithaqua extends hero {
 }
 
 
+// Kroos
+class Kroos extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["flameInvasionTriggered"] = 0;
+  }
+  
+  
+  passiveStats() {
+    // apply Flame Power passive
+    this.applyStatChange({hpPercent: 0.30, speed: 60, damageReduce: 0.20}, "PassiveStats");
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+    var result = "";
+    
+    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    
+    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] < 0.50 && this._currentStats["flameInvasionTriggered"] == 0) {
+      this._currentStats["flameInvasionTriggered"] = 1;
+      result += "<div>" + this.heroDesc() + " <span class='skill'>Flame Invasion</span> triggered.</div>";
+      
+      var targets = getAllTargets(this, this._enemies);
+      for (var h in targets) {
+        if (Math.random() < 0.75 + this._currentStats["controlPrecision"]) {
+          result += targets[h].getDebuff(this, "stun", 2, {});
+        }
+      }
+    }
+    
+    return result
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getBackTargets(this, this._enemies);
+    
+    for (var i = 0; i < targets.length; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.90, "basic", "normal");
+      result += targets[i].takeDamage(this, "Vicious Fire Perfusion", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          result += targets[i].getDebuff(this, "Vicious Fire Perfusion", 3, {armorPercent: 0.15});
+        }
+        
+        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    
+    var maxTargets = 2;
+    var healAmount = 0;
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < maxTargets) { maxTargets = targets.length; }
+    
+    for (var i = 0; i < maxTargets; i++) {
+      healAmount = this.calcHeal(targets[i], targets[i]._stats["totalHP"] * 0.20);
+      result += targets[i].getHeal(this, healAmount);
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var maxTargets = 4;
+    
+    if (targets.length < maxTargets) {
+      maxTargets = targets.length;
+    }
+    
+    for (var i=0; i<maxTargets; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
+      result += targets[i].takeDamage(this, "Weak Curse", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          if (!("Weak Curse" in targets[i]._debuffs)) {
+            result += targets[i].getDebuff(this, "Weak Curse", 3, {allDamageTaken: -0.50});
+          }
+        }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    this._currentStats["energy"] = 0;
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length > 0) {
+      result += targets[0].getEnergy(this, 100);
+    }
+    
+    return result;
+  }
+}
+
+
 
 // Michelle
 class Michelle extends hero {
