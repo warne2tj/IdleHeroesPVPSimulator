@@ -442,12 +442,12 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   var enables5 = ["BalancedStrike", "UnbendingWill"];
   
   
-  parentA = Math.floor(Math.random() * (end - start)) + start;
+  parentA = Math.floor(Math.pow(Math.random(), 1.2) * (end - start)) + start;
   dna1 = allTeams[teamKeys[parentA]]["dna"];
   
-  parentB = Math.floor(Math.random() * (end - start)) + start;
+  parentB = parentA;
   while (parentA == parentB) {
-    parentB = Math.floor(Math.random() * (end - start)) + start;
+    parentB = Math.floor(Math.pow(Math.random(), 1.2) * (end - start)) + start;
   }
   dna2 = allTeams[teamKeys[parentB]]["dna"];
   

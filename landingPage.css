@@ -29,16 +29,35 @@ a.card, a:link.card, a:visited.card, a:hover.card, a:active.card {
   text-decoration: none;
 }
 
+
+.notab {
+	margin: 2em;
+}
+
+.tab {
+  margin: 2em;
+	margin-left: 6em;
+}
+
 div.card {
 	border: 1px solid #FAFAFA;
 	box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.12);
 	border-radius: 20px;
   
   background-color: #fae6be;
-	
-	padding: 2em;
-  margin: 2em;
+  padding: 2em;
 	cursor: pointer;
+}
+
+div.card img {
+  float: left;
+  width: 150px;
+  margin-right: 1em;
+}
+
+div.card .column {
+  float: left;
+  width: 75%;
 }
 
 
@@ -48,20 +67,9 @@ div.card:after {
   clear: both;
 }
 
-div.card .column {
-  float: left;
-  width: 70%;
-  height: 100%;
-}
-
-div.card img {
-  float: left;
-  width: 150px;
-  margin-right: 2em;
-}
 
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 750px) {
   div.card .column {
     width: 100%;
   }

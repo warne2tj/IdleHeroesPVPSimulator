@@ -513,6 +513,9 @@ class hero {
     var damageAgainstBurning = 1;
     var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
     
+    if (critChance < 0) { critChance = 0; }
+    if (precision < 0) { precision = 0; }
+    
     var critDamageReduce = target._currentStats["critDamageReduce"];
     var blockChance = canBlock * (target._currentStats["block"] - precision);
     
@@ -520,7 +523,6 @@ class hero {
     var factionB = target._heroFaction;
     var factionBonus = 1;
     var e5Desc = "";
-    
     
     if (
       (factionA == "Abyss" && factionB == "Forest") ||
@@ -1149,7 +1151,7 @@ class hero {
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
     
     
-    if (["hpPercent", "energy", "true", "burnHP"].includes(damageResult["damageType"])) {
+    if (["hpPercent", "energy", "true", "burnTrue"].includes(damageResult["damageType"])) {
       armorMitigation = 0;
       reduceDamage = 0;
       classDamageReduce = 0;
