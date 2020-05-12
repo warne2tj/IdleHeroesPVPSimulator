@@ -1269,6 +1269,7 @@ class hero {
     var targets = getAllTargets(this, this._enemies);
     
     if (targets.length > 0) {
+      this._rng = Math.random();
       damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
@@ -1292,6 +1293,7 @@ class hero {
     }
     
     for (var i=0; i<maxTargets; i++) {
+      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
       result += targets[i].takeDamage(this, "Active Template", damageResult);
       
