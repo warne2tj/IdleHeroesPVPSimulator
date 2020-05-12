@@ -121,7 +121,31 @@ function nextSimBlock() {
       // simulate
       while (ordDice > 0 || luckDice > 0) {
         // decide which dice to use
-        if (luckDice > 0 && pos == 10 && doubleNextRoll) {
+        if (luckDice > 1 && boardState[18] < 5 && pos < 18 && pos >= 12) {
+          luckDice--;
+          roll = 18 - pos;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] < 5 && pos < 11 && pos >= 5) {
+          luckDice--;
+          roll = 11 - pos;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] < 5 && pos < 4) {
+          luckDice--;
+          roll = 4 - pos;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] < 5 && pos >= 19) {
+          luckDice--;
+          roll = 20 - pos + 4;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] == 5 && pos < 5 ) {
+          luckDice--;
+          roll = 5 - pos;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] == 5 && pos >= 19 ) {
+          luckDice--;
+          roll = 20 - pos + 5;
+          
+        } else if (luckDice > 0 && pos == 10 && doubleNextRoll) {
           luckDice--;
           roll = 5;
           

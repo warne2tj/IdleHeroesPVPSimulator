@@ -17,6 +17,40 @@
     <h1>Imp's Adventure Simulator</h1>
   </div>
   
+  <div class="chart">
+    <h4>Overview</h4>
+    <p>
+      Plug in your current conditions in Imp's Adventure and click Run.
+      It will produce a chart from a million simulations and what percentage of those simulations ended up in which reward bracket.
+      You can use this on the last day of the event to see if it will be worth it to spend the gems and/or money to buy additional dice.
+      To help answer this, you can put in how many gems each reward tier is worth to you and it will calculate the expected gem value based on the chances.
+    </p>
+    
+    <h4>Why is the expected value showing 0 for some tiers?</h4>
+    <p>
+      If your current stars is alreay in a tier, the value of that tier is set to 0. The values are to help you decide whether to buy additional dice.
+      If you've already gotten the rewards for a tier, you should ignore the value of that tier in making that decision.
+    </p>
+    
+    <h4>Strategy</h4>
+    <p>
+      The best strategy, and the one the simulator uses, is to use lucky dice to land back on the Lucky Hut to get constant free movement.
+      The exceptions are: Don't use the lucky dice if you are 1 spot away. And don't use the lucky dice if you are on the Karma Hut.
+    </p>
+    
+    <p>
+      Don't forget that at the end of the event, any unused dice will be converted to 2 stars. Using the dice usually gets you more stars than not using them,
+      but if you're guaranteed the next tier by not using them, then it's up to you to decide whether to save them and get the guaranteed reward,
+      or use them and attempt to get to the tiers further away.
+    </p>
+    
+    <h4>What if you have more than 1 lucky dice?</h4>
+    <p>
+      You can use it to fully upgrade your Starry Mushrooms. Prioritize upgrading the third Starry Mushroom.
+      If they're all fully upgraded, use it to get to the Wishing Hut for a free ordinary dice.
+    </p>
+  </div>
+  
   <p>
     <div class="row">
       <div class="column">
@@ -128,7 +162,7 @@
     </div>
   </div>  
   
-  <div class="total">Average Expected Stars: <span id="avgStars">0</span></div>
+  <div class="total">Average Stars: <span id="avgStars">0</span></div>
   
   
   <div class="section">
@@ -139,43 +173,43 @@
     </div>
     
     <div class="row">
-      <div class="col33"><label for="reward2">Elite 5-star Shards: </label><input type="text" onchange="updateValues();" id="reward2" size="5" value="300"></input></div>
+      <div class="col33"><label for="reward2">Elite 5-star Shards: </label><input type="text" onchange="updateValues();" id="reward2" size="5" value="2500"></input></div>
       <div class="col1">Probability: <span id="chance2">0</span>%</div>
       <div class="col1">Expected Value: <span id="value2">0</span></div>
     </div>
     
     <div class="row">
-      <div class="col33"><label for="reward3">Limited Skin Chest: </label><input type="text" onchange="updateValues();" id="reward3" size="5" value="150"></input></div>
+      <div class="col33"><label for="reward3">Limited Skin Chest: </label><input type="text" onchange="updateValues();" id="reward3" size="5" value="3750"></input></div>
       <div class="col1">Probability: <span id="chance3">0</span>%</div>
       <div class="col1">Expected Value: <span id="value3">0</span></div>
     </div>
     
     <div class="row">
-      <div class="col33"><label for="reward4">6-Star Puppet Chest: </label><input type="text" onchange="updateValues();" id="reward4" size="5" value="1500"></input></div>
+      <div class="col33"><label for="reward4">6-Star Puppet Chest: </label><input type="text" onchange="updateValues();" id="reward4" size="5" value="1800"></input></div>
       <div class="col1">Probability: <span id="chance4">0</span>%</div>
       <div class="col1">Expected Value: <span id="value4">0</span></div>
     </div>
     
     <div class="row">
-      <div class="col33"><label for="reward5">5-Star Hero Chest: </label><input type="text" onchange="updateValues();" id="reward5" size="5" value="500"></input></div>
+      <div class="col33"><label for="reward5">5-Star Hero Chest: </label><input type="text" onchange="updateValues();" id="reward5" size="5" value="7500"></input></div>
       <div class="col1">Probability: <span id="chance5">0</span>%</div>
       <div class="col1">Expected Value: <span id="value5">0</span></div>
     </div>
     
     <div class="row">
-      <div class="col33"><label for="reward6">Material Chest: </label><input type="text" onchange="updateValues();" id="reward6" size="5" value="150"></input></div>
+      <div class="col33"><label for="reward6">Material Chest: </label><input type="text" onchange="updateValues();" id="reward6" size="5" value="1000"></input></div>
       <div class="col1">Probability: <span id="chance6">0</span>%</div>
       <div class="col1">Expected Value: <span id="value6">0</span></div>
     </div>
     
     <div class="row">
-      <div class="col33"><label for="reward7">L/D 5-Star Hero Chest: </label><input type="text" onchange="updateValues();" id="reward7" size="5" value="700"></input></div>
+      <div class="col33"><label for="reward7">L/D 5-Star Hero Chest: </label><input type="text" onchange="updateValues();" id="reward7" size="5" value="10000"></input></div>
       <div class="col1">Probability: <span id="chance7">0</span>%</div>
       <div class="col1">Expected Value: <span id="value7">0</span></div>
     </div>
     
     <div class="row">
-      <div class="col33"><label for="reward8">9-Star Puppet Chest: </label><input type="text" onchange="updateValues();" id="reward8" size="5" value="7000"></input></div>
+      <div class="col33"><label for="reward8">9-Star Puppet Chest: </label><input type="text" onchange="updateValues();" id="reward8" size="5" value="8400"></input></div>
       <div class="col1">Probability: <span id="chance8">0</span>%</div>
       <div class="col1">Expected Value: <span id="value8">0</span></div>
     </div>
