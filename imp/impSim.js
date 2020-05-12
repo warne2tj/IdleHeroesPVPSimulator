@@ -288,18 +288,55 @@ function nextSimBlock() {
       simNum++;
     }
     
-    // update results
+    // update results and expected values
     var percent;
     for (var i = 0; i < 9; i++) {
       percent = 100.0 * arrResults[i] / totalSims;
       arrBins[i].innerHTML = percent.toFixed(4) + "%&nbsp;";
-      arrBins[i].style.width = Math.round(percent) + "%";
+      
+      if (Math.round(percent) < 1) {
+        arrBins[i].style.width = "1%";
+      } else {
+        arrBins[i].style.width = Math.round(percent) + "%";
+      }
     }
+    
+    
     
     setTimeout(nextSimBlock, 1);
     
   } else {
     simRunning = false;
-    alert("Simulation finished. Average stars is " + (1.0 * totalStars / totalSims).toFixed(4) + ".");
+    
+    var runningSum = 0;
+    for (var i = 8; i > 0; i--) {
+      runningSum += arrResults[i];
+      document.getElementById("chance" + i).innerHTML = (runningSum / totalSims * 100).toFixed(4);
+    }
+      
+    updateValues();
+    document.getElementById("avgStars").innerHTML = (1.0 * totalStars / totalSims).toFixed(4);
   }
+}
+
+
+function updateValues() {
+  var runningSum = 0;
+  var currentStars = parseInt(document.getElementById("stars").value);
+  var threshholds = [0, 80, 110, 140, 170, 200, 230, 260, 300];
+  var chance;
+  var expValue;
+  
+  for (var i = 1; i <= 8; i++) {
+    if (currentStars >= threshholds[i]) {
+      document.getElementById("value" + i).innerHTML = 0;
+    } else {
+      chance = parseFloat(document.getElementById("chance" + i).innerHTML) / 100;
+      expValue = Math.round(chance * parseInt(document.getElementById("reward" + i).value));
+      runningSum += expValue;
+      document.getElementById("value" + i).innerHTML = expValue;
+    }
+  }
+  
+  document.getElementById("total").innerHTML = runningSum;
 }
