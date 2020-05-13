@@ -25,6 +25,7 @@ Implemented Heroes
   * Kroos
   * Michelle
   * Mihm
+  * Nakia
   * Penny
   * Tara
   * Unimax
@@ -33,7 +34,6 @@ Implemented Heroes
 Upcoming Heroes
   * Oberon
   * Faith Blade
-  * Nakia
   
   
 Implemented Monsters

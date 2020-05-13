@@ -109,6 +109,7 @@ class hero {
     this._stats["fixedAttack"] = 0;
     this._stats["fixedHP"] = 0;
     this._stats["damageAgainstBurning"] = 0.0;
+    this._stats["damageAgainstBleed"] = 0.0;
     this._stats["allDamageReduce"] = 0.0;
     this._stats["allDamageTaken"] = 0.0;
     this._stats["allDamageDealt"] = 0.0;
@@ -511,6 +512,7 @@ class hero {
     var holyDamage = attackDamage * holyDamageIncrease;
     var lethalFightback = 1;
     var damageAgainstBurning = 1;
+    var damageAgainstBleed = 1;
     var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
     
     if (critChance < 0) { critChance = 0; }
@@ -551,6 +553,10 @@ class hero {
        damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
+    if (this.hasStatus("bleed")) {
+       damageAgainstBleed += this._currentStats["damageAgainstBleed"];
+    }
+    
     
     // damage source and damage type overrides
     if (damageSource.substring(0, 6) == "active") {
@@ -571,13 +577,14 @@ class hero {
       holyDamage = 0;
       factionBonus = 1;
       damageAgainstBurning = 1;
+      damageAgainstBleed = 1;
       critChance = 0;
       blockChance = 0;
     }
     
     
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning * allDamageDealt;
-    holyDamage = holyDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning * allDamageDealt;    
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning * damageAgainstBleed * allDamageDealt;
+    holyDamage = holyDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning * damageAgainstBleed * allDamageDealt;    
     
     var blocked = false;
     var critted = false;

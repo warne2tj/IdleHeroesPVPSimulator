@@ -306,6 +306,22 @@ var baseHeroStats = {
     }
   },
   
+  "Nakia": {
+    className: Nakia,
+    heroFaction: "Abyss",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 8473,
+      baseAttack: 456,
+      baseArmor: 61,
+      baseSpeed: 245,
+      growHP: 847.3,
+      growAttack: 45.6,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
   "Penny": {
     className: Penny,
     heroFaction: "Fortress",

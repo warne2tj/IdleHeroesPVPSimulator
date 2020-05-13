@@ -2231,7 +2231,7 @@ class Mihm extends hero {
 class Nakia extends hero {
   passiveStats() {
     // apply Arachnid Madness passive
-    this.applyStatChange({attackPercent: 0.35, crit: 0.35, controlImmune: 0.3, speed: 30}, "PassiveStats");
+    this.applyStatChange({attackPercent: 0.35, crit: 0.35, controlImmune: 0.3, speed: 30, damageAgainstBleed: 0.80}, "PassiveStats");
   }
 }
 
