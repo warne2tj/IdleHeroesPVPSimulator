@@ -107,7 +107,7 @@ function runSim() {
             orderOfAttack[orderNum]._rng = Math.random();
             
             // decide on action
-            if (orderOfAttack[orderNum]._currentStats["energy"] >= 100) {
+            if (orderOfAttack[orderNum]._currentStats["energy"] >= 100 && !("Silence" in orderOfAttack[orderNum]._debuffs)) {
               // set hero energy to 0
               orderOfAttack[orderNum]._currentStats["energy"] = 0;
               
