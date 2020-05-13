@@ -67,6 +67,12 @@ var skins = {
     "Legendary Fractured Rose": {hpPercent: 0.06, block: 0.06, speed: 6}
   },
   
+  "Faith Blade": {
+    "Apocalypse Armor": {holyDamage: 0.05, crit: 0.02, critDamage: 0.05},
+    "Legendary Apocalypse Armor": {holyDamage: 0.08, crit: 0.03, critDamage: 0.075},
+    "Chaos Messenger": {holyDamage: 0.05, crit: 0.02}
+  },
+  
   "Garuda": {
     "Super Harvest": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
     "Legendary Super Harvest": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04},

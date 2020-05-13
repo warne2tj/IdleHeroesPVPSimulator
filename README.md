@@ -18,6 +18,7 @@ Implemented Heroes
   * Delacium
   * Elyvia
   * Emily
+  * Faith Blade
   * Garuda
   * Gustin
   * Horus
@@ -31,12 +32,6 @@ Implemented Heroes
   * Tara
   * Unimax
   
-  
-Upcoming Heroes
-  * Faith Blade
-  * Nakia
-  
-  
 Implemented Monsters
   * Deer
   * Phoenix
@@ -45,18 +40,17 @@ Implemented Monsters
 To Do List
   * ----------- Priority 1 ------------
   * implement new heroes as they release
-  * subclass more heroes
   * ----------- Priority 2 ------------
-  * implement rest of monsters
-  * create landing page for simulators
   * reorganize read me document into github wiki
   * add swap, copy, move functionality for team management
+  * implement rest of monsters
   * implement enhanced artifacts
   * do cleanup on damage type, damage sources, buff types, debuff types
   * ----------- Priority 3 ------------
   * improve look of hero stat sheet, buff, and debuff descriptions
   * refactor combat log output to read and flow better
   * improve gui (incorporate icons?)
+  * try out web workers
   
   
 Hero Mechanics:
