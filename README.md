@@ -42,6 +42,7 @@ To Do List
   * implement new heroes as they release
   * ----------- Priority 2 ------------
   * reorganize read me document into github wiki
+  * add web storage to save settings
   * add swap, copy, move functionality for team management
   * implement rest of monsters
   * implement enhanced artifacts
@@ -50,7 +51,7 @@ To Do List
   * improve look of hero stat sheet, buff, and debuff descriptions
   * refactor combat log output to read and flow better
   * improve gui (incorporate icons?)
-  * try out web workers
+  * try out web workers for simulations to speed up GA processing
   
   
 Hero Mechanics:

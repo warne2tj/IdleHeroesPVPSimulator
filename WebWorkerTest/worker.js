@@ -1,12 +1,10 @@
 var i = 0;
-var oldMessage = "";
 
 self.onmessage = doCall;
 
 function doCall(e) {
   oldMessage = e.data["oldValue"];
-  setTimeout("doWork('test')", 1000);
-  setTimeout(doWork, 5000);
+  setTimeout("doWork('" + e.data["oldValue"] + "')", 5000);
 }
 
 function doWork(oldMessage) {
