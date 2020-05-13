@@ -110,6 +110,11 @@ var skins = {
     "Legendary Frost Eye": {hpPercent: 0.06, attackPercent: 0.04, damageReduce: 0.04}
   },
   
+  "Nakia": {
+    "Crescent Emissary": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
+    "Legendary Crescent Emissary": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04}
+  },
+  
   "Penny": {
     "Infinite Joy": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
     "Legendary Infinite Joy": {controlImmune: 0.06, critDamage: 0.1, hpPercent: 0.06},
