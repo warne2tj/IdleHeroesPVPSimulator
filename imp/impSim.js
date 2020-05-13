@@ -28,6 +28,24 @@ var simRunning = false;
 var totalSims = 1000000;
 
 function init() {
+  var acc = document.getElementsByClassName("accordion");
+  for (var i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      /* Toggle between adding and removing the "active" class,
+      to highlight the button that controls the panel */
+      this.classList.toggle("active");
+
+      /* Toggle between hiding and showing the active panel */
+      var panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  }
+  
+  
   oBin1 = document.getElementById("bin1");
   oBin2 = document.getElementById("bin2");
   oBin3 = document.getElementById("bin3");
@@ -346,6 +364,8 @@ function nextSimBlock() {
 
 function updateValues() {
   var runningSum = 0;
+  var runningRewards = 0;
+  var reward = 0;
   var currentStars = parseInt(document.getElementById("stars").value);
   var threshholds = [0, 80, 110, 140, 170, 200, 230, 260, 300];
   var chance;
@@ -355,12 +375,11 @@ function updateValues() {
     if (currentStars >= threshholds[i]) {
       document.getElementById("value" + i).innerHTML = 0;
     } else {
+      runningRewards += parseInt(document.getElementById("reward" + i).value);
       chance = parseFloat(document.getElementById("chance" + i).innerHTML) / 100;
-      expValue = Math.round(chance * parseInt(document.getElementById("reward" + i).value));
+      expValue = Math.round(chance * runningRewards);
       runningSum += expValue;
       document.getElementById("value" + i).innerHTML = expValue;
     }
   }
-  
-  document.getElementById("total").innerHTML = runningSum;
 }
