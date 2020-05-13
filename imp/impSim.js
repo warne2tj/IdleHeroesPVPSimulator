@@ -28,6 +28,24 @@ var simRunning = false;
 var totalSims = 1000000;
 
 function init() {
+  var acc = document.getElementsByClassName("accordion");
+  for (var i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      /* Toggle between adding and removing the "active" class,
+      to highlight the button that controls the panel */
+      this.classList.toggle("active");
+
+      /* Toggle between hiding and showing the active panel */
+      var panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  }
+  
+  
   oBin1 = document.getElementById("bin1");
   oBin2 = document.getElementById("bin2");
   oBin3 = document.getElementById("bin3");
@@ -121,7 +139,31 @@ function nextSimBlock() {
       // simulate
       while (ordDice > 0 || luckDice > 0) {
         // decide which dice to use
-        if (luckDice > 0 && pos == 10 && doubleNextRoll) {
+        if (luckDice > 1 && boardState[18] < 5 && pos < 18 && pos >= 12) {
+          luckDice--;
+          roll = 18 - pos;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] < 5 && pos < 11 && pos >= 5) {
+          luckDice--;
+          roll = 11 - pos;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] < 5 && pos < 4) {
+          luckDice--;
+          roll = 4 - pos;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] < 5 && pos >= 19) {
+          luckDice--;
+          roll = 20 - pos + 4;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] == 5 && pos < 5 ) {
+          luckDice--;
+          roll = 5 - pos;
+          
+        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] == 5 && pos >= 19 ) {
+          luckDice--;
+          roll = 20 - pos + 5;
+          
+        } else if (luckDice > 0 && pos == 10 && doubleNextRoll) {
           luckDice--;
           roll = 5;
           
@@ -288,18 +330,56 @@ function nextSimBlock() {
       simNum++;
     }
     
-    // update results
+    // update results and expected values
     var percent;
     for (var i = 0; i < 9; i++) {
       percent = 100.0 * arrResults[i] / totalSims;
       arrBins[i].innerHTML = percent.toFixed(4) + "%&nbsp;";
-      arrBins[i].style.width = Math.round(percent) + "%";
+      
+      if (Math.round(percent) < 1) {
+        arrBins[i].style.width = "1%";
+      } else {
+        arrBins[i].style.width = Math.round(percent) + "%";
+      }
     }
+    
+    
     
     setTimeout(nextSimBlock, 1);
     
   } else {
     simRunning = false;
-    alert("Simulation finished. Average stars is " + (1.0 * totalStars / totalSims).toFixed(4) + ".");
+    
+    var runningSum = 0;
+    for (var i = 8; i > 0; i--) {
+      runningSum += arrResults[i];
+      document.getElementById("chance" + i).innerHTML = (runningSum / totalSims * 100).toFixed(4);
+    }
+      
+    updateValues();
+    document.getElementById("avgStars").innerHTML = (1.0 * totalStars / totalSims).toFixed(4);
+  }
+}
+
+
+function updateValues() {
+  var runningSum = 0;
+  var runningRewards = 0;
+  var reward = 0;
+  var currentStars = parseInt(document.getElementById("stars").value);
+  var threshholds = [0, 80, 110, 140, 170, 200, 230, 260, 300];
+  var chance;
+  var expValue;
+  
+  for (var i = 1; i <= 8; i++) {
+    if (currentStars >= threshholds[i]) {
+      document.getElementById("value" + i).innerHTML = 0;
+    } else {
+      runningRewards += parseInt(document.getElementById("reward" + i).value);
+      chance = parseFloat(document.getElementById("chance" + i).innerHTML) / 100;
+      expValue = Math.round(chance * runningRewards);
+      runningSum += expValue;
+      document.getElementById("value" + i).innerHTML = expValue;
+    }
   }
 }

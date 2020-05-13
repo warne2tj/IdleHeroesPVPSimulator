@@ -13,48 +13,112 @@
 
 
 <body onload="init();">
-  <h1>Imp's Adventure Simulator</h1>
+  <div class="banner">
+    <h1>Imp's Adventure Simulator</h1>
+  </div>
+  
+  
+  <button class="accordion">Overview</button>
+  <div class="panel">
+    <p>
+      Plug in your current conditions in Imp's Adventure and click Run.
+      It will produce a chart from a million simulations and what percentage of those simulations ended up in which reward bracket.
+      You can use this on the last day of the event to see if it will be worth it to spend the gems and/or money to buy additional dice.
+      To help answer this, you can put in how many gems each reward tier is worth to you and it will calculate the expected gem value based on the chances.
+    </p>
+    
+    <h4>Strategy</h4>
+    <p>
+      The best strategy, and the one the simulator uses, is to use lucky dice to land back on the Lucky Hut to get constant free movement.
+      The exceptions are: Don't use the lucky dice if you are 1 spot away. And don't use the lucky dice if you are on the Karma Hut.
+    </p>
+    
+    <p>
+      At the end of the event, any unused dice will be converted to 2 stars. Using the dice usually gets you more stars than not using them.
+      But if you're guaranteed the next tier by not using them, then it's up to you to decide whether to save them and get the guaranteed reward,
+      or use them and attempt to get to the tiers further away.
+    </p>
+    
+    <h4>What if you have more than 1 lucky dice?</h4>
+    <p>
+      You can use it to fully upgrade your Starry Mushrooms. Prioritize upgrading the third Starry Mushroom.
+      If they're all fully upgraded, use it to get to the Wishing Hut for a free ordinary dice.
+    </p>
+    
+    <h4>What is the expected value calculation?</h4>
+    <p>
+      It takes the sum of the values of the tier it's on and all previous tiers and mutliplies it by the chance of reaching that tier.
+      If the expected value of any of the tiers you have not reached yet is higher than the amount of gems you would spend to purchase dice, then it's a good bet.
+      But nothing is guaranteed so it's up to you to decide whether the risk is worth the reward.
+    </p>
+    
+    <h4>Why is the expected value showing 0 for some tiers?</h4>
+    <p>
+      If your current stars are alreay within the range of a tier, the value of that tier is set to 0. The values are to help you decide whether to buy additional dice.
+      If you've already gotten the rewards for a tier, you should ignore the value of that tier in making that decision.
+    </p>
+  </div>
   
   <p>
-    <div><label for="">Ordinary Dice: </label><input type="text" id="ordinary" size="2" value="78"></input></div>
-    <div><label for="">Lucky Dice: </label><input type="text" id="lucky" size="2" value="0"></input></div>
-    <div><label for="">Starting Stars: </label><input type="text" id="stars" size="3" value="0"></input></div>
+    <div class="row">
+      <div class="column">
+        <div class="row"><div class="column"><label for="ordinary">Ordinary Dice: </label></div><div class="column"><input type="text" id="ordinary" size="2" value="78"></input></div></div>
+        <div class="row"><div class="column"><label for="lucky">Lucky Dice: </label></div><div class="column"><input type="text" id="lucky" size="2" value="0"></input></div></div>
+        <div class="row"><div class="column"><label for="stars">Starting Stars: </label></div><div class="column"><input type="text" onchange="updateValues();" id="stars" size="3" value="0"></input></div></div>
+        
+        <div class="row"><div class="column"><label for="startPos">Starting Position: </label></div><div class="column"><select id="startPos" value="0">
+          <option value="0">Start</option>
+          <option value="1">Spirit Workshop 1</option>
+          <option value="2">Promotion Stone Workshop 1</option>
+          <option value="3">Magic Dust Workshop 1</option>
+          <option value="4">Starry Mushroom 1</option>
+          <option value="5">Wishing Hut</option>
+          <option value="6">3-Star Hero Workshop</option>
+          <option value="7">Spirit Workshop 2</option>
+          <option value="8">Monster Soul Workshop</option>
+          <option value="9">Magic Dust Workshop 2</option>
+          <option value="10">Fortune Hut</option>
+          <option value="11">Starry Mushroom 2</option>
+          <option value="12">Promotion Stone Workshop 2</option>
+          <option value="13">5-Star Hero Workshop</option>
+          <option value="14">Spirit Workshop 2</option>
+          <option value="15">Karma Hut</option>
+          <option value="16">Magic Dust Workshop 3</option>
+          <option value="17">4-Star Hero Workshop</option>
+          <option value="18">Starry Mushroom 3</option>
+          <option value="19">Chaos Stone Workshop</option>
+          <option value="20">Lucky Hut</option>
+        </select></div></div>
+      </div>
     
-    <div><label for="">Starting Position: </label><select id="startPos" value="0">
-      <option value="0">Start</option>
-      <option value="1">Spirit Workshop 1</option>
-      <option value="2">Promotion Stone Workshop 1</option>
-      <option value="3">Magic Dust Workshop 1</option>
-      <option value="4">Starry Mushroom 1</option>
-      <option value="5">Wishing Hut</option>
-      <option value="6">3-Star Hero Workshop</option>
-      <option value="7">Spirit Workshop 2</option>
-      <option value="8">Monster Soul Workshop</option>
-      <option value="9">Magic Dust Workshop 2</option>
-      <option value="10">Fortune Hut</option>
-      <option value="11">Starry Mushroom 2</option>
-      <option value="12">Promotion Stone Workshop 2</option>
-      <option value="13">5-Star Hero Workshop</option>
-      <option value="14">Spirit Workshop 2</option>
-      <option value="15">Karma Hut</option>
-      <option value="16">Magic Dust Workshop 3</option>
-      <option value="17">4-Star Hero Workshop</option>
-      <option value="18">Starry Mushroom 3</option>
-      <option value="19">Chaos Stone Workshop</option>
-      <option value="20">Lucky Hut</option>
-    </select></div>
-    
-    <div><label for="">First Starry Mushroom Level: </label><input type="text" id="mushroom1" size="3" value="1"></input></div>
-    <div><label for="">Second Starry Mushroom Level: </label><input type="text" id="mushroom2" size="3" value="1"></input></div>
-    <div><label for="">Third Starry Mushroom Level: </label><input type="text" id="mushroom3" size="3" value="1"></input></div>
-    
-    <div><label for="">Active Tarot: </label><select id="activeTarot" value="0">
-      <option value="None">None</option>
-      <option value="DoubleNextRoll">Double Next Roll</option>
-      <option value="RollTwice">Roll Two Dice on Next Roll</option>
-      <option value="DoubleStars">Get Double Stars on Next Starry Mushroom</option>
-      <option value="MoveBackwards">Move Backwards on Next Roll</option>
-    </select></div>
+      <div class="column">
+        <div class="row"><div class="column"><label for="mushroom1">First Starry Mushroom Level: </label></div><div class="column"><select id="mushroom1" value="1">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select></div></div>
+        
+        <div class="row"><div class="column"><label for="mushroom2">Second Starry Mushroom Level: </label></div><div class="column"><select id="mushroom2" value="1">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select></div></div>
+        
+        <div class="row"><div class="column"><label for="mushroom3">Third Starry Mushroom Level: </label></div><div class="column"><select id="mushroom3" value="1">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select></div></div>
+        
+        <div class="row"><div class="column"><label for="">Active Tarot: </label></div><div class="column"><select id="activeTarot" value="0">
+          <option value="None">None</option>
+          <option value="DoubleNextRoll">Double Next Roll</option>
+          <option value="RollTwice">Roll Two Dice on Next Roll</option>
+          <option value="DoubleStars">Get Double Stars on Next Starry Mushroom</option>
+          <option value="MoveBackwards">Move Backwards on Next Roll</option>
+        </select></div></div>
+      </div>
+    </div>
     
     <div><input type="submit" value="Run a Million Simulations" onclick="runImpSim();"></input></div>
   </p>
@@ -106,6 +170,58 @@
     </div>
   </div>  
   
+  <div class="total">Average Stars: <span id="avgStars">0</span></div>
+  
+  
+  <div class="section">
+    <div class="row">
+      <div class="column"><label for="reward1">10 Heroic Scrolls: </label><input type="text" onchange="updateValues();" id="reward1" size="5" value="1250"></input></div>
+      <div class="column">Chance: <span id="chance1">0</span>%,</div>
+      <div class="column">Expected Value: <span id="value1">0</span></div>
+    </div>
+    
+    <div class="row">
+      <div class="column"><label for="reward2">Elite 5-star Shards: </label><input type="text" onchange="updateValues();" id="reward2" size="5" value="2500"></input></div>
+      <div class="column">Chance: <span id="chance2">0</span>%,</div>
+      <div class="column">Expected Value: <span id="value2">0</span></div>
+    </div>
+    
+    <div class="row">
+      <div class="column"><label for="reward3">Limited Skin Chest: </label><input type="text" onchange="updateValues();" id="reward3" size="5" value="3750"></input></div>
+      <div class="column">Chance: <span id="chance3">0</span>%,</div>
+      <div class="column">Expected Value: <span id="value3">0</span></div>
+    </div>
+    
+    <div class="row">
+      <div class="column"><label for="reward4">6-Star Puppet Chest: </label><input type="text" onchange="updateValues();" id="reward4" size="5" value="1800"></input></div>
+      <div class="column">Chance: <span id="chance4">0</span>%,</div>
+      <div class="column">Expected Value: <span id="value4">0</span></div>
+    </div>
+    
+    <div class="row">
+      <div class="column"><label for="reward5">5-Star Hero Chest: </label><input type="text" onchange="updateValues();" id="reward5" size="5" value="7500"></input></div>
+      <div class="column">Chance: <span id="chance5">0</span>%,</div>
+      <div class="column">Expected Value: <span id="value5">0</span></div>
+    </div>
+    
+    <div class="row">
+      <div class="column"><label for="reward6">Material Chest: </label><input type="text" onchange="updateValues();" id="reward6" size="5" value="1000"></input></div>
+      <div class="column">Chance: <span id="chance6">0</span>%,</div>
+      <div class="column">Expected Value: <span id="value6">0</span></div>
+    </div>
+    
+    <div class="row">
+      <div class="column"><label for="reward7">L/D 5-Star Hero Chest: </label><input type="text" onchange="updateValues();" id="reward7" size="5" value="10000"></input></div>
+      <div class="column">Chance: <span id="chance7">0</span>%,</div>
+      <div class="column">Expected Value: <span id="value7">0</span></div>
+    </div>
+    
+    <div class="row">
+      <div class="column"><label for="reward8">9-Star Puppet Chest: </label><input type="text" onchange="updateValues();" id="reward8" size="5" value="8400"></input></div>
+      <div class="column">Chance: <span id="chance8">0</span>%,</div>
+      <div class="column">Expected Value: <span id="value8">0</span></div>
+    </div>
+  </div>
 </body>
 
 </html>

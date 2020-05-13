@@ -1,13 +1,65 @@
 /* Make sure that padding behaves as expected */
 * {box-sizing:border-box}
 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #444;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+
+h4 {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+
+p {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+
+.banner {
+  margin-bottom: 2em;
+  padding: 2em;
+  background-color: #00a0fa;
+	border-radius: 10px;
+}
+
+.banner h1 {
+  font-size: 48px;
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+}
+
+
+.total {
+  width: 100%;
+  padding: 1em;
+  background-color: #eee;
+	border-radius: 20px;
+  font-weight: bold;
+  margin-bottom: 2em;
+}
+
+
 .chart {
   width: 100%;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  margin-bottom: 2em;
+  background-color: #fdf6ce;
+	border-radius: 20px;
 }
 
 .container {
   width: 100%;
-  background-color: #fff;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 
@@ -18,8 +70,14 @@
   background-color: #4ea8ec;
 }
 
+.column {
+  float: left;
+  padding: 3px;
+}
+
 .col1 {
   float: left;
+  width: 20%;
   padding: 3px;
 }
 
@@ -29,23 +87,100 @@
   padding: 3px;
 }
 
+.col33 {
+  float: left;
+  width: 60%;
+  padding: 3px;
+}
+
 .row:after {
   content: "";
   display: table;
   clear: both;
 }
 
-input {
-  margin: 5px;
+.aright {
+  text-align: right;
+}
+
+div.chart div.row div.col1 {
+  text-align: right;
 }
 
 /* Style the submit button */
 input[type=submit] {
   background-color: #4CAF50;
+  font-size: 16px;
+  font-weight: bold;
   color: white;
   padding: 5px 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   margin: 5px;
+}
+
+
+/* Style inputs, select elements and textareas */
+input[type=text], select, textarea {
+  color: #222;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+/* Style the label to display next to the inputs */
+label {
+  padding: 5px;
+  color: #222;
+  display: inline-block;
+}
+
+
+.accordion {
+  color: #222;
+  background-color: #fdf6ce;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  font-weight: bold;
+  font-size: 15px;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.accordion:after {
+  content: '\02795'; /* Unicode character for "plus" sign (+) */
+  font-size: 13px;
+  color: #000;
+  float: right;
+  margin-left: 5px;
+}
+
+.accordion:hover {
+  background-color: #bbac8e;
+}
+
+.active {
+  background-color: #bbac8e;
+  border-radius: 20px 20px 0px 0px;
+}
+
+.active:after {
+  content: "\2796"; /* Unicode character for "minus" sign (-) */
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+  padding: 0 18px;
+  background-color: #fdf6ce;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .5s ease;
+  border-radius: 0px 0px 20px 20px;
 }

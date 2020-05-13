@@ -34,6 +34,7 @@ Implemented Heroes
 Upcoming Heroes
   * Oberon
   * Faith Blade
+  * Nakia
   
   
 Implemented Monsters
