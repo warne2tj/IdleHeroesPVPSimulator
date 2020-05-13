@@ -322,6 +322,22 @@ var baseHeroStats = {
     }
   },
   
+  "Oberon": {
+    className: Oberon,
+    heroFaction: "Forest",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 6980,
+      baseAttack: 410,
+      baseArmor: 61,
+      baseSpeed: 220,
+      growHP: 698,
+      growAttack: 41,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
   "Penny": {
     className: Penny,
     heroFaction: "Fortress",

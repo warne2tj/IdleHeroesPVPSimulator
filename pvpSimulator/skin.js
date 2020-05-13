@@ -115,6 +115,13 @@ var skins = {
     "Legendary Crescent Emissary": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04}
   },
   
+  "Oberon": {
+    "Blue Luan": {speed: 4, attackPercent: 0.03, holyDamage: 0.05},
+    "Legendary Blue Luan": {speed: 6, attackPercent: 0.06, holyDamage: 0.08},
+    "Golden Memories": {speed: 4, hpPercent: 0.05, damageReduce: 0.03},
+    "Legendary Golden Memories": {speed: 6, hpPercent: 0.08, damageReduce: 0.04},
+  },
+  
   "Penny": {
     "Infinite Joy": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
     "Legendary Infinite Joy": {controlImmune: 0.06, critDamage: 0.1, hpPercent: 0.06},

@@ -492,7 +492,7 @@ class hero {
   
   
   isUnderStandardControl() {
-    if (this.hasStatus("petrify") || this.hasStatus("stun") || this.hasStatus("entangle") || this.hasStatus("freeze")) { 
+    if (this.hasStatus("petrify") || this.hasStatus("stun") || this.hasStatus("twine") || this.hasStatus("freeze")) { 
       return true;
     } else {
       return false;
@@ -856,6 +856,9 @@ class hero {
           damageResult["damageType"] = strStatName;
           strDamageResult = this.takeDamage(source, "Debuff " + debuffName, damageResult);
           
+        } else if (strStatName == "rounds") {
+          //ignore, used to set twine rounds
+          
         } else {
           this._currentStats[strStatName] -= effects[strStatName];
           
@@ -871,10 +874,19 @@ class hero {
       // handle special debuffs
       if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
         result += source.devouringMark(this);
+        
       } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
         result += this.getDebuff(source, "Seal of Light", 2, {});
+        
       } else if (debuffName == "Seal of Light") {
         result += this.removeDebuff("Power of Light");
+        
+      } else if (debuffName == "twine") {
+        for (var h in source._allies) {
+          if (source._allies[h]._heroName == "Oberon") {
+            result += source._allies[h].twine(this);
+          }
+        }
       }
     }
     
@@ -901,6 +913,7 @@ class hero {
             
           } else if(strStatName == "heal") {
             // do nothing, already healed
+            
           } else {
             this._currentStats[strStatName] -= this._buffs[strBuffName][s]["effects"][strStatName];
             
@@ -937,8 +950,12 @@ class hero {
           } else if (strStatName == "armorPercent") {
             this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
             
+          } else if (strStatName == "rounds") {
+                // do nothing, used to set twine rounds
+                
           } else if (isDot(strStatName)) {
             // do nothing
+            
           } else {
             this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
             
@@ -947,6 +964,8 @@ class hero {
             }
           }
         }
+        
+        this._debuffs[strDebuffName][s];
       }
     }
 
@@ -1033,6 +1052,10 @@ class hero {
           if (this._debuffs[b][s]["duration"] == 0) {
             result += "<div>" + this.heroDesc() + " debuff (<span class='skill'>" + b + "</span>) ended.</div>";
             
+            if (b == "Sow Seeds") {
+              result += this.getDebuff(this._debuffs[b][s]["source"], "twine", this._debuffs[b][s]["effects"]["rounds"]);
+            }
+            
             // remove the effects
             for (var strStatName in this._debuffs[b][s]["effects"]) {
               if (strStatName == "attackPercent") {
@@ -1041,8 +1064,12 @@ class hero {
               } else if (strStatName == "armorPercent") {
                 this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
                 
-              } else if (isDot(strStatName)) {
+              } else if (strStatName == "rounds") {
+                // do nothing, used to set twine rounds
+                
+              }  else if (isDot(strStatName)) {
                 // do nothing, full burn damage already done
+                
               } else {
                 this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
                 
@@ -1058,10 +1085,12 @@ class hero {
             
             for (var strStatName in this._debuffs[b][s]["effects"]) {
               if (isDot(strStatName)) {
-                damageResult = this._debuffs[b][s]["source"].calcDamage(this, this._debuffs[b][s]["effects"][strStatName], "debuff", strStatName);
-                damageResult["damageType"] = strStatName;
-                result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
-                result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
+                if (this._currentStats["totalHP"] > 0) {
+                  damageResult = this._debuffs[b][s]["source"].calcDamage(this, this._debuffs[b][s]["effects"][strStatName], "debuff", strStatName);
+                  damageResult["damageType"] = strStatName;
+                  result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
+                  result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
+                }
               }
             }
           }

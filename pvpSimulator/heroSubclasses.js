@@ -2339,6 +2339,123 @@ class Oberon extends hero {
     // apply Strength of Elf passive
     this.applyStatChange({attackPercent: 0.3, hpPercent: 0.35, speed: 40, effectBeingHealed: 0.3}, "PassiveStats");
   }
+  
+  
+  twine(target) {
+    var result = "";
+    
+    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0) {
+      var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.8);
+      result += this.getHeal(this, healAmount);
+      result += this.getBuff(this, "Natural Manipulation", 6, {attackPercent: 0.20});
+      
+      
+      var damageResult = {};
+      var targets = getRandomTargets(this, this._enemies);
+      var maxTargets = 3;
+      
+      if (targets.length < maxTargets) { maxTargets = targets.length; }
+      
+      for (var i = 0; i < maxTargets; i++) {
+        this._rng = Math.random();
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 6, "passive", "poison", 1, 1, 3);
+        result += targets[i].getDebuff(this, "Natural Manipulation", 3, {poison: Math.round(damageResult["damageAmount"] / 3)});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getAllTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
+      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    
+    targets = getRandomTargets(this, this._enemies);
+    if (targets.length > 0) {
+      result += targets[0].getDebuff(this, "Sow Seeds", 1, {rounds: 1});
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var i = 0;
+    
+    for ( ; i < targets.length; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.85);
+      result += targets[i].takeDamage(this, "Lethal Twining", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          result+= targets[i].getDebuff(this, "twine", 2);
+        }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+      
+      i++;
+      break;
+    }
+    
+    
+    for ( ; i < targets.length; i++) {
+      if (targets[i]._currentStats["totalHP"] > 0) {
+        this._rng = Math.random();
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.25);
+        result += targets[i].takeDamage(this, "Lethal Twining", damageResult);
+        
+        if (!("CarrieDodge" in damageResult)) {
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            result+= targets[i].getDebuff(this, "Sow Seeds", 1, {rounds: 2});
+          }
+          
+          activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+        }
+        
+        i++;
+        break;
+      }
+    }
+    
+    
+    for ( ; i < targets.length; i++) {
+      if (targets[i]._currentStats["totalHP"] > 0) {
+        this._rng = Math.random();
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.65);
+        result += targets[i].takeDamage(this, "Lethal Twining", damageResult);
+        
+        if (!("CarrieDodge" in damageResult)) {
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            result+= targets[i].getDebuff(this, "Sow Seeds", 2, {rounds: 2});
+          }
+          
+          activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+        }
+        
+        i++;
+        break;
+      }
+    }
+    
+    return result;
+  }
 }
 
 

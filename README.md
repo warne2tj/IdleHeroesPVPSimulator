@@ -26,13 +26,13 @@ Implemented Heroes
   * Michelle
   * Mihm
   * Nakia
+  * Oberon
   * Penny
   * Tara
   * Unimax
   
   
 Upcoming Heroes
-  * Oberon
   * Faith Blade
   
   
