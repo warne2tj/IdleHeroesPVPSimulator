@@ -45,6 +45,105 @@ function init() {
     });
   }
   
+  // check local storage
+  if (typeof(Storage) !== "undefined") {
+    if (localStorage.getItem("ordinary") !== null) {
+      document.getElementById("ordinary").value = localStorage.getItem("ordinary");
+    } else {
+      localStorage.setItem("ordinary", 78);
+    }
+    
+    if (localStorage.getItem("lucky") !== null) {
+      document.getElementById("lucky").value = localStorage.getItem("lucky");
+    } else {
+      localStorage.setItem("lucky", 0);
+    }
+    
+    if (localStorage.getItem("stars") !== null) {
+      document.getElementById("stars").value = localStorage.getItem("stars");
+    } else {
+      localStorage.setItem("stars", 0);
+    }
+    
+    if (localStorage.getItem("startPos") !== null) {
+      document.getElementById("startPos").value = localStorage.getItem("startPos");
+    } else {
+      localStorage.setItem("startPos", 0);
+    }
+    
+    if (localStorage.getItem("mushroom1") !== null) {
+      document.getElementById("mushroom1").value = localStorage.getItem("mushroom1");
+    } else {
+      localStorage.setItem("mushroom1", 1);
+    }
+    
+    if (localStorage.getItem("mushroom2") !== null) {
+      document.getElementById("mushroom2").value = localStorage.getItem("mushroom2");
+    } else {
+      localStorage.setItem("mushroom2", 1);
+    }
+    
+    if (localStorage.getItem("mushroom3") !== null) {
+      document.getElementById("mushroom3").value = localStorage.getItem("mushroom3");
+    } else {
+      localStorage.setItem("mushroom3", 1);
+    }
+    
+    if (localStorage.getItem("activeTarot") !== null) {
+      document.getElementById("activeTarot").value = localStorage.getItem("activeTarot");
+    } else {
+      localStorage.setItem("activeTarot", "None");
+    }
+    
+    if (localStorage.getItem("reward1") !== null) {
+      document.getElementById("reward1").value = localStorage.getItem("reward1");
+    } else {
+      localStorage.setItem("reward1", 1250);
+    }
+    
+    if (localStorage.getItem("reward2") !== null) {
+      document.getElementById("reward2").value = localStorage.getItem("reward2");
+    } else {
+      localStorage.setItem("reward2", 2500);
+    }
+    
+    if (localStorage.getItem("reward3") !== null) {
+      document.getElementById("reward3").value = localStorage.getItem("reward3");
+    } else {
+      localStorage.setItem("reward3", 3750);
+    }
+    
+    if (localStorage.getItem("reward4") !== null) {
+      document.getElementById("reward4").value = localStorage.getItem("reward4");
+    } else {
+      localStorage.setItem("reward4", 1800);
+    }
+    
+    if (localStorage.getItem("reward5") !== null) {
+      document.getElementById("reward5").value = localStorage.getItem("reward5");
+    } else {
+      localStorage.setItem("reward5", 7500);
+    }
+    
+    if (localStorage.getItem("reward6") !== null) {
+      document.getElementById("reward6").value = localStorage.getItem("reward6");
+    } else {
+      localStorage.setItem("reward6", 1000);
+    }
+    
+    if (localStorage.getItem("reward7") !== null) {
+      document.getElementById("reward7").value = localStorage.getItem("reward7");
+    } else {
+      localStorage.setItem("reward7", 10000);
+    }
+    
+    if (localStorage.getItem("reward8") !== null) {
+      document.getElementById("reward8").value = localStorage.getItem("reward8");
+    } else {
+      localStorage.setItem("reward8", 8400);
+    }
+  }
+  
   
   oBin1 = document.getElementById("bin1");
   oBin2 = document.getElementById("bin2");
@@ -55,8 +154,16 @@ function init() {
   oBin7 = document.getElementById("bin7");
   oBin8 = document.getElementById("bin8");
   oBin9 = document.getElementById("bin9");
-  arrBins = [oBin1, oBin2, oBin3, oBin4, oBin5, oBin6, oBin7, oBin8, oBin9];
+  arrBins = [oBin1, oBin2, oBin3, oBin4, oBin5, oBin6, oBin7, oBin8, oBin9]; 
 }
+
+
+function storeLocal(i) {
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(i.id, i.value);
+  }
+}
+
 
 function runImpSim() {
   if (!(simRunning)) {
