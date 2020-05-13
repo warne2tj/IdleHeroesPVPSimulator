@@ -194,6 +194,22 @@ var baseHeroStats = {
     }
   },
   
+  "Faith Blade": {
+    className: FaithBlade,
+    heroFaction: "Light",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 9147,
+      baseAttack: 507,
+      baseArmor: 60,
+      baseSpeed: 235,
+      growHP: 914.7,
+      growAttack: 50.4,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
   "Garuda": {
     className: Garuda,
     heroFaction: "Forest",

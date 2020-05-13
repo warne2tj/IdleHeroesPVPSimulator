@@ -1474,6 +1474,14 @@ class Garuda extends hero {
 }
 
 
+// Faith Blade
+class FaithBlade extends hero {
+  passiveStats() {
+    // apply Ultimate Faith passive
+    this.applyStatChange({holyDamage: 0.70, speed: 60, crit: 0.30, stunImmune: 1}, "PassiveStats");
+  }
+}
+
 
 // Gustin
 class Gustin extends hero {
