@@ -1480,6 +1480,79 @@ class FaithBlade extends hero {
     // apply Ultimate Faith passive
     this.applyStatChange({holyDamage: 0.70, speed: 60, crit: 0.30, stunImmune: 1}, "PassiveStats");
   }
+  
+  
+  eventEnemyDied(e) {
+    var result = "";
+    
+    if (!("Seal of Light" in this._debuffs)) {
+      result += this.getEnergy(this, 100);
+      result += this.getBuff(this, "Blood Nourishing", 3, {holyDamage: 0.30});
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getLowestHPTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 2, "basic", "normal");
+      result += targets[0].takeDamage(this, "Basic Attack", damageResult, 0);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var additionalDamageResult = {damageAmount: 0};
+    var hpDamage = 0;
+    var hpDamageResult = {damageAmount: 0};
+    var targets = getLowestHPTargets(this, this._enemies);
+    var maxTargets = 2;
+    
+    if (targets.length < maxTargets) {
+      maxTargets = targets.length;
+    }
+    
+    for (var i=0; i<maxTargets; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3);
+      result += targets[i].takeDamage(this, "Blade Assault", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active2", "normal", 1.08);
+          result += targets[i].takeDamage(this, "Blade Assault 2", additionalDamageResult, 0);
+        }
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          hpDamage = 0.20 * (targets[i]._stats["totalHP"] - targets[i]._currentStats["totalHP"]);
+          if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
+          hpDamageResult = this.calcDamage(targets[i], hpDamage, "active2", "hpPercent");
+          result += targets[i].takeDamage(this, "Blade Assault HP", hpDamageResult);
+        }
+        
+        if (targets[i]._currentStats["totalHP"] > this._currentStats["totalHP"]) {
+          result += targets[i].getDebuff(this, "stun", 2);
+        }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + additionalDamageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
 }
 
 
