@@ -96,6 +96,9 @@ Hero Mechanics:
   * Elyvia
     + Is all damage taken a different stat than all damage reduce?
     + is the speed exchange a buff/debuff effect?
+  * Nakia
+    + Basic seems to attack last slot in back line and bleeds everyone in backline
+    + Is her increased damage to slowed targets only counting her debuff or does it count other hero's speed reduction effects?
     
 
 Mechanics:

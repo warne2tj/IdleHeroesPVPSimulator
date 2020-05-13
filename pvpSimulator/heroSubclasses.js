@@ -2233,6 +2233,102 @@ class Nakia extends hero {
     // apply Arachnid Madness passive
     this.applyStatChange({attackPercent: 0.35, crit: 0.35, controlImmune: 0.3, speed: 30, damageAgainstBleed: 0.80}, "PassiveStats");
   }
+  
+  
+  eventAllyBasic(source, e) {
+    var result = "";
+    
+    if (source.heroDesc() == this.heroDesc()) {
+      var damageResult = {};
+      
+      for (var i = 0; i < e.length; i++) {
+        if (e[i][1]._currentStats["totalHP"] > 0 && e[i][1].hasStatus("bleed")) {
+          this._rng = Math.random();
+          damageResult = this.calcDamage(e[i][1], this._currentStats["totalAttack"], "passive", "bleed");
+          result += e[i][1].getDebuff(this, "Relentless Rage", 3, {bleed: Math.round(damageResult["damageAmount"])});
+          
+          if (e[i][3] == true) {
+            result += e[i][1].getDebuff(this, "Relentless Rage Crit Bleed", 3, {bleed: Math.round(damageResult["damageAmount"])});
+          }
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyActive(source, e) {
+    return this.eventAllyBasic(source, e);
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getBackTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[targets.length-1], this._currentStats["totalAttack"], "basic", "normal");
+      result += targets[targets.length-1].takeDamage(this, "Basic Attack", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        basicQueue.push([this, targets[targets.length-1], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    for (var i in targets) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "bleed");
+      result += targets[i].getDebuff(this, "Abyss of Torment", 3, {bleed: Math.round(damageResult["damageAmount"]), speed: 30});
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var bleedDamageResult = {damageAmount: 0};
+    var targets = getBackTargets(this, this._enemies);
+    var maxTargets = 2;
+    
+    if (targets.length < maxTargets) { maxTargets = targets.length; }
+    
+    for (var i in targets) {
+      targets[i]._rng = Math.random;
+    }
+    
+    targets.sort(function(a,b) {
+      if (a._rng < b._rng) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    
+    for (var i = 0; i < maxTargets; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.3);
+      result += targets[i].takeDamage(this, "Ferocious Bite", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active2", "bleed", 1.98 * 15, 15);
+          result += targets[i].getDebuff(this, "Ferocious Bite", 15, {bleed: Math.round(bleedDamageResult["damageAmount"] / 15)});
+        }
+        
+        if ("Relentless Rage" in targets[i]._debuffs && targets[i]._currentStats["totalHP"] > 0) {
+          result += targets[i].getDebuff(this, "Ferocious Bite Slow Bleed", 15, {bleed: Math.round(bleedDamageResult["damageAmount"] / 15)});
+        }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
 }
 
 

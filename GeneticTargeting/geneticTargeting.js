@@ -75,7 +75,7 @@ function runMassLoop() {
     allTeams = {};
     defHeroes = [];
     attIndex = 0;
-    maxCopies = jsonBenchmark["Benchmark"]["Max Copies"];
+    maxCopies = jsonBenchmark["Max Copies"];
     heroNames = jsonBenchmark["Usable Heroes"];
     
     // load benchmark team
@@ -198,8 +198,12 @@ function nextMatchup() {
     } else {
       var summary = "";
       var totalFights = numSims;
+      var heroCount = {};
+      var expected = teamKeys.length * 6 / heroNames.length;
+      var observed;
       
-      
+      /*
+      // sort by true win, using adjusted wins in favor of diversity
       teamKeys.sort(function(a,b) {
         if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {
           return -1;
@@ -209,9 +213,57 @@ function nextMatchup() {
           return 0;
         }
       });
+      */
+      
+      // to increase diversity in the top teams
+      // adjust win rate down by how often the heroes in the team shows up overall
+      // each deviation 3 and above the expected decreases it by 5%
+      for (var i = 0; i < heroNames.length; i++) {
+        heroCount[heroNames[i]] = 0;
+      }
+      
+      for (var p in allTeams) {
+        for (var i = 0; i < 60; i += 10) {
+          heroCount[allTeams[p]["dna"][i]]++;
+        }
+      }
+      
+      for (var i in heroCount) {
+        heroCount[i] = heroCount[i] / expected;
+      }
+      
+      for (var p in allTeams) {
+        observed = 0;
+        
+        for (var i = 0; i < 60; i += 10) {
+          observed += heroCount[allTeams[p]["dna"][i]];
+        }
+        
+        observed = (observed / 6) - 2
+        if (observed <= 0) {
+          observed = 0;
+        } else {
+          observed *= 0.05;
+        }
+        
+        allTeams[p]["adjustedWins"] = allTeams[p]["attWins"] * (1 - observed);
+      }
+      
+      
+      teamKeys.sort(function(a,b) {
+        if (allTeams[a]["adjustedWins"] > allTeams[b]["adjustedWins"]) {
+          return -1;
+        } else if (allTeams[a]["adjustedWins"] < allTeams[b]["adjustedWins"]) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      
+      
       
       for (var p in teamKeys) {
-        summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") attack win rate: " + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%\n"
+        summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") attack win rate: " + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%, " + Math.round(allTeams[teamKeys[p]]["adjustedWins"] / totalFights * 100, 2) + "%\n";
       }
       
       document.getElementById("generationLog").value = "Generation " + document.getElementById("genCount").value + " summary.\n" + summary + "\n";

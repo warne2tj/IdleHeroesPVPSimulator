@@ -468,7 +468,7 @@ class hero {
         return true; 
       } else {
         for (s in this._debuffs[b]) {
-          for (e in this._debuffs[b][s]) {
+          for (e in this._debuffs[b][s]["effects"]) {
             if (e == strStatus) { return true; }
           }
         }
@@ -480,7 +480,7 @@ class hero {
         return true; 
       } else {
         for (s in this._buffs[b]) {
-          for (e in this._buffs[b][s]) {
+          for (e in this._buffs[b][s]["effects"]) {
             if (e == strStatus) { return true; }
           }
         }
@@ -549,12 +549,12 @@ class hero {
       e5Desc = "<div><span class='skill'>Lethal Fightback</span> triggered additional damage.</div>";
     }
     
-    if (this.hasStatus("burn")) {
+    if (target.hasStatus("burn")) {
        damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
-    if (this.hasStatus("bleed")) {
-       damageAgainstBleed += this._currentStats["damageAgainstBleed"];
+    if (target.hasStatus("bleed")) {
+      damageAgainstBleed += this._currentStats["damageAgainstBleed"];
     }
     
     
@@ -1276,7 +1276,6 @@ class hero {
     var targets = getAllTargets(this, this._enemies);
     
     if (targets.length > 0) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
@@ -1293,7 +1292,7 @@ class hero {
     var result = "";
     var damageResult = {};
     var targets = getAllTargets(this, this._enemies);
-    var maxTargets = 1;
+    var maxTargets = 2;
     
     if (targets.length < maxTargets) {
       maxTargets = targets.length;

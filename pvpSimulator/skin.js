@@ -113,7 +113,7 @@ var skins = {
   "Nakia": {
     "Crescent Emissary": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
     "Legendary Crescent Emissary": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04}
-  }
+  },
   
   "Penny": {
     "Infinite Joy": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
