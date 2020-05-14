@@ -193,3 +193,8 @@ label {
   transition: max-height .5s ease;
   border-radius: 0px 0px 20px 20px;
 }
+
+.panel div {
+  padding-left: 1em;
+  padding-right: 1em;
+}
