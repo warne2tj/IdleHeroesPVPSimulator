@@ -331,7 +331,7 @@ function evolve(teamKeys) {
   
   // breed next 40% from top 30
   for (t=i20p; t<i60p; t++) {
-    children = breed(teamKeys, 0, i30p);
+    children = breed(teamKeys, 0, i30p, 0.01, 0.10);
     oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
     t++;
     oConfig.value += "\"" + t + "\": [" + children[1] + "\n],\n";
@@ -339,7 +339,7 @@ function evolve(teamKeys) {
   
   // breed next 20% from 21-50
   for (t=i60p; t<i80p; t++) {
-    children = breed(teamKeys, i20p, i50p);
+    children = breed(teamKeys, i20p, i50p, 0.05, 0.20);
     oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
     t++;
     oConfig.value += "\"" + t + "\": [" + children[1] + "\n],\n";
@@ -347,7 +347,7 @@ function evolve(teamKeys) {
   
   // breed last 20% from 51-90
   for (t=i80p; t<numCreate; t++) {
-    children = breed(teamKeys, i50p, i90p);
+    children = breed(teamKeys, i50p, i90p, 0.20, 0.30);
     oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
     
     t++;
@@ -365,7 +365,7 @@ function evolve(teamKeys) {
 }
 
 
-function breed(teamKeys, start, end) {
+function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   var parentA;
   var parentB;
   var dna1;
@@ -377,8 +377,6 @@ function breed(teamKeys, start, end) {
   var pos1 = 0;
   var pos2 = 0;
   
-  var mutationRate = 0.01;
-  var posSwapRate = 0.10;
   var temp = "";
   var crossOver;
   
@@ -512,7 +510,7 @@ function breed(teamKeys, start, end) {
         case 0:
           child2[g] = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
           
-          skinNames = Object.keys(child2[g]);
+          skinNames = Object.keys(skins[child2[g]]);
           legendarySkins = [];
           for (var s in skinNames) {
             if (skinNames[s].substring(0, 9) == "Legendary") {

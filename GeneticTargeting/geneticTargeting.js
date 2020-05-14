@@ -382,7 +382,7 @@ function evolve(teamKeys) {
   
   // breed next 30% from top 30
   for (t=i10p*2; t < i10p*5; t++) {
-    children = breed(teamKeys, 0, i10p*3, 0.01, 0.20);
+    children = breed(teamKeys, 0, i10p*3, 0.01, 0.10);
     oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
     t++;
     oConfig.value += "\"" + t + "\": [" + children[1] + "\n],\n";
