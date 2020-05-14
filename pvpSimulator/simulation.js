@@ -79,14 +79,14 @@ function runSim() {
       
       // trigger hero start of round abilities
       for (var h in attHeroes) {
-        if (!("Seal of Light" in attHeroes[h]._debuffs)) {
+        if (attHeroes[h].isNotSealed()) {
           temp = attHeroes[h].startOfRound(roundNum);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
       }
       
       for (var h in defHeroes) {
-        if (!("Seal of Light" in defHeroes[h]._debuffs)) {
+        if (defHeroes[h].isNotSealed()) {
           temp = defHeroes[h].startOfRound(roundNum);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
@@ -243,7 +243,7 @@ function runSim() {
       
       // trigger hero end of round abilities
       for (var h in attHeroes) {
-        if (!("Seal of Light" in attHeroes[h]._debuffs)) {
+        if (attHeroes[h].isNotSealed()) {
           temp = attHeroes[h].endOfRound(roundNum);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
@@ -321,7 +321,7 @@ function runSim() {
       
       // trigger hero end of round abilities
       for (var h in defHeroes) {
-        if (!("Seal of Light" in defHeroes[h]._debuffs)) {
+        if (defHeroes[h].isNotSealed()) {
           temp = defHeroes[h].endOfRound(roundNum);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
@@ -479,7 +479,7 @@ function alertDidBasic(source, e) {
   
   // alert living allies and enemies
   for (var i = 0; i < livingAllies.length; i++) {
-    if (!("Seal of Light" in livingAllies[i]._debuffs)) {
+    if (livingAllies[i].isNotSealed()) {
       temp = livingAllies[i].eventAllyBasic(source, e);
       if (temp != "") {
         result += "<div>" + temp + "</div>";
@@ -488,7 +488,7 @@ function alertDidBasic(source, e) {
   }
   
   for (var i = 0; i < livingEnemies.length; i++) {
-    if (!("Seal of Light" in livingEnemies[i]._debuffs)) {
+    if (livingEnemies[i].isNotSealed()) {
       temp = livingEnemies[i].eventEnemyBasic(source, e);
       if (temp != "") {
         result += "<div>" + temp + "</div>";
@@ -553,7 +553,7 @@ function alertDidActive(source, e) {
   
   // alert living allies and enemies
   for (var i = 0; i < livingAllies.length; i++) {
-    if (!("Seal of Light" in livingAllies[i]._debuffs)) {
+    if (livingAllies[i].isNotSealed()) {
       temp = livingAllies[i].eventAllyActive(source, e);
       if (temp != "") {
         result += "<div>" + temp + "</div>";
@@ -562,7 +562,7 @@ function alertDidActive(source, e) {
   }
   
   for (var i = 0; i < livingEnemies.length; i++) {
-    if (!("Seal of Light" in livingEnemies[i]._debuffs)) {
+    if (livingEnemies[i].isNotSealed()) {
       temp = livingEnemies[i].eventEnemyActive(source, e);
       if (temp != "") {
         result += "<div>" + temp + "</div>";

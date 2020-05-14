@@ -370,6 +370,22 @@ var baseHeroStats = {
     }
   },
   
+  "Sherlock": {
+    className: Sherlock,
+    heroFaction: "Fortress",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 7937,
+      baseAttack: 397,
+      baseArmor: 60,
+      baseSpeed: 236,
+      growHP: 793.7,
+      growAttack: 39.7,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
   "Tara": {
     className: Tara,
     heroFaction: "Light",

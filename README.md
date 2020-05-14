@@ -29,6 +29,7 @@ Implemented Heroes
   * Nakia
   * Oberon
   * Penny
+  * Sherlock
   * Tara
   * Unimax
   

@@ -60,7 +60,7 @@ function isDispellable(strName) {
 
 
 function isControlEffect(strName, effects={}) {
-  if (["stun", "petrify", "freeze", "twine", "Silence", "Taunt", "Seal of Light", "Horrify"].includes(strName)) {
+  if (["stun", "petrify", "freeze", "twine", "Silence", "Taunt", "Seal of Light", "Horrify", "Magic Trick"].includes(strName)) {
     return true;
   } else {
     return false;

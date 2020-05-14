@@ -492,10 +492,19 @@ class hero {
   
   
   isUnderStandardControl() {
-    if (this.hasStatus("petrify") || this.hasStatus("stun") || this.hasStatus("twine") || this.hasStatus("freeze")) { 
+    if (this.hasStatus("petrify") || this.hasStatus("stun") || this.hasStatus("twine") || this.hasStatus("freeze") || this.hasStatus("Magic Trick")) { 
       return true;
     } else {
       return false;
+    }
+  }
+  
+  
+  isNotSealed() {
+    if ("Seal of Light" in this._debuffs || "Magic Trick" in this._debuffs) {
+      return false;
+    } else {
+      return true;
     }
   }
   
@@ -805,7 +814,7 @@ class hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false) {
     var damageResult = {};
     var strDamageResult = "";
     var result = "";
@@ -820,7 +829,7 @@ class hero {
     }
     
     
-    if (Math.random() < controlImmune && isControl) {
+    if (Math.random() < controlImmune && isControl && !(bypassControlImmune)) {
       result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
     } else {
       if (duration > 15) {
@@ -965,7 +974,7 @@ class hero {
           }
         }
         
-        this._debuffs[strDebuffName][s];
+        delete this._debuffs[strDebuffName][s];
       }
     }
 
@@ -1288,10 +1297,14 @@ class hero {
       // balanced strike enable heal
       if ((damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic") && source._enable5 == "BalancedStrike") {
         if (damageResult["critted"] == true) {
-          var healAmount = this.calcHeal(this, Math.round(0.15 * (damageResult["damageAmount"])));
+          var healAmount = source.calcHeal(source, Math.round(0.15 * (damageResult["damageAmount"])));
           result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>" + source.getHeal(source, healAmount);
         }
       }
+    }
+    
+    if ("Magic Trick" in this._debuffs && damageResult["damageAmount"] > 0 && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
+      result += this.removeDebuff("Magic Trick");
     }
     
     result += damageResult["e5Description"];

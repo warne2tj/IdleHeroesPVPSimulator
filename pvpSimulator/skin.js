@@ -135,6 +135,11 @@ var skins = {
     "Legendary Lion and Dragon Dance": {attackPercent: 0.06, controlImmune: 0.06, damageReduce: 0.04},
   },
   
+  "Sherlock": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
+  },
+  
   "Tara": {
     "Heroic Knight": {damageReduce: 0.04, controlImmune: 0.04, speed: 4},
     "Legendary Heroic Knight": {damageReduce: 0.05, controlImmune: 0.06, speed: 6},
