@@ -283,6 +283,22 @@ function nextSimBlock() {
           luckDice--;
           roll = 20 - pos;
           
+        } else if (luckDice > 0 && ordDice <= 3 && pos == 20) {
+          luckDice--;
+          roll = 5;
+          
+        } else if (luckDice > 0 && ordDice <= 3 && pos == 0) {
+          luckDice--;
+          roll = 5;
+          
+        } else if (luckDice > 0 && ordDice <= 2 && pos == 1) {
+          luckDice--;
+          roll = 4;
+          
+        } else if (luckDice > 0 && ordDice <= 1 && pos == 2) {
+          luckDice--;
+          roll = 3;
+          
         } else if (ordDice == 0) {
           luckDice--;
           if (pos == 15) {
@@ -291,8 +307,8 @@ function nextSimBlock() {
             roll = 1;
           } else if (pos == 20) {
             roll = 5;
-          } else if (pos < 4) {
-            roll = 4 - pos;
+          } else if (pos < 5) {
+            roll = 5 - pos;
           } else {
             roll = 6;
           }
