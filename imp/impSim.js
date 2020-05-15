@@ -38,7 +38,7 @@ function init() {
       /* Toggle between hiding and showing the active panel */
       var panel = this.nextElementSibling;
       if (panel.style.maxHeight) {
-        panel.style.maxHeight = "25px";
+        panel.style.maxHeight = null;
       } else {
         panel.style.maxHeight = panel.scrollHeight + "px";
       }
