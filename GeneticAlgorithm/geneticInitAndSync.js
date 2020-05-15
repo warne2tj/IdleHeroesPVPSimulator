@@ -167,9 +167,9 @@ function nextMatchup() {
       });
       
       
-      // adjust win rate by how often the team's heroes show up prior
+      // get first 10% "most diverse" teams by looking at similarity score
       var rank = 1;
-      var maxRank = 3;
+      var maxRank = Math.floor(teamKeys.length * 0.1);
       var diffFound;
       var similarityScore;
       var heroCount = {};
