@@ -1,3 +1,9 @@
+class testClass {
+  constructor(str) {
+    this._obj = {"key": str};
+  }
+}
+
 var w;
 
 function init() {
@@ -12,7 +18,8 @@ function init() {
 }
 
 function startWorker() {
-  w.postMessage({oldValue: document.getElementById("result").value});
+  var o = new testClass(document.getElementById("result").value);
+  w.postMessage(o);
 }
 
 function stopWorker() {
