@@ -3,7 +3,7 @@ var testObj;
 self.onmessage = doCall;
 
 function doCall(e) {
-  testOjb = e.data;
+  testObj = e.data;
   testObj.modify();
   setTimeout("doWork()", 5000);
 }
