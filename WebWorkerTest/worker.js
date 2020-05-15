@@ -1,10 +1,13 @@
+var testObj;
+
 self.onmessage = doCall;
 
 function doCall(e) {
-  e.data["testObj"].modify();
-  setTimeout("doWork('" + e.data["testObj"] + "')", 5000);
+  testOjb = e.data;
+  testObj.modify();
+  setTimeout("doWork()", 5000);
 }
 
-function doWork(obj) {
-  postMessage({"oldValue": obj._obj["key"]});
+function doWork() {
+  postMessage({"oldValue": testObj._obj["key"]});
 }
