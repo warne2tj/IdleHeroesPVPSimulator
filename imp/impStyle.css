@@ -160,7 +160,7 @@ label {
   font-weight: bold;
   font-size: 15px;
   transition: 0.4s;
-  border-radius: 20px;
+  border-radius: 20px 20px 0px 0px;
 }
 
 .accordion:after {
@@ -177,7 +177,6 @@ label {
 
 .active {
   background-color: #bbac8e;
-  border-radius: 20px 20px 0px 0px;
 }
 
 .active:after {
@@ -189,7 +188,7 @@ label {
   padding: 0 18px;
   background-color: #fdf6ce;
   overflow: hidden;
-  max-height: 0;
+  max-height: 5px;
   transition: max-height .5s ease;
   border-radius: 0px 0px 20px 20px;
 }
