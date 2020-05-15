@@ -188,7 +188,7 @@ label {
   padding: 0 18px;
   background-color: #fdf6ce;
   overflow: hidden;
-  max-height: 5px;
+  max-height: 15px;
   transition: max-height .5s ease;
   border-radius: 0px 0px 20px 20px;
 }
