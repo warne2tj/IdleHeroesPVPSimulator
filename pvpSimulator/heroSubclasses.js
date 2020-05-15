@@ -637,14 +637,11 @@ class Belrain extends hero {
       result += targets[i].getBuff(this, "Holylight Sparkle", 3, {attackPercent: 0.3, speed: 30, effectBeingHealed: 0.2});
       
       if (Math.random() < 0.4) {
-        if ("Seal of Light" in targets[i]._debuffs) { result += targets[i].removeDebuff("Seal of Light"); }
-        if ("Horrify" in targets[i]._debuffs) { result += targets[i].removeDebuff("Horrify"); }
-        if ("Taunt" in targets[i]._debuffs) { result += targets[i].removeDebuff("Taunt"); }
-        if ("Silence" in targets[i]._debuffs) { result += targets[i].removeDebuff("Silence"); }
-        if ("petrify" in targets[i]._debuffs) { result += targets[i].removeDebuff("petrify"); }
-        if ("stun" in targets[i]._debuffs) { result += targets[i].removeDebuff("stun"); }
-        if ("entangle" in targets[i]._debuffs) { result += targets[i].removeDebuff("entangle"); }
-        if ("freeze" in targets[i]._debuffs) { result += targets[i].removeDebuff("freeze"); }
+        for (var d in this._debuffs) {
+          if (isControlEffect(d)) {
+            result += this.removeDebuff(d);
+          }
+        }
       }
     }
     
@@ -866,7 +863,7 @@ class Cthuga extends hero {
     
     result = super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
     
-    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0 && !(isMonster(source)) && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
+    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && !(isMonster(source)) && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
       if (source.hasStatus("burn")) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Soul Shackle</span> triggered.</div>";
         result += this.getBuff(this, "Soul Shackle Attack", 3, {attackPercent: 0.10});
@@ -878,7 +875,7 @@ class Cthuga extends hero {
       }
     }
     
-    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0 && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
+    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
       var burnDamageResult = {};
       var bleedDamageResult = {};
       var targets = getRandomTargets(this, this._enemies);
@@ -977,7 +974,7 @@ class DarkArthindol extends hero {
     
     var postHP = this._currentStats["totalHP"];
     
-    if (!("Seal of Light" in this._debuffs) && (preHP - postHP)/this._stats["totalHP"] >= 0.03) {
+    if (this.isNotSealed() && (preHP - postHP)/this._stats["totalHP"] >= 0.03) {
       result += this.getBuff(this, "Preemptive Defense", 6, {attackPercent: 0.03, skillDamage: 0.05});
       result += this.getEnergy(this, 10);
     }
@@ -1415,7 +1412,7 @@ class Garuda extends hero {
   eventAllyDied(e) {
     var result = "";
     
-    if (!("Seal of Light" in this._debuffs)) {
+    if (this.isNotSealed()) {
       result += "<div>" + this.heroDesc() + " <span class='skill'>Unbeatable Force</span> passive triggered.</div>";
       
       var healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.3);
@@ -1485,7 +1482,7 @@ class FaithBlade extends hero {
   eventEnemyDied(e) {
     var result = "";
     
-    if (!("Seal of Light" in this._debuffs)) {
+    if (this.isNotSealed()) {
       result += this.getEnergy(this, 100);
       result += this.getBuff(this, "Blood Nourishing", 3, {holyDamage: 0.30});
     }
@@ -1729,14 +1726,11 @@ class Horus extends hero {
     if (this._currentStats["blockCount"] >= 3) {
       this._currentStats["blockCount"] = 0;
       
-      if ("Seal of Light" in this._debuffs) { result += this.removeDebuff("Seal of Light"); }
-      if ("Horrify" in this._debuffs) { result += this.removeDebuff("Horrify"); }
-      if ("Taunt" in this._debuffs) { result += this.removeDebuff("Taunt"); }
-      if ("Silence" in this._debuffs) { result += this.removeDebuff("Silence"); }
-      if ("petrify" in this._debuffs) { result += this.removeDebuff("petrify"); }
-      if ("stun" in this._debuffs) { result += this.removeDebuff("stun"); }
-      if ("entangle" in this._debuffs) { result += this.removeDebuff("entangle"); }
-      if ("freeze" in this._debuffs) { result += this.removeDebuff("freeze"); }
+      for (var d in this._debuffs) {
+        if (isControlEffect(d)) {
+          result += this.removeDebuff(d);
+        }
+      }
       
       
       var damageAmount = this._stats["totalHP"] * 0.2;
@@ -1882,7 +1876,7 @@ class Ithaqua extends hero {
   eventEnemyDied(e) {
     var result = "";
     
-    if (!("Seal of Light" in this._debuffs) && e[0].heroDesc() == this.heroDesc()) {
+    if (this.isNotSealed() && e[0].heroDesc() == this.heroDesc()) {
       var targets = getRandomTargets(this, this._enemies);
       
       if (targets.length > 0) {
@@ -2236,7 +2230,7 @@ class Mihm extends hero {
   eventEnemyDied(e) {
     var result = "";
     
-    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0) {
+    if (this.isNotSealed() && this._currentStats["totalHP"] > 0) {
       var targets = getAllTargets(this, this._enemies);
       var damageResult = {};
       
@@ -2425,7 +2419,7 @@ class Oberon extends hero {
   twine(target) {
     var result = "";
     
-    if (!("Seal of Light" in this._debuffs) && this._currentStats["totalHP"] > 0) {
+    if (this.isNotSealed() && this._currentStats["totalHP"] > 0) {
       var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.8);
       result += this.getHeal(this, healAmount);
       result += this.getBuff(this, "Natural Manipulation", 6, {attackPercent: 0.20});
@@ -2722,6 +2716,165 @@ class Penny extends hero {
 
 
 
+// Sherlock
+class Sherlock extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["wellCalculatedStacks"] = 3;
+  }
+  
+  
+  passiveStats() {
+    // apply Source of Magic passive
+    this.applyStatChange({attackPercent: 0.25, hpPercent: 0.30, speed: 40, damageReduce: 0.30}, "PassiveStats");
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+    var result = "";
+    
+    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    
+    var postHP = this._currentStats["totalHP"];
+    
+    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && postHP/this._stats["totalHP"] < 0.50 && this._currentStats["wellCalculatedStacks"] > 1) {
+      this._currentStats["wellCalculatedStacks"] -= 2;
+      
+      var targets = getHighestHPTargets(this, this._enemies);
+      
+      if (targets.length > 0) {
+        if (targets[0]._currentStats["totalHP"] > this._currentStats["totalHP"]) {
+          var swapAmount = targets[0]._currentStats["totalHP"] - this._currentStats["totalHP"];
+          if (swapAmount > this._currentStats["totalAttack"] * 50) { swapAmount = Math.floor(this._currentStats["totalAttack"] * 50);}
+          
+          this._currentStats["totalHP"] += swapAmount;
+          targets[0]._currentStats["totalHP"] -= swapAmount;
+          
+          this._currentStats["damageHealed"] += swapAmount;
+          this._currentStats["damageDealt"] += swapAmount;
+          
+          result += "<div>" + this.heroDesc() + " <span class='skill'>Deceiving Tricks</span> swapped " + formatNum(swapAmount) + " HP with " + source.heroDesc() + ".</div>";
+        }
+      }
+    }
+    
+    return result
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] > 0) {
+      if(Math.random() < 0.5) {
+        result = "<div>" + this.heroDesc() + " gained <span class='num'>2</span> stacks of <span class='skill'>Well-Calculated</span>.</div>";
+        this._currentStats["wellCalculatedStacks"] += 2;
+      } else {
+        result = "<div>" + this.heroDesc() + " gained <span class='num'>1</span> stack of <span class='skill'>Well-Calculated</span>.</div>";
+        this._currentStats["wellCalculatedStacks"] += 1;
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  getDebuff(source, debuffName, duration, effects) {
+    var result = "";
+    
+    if (isControlEffect(debuffName, effects) && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0) {
+      var controlImmune = this._currentStats["controlImmune"];
+      
+      if ((debuffName + "Immune") in this._currentStats) {
+        controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
+      }
+      
+      if (Math.random() < controlImmune) {
+        result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
+      } else {
+        this._currentStats["wellCalculatedStacks"] -= 1;
+        
+        // transfer cc
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> transfered <span class='skill'>" + debuffName + "</span.</div>";
+        
+        var targets = getRandomTargets(this, this._enemies);
+        if (targets.length > 0) {
+          result += targets[0].getDebuff(this, debuffName, duration, effects)
+        }
+      }
+      
+    } else if (debuffName.includes("Mark") && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0) {
+      this._currentStats["wellCalculatedStacks"] -= 1;
+      result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> prevented <span class='skill'>" + debuffName + "</span.</div>";
+      
+    } else {
+      result += super.getDebuff(source, debuffName, duration, effects);
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getAllTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
+      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[0]._currentStats["totalHP"] > 0 && !("Shapeshift" in targets[0]._debuffs) && Math.random() < 0.5 + this._currentStats["controlPrecision"]) {
+          result += targets[0].getDebuff(this, "Shapeshift", 15, {stacks: 3});
+        }
+        
+        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var maxTargets = 2;
+    var ccChance = 1.0;
+    
+    if (targets.length < maxTargets) {
+      maxTargets = targets.length;
+    }
+    
+    for (var i=0; i<maxTargets; i++) {
+      this._rng = Math.random();
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3);
+      result += targets[i].takeDamage(this, "Master Showman", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0 && !("Shapeshift" in targets[i]._debuffs) && Math.random() < ccChance + this._currentStats["controlPrecision"]) {
+          result += targets[i].getDebuff(this, "Shapeshift", 15, {stacks: 3});
+        }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+      
+      ccChance -= 0.35;
+    }
+    
+    result += "<div>" + this.heroDesc() + " gained <span class='num'>2</span> stacks of <span class='skill'>Well-Calculated</span>.</div>";
+    this._currentStats["wellCalculatedStacks"] += 2;
+    
+    return result;
+  }
+}
+  
+  
+
+
+
 // Tara
 class Tara extends hero {
   passiveStats() {
@@ -2839,14 +2992,11 @@ class UniMax3000 extends hero {
       result += this.getHeal(this, healAmount);
       
       if (roundNum == 4) {
-        if ("Seal of Light" in this._debuffs) { result += this.removeDebuff("Seal of Light"); }
-        if ("Horrify" in this._debuffs) { result += this.removeDebuff("Horrify"); }
-        if ("Taunt" in this._debuffs) { result += this.removeDebuff("Taunt"); }
-        if ("Silence" in this._debuffs) { result += this.removeDebuff("Silence"); }
-        if ("petrify" in this._debuffs) { result += this.removeDebuff("petrify"); }
-        if ("stun" in this._debuffs) { result += this.removeDebuff("stun"); }
-        if ("entangle" in this._debuffs) { result += this.removeDebuff("entangle"); }
-        if ("freeze" in this._debuffs) { result += this.removeDebuff("freeze"); }
+        for (var d in this._debuffs) {
+          if (isControlEffect(d)) {
+            result += this.removeDebuff(d);
+          }
+        }
         
         result += this.getBuff(this, "Energy Overload", 99, {critDamage: 0.5});
         result += this.getBuff(this, "Rampage", 99, {crit: 1.0});
