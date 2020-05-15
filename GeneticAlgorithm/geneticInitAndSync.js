@@ -166,8 +166,86 @@ function nextMatchup() {
         }
       });
       
+      
+      // adjust win rate by how often the team's heroes show up prior
+      var rank = 1;
+      var maxRank = 3;
+      var diffFound;
+      var similarityScore;
+      var heroCount = {};
+      var teamDNA;
+      var heroNames = Object.keys(baseHeroStats);
+      var arrTeams = [];
+      var tempTeam;
+      
+      for (var i in heroNames) {
+        heroCount[heroNames[i]] = 0;
+      }
+      
       for (var p in teamKeys) {
-        summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") - Attack win rate (" + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%), "
+        if (rank <= maxRank) {
+          teamDNA = allTeams[teamKeys[p]]["dna"];
+          tempTeam = Object.assign({}, heroCount);
+          diffFound = true;
+          
+          for (var g = 0; g < 60; g += 10) {
+            tempTeam[teamDNA[g]]++;
+          }
+          
+          for (var x in arrTeams) {
+            similarityScore = 0;
+            
+            for (var h in arrTeams[x]) {
+              if (arrTeams[x][h] > 0 && tempTeam[h] > 0) {
+                if (arrTeams[x][h] > tempTeam[h]) {
+                  similarityScore += tempTeam[h];
+                } else {
+                  similarityScore += arrTeams[x][h];
+                }
+              }
+            }
+            
+            if (similarityScore / 6 >= 0.5) {
+              diffFound = false;
+            }
+          }
+          
+          if (diffFound) {
+            allTeams[teamKeys[p]]["rank"] = rank;
+            rank++;
+            arrTeams.push(tempTeam);
+          } else {
+            allTeams[teamKeys[p]]["rank"] = maxRank + 1;
+          }
+        } else {
+          allTeams[teamKeys[p]]["rank"] = maxRank + 1;
+        }
+      }
+      
+      teamKeys.sort(function(a,b) {
+        if (allTeams[a]["rank"] < allTeams[b]["rank"]) {
+          return -1;
+        } else if (allTeams[a]["rank"] > allTeams[b]["rank"]) {
+          return 1;
+        } else if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {
+          return -1;
+        } else if (allTeams[a]["attWins"] < allTeams[b]["attWins"]) {
+          return 1;
+        } else if (allTeams[a]["defWins"] > allTeams[b]["defWins"]) {
+          return -1;
+        } else if (allTeams[a]["defWins"] < allTeams[b]["defWins"]) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      
+      
+      
+      // output summary data
+      for (var p in teamKeys) {
+        summary += "Team " + allTeams[teamKeys[p]]["teamName"] + " (" + allTeams[teamKeys[p]]["species"] + ") - Attack win rate (" + Math.round(allTeams[teamKeys[p]]["attWins"] / totalFights * 100, 2) + "%), ";
+        summary += "Diversity rank (" + allTeams[teamKeys[p]]["rank"] + "), ";
         summary += "Defense win rate (" + Math.round(allTeams[teamKeys[p]]["defWins"] / totalFights * 100, 2) + "%), ";
         summary += "Weakest against team " + allTeams[teamKeys[p]]["weakAgainst"] + " (" + Math.round(allTeams[teamKeys[p]]["weakAgainstWins"] / numSims * 100, 2) + "%)\n";
       }
