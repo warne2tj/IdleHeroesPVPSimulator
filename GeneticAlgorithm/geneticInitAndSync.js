@@ -522,7 +522,7 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
           break;
           
         case 1:
-          skinNames = Object.keys(child2[g-1]);
+          skinNames = Object.keys(skins[child2[g-1]]);
           legendarySkins = [];
           for (var s in skinNames) {
             if (skinNames[s].substring(0, 9) == "Legendary") {
