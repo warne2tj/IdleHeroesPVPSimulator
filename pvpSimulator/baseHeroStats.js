@@ -375,12 +375,12 @@ var baseHeroStats = {
     heroFaction: "Fortress",
     heroClass: "Mage",
     stats: {
-      baseHP: 7937,
-      baseAttack: 397,
+      baseHP: 7980,
+      baseAttack: 425,
       baseArmor: 60,
-      baseSpeed: 236,
-      growHP: 793.7,
-      growAttack: 39.7,
+      baseSpeed: 220,
+      growHP: 798,
+      growAttack: 42.5,
       growArmor: 6,
       growSpeed: 2
     }

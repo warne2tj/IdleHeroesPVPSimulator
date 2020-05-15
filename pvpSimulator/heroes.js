@@ -492,7 +492,7 @@ class hero {
   
   
   isUnderStandardControl() {
-    if (this.hasStatus("petrify") || this.hasStatus("stun") || this.hasStatus("twine") || this.hasStatus("freeze") || this.hasStatus("Magic Trick")) { 
+    if (this.hasStatus("petrify") || this.hasStatus("stun") || this.hasStatus("twine") || this.hasStatus("freeze") || this.hasStatus("Shapeshift")) { 
       return true;
     } else {
       return false;
@@ -501,7 +501,7 @@ class hero {
   
   
   isNotSealed() {
-    if ("Seal of Light" in this._debuffs || "Magic Trick" in this._debuffs) {
+    if ("Seal of Light" in this._debuffs || "Shapeshift" in this._debuffs) {
       return false;
     } else {
       return true;
@@ -663,10 +663,8 @@ class hero {
       damageResult = debuffStack["source"].calcDamage(this, amountHealed, "passive", "true");
       result += this.takeDamage(debuffStack["source"], "Healing Curse", damageResult);
       
-      if (debuffKeys.length <= 1) {
-        result += this.removeDebuff("Healing Curse");
-      } else {
-        delete this._debuffs["Healing Curse"][debuffKeys[0]];
+      if (this._currentStats["totalHP"] > 0) {
+        result += this.removeDebuff("Healing Curse", debuffKeys[0]);
       }
       
     } else {
@@ -865,8 +863,8 @@ class hero {
           damageResult["damageType"] = strStatName;
           strDamageResult = this.takeDamage(source, "Debuff " + debuffName, damageResult);
           
-        } else if (strStatName == "rounds") {
-          //ignore, used to set twine rounds
+        } else if (["rounds", "stacks"].includes(strStatName)) {
+          //ignore, used to track other stuff
           
         } else {
           this._currentStats[strStatName] -= effects[strStatName];
@@ -888,7 +886,9 @@ class hero {
         result += this.getDebuff(source, "Seal of Light", 2, {});
         
       } else if (debuffName == "Seal of Light") {
-        result += this.removeDebuff("Power of Light");
+        if ("Power of Light" in this._debuffs) {
+          result += this.removeDebuff("Power of Light");
+        }
         
       } else if (debuffName == "twine") {
         for (var h in source._allies) {
@@ -959,8 +959,8 @@ class hero {
           } else if (strStatName == "armorPercent") {
             this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
             
-          } else if (strStatName == "rounds") {
-                // do nothing, used to set twine rounds
+          } else if (["rounds", "stacks"].includes(strStatName)) {
+                // do nothing, used to track other stuff
                 
           } else if (isDot(strStatName)) {
             // do nothing
@@ -1063,32 +1063,34 @@ class hero {
             
             if (b == "Sow Seeds") {
               result += this.getDebuff(this._debuffs[b][s]["source"], "twine", this._debuffs[b][s]["effects"]["rounds"]);
-            }
-            
-            // remove the effects
-            for (var strStatName in this._debuffs[b][s]["effects"]) {
-              if (strStatName == "attackPercent") {
-                this._currentStats["totalAttack"] = this.calcCombatAttack();
-                
-              } else if (strStatName == "armorPercent") {
-                this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
-                
-              } else if (strStatName == "rounds") {
-                // do nothing, used to set twine rounds
-                
-              }  else if (isDot(strStatName)) {
-                // do nothing, full burn damage already done
-                
-              } else {
-                this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
-                
-                if (strStatName == "attack") {
+            } else {
+              // remove the effects
+              for (var strStatName in this._debuffs[b][s]["effects"]) {
+                if (strStatName == "attackPercent") {
                   this._currentStats["totalAttack"] = this.calcCombatAttack();
+                  
+                } else if (strStatName == "armorPercent") {
+                  this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
+                  
+                } else if (["rounds", "stacks"].includes(strStatName)) {
+                  // do nothing, used to track stuff
+                  
+                }  else if (isDot(strStatName)) {
+                  // do nothing, full burn damage already done
+                  
+                } else {
+                  this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
+                  
+                  if (strStatName == "attack") {
+                    this._currentStats["totalAttack"] = this.calcCombatAttack();
+                  }
                 }
               }
             }
             
-            delete this._debuffs[b][s];
+            if (this._currentStats["totalHP"] > 0) {
+              delete this._debuffs[b][s];
+            }
           } else {
             stacksLeft++;
             
@@ -1105,7 +1107,7 @@ class hero {
           }
         }
         
-        if (stacksLeft == 0) {
+        if (stacksLeft == 0 && this._currentStats["totalHP"] > 0) {
           delete this._debuffs[b];
         }
       }
@@ -1303,8 +1305,13 @@ class hero {
       }
     }
     
-    if ("Magic Trick" in this._debuffs && damageResult["damageAmount"] > 0 && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
-      result += this.removeDebuff("Magic Trick");
+    if (this._currentStats["totalHP"] > 0 && "Shapeshift" in this._debuffs && damageResult["damageAmount"] > 0 && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
+      var shapeshiftKey = Object.keys(this._debuffs["Shapeshift"])[0];
+      if (this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"] > 1) {
+        this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"]--;
+      } else {
+        result += this.removeDebuff("Shapeshift", shapeshiftKey);
+      }
     }
     
     result += damageResult["e5Description"];
