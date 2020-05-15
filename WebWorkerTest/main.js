@@ -20,6 +20,8 @@ function init() {
 function startWorker() {
   var o = new testClass(document.getElementById("result").value);
   w.postMessage(o);
+  o._obj["key"] = "overwrite";
+  document.getElementById("result").value = o._obj["key"] = "overwrite";
 }
 
 function stopWorker() {
