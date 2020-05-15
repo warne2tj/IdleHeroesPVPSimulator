@@ -31,7 +31,8 @@ function startWorker() {
   var o = new overTest(document.getElementById("result").value);
   w.postMessage(o);
   o._obj["key"] = "overwrite";
-  document.getElementById("result").value = o._obj["key"] = "overwrite";
+  o.modify();
+  document.getElementById("result").value = o._obj["key"];
 }
 
 function stopWorker() {

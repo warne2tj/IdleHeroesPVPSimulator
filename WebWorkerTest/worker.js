@@ -1,3 +1,20 @@
+class testClass {
+  constructor(str) {
+    this._obj = {"key": str};
+  }
+  
+  modify() {
+    this._obj["key"] += " modded";
+  }
+}
+
+class overTest extends testClass {
+  modify() {
+    super.modify();
+  }
+}
+
+
 var testObj;
 
 self.onmessage = doCall;

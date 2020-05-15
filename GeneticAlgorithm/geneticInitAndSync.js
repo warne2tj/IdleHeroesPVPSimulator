@@ -167,9 +167,9 @@ function nextMatchup() {
       });
       
       
-      // get first 5 "most diverse" teams by looking at similarity score
+      // get first 10% "most diverse" teams by looking at similarity score
       var rank = 1;
-      var maxRank = Math.floor(teamKeys.length * 0.05);
+      var maxRank = Math.floor(teamKeys.length * 0.1);
       var diffFound;
       var similarityScore;
       var heroCount = {};
