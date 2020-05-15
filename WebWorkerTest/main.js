@@ -2,6 +2,16 @@ class testClass {
   constructor(str) {
     this._obj = {"key": str};
   }
+  
+  modify() {
+    this._obj["key"] += " modded";
+  }
+}
+
+class overTest extends testClass {
+  modify() {
+    super.modify();
+  }
 }
 
 var w;
@@ -18,7 +28,7 @@ function init() {
 }
 
 function startWorker() {
-  var o = new testClass(document.getElementById("result").value);
+  var o = new overTest(document.getElementById("result").value);
   w.postMessage(o);
   o._obj["key"] = "overwrite";
   document.getElementById("result").value = o._obj["key"] = "overwrite";
