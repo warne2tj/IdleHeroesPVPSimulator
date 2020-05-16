@@ -20,7 +20,8 @@ var testObj;
 self.onmessage = doCall;
 
 function doCall(e) {
-  testObj = e.data;
+  testObj = new overTest(e.data._obj["key"]);
+  testObj.modify();
   setTimeout("doWork()", 5000);
 }
 
