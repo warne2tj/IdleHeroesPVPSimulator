@@ -21,8 +21,6 @@ self.onmessage = doCall;
 
 function doCall(e) {
   testObj = e.data;
-  console.log(testObj);
-  testObj.modify();
   setTimeout("doWork()", 5000);
 }
 
