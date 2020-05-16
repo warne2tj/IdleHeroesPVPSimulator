@@ -28,7 +28,7 @@ function init() {
 }
 
 function startWorker() {
-  var o = new overTest(document.getElementById("result").value);
+  var o = new testClass(document.getElementById("result").value);
   w.postMessage(o);
   o._obj["key"] = "overwrite";
   o.modify();
