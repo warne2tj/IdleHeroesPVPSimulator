@@ -140,7 +140,10 @@ function isAttribute(strName, effects={}) {
     "attack", "attackPercent", "armor", "armorPercent", "hp", "hpPercent", "speed",
     "energy", "precision", "block", "crit", "critDamage", "holyDamage", "armorBreak",
     "controlImmune", "skillDamage", "damageReduce", "allDamageReduce", "controlPrecision",
-    "healEffect", "effectBeingHealed"
+    "healEffect", "effectBeingHealed", "critDamageReduce", "dotReduce", "fixedAttack", 
+    "fixedHP", "allDamageTaken", "allDamageDealt", "damageAgainstBurning", "damageAgainstBleed",
+    "warriorReduce", "mageReduce", "rangerReduce", "assassinReduce", "priestReduce",
+    "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune"
   ];
   
   if (arrAttributes.includes(strName)) {
