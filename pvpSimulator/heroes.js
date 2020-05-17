@@ -1202,6 +1202,7 @@ class hero {
       armorMitigation = 0;
       reduceDamage = 0;
       classDamageReduce = 0;
+      allDamageTaken = 1;
     }
     
     if (isDot(damageResult["damageType"])) {
@@ -1266,15 +1267,7 @@ class hero {
           }
           
           result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>";
-          
-          for (var b in this._buffs) {
-            result += this.removeBuff(b);
-          }
-          
-          for (var d in this._debuffs) {
-            result += this.removeDebuff(d);
-          }
-          
+
           deathQueue.push([source, this]);
         }
         

@@ -684,6 +684,14 @@ class Carrie extends hero {
     if (this._currentStats["totalHP"] <= 0 && damageResult["damageSource"].substring(0, 7) != "passive") {
       this._currentStats["spiritPowerStacks"] = 0;
       result += "<div>" + this.heroDesc() + " became a <span class='skill'>Shadowy Spirit</span>.</div>";
+      
+      for (var b in this._buffs) {
+        this.removeBuff(b);
+      }
+      
+      for (var d in this._debuffs) {
+        this.removeDebuff(d);
+      }
     }
     
     return result;
@@ -2143,7 +2151,15 @@ class Michelle extends hero {
   startOfRound(roundNum) {
     var result = "";
     
-    if (this._currentStats["totalHP"] <= 0 && this._currentStats["revive"] == 1) {
+    if (this._currentStats["totalHP"] <= 0 && this._currentStats["revive"] == 1) {          
+      for (var b in this._buffs) {
+        this.removeBuff(b);
+      }
+      
+      for (var d in this._debuffs) {
+        this.removeDebuff(d);
+      }
+          
       this._currentStats["revive"] = 0;
       this._currentStats["totalHP"] = this._stats["totalHP"];
       this._currentStats["energy"] = 100;
