@@ -115,6 +115,11 @@ function runSim() {
               result = orderOfAttack[orderNum].doActive();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
               
+              temp = processDeathQueue(oCombatLog);
+              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              someoneWon = checkForWin();
+              if (someoneWon != "") {break;}
+              
               // monster gains energy from hero active
               if (orderOfAttack[orderNum]._attOrDef == "att") {
                 if (attMonster._monsterName != "None") {
@@ -140,6 +145,11 @@ function runSim() {
                 if(numSims == 1) {oCombatLog.innerHTML += temp;}
               }
               
+              temp = processDeathQueue(oCombatLog);
+              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              someoneWon = checkForWin();
+              if (someoneWon != "") {break;}
+              
               
               // process active queue
               temp = alertDidActive(orderOfAttack[orderNum], activeQueue);
@@ -152,9 +162,19 @@ function runSim() {
               result = orderOfAttack[orderNum].doBasic();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
               
+              temp = processDeathQueue(oCombatLog);
+              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              someoneWon = checkForWin();
+              if (someoneWon != "") {break;}
+              
               // hero gains 50 energy after doing basic
               temp = orderOfAttack[orderNum].getEnergy(orderOfAttack[orderNum], 50);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              
+              temp = processDeathQueue(oCombatLog);
+              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              someoneWon = checkForWin();
+              if (someoneWon != "") {break;}
               
               // process basic queue
               temp = alertDidBasic(orderOfAttack[orderNum], basicQueue);
@@ -166,8 +186,6 @@ function runSim() {
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
           
           someoneWon = checkForWin();
-          
-          // @ end of hero action
           
           if (someoneWon != "") {break;}
         }
@@ -228,7 +246,7 @@ function runSim() {
       
       // trigger E3 enables
       for (var h in attHeroes) {
-        if (attHeroes[h]._currentStats["totalHP"] > 0) { 
+        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) { 
           temp = attHeroes[h].tickEnable3(numLiving);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
