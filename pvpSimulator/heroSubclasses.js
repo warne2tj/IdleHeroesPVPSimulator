@@ -2798,7 +2798,7 @@ class Sherlock extends hero {
   getDebuff(source, debuffName, duration, effects) {
     var result = "";
     
-    if (isControlEffect(debuffName, effects) && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0) {
+    if (isControlEffect(debuffName, effects) && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0 && !(["Seal of Light", "Magic Trick"].includes(debuffName))) {
       var controlImmune = this._currentStats["controlImmune"];
       
       if ((debuffName + "Immune") in this._currentStats) {

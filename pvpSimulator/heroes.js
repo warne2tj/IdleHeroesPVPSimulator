@@ -765,6 +765,39 @@ class hero {
   }
   
   
+  calcCombatArmor() {
+    var armr = this._currentStats["armor"];
+    
+    for (var x in this._armorMultipliers) {
+      armr = Math.floor(armr * this._armorMultipliers[x]);
+    }
+    
+    // apply buffs
+    for (var b in this._buffs) {
+      for (var s in this._buffs[b]) {
+        for (var e in this._buffs[b][s]["effects"]) {
+          if (e == "armorPercent") {
+            armr = Math.floor(armr * (1 + this._buffs[b][s]["effects"][e]));
+          }
+        }
+      }
+    }
+    
+    // apply debuffs
+    for (var b in this._debuffs) {
+      for (var s in this._debuffs[b]) {
+        for (var e in this._debuffs[b][s]["effects"]) {
+          if (e == "armorPercent") {
+            armr = Math.floor(armr * (1 - this._debuffs[b][s]["effects"][e]));
+          }
+        }
+      }
+    }
+    
+    return armr;
+  }
+  
+  
   getBuff(source, buffName, duration, effects={}) {
     var result = "";
     var healResult = "";
@@ -794,7 +827,7 @@ class hero {
         this._currentStats["totalAttack"] = this.calcCombatAttack();
         
       } else if (strStatName == "armorPercent") {
-        this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 + effects[strStatName]));
+        this._currentStats["totalArmor"] = this.calcCombatArmor();
         
       } else if (strStatName == "heal") {
         healResult = this.getHeal(source, effects[strStatName]);
@@ -804,6 +837,8 @@ class hero {
         
         if (strStatName == "attack") {
           this._currentStats["totalAttack"] = this.calcCombatAttack();
+        } else if (strStatName == "armor") {
+          this._currentStats["totalArmor"] = this.calcCombatArmor();
         }
       }
     }
@@ -856,7 +891,7 @@ class hero {
           this._currentStats["totalAttack"] = this.calcCombatAttack();
           
         } else if (strStatName == "armorPercent") {
-          this._currentStats["totalArmor"] = Math.floor(this._currentStats["totalArmor"] * (1 - effects[strStatName]));
+          this._currentStats["totalArmor"] = this.calcCombatArmor();
           
         } else if (isDot(strStatName)) {
           damageResult = source.calcDamage(this, effects[strStatName], "debuff", "true");
@@ -871,6 +906,8 @@ class hero {
           
           if (strStatName == "attack") {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
+          } else if (strStatName == "armor") {
+            this._currentStats["totalArmor"] = this.calcCombatArmor();
           }
         }
       }
@@ -918,7 +955,7 @@ class hero {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
             
           } else if (strStatName == "armorPercent") {
-            this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 + this._buffs[strBuffName][s]["effects"][strStatName]));
+            this._currentStats["totalArmor"] = this.calcCombatArmor();
             
           } else if(strStatName == "heal") {
             // do nothing, already healed
@@ -928,6 +965,8 @@ class hero {
             
             if (strStatName == "attack") {
               this._currentStats["totalAttack"] = this.calcCombatAttack();
+            } else if (strStatName == "armor") {
+              this._currentStats["totalArmor"] = this.calcCombatArmor();
             }
           }
         }
@@ -957,7 +996,7 @@ class hero {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
             
           } else if (strStatName == "armorPercent") {
-            this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[strDebuffName][s]["effects"][strStatName]));
+            this._currentStats["totalArmor"] = this.calcCombatArmor();
             
           } else if (["rounds", "stacks"].includes(strStatName)) {
                 // do nothing, used to track other stuff
@@ -970,6 +1009,8 @@ class hero {
             
             if (strStatName == "attack") {
               this._currentStats["totalAttack"] = this.calcCombatAttack();
+            } else if (strStatName == "armor") {
+              this._currentStats["totalArmor"] = this.calcCombatArmor();
             }
           }
         }
@@ -1008,7 +1049,7 @@ class hero {
                 this._currentStats["totalAttack"] = this.calcCombatAttack();
                 
               } else if (strStatName == "armorPercent") {
-                this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 + this._buffs[b][s]["effects"][strStatName]));
+                this._currentStats["totalArmor"] = this.calcCombatArmor();
                 
               } else if (strStatName == "heal") {
                 // do nothing
@@ -1017,6 +1058,8 @@ class hero {
                 
                 if (strStatName == "attack") {
                   this._currentStats["totalAttack"] = this.calcCombatAttack();
+                } else if (strStatName == "armor") {
+                  this._currentStats["totalArmor"] = this.calcCombatArmor();
                 }
               }
             }
@@ -1070,7 +1113,7 @@ class hero {
                   this._currentStats["totalAttack"] = this.calcCombatAttack();
                   
                 } else if (strStatName == "armorPercent") {
-                  this._currentStats["totalArmor"] = Math.round(this._currentStats["totalArmor"] / (1 - this._debuffs[b][s]["effects"][strStatName]));
+                  this._currentStats["totalArmor"] = this.calcCombatArmor();
                   
                 } else if (["rounds", "stacks"].includes(strStatName)) {
                   // do nothing, used to track stuff
@@ -1083,6 +1126,8 @@ class hero {
                   
                   if (strStatName == "attack") {
                     this._currentStats["totalAttack"] = this.calcCombatAttack();
+                  } else if (strStatName == "armor") {
+                    this._currentStats["totalArmor"] = this.calcCombatArmor();
                   }
                 }
               }
