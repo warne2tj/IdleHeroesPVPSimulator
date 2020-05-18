@@ -7056,7 +7056,7 @@ function handleCall(e) {
     numSims = e.data[4];
     
     // load all teams
-    var jsonConfig = e.data[5]
+    var jsonConfig = e.data[5];
     var teamIndex = 0;
     var team;
     var tHero;
@@ -7130,7 +7130,8 @@ function handleCall(e) {
     attHeroes[p].updateCurrentStats();
     defHeroes[p].updateCurrentStats();
   }
-  
+  console.log(allTeams[e.data[1]]["team"]);
+  console.log(allTeams[e.data[2]]["team"]);
   var numWins = runSim(attMonsterName, defMonsterName, numSims);
   postMessage([wid, e.data[1], e.data[2], numWins]);
 }
