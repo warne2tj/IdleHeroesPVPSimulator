@@ -7041,8 +7041,6 @@ function handleCall(e) {
   
   
   // load teams from DNA
-  console.log(e.data[1]);
-  console.log(e.data[3]);
   
   
   var numWins = Math.floor(Math.random() * e.data[4]); //runSim(attMonsterName, defMonsterName, e.data[4]);

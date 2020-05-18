@@ -101,10 +101,12 @@ function runMassLoop() {
 function processWorker(e) {
   var oLog = document.getElementById("summaryLog");
   var numSims = parseInt(document.getElementById("numSims").value);
-  var numAttWins = e.data[4];
+  var wid = parseInt(e.data[5]);
+  var numAttWins = parseInt(e.data[4]);
   var numDefWins = numSims - numAttWins;
   
-  workerStatus[e.data[5]][1] = false;
+  
+  workerStatus[wid][1] = false;
   allTeams[attIndex]["attWins"] += numAttWins;
   allTeams[defIndex]["defWins"] += numDefWins;
   
@@ -134,8 +136,8 @@ function processWorker(e) {
     }
   } else {
     // start next matchup
-    workerStatus[e.data[5]][1] = true;
-    workerStatus[e.data[5]][0].postMessage([attIndex, allTeams[attIndex]["dna"], defIndex, allTeams[defIndex]["dna"], numSims, e.data[5]]);
+    workerStatus[wid][1] = true;
+    workerStatus[wid][0].postMessage([attIndex, allTeams[attIndex]["dna"], defIndex, allTeams[defIndex]["dna"], numSims, wid]);
     
     defIndex++;
     if (defIndex == teamKeys.length) {
