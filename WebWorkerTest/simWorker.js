@@ -7033,20 +7033,20 @@ function handleCall(e) {
     5: worker id
   */
   
-  attMonsterName = e[1][60];
+  attMonsterName = e.data[1][60];
   attFrame = "";
   
-  defMonsterName = e[3][60]
+  defMonsterName = e.data[3][60]
   defFrame = "";
   
   
   // load teams from DNA
-  console.log(e[1]);
-  console.log(e[3]);
+  console.log(e.data[1]);
+  console.log(e.data[3]);
   
   
-  var numWins = Math.random()*numSims; //runSim(attMonsterName, defMonsterName, e[6]);
-  postMessage([e[5], e[0], e[2], numWins]);
+  var numWins = Math.random()*numSims; //runSim(attMonsterName, defMonsterName, e.data[4]);
+  postMessage([e.data[5], e.data[0], e.data[2], numWins]);
 }
 
 /* end unique to web worker implementation */
