@@ -7058,7 +7058,6 @@ function handleCall(e) {
   // load teams from DNA
   var tHero;
   for (var p = 0; p < 60; p += 10) {
-    species += e.data[1][p] + ", ";
     tHero = new baseHeroStats[e.data[1][p]]["className"](e.data[1][p], 1 + (p % 10), "att");
     
     tHero._heroLevel = 330;
@@ -7094,7 +7093,6 @@ function handleCall(e) {
   }
   
   for (var p = 0; p < 60; p += 10) {
-    species += e.data[3][p] + ", ";
     tHero = new baseHeroStats[e.data[3][p]]["className"](e.data[3][p], 1 + (p % 10), "att");
     
     tHero._heroLevel = 330;
