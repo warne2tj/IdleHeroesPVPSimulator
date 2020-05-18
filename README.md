@@ -44,13 +44,15 @@ Head to the wiki for more details.
   
 ### To Do List
   * Implement new heroes as they release
+  * try out web workers for simulations to speed up GA processing
   * add web storage to save settings
   * add swap, copy, move functionality for team management
   * implement rest of monsters
   * implement enhanced artifacts
+  * parse through skills in data mining spreadsheet
+  * adjust GA algorithm to have separate config for defense teams targeting defensive wins, clone top 10 from attack
+  * ----------- Priority 2 ------------
   * do cleanup on damage type, damage sources, buff types, debuff types
   * refactor targeting to take parameter for number of targets
-  * try out web workers for simulations to speed up GA processing
-  * ----------- Priority 2 ------------
   * improve look of hero stat sheet, buff, and debuff descriptions
   * refactor combat log output to read and flow better
