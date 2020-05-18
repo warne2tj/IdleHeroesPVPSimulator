@@ -15,6 +15,8 @@ var defHeroes = [
   new hero("None", 4, "def"), 
   new hero("None", 5, "def")
 ];
+
+var lsPrefix = "pvp_";
   
   
 function initialize() {
@@ -105,10 +107,28 @@ function initialize() {
     document.getElementById("defMonster").add(option);
   }
   
+    // check local storage
+  if (typeof(Storage) !== "undefined") {
+    if (localStorage.getItem(lsPrefix + "numSims") !== null) {
+      document.getElementById("numSims").value = localStorage.getItem(lsPrefix + "numSims");
+      document.getElementById("configText").value = localStorage.getItem(lsPrefix + "configText");
+    } else {
+      localStorage.setItem(lsPrefix + "numSims", document.getElementById("numSims").value);
+      localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+    }
+  }
+  
   
   // load default configuration
   loadConfig();
   runSim();
+}
+
+
+function storeLocal(i) {
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + i.id, i.value);
+  }
 }
 
 
@@ -270,6 +290,11 @@ function createConfig() {
   }
   
   oConfig.value += "}";
+  
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+  }  
+  
   oConfig.select();
   oConfig.setSelectionRange(0, oConfig.value.length);
   document.execCommand("copy");

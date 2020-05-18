@@ -4,6 +4,7 @@ var allTeams = {};
 var simRunning = false;
 var attIndex = 0;
 var defIndex = 1;
+var lsPrefix = "mass_";
   
   
 function initialize() {
@@ -51,6 +52,47 @@ function initialize() {
         panel.style.maxHeight = panel.scrollHeight + "px";
       }
     });
+  }
+  
+  
+  // check local storage
+  if (typeof(Storage) !== "undefined") {
+    if (localStorage.getItem(lsPrefix + "numSims") !== null) {
+      document.getElementById("numSims").value = localStorage.getItem(lsPrefix + "numSims");
+      document.getElementById("configText").value = localStorage.getItem(lsPrefix + "configText");
+      
+      var arrInputs = document.getElementsByTagName("INPUT");
+      for (var e = 0; e < arrInputs.length; e++) {
+        elem = arrInputs[e];
+        
+        if ("id" in elem) {
+          if (elem.id.substring(0, 3) == "att" || elem.id.substring(0, 3) == "def") {
+            elem.value = localStorage.getItem(lsPrefix + elem.id);
+          }
+        }
+      }
+    } else {
+      localStorage.setItem(lsPrefix + "numSims", document.getElementById("numSims").value);
+      localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+      
+      var arrInputs = document.getElementsByTagName("INPUT");
+      for (var e = 0; e < arrInputs.length; e++) {
+        elem = arrInputs[e];
+        
+        if ("id" in elem) {
+          if (elem.id.substring(0, 3) == "att" || elem.id.substring(0, 3) == "def") {
+            localStorage.setItem(lsPrefix + elem.id, elem.value);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+function storeLocal(i) {
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + i.id, i.value);
   }
 }
 

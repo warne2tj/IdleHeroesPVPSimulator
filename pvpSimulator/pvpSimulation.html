@@ -35,7 +35,7 @@
     <div class="log" id="combatLog"></div>
     <div>
       <label for="numSims">Number of Simulations to Run:</label>
-      <input type="text" id="numSims" size="3" value="1" />
+      <input type="text" id="numSims" size="3" value="1" onchange="storeLocal(this);" />
       <input type="submit" value="Run" onclick="runSim();"></input>
       <div>Detailed combat log output only if running a single simulation.</div>
       <div>Multiple simulations output just summary data.</div>
@@ -53,7 +53,7 @@
       <div>
         <input type="submit" value="Generate" onclick="createConfig();"></input>
         <input type="submit" value="Load" onclick="loadConfig();"></input>
-        <textarea id="configText" rows="20">
+        <textarea id="configText" rows="20" onchange="storeLocal(this);">
 {
 	"attHolyhpPercent": "1",
 	"attHolyattackPercent": "1",
@@ -2810,9 +2810,6 @@
   
   <button class="accordion colorC">Release Notes</button>
   <div class="panel">
-    <p>Mass team testing portal can be found <a href="\MassTesting\massTesting.html">here</a>. It is very much a work in progress.</p>
-    <p>Genetic algorithm portal can be found <a href="\GeneticAlgorithm\geneticTesting.html">here</a>. It is very much a work in progress.</p>
-    <p>Genetic targeting algorithm portal can be found <a href="\GeneticTargeting\geneticTargeting.html">here</a>. It is very much a work in progress.</p>
     <h4>Implemented Monsters:</h4>
     <p>
       <div>+ Deer</div>

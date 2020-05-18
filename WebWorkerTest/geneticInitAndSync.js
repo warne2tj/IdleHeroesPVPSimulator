@@ -13,11 +13,16 @@ var w3;
 var w4;
 var w5;
 var workerStatus;
+
+var lsPrefix = "ga_";
   
   
 function initialize() {
   var acc = document.getElementsByClassName("colorC");
   for (var i = 0; i < acc.length; i++) {
+    acc[i].classList.toggle("activeC");
+    acc[i].nextElementSibling.style.maxHeight = acc[i].nextElementSibling.scrollHeight + "px";
+    
     acc[i].addEventListener("click", function() {
       this.classList.toggle("activeC");
 
@@ -29,6 +34,23 @@ function initialize() {
       }
     });
   }
+  
+  
+  // check local storage
+  if (typeof(Storage) !== "undefined") {
+    if (localStorage.getItem(lsPrefix + "numSims") !== null) {
+      document.getElementById("numSims").value = localStorage.getItem(lsPrefix + "numSims");
+      document.getElementById("genCount").value = localStorage.getItem(lsPrefix + "genCount");
+      document.getElementById("numCreate").value = localStorage.getItem(lsPrefix + "numCreate");
+      document.getElementById("configText").value = localStorage.getItem(lsPrefix + "configText");
+    } else {
+      localStorage.setItem(lsPrefix + "numSims", document.getElementById("numSims").value);
+      localStorage.setItem(lsPrefix + "genCount", document.getElementById("genCount").value);
+      localStorage.setItem(lsPrefix + "numCreate", document.getElementById("numCreate").value);
+      localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+    }
+  }
+  
   
   if (typeof(Worker) !== "undefined") {
     w0 = new Worker("./simWorker.js");
@@ -52,6 +74,13 @@ function initialize() {
     workerStatus = [[w0, false], [w1, false], [w2, false], [w3, false], [w4, false], [w5, false]];
   } else {
     document.getElementById("summaryLog").innerHTML = "Browser does not support web workers."
+  }
+}
+
+
+function storeLocal(i) {
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + i.id, i.value);
   }
 }
 
@@ -249,7 +278,12 @@ function processWorker(e) {
         document.getElementById("generationLog").value += "Generation " + document.getElementById("genCount").value + " summary.\n" + summary + "\n";
         
         evolve(teamKeys);
+        
         document.getElementById("genCount").value = parseInt(document.getElementById("genCount").value) + 1;
+        if (typeof(Storage) !== "undefined") {
+          localStorage.setItem(lsPrefix + "genCount", document.getElementById("genCount").value);
+        }
+        
         runMassLoop();
       }
     }
@@ -328,6 +362,12 @@ function createRandomTeams() {
   }
   
   oConfig.value += "}";
+  
+  
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+  }
+  
   oConfig.select();
   oConfig.setSelectionRange(0, oConfig.value.length);
   document.execCommand("copy");
@@ -402,6 +442,10 @@ function evolve(teamKeys) {
   
 
   oConfig.value += "}";
+  
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+  }
 }
 
 
