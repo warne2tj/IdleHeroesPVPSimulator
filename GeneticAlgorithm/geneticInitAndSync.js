@@ -88,7 +88,7 @@ function runMassLoop() {
       
       for (var p = 0; p < 60; p += 10) {
         species += jsonConfig[t][p] + ", ";
-        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], 1 + (p % 10), "");
+        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], Math.floor(p / 10), "");
         
         tHero._heroLevel = 330;
         tHero._skin = jsonConfig[t][p+1];

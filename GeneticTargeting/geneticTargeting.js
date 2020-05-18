@@ -131,7 +131,7 @@ function runMassLoop() {
     document.getElementById("defMonster").value = benchmarkDNA[60];
     
     for (var p = 0; p < 60; p += 10) {
-      tHero = new baseHeroStats[benchmarkDNA[p]]["className"](benchmarkDNA[p], 1 + (p % 10), "def");
+      tHero = new baseHeroStats[benchmarkDNA[p]]["className"](benchmarkDNA[p], Math.floor(p / 10), "def");
       
       tHero._heroLevel = 330;
       tHero._skin = benchmarkDNA[p+1];
@@ -183,7 +183,7 @@ function runMassLoop() {
       
       for (var p = 0; p < 60; p += 10) {
         species += jsonConfig[t][p] + ", ";
-        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], 1 + (p % 10), "");
+        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], Math.floor(p / 10), "");
         
         tHero._heroLevel = 330;
         tHero._skin = jsonConfig[t][p+1];

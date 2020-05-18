@@ -7060,7 +7060,6 @@ function handleCall(e) {
     var teamIndex = 0;
     var team;
     var tHero;
-    var heroPos;
     
     allTeams = {};
     
@@ -7071,8 +7070,7 @@ function handleCall(e) {
       team = [];
       
       for (var p = 0; p < 60; p += 10) {
-        heroPos = 1 + (p % 10);
-        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], heroPos, "");
+        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], Math.floor(p / 10), "");
         
         tHero._heroLevel = 330;
         tHero._skin = jsonConfig[t][p+1];
