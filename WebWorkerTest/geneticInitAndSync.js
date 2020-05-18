@@ -101,7 +101,7 @@ function runMassLoop() {
     
     allTeams = {};
     attIndex = 0;
-    defIndex = 0;
+    defIndex = 1;
     
     for (var t in jsonConfig) {
       allTeams[teamIndex] = {};
@@ -130,7 +130,7 @@ function runMassLoop() {
     // start workers
     for (var i = 0; i < workerStatus.length; i++) {
       workerStatus[i][1] = true;
-      workerStatus[i][0].postMessage([attIndex, allTeams[attIndex]["dna"], defIndex, allTeams[defIndex]["dna"], numSims, i]);
+      workerStatus[i][0].postMessage(["init", attIndex, defIndex, i, numSims, jsonConfig]);
       defIndex++;
     }
   }
@@ -290,9 +290,14 @@ function processWorker(e) {
   } else {
     // start next matchup
     workerStatus[wid][1] = true;
-    workerStatus[wid][0].postMessage([attIndex, allTeams[attIndex]["dna"], defIndex, allTeams[defIndex]["dna"], numSims, wid]);
+    workerStatus[wid][0].postMessage(["run", attIndex, defIndex]);
+    
     
     defIndex++;
+    if (defIndex == attIndex) {
+      defIndex++;
+    }
+    
     if (defIndex == teamKeys.length) {
       attIndex++;
       defIndex = 0;

@@ -7031,113 +7031,108 @@ function checkForWin() {
 
 var attMonsterName;
 var defMonsterName;
-var attFrame;
-var defFrame;
+var attFrame = "IDA Maverick +9";
+var defFrame = "IDA Maverick +9";
 var attHeroes = [];
 var defHeroes = [];
+var allTeams = {};
+var wid;
+var numSims;
 
 self.onmessage = handleCall;
 
 function handleCall(e) {
   /* array containing:
-    0: attack team id
-    1: attack team dna
+    0: action to take
+    1: attack team id
     2: defense team id
-    3: defense team dna
-    4: number of simulations to run
-    5: worker id
+    3: worker id, optional
+    4: number of simulations, optional
+    5: jsonConfig, optional
   */
   
-  attHeroes = [];
-  defHeroes = [];
-  
-  attMonsterName = e.data[1][60];
-  attFrame = "IDA Maverick +9";
-  
-  defMonsterName = e.data[3][60]
-  defFrame = "IDA Maverick +9";
-  
-  
-  // load teams from DNA
-  var tHero;
-  for (var p = 0; p < 60; p += 10) {
-    tHero = new baseHeroStats[e.data[1][p]]["className"](e.data[1][p], 1 + (p % 10), "att");
+  if (e.data[0] == "init") {
+    wid = e.data[3];
+    numSims = e.data[4];
     
-    tHero._heroLevel = 330;
-    tHero._skin = e.data[1][p+1];
-    tHero._stone = e.data[1][p+3];
-    tHero._artifact = e.data[1][p+4];
-    tHero._enable1 = e.data[1][p+5];
-    tHero._enable2 = e.data[1][p+6];
-    tHero._enable3 = e.data[1][p+7];
-    tHero._enable4 = e.data[1][p+8];
-    tHero._enable5 = e.data[1][p+9];
+    // load all teams
+    var jsonConfig = e.data[5]
+    var teamIndex = 0;
+    var team;
+    var tHero;
     
-    if (e.data[1][p+2] == "Class Gear") { 
-      tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
-      tHero._armor = classGearMapping[tHero._heroClass]["armor"];
-      tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
-      tHero._accessory = classGearMapping[tHero._heroClass]["accessory"];
+    allTeams = {};
+    
+    for (var t in jsonConfig) {
+      allTeams[teamIndex] = {};
+      allTeams[teamIndex]["pet"] = jsonConfig[t][60];
       
-    } else if (e.data[1][p+2] == "Split HP") { 
-      tHero._weapon = "6* Thorny Flame Whip";
-      tHero._armor = classGearMapping[tHero._heroClass]["armor"];
-      tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
-      tHero._accessory = "6* Flame Necklace";
+      team = [];
       
-    } else if (e.data[1][p+2] == "Split Attack") { 
-      tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
-      tHero._armor = "6* Flame Armor";
-      tHero._shoe = "6* Flame Boots";
-      tHero._accessory = "6* Flame Necklace";
+      for (var p = 0; p < 60; p += 10) {
+        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], 1 + (p % 10), "");
+        
+        tHero._heroLevel = 330;
+        tHero._skin = jsonConfig[t][p+1];
+        tHero._stone = jsonConfig[t][p+3];
+        tHero._artifact = jsonConfig[t][p+4];
+        tHero._enable1 = jsonConfig[t][p+5];
+        tHero._enable2 = jsonConfig[t][p+6];
+        tHero._enable3 = jsonConfig[t][p+7];
+        tHero._enable4 = jsonConfig[t][p+8];
+        tHero._enable5 = jsonConfig[t][p+9];
+        
+        if (jsonConfig[t][p+2] == "Class Gear") { 
+          tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
+          tHero._armor = classGearMapping[tHero._heroClass]["armor"];
+          tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
+          tHero._accessory = classGearMapping[tHero._heroClass]["accessory"];
+          
+        } else if (jsonConfig[t][p+2] == "Split HP") { 
+          tHero._weapon = "6* Thorny Flame Whip";
+          tHero._armor = classGearMapping[tHero._heroClass]["armor"];
+          tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
+          tHero._accessory = "6* Flame Necklace";
+          
+        } else if (jsonConfig[t][p+2] == "Split Attack") { 
+          tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
+          tHero._armor = "6* Flame Armor";
+          tHero._shoe = "6* Flame Boots";
+          tHero._accessory = "6* Flame Necklace";
+        }
+        
+        team.push(tHero);
+      }
+    
+      allTeams[teamIndex]["team"] = team;
+      teamIndex++;
     }
-    
-    attHeroes.push(tHero);
   }
   
-  for (var p = 0; p < 60; p += 10) {
-    tHero = new baseHeroStats[e.data[3][p]]["className"](e.data[3][p], 1 + (p % 10), "def");
-    
-    tHero._heroLevel = 330;
-    tHero._skin = e.data[3][p+1];
-    tHero._stone = e.data[3][p+3];
-    tHero._artifact = e.data[3][p+4];
-    tHero._enable1 = e.data[3][p+5];
-    tHero._enable2 = e.data[3][p+6];
-    tHero._enable3 = e.data[3][p+7];
-    tHero._enable4 = e.data[3][p+8];
-    tHero._enable5 = e.data[3][p+9];
-    
-    if (e.data[3][p+2] == "Class Gear") { 
-      tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
-      tHero._armor = classGearMapping[tHero._heroClass]["armor"];
-      tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
-      tHero._accessory = classGearMapping[tHero._heroClass]["accessory"];
-      
-    } else if (e.data[3][p+2] == "Split HP") { 
-      tHero._weapon = "6* Thorny Flame Whip";
-      tHero._armor = classGearMapping[tHero._heroClass]["armor"];
-      tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
-      tHero._accessory = "6* Flame Necklace";
-      
-    } else if (e.data[3][p+2] == "Split Attack") { 
-      tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
-      tHero._armor = "6* Flame Armor";
-      tHero._shoe = "6* Flame Boots";
-      tHero._accessory = "6* Flame Necklace";
-    }
-    
-    defHeroes.push(tHero);
+
+  attHeroes = allTeams[e.data[1]]["team"];
+  defHeroes = allTeams[e.data[2]]["team"];
+  
+  attMonsterName = allTeams[e.data[1]]["pet"];
+  defMonsterName = allTeams[e.data[2]]["pet"];
+  
+  for (var p = 0; p < 6; p++) {
+    attHeroes[p]._attOrDef = "att";
+    attHeroes[p]._allies = attHeroes;
+    attHeroes[p]._enemies = defHeroes;
+
+    defHeroes[p]._attOrDef = "def";
+    defHeroes[p]._allies = defHeroes;
+    defHeroes[p]._enemies = attHeroes;
   }
   
   for (var p = 0; p < 6; p++) {
     attHeroes[p].updateCurrentStats();
     defHeroes[p].updateCurrentStats();
-  }  
+  }
   
-  
-  var numWins = runSim(attMonsterName, defMonsterName, e.data[4]);
-  postMessage([e.data[5], e.data[0], e.data[2], numWins]);
+  var numWins = runSim(attMonsterName, defMonsterName, numSims);
+  postMessage([wid, e.data[1], e.data[2], numWins]);
 }
 
 /* end unique to web worker implementation */
