@@ -6,6 +6,8 @@ var maxCopies = 6;
 var simRunning = false;
 var stopLoop = false;
 var attIndex = 0;
+
+var lsPrefix = "gt_";
   
   
 function initialize() {
@@ -53,6 +55,53 @@ function initialize() {
         panel.style.maxHeight = panel.scrollHeight + "px";
       }
     });
+  }
+  
+  
+  // check local storage
+  if (typeof(Storage) !== "undefined") {
+    if (localStorage.getItem(lsPrefix + "numSims") !== null) {
+      document.getElementById("numSims").value = localStorage.getItem(lsPrefix + "numSims");
+      document.getElementById("genCount").value = localStorage.getItem(lsPrefix + "genCount");
+      document.getElementById("numCreate").value = localStorage.getItem(lsPrefix + "numCreate");
+      document.getElementById("benchmark").value = localStorage.getItem(lsPrefix + "benchmark");
+      document.getElementById("configText").value = localStorage.getItem(lsPrefix + "configText");
+      
+      var arrInputs = document.getElementsByTagName("INPUT");
+      for (var e = 0; e < arrInputs.length; e++) {
+        elem = arrInputs[e];
+        
+        if ("id" in elem) {
+          if (elem.id.substring(0, 3) == "att" || elem.id.substring(0, 3) == "def") {
+            elem.value = localStorage.getItem(lsPrefix + elem.id);
+          }
+        }
+      }
+    } else {
+      localStorage.setItem(lsPrefix + "numSims", document.getElementById("numSims").value);
+      localStorage.setItem(lsPrefix + "genCount", document.getElementById("genCount").value);
+      localStorage.setItem(lsPrefix + "numCreate", document.getElementById("numCreate").value);
+      localStorage.setItem(lsPrefix + "benchmark", document.getElementById("benchmark").value);
+      localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+      
+      var arrInputs = document.getElementsByTagName("INPUT");
+      for (var e = 0; e < arrInputs.length; e++) {
+        elem = arrInputs[e];
+        
+        if ("id" in elem) {
+          if (elem.id.substring(0, 3) == "att" || elem.id.substring(0, 3) == "def") {
+            localStorage.setItem(lsPrefix + elem.id, elem.value);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+function storeLocal(i) {
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + i.id, i.value);
   }
 }
 
@@ -342,6 +391,11 @@ function createRandomTeams() {
   }
   
   oConfig.value += "}";
+  
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+  }
+  
   oConfig.select();
   oConfig.setSelectionRange(0, oConfig.value.length);
   document.execCommand("copy");
@@ -412,6 +466,11 @@ function evolve(teamKeys) {
 
   oConfig.value += "}";
   document.getElementById("genCount").value = parseInt(document.getElementById("genCount").value) + 1;
+  
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + "genCount", document.getElementById("genCount").value);
+    localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+  }
 }
 
 

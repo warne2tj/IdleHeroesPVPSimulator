@@ -27,6 +27,8 @@ var startRollTwice;
 var simRunning = false;
 var totalSims = 1000000;
 
+var lsPrefix = "imp_";
+
 function init() {
   var acc = document.getElementsByClassName("accordion");
   for (var i = 0; i < acc.length; i++) {
@@ -47,100 +49,40 @@ function init() {
   
   // check local storage
   if (typeof(Storage) !== "undefined") {
-    if (localStorage.getItem("ordinary") !== null) {
-      document.getElementById("ordinary").value = localStorage.getItem("ordinary");
+    if (localStorage.getItem(lsPrefix + "ordinary") !== null) {
+      document.getElementById("ordinary").value = localStorage.getItem(lsPrefix + "ordinary");
+      document.getElementById("lucky").value = localStorage.getItem(lsPrefix + "lucky");
+      document.getElementById("stars").value = localStorage.getItem(lsPrefix + "stars");
+      document.getElementById("startPos").value = localStorage.getItem(lsPrefix + "startPos");
+      document.getElementById("mushroom1").value = localStorage.getItem(lsPrefix + "mushroom1");
+      document.getElementById("mushroom2").value = localStorage.getItem(lsPrefix + "mushroom2");
+      document.getElementById("mushroom3").value = localStorage.getItem(lsPrefix + "mushroom3");
+      document.getElementById("activeTarot").value = localStorage.getItem(lsPrefix + "activeTarot");
+      document.getElementById("reward1").value = localStorage.getItem(lsPrefix + "reward1");
+      document.getElementById("reward2").value = localStorage.getItem(lsPrefix + "reward2");
+      document.getElementById("reward3").value = localStorage.getItem(lsPrefix + "reward3");
+      document.getElementById("reward4").value = localStorage.getItem(lsPrefix + "reward4");
+      document.getElementById("reward5").value = localStorage.getItem(lsPrefix + "reward5");
+      document.getElementById("reward6").value = localStorage.getItem(lsPrefix + "reward6");
+      document.getElementById("reward7").value = localStorage.getItem(lsPrefix + "reward7");
+      document.getElementById("reward8").value = localStorage.getItem(lsPrefix + "reward8");
     } else {
-      localStorage.setItem("ordinary", 78);
-    }
-    
-    if (localStorage.getItem("lucky") !== null) {
-      document.getElementById("lucky").value = localStorage.getItem("lucky");
-    } else {
-      localStorage.setItem("lucky", 0);
-    }
-    
-    if (localStorage.getItem("stars") !== null) {
-      document.getElementById("stars").value = localStorage.getItem("stars");
-    } else {
-      localStorage.setItem("stars", 0);
-    }
-    
-    if (localStorage.getItem("startPos") !== null) {
-      document.getElementById("startPos").value = localStorage.getItem("startPos");
-    } else {
-      localStorage.setItem("startPos", 0);
-    }
-    
-    if (localStorage.getItem("mushroom1") !== null) {
-      document.getElementById("mushroom1").value = localStorage.getItem("mushroom1");
-    } else {
-      localStorage.setItem("mushroom1", 1);
-    }
-    
-    if (localStorage.getItem("mushroom2") !== null) {
-      document.getElementById("mushroom2").value = localStorage.getItem("mushroom2");
-    } else {
-      localStorage.setItem("mushroom2", 1);
-    }
-    
-    if (localStorage.getItem("mushroom3") !== null) {
-      document.getElementById("mushroom3").value = localStorage.getItem("mushroom3");
-    } else {
-      localStorage.setItem("mushroom3", 1);
-    }
-    
-    if (localStorage.getItem("activeTarot") !== null) {
-      document.getElementById("activeTarot").value = localStorage.getItem("activeTarot");
-    } else {
-      localStorage.setItem("activeTarot", "None");
-    }
-    
-    if (localStorage.getItem("reward1") !== null) {
-      document.getElementById("reward1").value = localStorage.getItem("reward1");
-    } else {
-      localStorage.setItem("reward1", 1250);
-    }
-    
-    if (localStorage.getItem("reward2") !== null) {
-      document.getElementById("reward2").value = localStorage.getItem("reward2");
-    } else {
-      localStorage.setItem("reward2", 2500);
-    }
-    
-    if (localStorage.getItem("reward3") !== null) {
-      document.getElementById("reward3").value = localStorage.getItem("reward3");
-    } else {
-      localStorage.setItem("reward3", 3750);
-    }
-    
-    if (localStorage.getItem("reward4") !== null) {
-      document.getElementById("reward4").value = localStorage.getItem("reward4");
-    } else {
-      localStorage.setItem("reward4", 1800);
-    }
-    
-    if (localStorage.getItem("reward5") !== null) {
-      document.getElementById("reward5").value = localStorage.getItem("reward5");
-    } else {
-      localStorage.setItem("reward5", 7500);
-    }
-    
-    if (localStorage.getItem("reward6") !== null) {
-      document.getElementById("reward6").value = localStorage.getItem("reward6");
-    } else {
-      localStorage.setItem("reward6", 1000);
-    }
-    
-    if (localStorage.getItem("reward7") !== null) {
-      document.getElementById("reward7").value = localStorage.getItem("reward7");
-    } else {
-      localStorage.setItem("reward7", 10000);
-    }
-    
-    if (localStorage.getItem("reward8") !== null) {
-      document.getElementById("reward8").value = localStorage.getItem("reward8");
-    } else {
-      localStorage.setItem("reward8", 8400);
+      localStorage.setItem(lsPrefix + "ordinary", 78);
+      localStorage.setItem(lsPrefix + "lucky", 0);
+      localStorage.setItem(lsPrefix + "stars", 0);
+      localStorage.setItem(lsPrefix + "startPos", 0);
+      localStorage.setItem(lsPrefix + "mushroom1", 1);
+      localStorage.setItem(lsPrefix + "mushroom2", 1);
+      localStorage.setItem(lsPrefix + "mushroom3", 1);
+      localStorage.setItem(lsPrefix + "activeTarot", "None");
+      localStorage.setItem(lsPrefix + "reward1", 1250);
+      localStorage.setItem(lsPrefix + "reward2", 2500);
+      localStorage.setItem(lsPrefix + "reward3", 3750);
+      localStorage.setItem(lsPrefix + "reward4", 1800);
+      localStorage.setItem(lsPrefix + "reward5", 7500);
+      localStorage.setItem(lsPrefix + "reward6", 1000);
+      localStorage.setItem(lsPrefix + "reward7", 10000);
+      localStorage.setItem(lsPrefix + "reward8", 8400);
     }
   }
   
@@ -160,7 +102,7 @@ function init() {
 
 function storeLocal(i) {
   if (typeof(Storage) !== "undefined") {
-    localStorage.setItem(i.id, i.value);
+    localStorage.setItem(lsPrefix + i.id, i.value);
   }
 }
 

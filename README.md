@@ -44,7 +44,6 @@ Head to the wiki for more details.
   
 ### To Do List
   * Implement new heroes as they release
-  * add web storage to save settings
   * add swap, copy, move functionality for team management
   * implement rest of monsters
   * implement enhanced artifacts
