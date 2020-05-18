@@ -115,7 +115,7 @@ function processWorker(e) {
     allTeams[e.data[2]]["weakAgainstWins"] = numAttWins;
   }
     
-  oLog.innerHTML = "<div><span class='att'>" + allTeams[e.data[1]]["teamName"] + " (" + allTeams[e.data[1]]["species"] + ")</span> versus <span class='def'>" + allTeams[e.data[2]]["teamName"] + " (" + allTeams[e.data[2]]["species"] + ")</span>: Won " + formatNum(numAttWins) + " out of " + formatNum(numSims) + ".</div>" + oLog.innerHTML;
+  oLog.innerHTML = "<div><span class='att'>" + allTeams[e.data[1]]["teamName"] + " (" + allTeams[e.data[1]]["species"] + ")</span> versus <span class='def'>" + allTeams[e.data[2]]["teamName"] + " (" + allTeams[e.data[2]]["species"] + ")</span>: Won <span class='num'>" + numAttWins + "</span> out of <span class='num'>" + numSims + "</span>.</div>" + oLog.innerHTML;
   
   
   if (attIndex >= teamKeys.length || stopLoop) {
