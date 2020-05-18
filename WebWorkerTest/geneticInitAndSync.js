@@ -239,6 +239,8 @@ function processWorker(e) {
         document.getElementById("generationLog").value += "Generation " + document.getElementById("genCount").value + " summary.\n" + summary + "\n";
         
         evolve(teamKeys);
+        document.getElementById("genCount").value = parseInt(document.getElementById("genCount").value) + 1;
+        runMassLoop();
       }
     }
   } else {
@@ -390,8 +392,6 @@ function evolve(teamKeys) {
   
 
   oConfig.value += "}";
-  document.getElementById("genCount").value = parseInt(document.getElementById("genCount").value) + 1;
-  runMassLoop();
 }
 
 
