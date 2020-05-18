@@ -10,6 +10,8 @@ var w0;
 var w1;
 var w2;
 var w3;
+var w4;
+var w5;
 var workerStatus;
   
   
@@ -41,7 +43,15 @@ function initialize() {
     w3 = new Worker("./simWorker.js");
     w3.onmessage = processWorker;
     
-    workerStatus = [[w0, false], [w1, false], [w2, false], [w3, false]];
+    w4 = new Worker("./simWorker.js");
+    w4.onmessage = processWorker;
+    
+    w5 = new Worker("./simWorker.js");
+    w5.onmessage = processWorker;
+    
+    workerStatus = [[w0, false], [w1, false], [w2, false], [w3, false], [w4, false], [w5, false]];
+  } else {
+    document.getElementById("summaryLog").innerHTML = "Browser does not support web workers."
   }
 }
 
