@@ -6335,7 +6335,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
   var winCount = 0;
   var orderOfAttack = [];
   var numOfHeroes = 0;
-  var result = {};
+  var result = "";
   var monsterResult = "";
   var someoneWon = "";
   var endRoundDesc = "";
@@ -7048,6 +7048,9 @@ function handleCall(e) {
     5: worker id
   */
   
+  attHeroes = [];
+  defHeroes = [];
+  
   attMonsterName = e.data[1][60];
   attFrame = "IDA Maverick +9";
   
@@ -7134,7 +7137,6 @@ function handleCall(e) {
   
   
   var numWins = runSim(attMonsterName, defMonsterName, e.data[4]);
-  console.log(numWins);
   postMessage([e.data[5], e.data[0], e.data[2], numWins]);
 }
 
