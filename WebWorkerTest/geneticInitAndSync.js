@@ -264,54 +264,6 @@ function nextMatchup() {
       evolve(teamKeys);
     }
     
-  } else {
-    if (attIndex != defIndex) {
-      var numWins = 0;
-
-      attHeroes = allTeams[attIndex]["team"];
-      defHeroes = allTeams[defIndex]["team"];
-      
-      document.getElementById("attMonster").value = allTeams[attIndex]["pet"];
-      document.getElementById("defMonster").value = allTeams[defIndex]["pet"];
-      
-      for (var p = 0; p < 6; p++) {
-        attHeroes[p]._attOrDef = "att";
-        attHeroes[p]._allies = attHeroes;
-        attHeroes[p]._enemies = defHeroes;
- 
-        defHeroes[p]._attOrDef = "def";
-        defHeroes[p]._allies = defHeroes;
-        defHeroes[p]._enemies = attHeroes;
-      }
-      
-      for (var p = 0; p < 6; p++) {
-        attHeroes[p].updateCurrentStats();
-        defHeroes[p].updateCurrentStats();
-      }
-      
-      numAttWins = runSim();
-      numDefWins = numSims - numAttWins;
-      
-      allTeams[attIndex]["attWins"] += numAttWins;
-      allTeams[defIndex]["defWins"] += numDefWins;
-      
-      if (numAttWins > allTeams[defIndex]["weakAgainstWins"]) {
-        allTeams[defIndex]["weakAgainst"] = allTeams[attIndex]["teamName"];
-        allTeams[defIndex]["weakAgainstWins"] = numAttWins;
-      }
-      
-      oLog.innerHTML = "<div><span class='att'>" + allTeams[attIndex]["teamName"] + " (" + allTeams[attIndex]["species"] + ")</span> versus <span class='def'>" + allTeams[defIndex]["teamName"] + " (" + allTeams[defIndex]["species"] + ")</span>: Won " + formatNum(numAttWins) + " out of " + formatNum(numSims) + ".</div>" + oLog.innerHTML;
-    }
-    
-    // start next matchup
-    defIndex++;
-    if (defIndex == teamKeys.length) {
-      attIndex++;
-      defIndex = 0;
-      oLog.innerHTML = "";
-    }
-    
-    setTimeout(nextMatchup, 1);
   }
 }
 
