@@ -7045,7 +7045,7 @@ function handleCall(e) {
   console.log(e.data[3]);
   
   
-  var numWins = Math.random()*numSims; //runSim(attMonsterName, defMonsterName, e.data[4]);
+  var numWins = Math.floor(Math.random() * e.data[4]); //runSim(attMonsterName, defMonsterName, e.data[4]);
   postMessage([e.data[5], e.data[0], e.data[2], numWins]);
 }
 
