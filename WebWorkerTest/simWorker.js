@@ -7046,7 +7046,7 @@ function handleCall(e) {
   
   
   var numWins = Math.random()*numSims; //runSim(attMonsterName, defMonsterName, e[6]);
-  postMessage(e[5], e[0], e[2], numWins);
+  postMessage([e[5], e[0], e[2], numWins]);
 }
 
 /* end unique to web worker implementation */

@@ -91,7 +91,7 @@ function runMassLoop() {
     // start workers
     for (var i = 0; i < workerStatus.length; i++) {
       workerStatus[i][1] = true;
-      workerStatus[i][0].postMessage(attIndex, allTeams[attIndex]["dna"], defIndex, allTeams[defIndex]["dna"], numSims, i);
+      workerStatus[i][0].postMessage([attIndex, allTeams[attIndex]["dna"], defIndex, allTeams[defIndex]["dna"], numSims, i]);
       defIndex++;
     }
   }
@@ -135,7 +135,7 @@ function processWorker(e) {
   } else {
     // start next matchup
     workerStatus[e.data[5]][1] = true;
-    workerStatus[e.data[5]][0].postMessage(attIndex, allTeams[attIndex]["dna"], defIndex, allTeams[defIndex]["dna"], numSims, e.data[5]);
+    workerStatus[e.data[5]][0].postMessage([attIndex, allTeams[attIndex]["dna"], defIndex, allTeams[defIndex]["dna"], numSims, e.data[5]]);
     
     defIndex++;
     if (defIndex == teamKeys.length) {
