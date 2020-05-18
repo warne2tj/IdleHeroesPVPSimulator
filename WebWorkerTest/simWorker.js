@@ -1,1675 +1,3 @@
-/* Start of artifact.js */
-
-var artifacts = {
-  "None": {
-    stats: {},
-    limit: "",
-    limitStats: {}
-  },
-
-  "Antlers Cane": {
-    stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Augustus Magic Ball": {
-    stats: {attackPercent: 0.25, speed: 70, block: 0.5},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Demon Bell": {
-    stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Golden Crown": {
-    stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Lucky Candy Bar": {
-    stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Magic Stone Sword": {
-    stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Ruyi Scepter": {
-    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.5},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Staff Punisher of Immortal": {
-    stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "The Kiss of Ghost": {
-    stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Wildfire Torch": {
-    stats: {precision: 0.6, hpPercent: 0.18, dotReduce: 0.7},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Magic Source": {
-    stats: {energy: 50, skillDamage: 0.5},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Orb of Annihilation": {
-    stats: {energy: 50, skillDamage: 0.5},
-    limit: "Dark",
-    limitStats: {skillDamage: 0.4}
-  },
-  
-  "Guilty Crown" :{
-    stats: {attackPercent: 0.18, hpPercent: 0.14},
-    limit: "Dark",
-    limitStats: {controlImmune: 0.25}
-  },
-  
-  "Sword of Justice": {
-    stats: {attackPercent: 0.18, holyDamage: 0.3},
-    limit: "Light",
-    limitStats: {crit: 0.15}
-  },
-  
-  "Echo of Death": {
-    stats: {attackPercent: 0.18, crit: 0.15},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Heavenly Bead": {
-    stats: {attackPercent: 0.18, precision: 0.12},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Invisible": {
-    stats: {hpPercent: 0.15, block: 0.20},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Wind God Messenger": {
-    stats: {speed: 66, hpPercent: 0.14},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Shadow Cape": {
-    stats: {speed: 66, hpPercent: 0.14},
-    limit: "Shadow",
-    limitStats: {crit: 0.15}
-  },
-  
-  "Tread of Lightness": {
-    stats: {speed: 66, hpPercent: 0.14},
-    limit: "Fortress",
-    limitStats: {crit: 0.15}
-  },
-  
-  "Warhammer of Hopelessness": {
-    stats: {speed: 66, hpPercent: 0.14},
-    limit: "Abyss",
-    limitStats: {crit: 0.15}
-  },
-  
-  "Sigh": {
-    stats: {speed: 66, hpPercent: 0.14},
-    limit: "Forest",
-    limitStats: {crit: 0.15}
-  },
-  
-  "Fearless Armor": {
-    stats: {damageReduce: .3, hpPercent: 0.14},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Withered Armor": {
-    stats: {damageReduce: 0.3, hpPercent: 0.14},
-    limit: "Shadow",
-    limitStats: {hpPercent: 0.18}
-  },
-  
-  "Barrier of Destiny": {
-    stats: {damageReduce: 0.3, hpPercent: 0.14},
-    limit: "Fortress",
-    limitStats: {hpPercent: 0.18}
-  },
-  
-  "The King of Demons": {
-    stats: {damageReduce: 0.3, hpPercent: 0.15},
-    limit: "Abyss",
-    limitStats: {hpPercent: 0.18}
-  },
-  
-  "Rune's Power": {
-    stats: {damageReduce: 0.3, hpPercent: 0.14},
-    limit: "Forest",
-    limitStats: {hpPercent: 0.18}
-  },
-  
-  "Spear of Destiny": {
-    stats: {damageReduce: 0.3, hpPercent: 0.14},
-    limit: "Light",
-    limitStats: {holyDamage: 0.18}
-  }
-};
-
-/* End of artifact.js */
-
-
-/* Start of avatarFrame.js */
-
-var avatarFrames = {
-  "None": {},
-  "IDA Overseer": {hpPercent: 0.08, attackPercent: 0.03},
-  "IDA Overseer +1": {hpPercent: 0.09, attackPercent: 0.03},
-  "IDA Overseer +2": {hpPercent: 0.1, attackPercent: 0.03},
-  "IDA Overseer +3": {hpPercent: 0.11, attackPercent: 0.04},
-  "IDA Overseer +4": {hpPercent: 0.12, attackPercent: 0.04},
-  "IDA Overseer +5": {hpPercent: 0.13, attackPercent: 0.05},
-  "IDA Overseer +6": {hpPercent: 0.14, attackPercent: 0.05},
-  "IDA Overseer +7": {hpPercent: 0.15, attackPercent: 0.06},
-  "IDA Overseer +8": {hpPercent: 0.16, attackPercent: 0.06},
-  "IDA Overseer +9": {hpPercent: 0.17, attackPercent: 0.07},
-  "IDA Maverick": {hpPercent: 0.1, attackPercent: 0.03},
-  "IDA Maverick +1": {hpPercent: 0.11, attackPercent: 0.03},
-  "IDA Maverick +2": {hpPercent: 0.12, attackPercent: 0.03},
-  "IDA Maverick +3": {hpPercent: 0.13, attackPercent: 0.04},
-  "IDA Maverick +4": {hpPercent: 0.14, attackPercent: 0.04},
-  "IDA Maverick +5": {hpPercent: 0.15, attackPercent: 0.05},
-  "IDA Maverick +6": {hpPercent: 0.16, attackPercent: 0.05},
-  "IDA Maverick +7": {hpPercent: 0.17, attackPercent: 0.06},
-  "IDA Maverick +8": {hpPercent: 0.18, attackPercent: 0.06},
-  "IDA Maverick +9": {hpPercent: 0.2, attackPercent: 0.07},
-  "IDA Top 32": {hpPercent: 0.12, attackPercent: 0.03},
-  "IDA Top 32 +1": {hpPercent: 0.13, attackPercent: 0.03},
-  "IDA Top 32 +2": {hpPercent: 0.14, attackPercent: 0.03},
-  "IDA Top 32 +3": {hpPercent: 0.15, attackPercent: 0.04},
-  "IDA Top 32 +4": {hpPercent: 0.16, attackPercent: 0.04},
-  "IDA Top 32 +5": {hpPercent: 0.17, attackPercent: 0.05},
-  "IDA Top 32 +6": {hpPercent: 0.18, attackPercent: 0.05},
-  "IDA Top 32 +7": {hpPercent: 0.19, attackPercent: 0.06},
-  "IDA Top 32 +8": {hpPercent: 0.2, attackPercent: 0.06},
-  "IDA Top 32 +9": {hpPercent: 0.22, attackPercent: 0.07},
-  "IDA Top 8": {hpPercent: 0.13, attackPercent: 0.03},
-  "IDA Top 8 +1": {hpPercent: 0.14, attackPercent: 0.03},
-  "IDA Top 8 +2": {hpPercent: 0.15, attackPercent: 0.03},
-  "IDA Top 8 +3": {hpPercent: 0.16, attackPercent: 0.04},
-  "IDA Top 8 +4": {hpPercent: 0.17, attackPercent: 0.04},
-  "IDA Top 8 +5": {hpPercent: 0.18, attackPercent: 0.05},
-  "IDA Top 8 +6": {hpPercent: 0.19, attackPercent: 0.05},
-  "IDA Top 8 +7": {hpPercent: 0.2, attackPercent: 0.06},
-  "IDA Top 8 +8": {hpPercent: 0.21, attackPercent: 0.06},
-  "IDA Top 8 +9": {hpPercent: 0.23, attackPercent: 0.07},
-  "IDA 2nd Place": {hpPercent: 0.14, attackPercent: 0.03},
-  "IDA 2nd Place +1": {hpPercent: 0.15, attackPercent: 0.03},
-  "IDA 2nd Place +2": {hpPercent: 0.16, attackPercent: 0.03},
-  "IDA 2nd Place +3": {hpPercent: 0.17, attackPercent: 0.04},
-  "IDA 2nd Place +4": {hpPercent: 0.18, attackPercent: 0.04},
-  "IDA 2nd Place +5": {hpPercent: 0.19, attackPercent: 0.05},
-  "IDA 2nd Place +6": {hpPercent: 0.2, attackPercent: 0.05},
-  "IDA 2nd Place +7": {hpPercent: 0.21, attackPercent: 0.06},
-  "IDA 2nd Place +8": {hpPercent: 0.22, attackPercent: 0.06},
-  "IDA 2nd Place +9": {hpPercent: 0.24, attackPercent: 0.07},
-  "IDA Champion": {hpPercent: 0.15, attackPercent: 0.04},
-  "IDA Champion +1": {hpPercent: 0.16, attackPercent: 0.04},
-  "IDA Champion +2": {hpPercent: 0.17, attackPercent: 0.04},
-  "IDA Champion +3": {hpPercent: 0.18, attackPercent: 0.05},
-  "IDA Champion +4": {hpPercent: 0.19, attackPercent: 0.05},
-  "IDA Champion +5": {hpPercent: 0.2, attackPercent: 0.06},
-  "IDA Champion +6": {hpPercent: 0.21, attackPercent: 0.06},
-  "IDA Champion +7": {hpPercent: 0.22, attackPercent: 0.07},
-  "IDA Champion +8": {hpPercent: 0.23, attackPercent: 0.07},
-  "IDA Champion +9": {hpPercent: 0.25, attackPercent: 0.08},
-  "Black Gold": {hpPercent: 0.05, attackPercent: 0.05},
-  "Black Gold +1": {hpPercent: 0.06, attackPercent: 0.05},
-  "Black Gold +2": {hpPercent: 0.07, attackPercent: 0.05},
-  "Black Gold +3": {hpPercent: 0.08, attackPercent: 0.06},
-  "Black Gold +4": {hpPercent: 0.09, attackPercent: 0.06},
-  "Black Gold +5": {hpPercent: 0.1, attackPercent: 0.06},
-  "Black Gold +6": {hpPercent: 0.11, attackPercent: 0.07},
-  "Black Gold +7": {hpPercent: 0.12, attackPercent: 0.07},
-  "Black Gold +8": {hpPercent: 0.13, attackPercent: 0.07},
-  "Black Gold +9": {hpPercent: 0.14, attackPercent: 0.08}
-};
-
-/* End of avatarFrame.js */
-
-
-/* Start of equipment.js */
-
-var weapons = {
-  "None": {
-    set: "",
-    stats: {},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Warrior's Epee": {
-    set: "",
-    stats: {attack: 3704, attackPercent: 0.07},
-    limit: "Warrior",
-    limitStats: {attackPercent: 0.06, block: 0.1}
-  },
-  
-  "Weaver's Staff": {
-    set: "",
-    stats: {attack: 3704, attackPercent: 0.07},
-    limit: "Mage",
-    limitStats: {attackPercent: 0.06, crit: 0.05}
-  },
-  
-  "Minstrel's Bow": {
-    set: "",
-    stats: {attack: 3704, attackPercent: 0.07},
-    limit: "Ranger",
-    limitStats: {attackPercent: 0.06, crit: 0.05}
-  },
-  
-  "Assassin's Blade": {
-    set: "",
-    stats: {attack: 3704, attackPercent: 0.07},
-    limit: "Assassin",
-    limitStats: {attackPercent: 0.06, crit: 0.05}
-  },
-  
-  "Oracle's Staff": {
-    set: "",
-    stats: {attack: 3704, attackPercent: 0.07},
-    limit: "Priest",
-    limitStats: {attackPercent: 0.06, attackPercent2: 0.05}
-  },
-  
-  "6* Thorny Flame Whip": {
-    set: "Thorny Flame Suit",
-    stats: {attack: 3704, critDamage: 0.05},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "5* Glory Warrior Sword": {
-    set: "Glory Suit",
-    stats: {attack: 2464, critDamage: 0.03},
-    limit: "",
-    limitStats: {}
-  }
-};
-
-
-var armors = {
-  "None": {
-    set: "",
-    stats: {},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Warrior's Armor": {
-    set: "",
-    stats: {hp: 52449, hpPercent: 0.07},
-    limit: "Warrior",
-    limitStats: {hpPercent: 0.06, damageReduce: 0.05}
-  },
-  
-  "Weaver's Robe": {
-    set: "",
-    stats: {hp: 52449, hpPercent: 0.07},
-    limit: "Mage",
-    limitStats: {hpPercent: 0.06, precision: 0.1}
-  },
-  
-  "Minstrel's Cape": {
-    set: "",
-    stats: {hp: 52449, hpPercent: 0.07},
-    limit: "Ranger",
-    limitStats: {hpPercent: 0.06, block: 0.05}
-  },
-  
-  "Assassin's Cape": {
-    set: "",
-    stats: {hp: 52449, hpPercent: 0.07},
-    limit: "Assassin",
-    limitStats: {hpPercent: 0.06, armorBreak: 0.1}
-  },
-  
-  "Oracle's Cape": {
-    set: "",
-    stats: {hp: 52449, hpPercent: 0.07},
-    limit: "Priest",
-    limitStats: {hpPercent: 0.06, damageReduce: 0.05}
-  },
-  
-  "6* Flame Armor": {
-    set: "Thorny Flame Suit",
-    stats: {hp: 52449, damageReduce: 0.02},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "5* Glory Armor": {
-    set: "Glory Suit",
-    stats: {hp: 32455, damageReduce: 0.01},
-    limit: "",
-    limitStats: {}
-  }
-};
-
-
-var shoes = {
-  "None": {
-    set: "",
-    stats: {},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Warrior's Boots": {
-    set: "",
-    stats: {hp: 32367, hpPercent: 0.07},
-    limit: "Warrior",
-    limitStats: {hpPercent: 0.06, speed: 20}
-  },
-  
-  "Weaver's Boots": {
-    set: "",
-    stats: {hp: 32367, hpPercent: 0.07},
-    limit: "Mage",
-    limitStats: {hpPercent: 0.06, speed: 20}
-  },
-  
-  "Minstrel's Boots": {
-    set: "",
-    stats: {hp: 32367, hpPercent: 0.07},
-    limit: "Ranger",
-    limitStats: {hpPercent: 0.06, speed: 20}
-  },
-  
-  "Assassin's Boots": {
-    set: "",
-    stats: {hp: 32367, hpPercent: 0.07},
-    limit: "Assassin",
-    limitStats: {hpPercent: 0.06, speed: 20}
-  },
-  
-  "Oracle's Boots": {
-    set: "",
-    stats: {hp: 32367, hpPercent: 0.07},
-    limit: "Priest",
-    limitStats: {hpPercent: 0.06, speed: 20}
-  },
-  
-  "6* Flame Boots": {
-    set: "Thorny Flame Suit",
-    stats: {hp: 32367, block: 0.04},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "5* Glory Boots": {
-    set: "Glory Suit",
-    stats: {hp: 20146, block: 0.02},
-    limit: "",
-    limitStats: {}
-  }
-};
-
-
-var accessories = {
-  "None": {
-    set: "",
-    stats: {},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "Warrior's Necklace": {
-    set: "",
-    stats: {attack: 2469, attackPercent: 0.07},
-    limit: "Warrior",
-    limitStats: {attackPercent: 0.06, controlImmune: 0.05}
-  },
-  
-  "Weaver's Necklace": {
-    set: "",
-    stats: {attack: 2469, attackPercent: 0.07},
-    limit: "Mage",
-    limitStats: {attackPercent: 0.06, skillDamage: 0.1}
-  },
-  
-  "Minstrel's Ring": {
-    set: "",
-    stats: {attack: 2469, attackPercent: 0.07},
-    limit: "Ranger",
-    limitStats: {attackPercent: 0.06, damageReduce: 0.05}
-  },
-  
-  "Assassin's Ring": {
-    set: "",
-    stats: {attack: 2469, attackPercent: 0.07},
-    limit: "Assassin",
-    limitStats: {attackPercent: 0.06, critDamage: 0.05}
-  },
-  
-  "Ring of the Oracle": {
-    set: "",
-    stats: {attack: 2469, attackPercent: 0.07},
-    limit: "Priest",
-    limitStats: {attackPercent: 0.06, hpPercent: 0.05}
-  },
-  
-  "6* Flame Necklace": {
-    set: "Thorny Flame Suit",
-    stats: {attack: 2469, skillDamage: 0.05},
-    limit: "",
-    limitStats: {}
-  },
-  
-  "5* Glory Ring": {
-    set: "Glory Suit",
-    stats: {attack: 1643, skillDamage: 0.03},
-    limit: "",
-    limitStats: {}
-  }
-};
-
-
-// Set order seems to matter, ordered in order of weakest to strongest set.
-var setBonus = {
-  "Glory Suit": {
-    2: {hpPercent: 0.15},
-    3: {attackPercent: 0.2},
-    4: {hpPercent: 0.08}
-  },
-  
-  "Thorny Flame Suit": {
-    2: {hpPercent: 0.16},
-    3: {attackPercent: 0.21},
-    4: {hpPercent: 0.08}
-  }
-};
-
-
-// for mass testing
-var classGearMapping = {
-  "Warrior": {
-    weapon: "Warrior's Epee",
-    armor: "Warrior's Armor",
-    shoe: "Warrior's Boots",
-    accessory: "Warrior's Necklace"
-  },
-  
-  "Mage": {
-    weapon: "Weaver's Staff",
-    armor: "Weaver's Robe",
-    shoe: "Weaver's Boots",
-    accessory: "Weaver's Necklace"
-  },
-  
-  "Ranger": {
-    weapon: "Minstrel's Bow",
-    armor: "Minstrel's Cape",
-    shoe: "Minstrel's Boots",
-    accessory: "Minstrel's Ring"
-  },
-  
-  "Assassin": {
-    weapon: "Assassin's Blade",
-    armor: "Assassin's Cape",
-    shoe: "Assassin's Boots",
-    accessory: "Assassin's Ring"
-  },
-  
-  "Priest": {
-    weapon: "Oracle's Staff",
-    armor: "Oracle's Cape",
-    shoe: "Oracle's Boots",
-    accessory: "Ring of the Oracle"
-  }
-};
-
-/* End of equipment.js */
-
-
-/* Start of guildTech.js */
-
-var guildTech = {
-  "Warrior": {
-    hpPercent: {hpPercent: 0.005},
-    attackPercent: {attackPercent: 0.005},
-    crit: {crit: 0.005},
-    block: {block: 0.005},
-    skillDamage: {skillDamage: 0.01},
-    speed: {speed: 4},
-    constitution: {hpPercent: 0.01, attackPercent: 0.01},
-    mind: {hpPercent: 0.01, skillDamage: 0.01},
-    antiMage: {mageReduce: 0.01},
-    antiRanger: {rangerReduce: 0.01},
-    antiAssassin: {assassinReduce: 0.01},
-    antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
-  },
-  "Mage": {
-    hpPercent: {hpPercent: 0.005},
-    attackPercent: {attackPercent: 0.005},
-    crit: {crit: 0.005},
-    precision: {precision: 0.005},
-    skillDamage: {skillDamage: 0.01},
-    speed: {speed: 4},
-    constitution: {hpPercent: 0.01, attackPercent: 0.01},
-    mind: {hpPercent: 0.01, skillDamage: 0.01},
-    antiWarrior: {warriorReduce: 0.01},
-    antiRanger: {rangerReduce: 0.01},
-    antiAssassin: {assassinReduce: 0.01},
-    antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
-  },
-  "Ranger": {
-    hpPercent: {hpPercent: 0.005},
-    attackPercent: {attackPercent: 0.005},
-    block: {block: 0.005},
-    precision: {precision: 0.005},
-    skillDamage: {skillDamage: 0.01},
-    speed: {speed: 4},
-    constitution: {hpPercent: 0.01, attackPercent: 0.01},
-    mind: {hpPercent: 0.01, skillDamage: 0.01},
-    antiWarrior: {warriorReduce: 0.01},
-    antiMage: {mageReduce: 0.01},
-    antiAssassin: {assassinReduce: 0.01},
-    antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
-  },
-  "Assassin": {
-    hpPercent: {hpPercent: 0.005},
-    critDamage: {critDamage: 0.005},
-    crit: {crit: 0.005},
-    armorBreak: {armorBreak: 0.005},
-    skillDamage: {skillDamage: 0.01},
-    speed: {speed: 4},
-    constitution: {hpPercent: 0.01, attackPercent: 0.01},
-    mind: {hpPercent: 0.01, skillDamage: 0.01},
-    antiWarrior: {warriorReduce: 0.01},
-    antiMage: {mageReduce: 0.01},
-    antiRanger: {rangerReduce: 0.01},
-    antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
-  },
-  "Priest": {
-    hpPercent: {hpPercent: 0.005},
-    block: {block: 0.005},
-    crit: {crit: 0.005},
-    speed: {speed: 2},
-    skillDamage: {skillDamage: 0.01},
-    speed2: {speed: 1, attackPercent: 0.005},
-    constitution: {hpPercent: 0.01, attackPercent: 0.01},
-    mind: {hpPercent: 0.01, skillDamage: 0.01},
-    antiWarrior: {warriorReduce: 0.01},
-    antiMage: {mageReduce: 0.01},
-    antiRanger: {rangerReduce: 0.01},
-    antiAssassin: {assassinReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
-  }
-};
-
-/* End of guildTech.js */
-
-
-/* Start of skin.js */
-
-var skins = {
-  "Aida": {
-    "Dark Eclipse": {controlImmune: 0.05, hpPercent: 0.03, attackPercent: 0.03},
-    "Legendary Dark Eclipse": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
-    "Luo River Lady": {speed: 4, hpPercent: 0.05, damageReduce: 0.03},
-    "Legendary Luo River Lady": {speed: 6, hpPercent: 0.08, damageReduce: 0.04}
-  },
-  
-  "Amen-Ra": {
-    "Dread Puppet": {speed: 4, hpPercent: 0.05, damageReduce:0.04},
-    "Legendary Dread Puppet": {speed: 6, hpPercent: 0.08, damageReduce:0.04},
-    "Monstrous Tribunal": {hpPercent: 0.03, attackPercent: 0.03, controlImmune: 0.05},
-    "Legendary Monstrous Tribunal": {hpPercent: 0.06, attackPercent: 0.06, controlImmune: 0.06}
-  },
-  
-  "Amuvor": {
-    "Celestial Messenger": {hpPercent: 0.03, armorBreak: 0.05},
-    "Original Sin": {attackPercent: 0.03, crit: 0.02, critDamage: 0.05},
-    "Legendary Original Sin": {attackPercent: 0.06, crit: 0.03, critDamage: 0.075}
-  },
-  
-  "Aspen": {
-    "Dragonic Warrior": {hpPercent: 0.05, attackPercent: 0.03, critDamage: 0.05},
-    "Legendary Dragonic Warrior": {hpPercent: 0.08, attackPercent: 0.06, critDamage: 0.075},
-    "Santa": {speed: 4, attackPercent: 0.03, critDamage: 0.05},
-    "Legendary Santa": {speed: 6, attackPercent: 0.06, critDamage: 0.1}
-  },
-  
-  "Belrain": {
-    "Christmas Tiny Reindeer": {hpPercent: 0.03, attackPercent: 0.03, speed: 4},
-    "Legendary Christmas Tiny Reindeer": {hpPercent: 0.06, attackPercent: 0.06, speed: 6},
-    "Lead Singer of the Angel Band": {attackPercent: 0.03, damageReduce: 0.03, holyDamage: 0.05},
-    "Legendary Lead Singer of the Angel Band": {attackPercent: 0.06, damageReduce: 0.04, holyDamage: 0.08}
-  },
-  
-  "Carrie": {
-    "Little Red Riding Hood": {hpPercent: 0.03, attackPercent: 0.03, damageReduce: 0.03},
-    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04}
-  },
-  
-  "Cthuga": {
-    "Devils Night": {hpPercent: 0.03, attackPercent: 0.03, controlImmune: 0.05},
-    "Legendary Devils Night": {hpPercent: 0.06, attackPercent: 0.06, controlImmune: 0.06},
-    "Domineering Boss": {attackPercent: 0.03, controlImmune: 0.05, damageReduce: 0.03},
-    "Legendary Domineering Boss": {attackPercent: 0.06, controlImmune: 0.06, damageReduce: 0.04}
-  },
-  
-  "Dark Arthindol": {
-    "Gone Like a Dream": {speed: 4, attackPercent: 0.03, critDamage: 0.05},
-    "Legendary Gone Like a Dream": {speed: 6, attackPercent: 0.06, critDamage: 0.1},
-    "Revenge Bride": {hpPercent: 0.03, attackPercent: 0.02, skillDamage: 0.1},
-    "Legendar Revenge Bride": {hpPercent: 0.06, attackPercent: 0.04, skillDamage: 0.15},
-  },
-  
-  "Delacium": {
-    "Jellybane": {hpPercent: 0.03, attackPercent: 0.03, crit: 0.2},
-    "Legendary Jellybane": {hpPercent: 0.06, attackPercent: 0.06, crit: 0.3}
-  },
-  
-  "Elyvia": {
-    "Sweet Dance": {hpPercent: 0.03, controlImmune: 0.04, speed: 4},
-    "Legendary Sweet Dance": {hpPercent: 0.06, controlImmune: 0.06, speed: 6},
-  },
-  
-  "Emily": {
-    "Fractured Rose": {hpPercent: 0.03, block: 0.04, speed: 4},
-    "Legendary Fractured Rose": {hpPercent: 0.06, block: 0.06, speed: 6}
-  },
-  
-  "Faith Blade": {
-    "Apocalypse Armor": {holyDamage: 0.05, crit: 0.02, critDamage: 0.05},
-    "Legendary Apocalypse Armor": {holyDamage: 0.08, crit: 0.03, critDamage: 0.075},
-    "Chaos Messenger": {holyDamage: 0.05, crit: 0.02}
-  },
-  
-  "Garuda": {
-    "Super Harvest": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
-    "Legendary Super Harvest": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04},
-    "Law of the West": {holyDamage: 0.06, damageReduce: 0.04, critDamage: 0.05},
-    "Legendary Law of the West": {holyDamage: 0.1, damageReduce: 0.05, critDamage: 0.1}
-  },
-  
-  "Gustin": {
-    "Grand Carnival": {controlImmune: 0.05, hpPercent: 0.05, attackPercent: 0.03},
-    "Legendary Grand Carnival": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
-  },
-  
-  "Horus": {
-    "Bloody War God": {hpPercent: 0.03, attackPercent: 0.03, critDamage: 0.05},
-    "Legendary Bloody War God": {hpPercent: 0.06, attackPercent: 0.06, critDamage: 0.075},
-    "Steam Fantasy": {damageReduce: 0.04, attackPercent: 0.03, block: 0.04},
-    "Legendary Steam Fantasy": {damageReduce: 0.05, attackPercent: 0.06, block: 0.06}
-  },
-  
-  "Ithaqua": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
-  },
-  
-  "Kroos": {
-    "Mourners": {hpPercent: 0.03, damageReduce: 0.03, speed: 4},
-    "Legendary Mourners": {hpPercent: 0.06, damageReduce: 0.04, speed: 6}
-  },
-  
-  "Michelle": {
-    "Seraph": {hpPercent: 0.05, damageReduce: 0.03},
-    "Legendary Seraph": {hpPercent: 0.08, damageReduce: 0.04},
-    "True Love Queen": {hpPercent: 0.05, attackPercent: 0.03, speed: 4},
-    "Legendary True Love Queen": {hpPercent: 0.08, attackPercent: 0.06, speed: 6}
-  },
-  
-  "Mihm": {
-    "Ace Quarterback": {holyDamage: 0.05, attackPercent: 0.02, speed: 4},
-    "Legendary Ace Quarterback": {holyDamage: 0.08, attackPercent: 0.04, speed: 6},
-    "Frost Eye": {hpPercent: 0.03, attackPercent: 0.02, damageReduce: 0.03},
-    "Legendary Frost Eye": {hpPercent: 0.06, attackPercent: 0.04, damageReduce: 0.04}
-  },
-  
-  "Nakia": {
-    "Crescent Emissary": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
-    "Legendary Crescent Emissary": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04}
-  },
-  
-  "Oberon": {
-    "Blue Luan": {speed: 4, attackPercent: 0.03, holyDamage: 0.05},
-    "Legendary Blue Luan": {speed: 6, attackPercent: 0.06, holyDamage: 0.08},
-    "Golden Memories": {speed: 4, hpPercent: 0.05, damageReduce: 0.03},
-    "Legendary Golden Memories": {speed: 6, hpPercent: 0.08, damageReduce: 0.04},
-  },
-  
-  "Penny": {
-    "Infinite Joy": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
-    "Legendary Infinite Joy": {controlImmune: 0.06, critDamage: 0.1, hpPercent: 0.06},
-    "Lion and Dragon Dance": {attackPercent: 0.03, controlImmune: 0.05, damageReduce: 0.03},
-    "Legendary Lion and Dragon Dance": {attackPercent: 0.06, controlImmune: 0.06, damageReduce: 0.04},
-  },
-  
-  "Sherlock": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
-  },
-  
-  "Tara": {
-    "Heroic Knight": {damageReduce: 0.04, controlImmune: 0.04, speed: 4},
-    "Legendary Heroic Knight": {damageReduce: 0.05, controlImmune: 0.06, speed: 6},
-    "Spirit of Creation": {holyDamage: 0.06, attackPercent: 0.03, hpPercent: 0.03},
-    "Legendary Spirit of Creation": {holyDamage: 0.1, attackPercent: 0.06, hpPercent: 0.06}
-  },
-  
-  "UniMax-3000": {
-    "League MVP": {controlImmune: 0.05, hpPercent: 0.03, attackPercent: 0.03},
-    "Legendary League MVP": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
-  }
-};
-
-/* End of skin.js */
-
-
-/* Start of stone.js */
-
-var stones = {
-  "None": {},
-  "S3 Attack, Attack, Armor Break": {attack: 1550, attackPercent: 0.24, armorBreak: 0.5},
-  "S3 Attack, Attack, Holy": {attack: 1550, attackPercent: 0.24, holyDamage: 0.36},
-  "S3 Attack, Attack, Precision": {attack: 1550, attackPercent: 0.24, precision: 0.24},
-  "S3 Attack, Attack, Skill": {attack: 1550, attackPercent: 0.24, skillDamage: 0.8},
-  "S3 Attack, Block": {attackPercent: 0.28, block: 0.28},
-  "S3 Crit, Armor Break": {crit: 0.23, armorBreak: 0.5},
-  "S3 Crit, Crit, Attack": {attackPercent: 0.1, crit: 0.23, critDamage: 0.55},
-  "S3 Crit, Precision": {precision: 0.23, crit: 0.23},
-  "S3 HP, Attack": {hpPercent: 0.33, attackPercent: 0.26},
-  "S3 HP, Attack, Holy": {hpPercent: 0.28, attack: 1550, holyDamage: 0.36},
-  "S3 HP, Block": {hpPercent: 0.35, block: 0.28},
-  "S3 HP, Crit": {hpPercent: 0.33, crit: 0.23},
-  "S3 HP, Heal": {hpPercent: 0.33, effectBeingHealed: 0.29},
-  "S3 HP, Heal, Attack": {hpPercent: 0.28, attack: 1550, healEffect: 0.29},
-  "S3 HP, HP": {hp: 25000, hpPercent: 0.46},
-  "S3 HP, Precision": {hpPercent: 0.33, precision: 0.24},
-  "S3 Skill, Holy": {skillDamage: 0.8, holyDamage: 0.36},
-  "S3 Skill, Precision": {skillDamage: 0.8, precision: 0.23},
-  "S3 Speed, Attack": {attackPercent: 0.26, speed: 115},
-  "S3 Speed, Crit": {speed: 115, crit: 0.23},
-  "S3 Speed, Heal": {speed: 115, healEffect: 0.29},
-  "S3 Speed, HP": {hpPercent: 0.32, speed: 115},
-  "S3 Speed, Precision": {speed: 115, precision: 0.23}
-};
-
-/* End of stone.js */
-
-
-/* Start of baseMonsterStats.js */
-
-var baseMonsterStats = {
-  "None": {
-    className: monster,
-    stats: {}
-  },
-  
-  "Deer": {
-    className: mDeer,
-    stats: {
-      attack: 9604,
-      hp: 231805,
-      armorPercent: 0.2,
-      block: 0.15,
-      speed: 220,
-      fixedAttack: 91238,
-      fixedHP: 3477075
-    }
-  },
-  
-  "Phoenix": {
-    className: mPhoenix,
-    stats: {
-      attack: 10377,
-      hp: 201409,
-      critDamage: 0.2,
-      holyDamage: 0.2,
-      speed: 220,
-      fixedAttack: 98581,
-      fixedHP: 3234270
-    }
-  }
-};
-
-/* End of baseMonsterStats.js */
-
-
-/* Start of baseHeroStats.js */
-
-// hero base stats dictionary
-// base stats before anything is applied, even passives
-
-var baseHeroStats = {
-  "None": {
-    className: hero,
-    heroFaction: "",
-    heroClass: "",
-    stats: {
-      baseHP: 0,
-      baseAttack: 0,
-      baseArmor: 0,
-      baseSpeed: 0,
-      growHP: 0,
-      growAttack: 0,
-      growArmor: 0,
-      growSpeed: 0
-    }
-  },
-  
-  "Aida": {
-    className: Aida,
-    heroFaction: "Light",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 7234,
-      baseAttack: 512,
-      baseArmor: 58,
-      baseSpeed: 226,
-      growHP: 723.4,
-      growAttack: 51.2,
-      growArmor: 5.8,
-      growSpeed: 2
-    }
-  },
-  
-  "Amen-Ra": {
-    className: AmenRa,
-    heroFaction: "Dark",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 8986,
-      baseAttack: 338,
-      baseArmor: 61,
-      baseSpeed: 235,
-      growHP: 898.6,
-      growAttack: 34,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  },
-  
-  "Amuvor": {
-    className: Amuvor,
-    heroFaction: "Dark",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 7363,
-      baseAttack: 484,
-      baseArmor: 60,
-      baseSpeed: 235,
-      growHP: 736.3,
-      growAttack: 48.4,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Aspen": {
-    className: Aspen,
-    heroFaction: "Dark",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 8986,
-      baseAttack: 338,
-      baseArmor: 61,
-      baseSpeed: 235,
-      growHP: 898.6,
-      growAttack: 34,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  },
-  
-  "Belrain": {
-    className: Belrain,
-    heroFaction: "Light",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 7127,
-      baseAttack: 386,
-      baseArmor: 60,
-      baseSpeed: 210,
-      growHP: 712.7,
-      growAttack: 38.6,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Carrie": {
-    className: Carrie,
-    heroFaction: "Dark",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 9680,
-      baseAttack: 343,
-      baseArmor: 60,
-      baseSpeed: 226,
-      growHP: 968,
-      growAttack: 34.3,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Cthuga": {
-    className: Cthuga,
-    heroFaction: "Abyss",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 7486,
-      baseAttack: 447,
-      baseArmor: 63,
-      baseSpeed: 218,
-      growHP: 748.6,
-      growAttack: 44.7,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Dark Arthindol": {
-    className: DarkArthindol,
-    heroFaction: "Dark",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 6900,
-      baseAttack: 422,
-      baseArmor: 58,
-      baseSpeed: 207,
-      growHP: 690,
-      growAttack: 42.2,
-      growArmor: 5.8,
-      growSpeed: 2
-    }
-  },
-  
-  "Delacium": {
-    className: Delacium,
-    heroFaction: "Abyss",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 7587,
-      baseAttack: 433,
-      baseArmor: 63,
-      baseSpeed: 226,
-      growHP: 758.7,
-      growAttack: 43.3,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Elyvia": {
-    className: Elyvia,
-    heroFaction: "Forest",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 7057,
-      baseAttack: 354,
-      baseArmor: 60,
-      baseSpeed: 228,
-      growHP: 705.7,
-      growAttack: 35.4,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Emily": {
-    className: Emily,
-    heroFaction: "Fortress",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 7005,
-      baseAttack: 356,
-      baseArmor: 63,
-      baseSpeed: 195,
-      growHP: 700.5,
-      growAttack: 36,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Faith Blade": {
-    className: FaithBlade,
-    heroFaction: "Light",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 9147,
-      baseAttack: 507,
-      baseArmor: 60,
-      baseSpeed: 235,
-      growHP: 914.7,
-      growAttack: 50.4,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Garuda": {
-    className: Garuda,
-    heroFaction: "Forest",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 8202,
-      baseAttack: 353,
-      baseArmor: 62,
-      baseSpeed: 235,
-      growHP: 820.2,
-      growAttack: 35.3,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "Gustin": {
-    className: Gustin,
-    heroFaction: "Shadow",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 8252,
-      baseAttack: 343,
-      baseArmor: 62,
-      baseSpeed: 220,
-      growHP: 825.2,
-      growAttack: 34.3,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "Horus": {
-    className: Horus,
-    heroFaction: "Shadow",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 8252,
-      baseAttack: 343,
-      baseArmor: 62,
-      baseSpeed: 227,
-      growHP: 825.2,
-      growAttack: 34.3,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "Ithaqua": {
-    className: Ithaqua,
-    heroFaction: "Shadow",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 9436,
-      baseAttack: 478,
-      baseArmor: 62,
-      baseSpeed: 235,
-      growHP: 943.6,
-      growAttack: 47.8,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "Kroos": {
-    className: Kroos,
-    heroFaction: "Abyss",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 7587,
-      baseAttack: 433,
-      baseArmor: 63,
-      baseSpeed: 195,
-      growHP: 758.7,
-      growAttack: 43.3,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Michelle": {
-    className: Michelle,
-    heroFaction: "Light",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 8287,
-      baseAttack: 343,
-      baseArmor: 60,
-      baseSpeed: 220,
-      growHP: 828.7,
-      growAttack: 34.3,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Mihm": {
-    className: Mihm,
-    heroFaction: "Dark",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 7134,
-      baseAttack: 402,
-      baseArmor: 58,
-      baseSpeed: 226,
-      growHP: 713.4,
-      growAttack: 40.2,
-      growArmor: 5.8,
-      growSpeed: 2
-    }
-  },
-  
-  "Nakia": {
-    className: Nakia,
-    heroFaction: "Abyss",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 8473,
-      baseAttack: 456,
-      baseArmor: 61,
-      baseSpeed: 245,
-      growHP: 847.3,
-      growAttack: 45.6,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  },
-  
-  "Oberon": {
-    className: Oberon,
-    heroFaction: "Forest",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 6980,
-      baseAttack: 410,
-      baseArmor: 61,
-      baseSpeed: 220,
-      growHP: 698,
-      growAttack: 41,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  },
-  
-  "Penny": {
-    className: Penny,
-    heroFaction: "Fortress",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 7937,
-      baseAttack: 397,
-      baseArmor: 60,
-      baseSpeed: 236,
-      growHP: 793.7,
-      growAttack: 39.7,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Sherlock": {
-    className: Sherlock,
-    heroFaction: "Fortress",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 7980,
-      baseAttack: 425,
-      baseArmor: 60,
-      baseSpeed: 220,
-      growHP: 798,
-      growAttack: 42.5,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Tara": {
-    className: Tara,
-    heroFaction: "Light",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 9010,
-      baseAttack: 338,
-      baseArmor: 61,
-      baseSpeed: 235,
-      growHP: 901,
-      growAttack: 34,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  },
-  
-  "UniMax-3000": {
-    className: UniMax3000,
-    heroFaction: "Fortress",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 9100,
-      baseAttack: 306,
-      baseArmor: 82,
-      baseSpeed: 248,
-      growHP: 910,
-      growAttack: 30.6,
-      growArmor: 8.5,
-      growSpeed: 2
-    }
-  }
-};
-
-/* End of baseHeroStats.js */
-
-
-/* Start of utilityFunctions.js */
-
-function formatNum(num) {
-  return "<span class ='num'>" + num.toLocaleString() + "</span>";
-}
-
-
-// UUIDv4
-function uuid() {
-  return (`${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`).replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  );
-}
-
-
-function speedSort(heroA, heroB) {
-  if (heroA._currentStats["speed"] > heroB._currentStats["speed"]) {
-    return -1;
-  } else if (heroA._currentStats["speed"] < heroB._currentStats["speed"]) {
-    return 1;
-  } else if (heroA._attOrDef == "att" && heroB._attOrDef == "def") {
-    return -1;
-  } else if (heroA._attOrDef == "def" && heroB._attOrDef == "att") {
-    return 1;
-  } else if (heroA._heroPos < heroB._heroPos) {
-    return -1;
-  } else {
-    return 1;
-  }
-}
-
-
-function slotSort(heroA, heroB) {
-  if (heroA._attOrDef == "att" && heroB._attOrDef == "def") {
-    return -1;
-  } else if (heroA._attOrDef == "def" && heroB._attOrDef == "att") {
-    return 1;
-  } else if (heroA._heroPos < heroB._heroPos) {
-    return -1;
-  } else {
-    return 1;
-  }
-}
-
-
-function isMonster(source) {
-  if ("_monsterName" in source) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-
-function isDispellable(strName) {
-  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink"].includes(strName)) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-
-function isControlEffect(strName, effects={}) {
-  if (["stun", "petrify", "freeze", "twine", "Silence", "Taunt", "Seal of Light", "Horrify", "Shapeshift"].includes(strName)) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-
-function isDot(strName, effects={}) {
-  if (["burn", "bleed", "poison", "dot", "burnTrue"].includes(strName)) {
-    return true;
-  } else {
-    for (var e in effects) {
-      if (["burn", "bleed", "poison", "dot", "burnTrue"].includes(e)) {
-        return true;
-      }
-    }
-    
-    return false;
-  }
-}
-
-
-function isFrontLine(target, arrTargets) {
-  var frontCount = 0;
-  var backCount = 0;
-  
-  for (var i = 0; i < 2; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      frontCount++;
-    }
-  }
-  
-  for (var i = 2; i < arrTargets.length; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      backCount++;
-    }
-  }
-  
-  if (frontCount > 0 && target._heroPos < 2) {
-    return true;
-  } else if (frontCount == 0 && target._heroPos >= 2) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-
-function isBackLine(target, arrTargets) {
-  var frontCount = 0;
-  var backCount = 0;
-  
-  for (var i = 0; i < 2; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      frontCount++;
-    }
-  }
-  
-  for (var i = 2; i < arrTargets.length; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      backCount++;
-    }
-  }
-  
-  if (backCount > 0 && target._heroPos >= 2) {
-    return true;
-  } else if (backCount == 0 && target._heroPos < 2) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-
-function isAttribute(strName, effects={}) {
-  var arrAttributes = [
-    "attack", "attackPercent", "armor", "armorPercent", "hp", "hpPercent", "speed",
-    "energy", "precision", "block", "crit", "critDamage", "holyDamage", "armorBreak",
-    "controlImmune", "skillDamage", "damageReduce", "allDamageReduce", "controlPrecision",
-    "healEffect", "effectBeingHealed", "critDamageReduce", "dotReduce", "fixedAttack", 
-    "fixedHP", "allDamageTaken", "allDamageDealt", "damageAgainstBurning", "damageAgainstBleed",
-    "warriorReduce", "mageReduce", "rangerReduce", "assassinReduce", "priestReduce",
-    "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune"
-  ];
-  
-  if (arrAttributes.includes(strName)) {
-    return true;
-  } else {
-    for (var e in effects) {
-      if (arrAttributes.includes(e)) {
-        return true;
-      }
-    }
-    
-    return false;
-  }
-}
-
-
-function getFrontTargets(source, arrTargets) {
-  var copyTargets = [];
-  
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
-  
-  if (arrTargets[0]._currentStats["totalHP"] > 0) {
-    copyTargets.push(arrTargets[0]);
-  }
-  if (arrTargets[1]._currentStats["totalHP"] > 0) {
-    copyTargets.push(arrTargets[1]);
-  }
-  
-  if (copyTargets.length == 0) {
-    for (var h=2; h<arrTargets.length; h++) {
-      if (arrTargets[h]._currentStats["totalHP"] > 0) {
-        copyTargets.push(arrTargets[h]);
-      }
-    }
-  }
-  
-  return copyTargets;
-}
-
-
-function getBackTargets(source, arrTargets) {
-  var copyTargets = [];
-  
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
-  
-  for (var h=2; h<arrTargets.length; h++) {
-    if (arrTargets[h]._currentStats["totalHP"] > 0) {
-      copyTargets.push(arrTargets[h]);
-    }
-  }
-  
-  if (copyTargets.length == 0) {
-    for (var h=0; h<2; h++) {
-      if (arrTargets[h]._currentStats["totalHP"] > 0) {
-        copyTargets.push(arrTargets[h]);
-      }
-    }
-  }
-  
-  return copyTargets;
-}
-
-
-function getAllTargets(source, arrTargets) {
-  var copyTargets = [];
-  
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
-  
-  for (var i=0; i<arrTargets.length; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      copyTargets.push(arrTargets[i]);
-    }
-  }
-  
-  return copyTargets;
-}
-
-
-function getRandomTargets(source, arrTargets) {
-  var copyTargets = [];
-  
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
-  
-  for (var i=0; i<arrTargets.length; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      arrTargets[i]._rng = Math.random();
-      copyTargets.push(arrTargets[i]);
-    }
-  }
-  
-  copyTargets.sort(function(a,b) {
-    if (a._rng > b._rng) {
-      return 1;
-    } else if (a._rng < b._rng) {
-      return -1;
-    } else {
-      return 0;
-    }
-  });
-  
-  return copyTargets;
-}
-
-
-function getLowestHPTargets(source, arrTargets) {
-  // get living targets with lowest current HP
-  var copyTargets = [];
-  
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
-  
-  for (var i=0; i<arrTargets.length; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      copyTargets.push(arrTargets[i]);
-    }
-  }
-  
-  copyTargets.sort(function(a,b) {
-    if (a._currentStats["totalHP"] > b._currentStats["totalHP"]) {
-      return 1;
-    } else if (a._currentStats["totalHP"] < b._currentStats["totalHP"]) {
-      return -1;
-    } else if (a._heroPos < b._heroPos) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
-  
-  return copyTargets;
-}
-
-
-function getLowestHPPercentTargets(source, arrTargets) {
-  // get living targets with lowest current HP percent
-  var copyTargets = [];
-  
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
-  
-  for (var i=0; i<arrTargets.length; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      copyTargets.push(arrTargets[i]);
-    }
-  }
-  
-  copyTargets.sort(function(a,b) {
-    if (a._currentStats["totalHP"] / a._stats["totalHP"] > b._currentStats["totalHP"] / b._stats["totalHP"]) {
-      return 1;
-    } else if (a._currentStats["totalHP"] / a._stats["totalHP"] < b._currentStats["totalHP"] / b._stats["totalHP"]) {
-      return -1;
-    } else if (a._heroPos < b._heroPos) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
-  
-  return copyTargets;
-}
-
-
-function getHighestHPTargets(source, arrTargets) {
-  // get living target with highest current HP
-  var copyTargets = [];
-  
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
-  
-  for (var i=0; i<arrTargets.length; i++) {
-    if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      copyTargets.push(arrTargets[i]);
-    }
-  }
-  
-  copyTargets.sort(function(a,b) {
-    if (a._currentStats["totalHP"] > b._currentStats["totalHP"]) {
-      return -1;
-    } else if (a._currentStats["totalHP"] < b._currentStats["totalHP"]) {
-      return 1;
-    } else if (a._heroPos < b._heroPos) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
-  
-  return copyTargets;
-}
-
-
-function getTauntedTargets(source, arrTargets) {
-  var copyTargets = [];
-  
-  if (!(isMonster(source))) {
-    if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
-      for (var s in source._debuffs["Taunt"]) {
-        if (source._debuffs["Taunt"][s]["source"]._currentStats["totalHP"] > 0) {
-          copyTargets.push(source._debuffs["Taunt"][s]["source"]);
-          return copyTargets;
-        }
-      }
-    }
-  }
-  
-  return arrTargets;
-}
-
-/* End of utilityFunctions.js */
-
-
 /* Start of monsters.js */
 
 class monster {
@@ -6303,6 +4631,1678 @@ class UniMax3000 extends hero {
 }
 
 /* End of heroSubclasses.js */
+
+
+/* Start of artifact.js */
+
+var artifacts = {
+  "None": {
+    stats: {},
+    limit: "",
+    limitStats: {}
+  },
+
+  "Antlers Cane": {
+    stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Augustus Magic Ball": {
+    stats: {attackPercent: 0.25, speed: 70, block: 0.5},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Demon Bell": {
+    stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Golden Crown": {
+    stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Lucky Candy Bar": {
+    stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Magic Stone Sword": {
+    stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Ruyi Scepter": {
+    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.5},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Staff Punisher of Immortal": {
+    stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "The Kiss of Ghost": {
+    stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Wildfire Torch": {
+    stats: {precision: 0.6, hpPercent: 0.18, dotReduce: 0.7},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Magic Source": {
+    stats: {energy: 50, skillDamage: 0.5},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Orb of Annihilation": {
+    stats: {energy: 50, skillDamage: 0.5},
+    limit: "Dark",
+    limitStats: {skillDamage: 0.4}
+  },
+  
+  "Guilty Crown" :{
+    stats: {attackPercent: 0.18, hpPercent: 0.14},
+    limit: "Dark",
+    limitStats: {controlImmune: 0.25}
+  },
+  
+  "Sword of Justice": {
+    stats: {attackPercent: 0.18, holyDamage: 0.3},
+    limit: "Light",
+    limitStats: {crit: 0.15}
+  },
+  
+  "Echo of Death": {
+    stats: {attackPercent: 0.18, crit: 0.15},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Heavenly Bead": {
+    stats: {attackPercent: 0.18, precision: 0.12},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Invisible": {
+    stats: {hpPercent: 0.15, block: 0.20},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Wind God Messenger": {
+    stats: {speed: 66, hpPercent: 0.14},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Shadow Cape": {
+    stats: {speed: 66, hpPercent: 0.14},
+    limit: "Shadow",
+    limitStats: {crit: 0.15}
+  },
+  
+  "Tread of Lightness": {
+    stats: {speed: 66, hpPercent: 0.14},
+    limit: "Fortress",
+    limitStats: {crit: 0.15}
+  },
+  
+  "Warhammer of Hopelessness": {
+    stats: {speed: 66, hpPercent: 0.14},
+    limit: "Abyss",
+    limitStats: {crit: 0.15}
+  },
+  
+  "Sigh": {
+    stats: {speed: 66, hpPercent: 0.14},
+    limit: "Forest",
+    limitStats: {crit: 0.15}
+  },
+  
+  "Fearless Armor": {
+    stats: {damageReduce: .3, hpPercent: 0.14},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Withered Armor": {
+    stats: {damageReduce: 0.3, hpPercent: 0.14},
+    limit: "Shadow",
+    limitStats: {hpPercent: 0.18}
+  },
+  
+  "Barrier of Destiny": {
+    stats: {damageReduce: 0.3, hpPercent: 0.14},
+    limit: "Fortress",
+    limitStats: {hpPercent: 0.18}
+  },
+  
+  "The King of Demons": {
+    stats: {damageReduce: 0.3, hpPercent: 0.15},
+    limit: "Abyss",
+    limitStats: {hpPercent: 0.18}
+  },
+  
+  "Rune's Power": {
+    stats: {damageReduce: 0.3, hpPercent: 0.14},
+    limit: "Forest",
+    limitStats: {hpPercent: 0.18}
+  },
+  
+  "Spear of Destiny": {
+    stats: {damageReduce: 0.3, hpPercent: 0.14},
+    limit: "Light",
+    limitStats: {holyDamage: 0.18}
+  }
+};
+
+/* End of artifact.js */
+
+
+/* Start of avatarFrame.js */
+
+var avatarFrames = {
+  "None": {},
+  "IDA Overseer": {hpPercent: 0.08, attackPercent: 0.03},
+  "IDA Overseer +1": {hpPercent: 0.09, attackPercent: 0.03},
+  "IDA Overseer +2": {hpPercent: 0.1, attackPercent: 0.03},
+  "IDA Overseer +3": {hpPercent: 0.11, attackPercent: 0.04},
+  "IDA Overseer +4": {hpPercent: 0.12, attackPercent: 0.04},
+  "IDA Overseer +5": {hpPercent: 0.13, attackPercent: 0.05},
+  "IDA Overseer +6": {hpPercent: 0.14, attackPercent: 0.05},
+  "IDA Overseer +7": {hpPercent: 0.15, attackPercent: 0.06},
+  "IDA Overseer +8": {hpPercent: 0.16, attackPercent: 0.06},
+  "IDA Overseer +9": {hpPercent: 0.17, attackPercent: 0.07},
+  "IDA Maverick": {hpPercent: 0.1, attackPercent: 0.03},
+  "IDA Maverick +1": {hpPercent: 0.11, attackPercent: 0.03},
+  "IDA Maverick +2": {hpPercent: 0.12, attackPercent: 0.03},
+  "IDA Maverick +3": {hpPercent: 0.13, attackPercent: 0.04},
+  "IDA Maverick +4": {hpPercent: 0.14, attackPercent: 0.04},
+  "IDA Maverick +5": {hpPercent: 0.15, attackPercent: 0.05},
+  "IDA Maverick +6": {hpPercent: 0.16, attackPercent: 0.05},
+  "IDA Maverick +7": {hpPercent: 0.17, attackPercent: 0.06},
+  "IDA Maverick +8": {hpPercent: 0.18, attackPercent: 0.06},
+  "IDA Maverick +9": {hpPercent: 0.2, attackPercent: 0.07},
+  "IDA Top 32": {hpPercent: 0.12, attackPercent: 0.03},
+  "IDA Top 32 +1": {hpPercent: 0.13, attackPercent: 0.03},
+  "IDA Top 32 +2": {hpPercent: 0.14, attackPercent: 0.03},
+  "IDA Top 32 +3": {hpPercent: 0.15, attackPercent: 0.04},
+  "IDA Top 32 +4": {hpPercent: 0.16, attackPercent: 0.04},
+  "IDA Top 32 +5": {hpPercent: 0.17, attackPercent: 0.05},
+  "IDA Top 32 +6": {hpPercent: 0.18, attackPercent: 0.05},
+  "IDA Top 32 +7": {hpPercent: 0.19, attackPercent: 0.06},
+  "IDA Top 32 +8": {hpPercent: 0.2, attackPercent: 0.06},
+  "IDA Top 32 +9": {hpPercent: 0.22, attackPercent: 0.07},
+  "IDA Top 8": {hpPercent: 0.13, attackPercent: 0.03},
+  "IDA Top 8 +1": {hpPercent: 0.14, attackPercent: 0.03},
+  "IDA Top 8 +2": {hpPercent: 0.15, attackPercent: 0.03},
+  "IDA Top 8 +3": {hpPercent: 0.16, attackPercent: 0.04},
+  "IDA Top 8 +4": {hpPercent: 0.17, attackPercent: 0.04},
+  "IDA Top 8 +5": {hpPercent: 0.18, attackPercent: 0.05},
+  "IDA Top 8 +6": {hpPercent: 0.19, attackPercent: 0.05},
+  "IDA Top 8 +7": {hpPercent: 0.2, attackPercent: 0.06},
+  "IDA Top 8 +8": {hpPercent: 0.21, attackPercent: 0.06},
+  "IDA Top 8 +9": {hpPercent: 0.23, attackPercent: 0.07},
+  "IDA 2nd Place": {hpPercent: 0.14, attackPercent: 0.03},
+  "IDA 2nd Place +1": {hpPercent: 0.15, attackPercent: 0.03},
+  "IDA 2nd Place +2": {hpPercent: 0.16, attackPercent: 0.03},
+  "IDA 2nd Place +3": {hpPercent: 0.17, attackPercent: 0.04},
+  "IDA 2nd Place +4": {hpPercent: 0.18, attackPercent: 0.04},
+  "IDA 2nd Place +5": {hpPercent: 0.19, attackPercent: 0.05},
+  "IDA 2nd Place +6": {hpPercent: 0.2, attackPercent: 0.05},
+  "IDA 2nd Place +7": {hpPercent: 0.21, attackPercent: 0.06},
+  "IDA 2nd Place +8": {hpPercent: 0.22, attackPercent: 0.06},
+  "IDA 2nd Place +9": {hpPercent: 0.24, attackPercent: 0.07},
+  "IDA Champion": {hpPercent: 0.15, attackPercent: 0.04},
+  "IDA Champion +1": {hpPercent: 0.16, attackPercent: 0.04},
+  "IDA Champion +2": {hpPercent: 0.17, attackPercent: 0.04},
+  "IDA Champion +3": {hpPercent: 0.18, attackPercent: 0.05},
+  "IDA Champion +4": {hpPercent: 0.19, attackPercent: 0.05},
+  "IDA Champion +5": {hpPercent: 0.2, attackPercent: 0.06},
+  "IDA Champion +6": {hpPercent: 0.21, attackPercent: 0.06},
+  "IDA Champion +7": {hpPercent: 0.22, attackPercent: 0.07},
+  "IDA Champion +8": {hpPercent: 0.23, attackPercent: 0.07},
+  "IDA Champion +9": {hpPercent: 0.25, attackPercent: 0.08},
+  "Black Gold": {hpPercent: 0.05, attackPercent: 0.05},
+  "Black Gold +1": {hpPercent: 0.06, attackPercent: 0.05},
+  "Black Gold +2": {hpPercent: 0.07, attackPercent: 0.05},
+  "Black Gold +3": {hpPercent: 0.08, attackPercent: 0.06},
+  "Black Gold +4": {hpPercent: 0.09, attackPercent: 0.06},
+  "Black Gold +5": {hpPercent: 0.1, attackPercent: 0.06},
+  "Black Gold +6": {hpPercent: 0.11, attackPercent: 0.07},
+  "Black Gold +7": {hpPercent: 0.12, attackPercent: 0.07},
+  "Black Gold +8": {hpPercent: 0.13, attackPercent: 0.07},
+  "Black Gold +9": {hpPercent: 0.14, attackPercent: 0.08}
+};
+
+/* End of avatarFrame.js */
+
+
+/* Start of equipment.js */
+
+var weapons = {
+  "None": {
+    set: "",
+    stats: {},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Warrior's Epee": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Warrior",
+    limitStats: {attackPercent: 0.06, block: 0.1}
+  },
+  
+  "Weaver's Staff": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Mage",
+    limitStats: {attackPercent: 0.06, crit: 0.05}
+  },
+  
+  "Minstrel's Bow": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Ranger",
+    limitStats: {attackPercent: 0.06, crit: 0.05}
+  },
+  
+  "Assassin's Blade": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Assassin",
+    limitStats: {attackPercent: 0.06, crit: 0.05}
+  },
+  
+  "Oracle's Staff": {
+    set: "",
+    stats: {attack: 3704, attackPercent: 0.07},
+    limit: "Priest",
+    limitStats: {attackPercent: 0.06, attackPercent2: 0.05}
+  },
+  
+  "6* Thorny Flame Whip": {
+    set: "Thorny Flame Suit",
+    stats: {attack: 3704, critDamage: 0.05},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "5* Glory Warrior Sword": {
+    set: "Glory Suit",
+    stats: {attack: 2464, critDamage: 0.03},
+    limit: "",
+    limitStats: {}
+  }
+};
+
+
+var armors = {
+  "None": {
+    set: "",
+    stats: {},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Warrior's Armor": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Warrior",
+    limitStats: {hpPercent: 0.06, damageReduce: 0.05}
+  },
+  
+  "Weaver's Robe": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Mage",
+    limitStats: {hpPercent: 0.06, precision: 0.1}
+  },
+  
+  "Minstrel's Cape": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Ranger",
+    limitStats: {hpPercent: 0.06, block: 0.05}
+  },
+  
+  "Assassin's Cape": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Assassin",
+    limitStats: {hpPercent: 0.06, armorBreak: 0.1}
+  },
+  
+  "Oracle's Cape": {
+    set: "",
+    stats: {hp: 52449, hpPercent: 0.07},
+    limit: "Priest",
+    limitStats: {hpPercent: 0.06, damageReduce: 0.05}
+  },
+  
+  "6* Flame Armor": {
+    set: "Thorny Flame Suit",
+    stats: {hp: 52449, damageReduce: 0.02},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "5* Glory Armor": {
+    set: "Glory Suit",
+    stats: {hp: 32455, damageReduce: 0.01},
+    limit: "",
+    limitStats: {}
+  }
+};
+
+
+var shoes = {
+  "None": {
+    set: "",
+    stats: {},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Warrior's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Warrior",
+    limitStats: {hpPercent: 0.06, speed: 20}
+  },
+  
+  "Weaver's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Mage",
+    limitStats: {hpPercent: 0.06, speed: 20}
+  },
+  
+  "Minstrel's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Ranger",
+    limitStats: {hpPercent: 0.06, speed: 20}
+  },
+  
+  "Assassin's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Assassin",
+    limitStats: {hpPercent: 0.06, speed: 20}
+  },
+  
+  "Oracle's Boots": {
+    set: "",
+    stats: {hp: 32367, hpPercent: 0.07},
+    limit: "Priest",
+    limitStats: {hpPercent: 0.06, speed: 20}
+  },
+  
+  "6* Flame Boots": {
+    set: "Thorny Flame Suit",
+    stats: {hp: 32367, block: 0.04},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "5* Glory Boots": {
+    set: "Glory Suit",
+    stats: {hp: 20146, block: 0.02},
+    limit: "",
+    limitStats: {}
+  }
+};
+
+
+var accessories = {
+  "None": {
+    set: "",
+    stats: {},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Warrior's Necklace": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Warrior",
+    limitStats: {attackPercent: 0.06, controlImmune: 0.05}
+  },
+  
+  "Weaver's Necklace": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Mage",
+    limitStats: {attackPercent: 0.06, skillDamage: 0.1}
+  },
+  
+  "Minstrel's Ring": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Ranger",
+    limitStats: {attackPercent: 0.06, damageReduce: 0.05}
+  },
+  
+  "Assassin's Ring": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Assassin",
+    limitStats: {attackPercent: 0.06, critDamage: 0.05}
+  },
+  
+  "Ring of the Oracle": {
+    set: "",
+    stats: {attack: 2469, attackPercent: 0.07},
+    limit: "Priest",
+    limitStats: {attackPercent: 0.06, hpPercent: 0.05}
+  },
+  
+  "6* Flame Necklace": {
+    set: "Thorny Flame Suit",
+    stats: {attack: 2469, skillDamage: 0.05},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "5* Glory Ring": {
+    set: "Glory Suit",
+    stats: {attack: 1643, skillDamage: 0.03},
+    limit: "",
+    limitStats: {}
+  }
+};
+
+
+// Set order seems to matter, ordered in order of weakest to strongest set.
+var setBonus = {
+  "Glory Suit": {
+    2: {hpPercent: 0.15},
+    3: {attackPercent: 0.2},
+    4: {hpPercent: 0.08}
+  },
+  
+  "Thorny Flame Suit": {
+    2: {hpPercent: 0.16},
+    3: {attackPercent: 0.21},
+    4: {hpPercent: 0.08}
+  }
+};
+
+
+// for mass testing
+var classGearMapping = {
+  "Warrior": {
+    weapon: "Warrior's Epee",
+    armor: "Warrior's Armor",
+    shoe: "Warrior's Boots",
+    accessory: "Warrior's Necklace"
+  },
+  
+  "Mage": {
+    weapon: "Weaver's Staff",
+    armor: "Weaver's Robe",
+    shoe: "Weaver's Boots",
+    accessory: "Weaver's Necklace"
+  },
+  
+  "Ranger": {
+    weapon: "Minstrel's Bow",
+    armor: "Minstrel's Cape",
+    shoe: "Minstrel's Boots",
+    accessory: "Minstrel's Ring"
+  },
+  
+  "Assassin": {
+    weapon: "Assassin's Blade",
+    armor: "Assassin's Cape",
+    shoe: "Assassin's Boots",
+    accessory: "Assassin's Ring"
+  },
+  
+  "Priest": {
+    weapon: "Oracle's Staff",
+    armor: "Oracle's Cape",
+    shoe: "Oracle's Boots",
+    accessory: "Ring of the Oracle"
+  }
+};
+
+/* End of equipment.js */
+
+
+/* Start of guildTech.js */
+
+var guildTech = {
+  "Warrior": {
+    hpPercent: {hpPercent: 0.005},
+    attackPercent: {attackPercent: 0.005},
+    crit: {crit: 0.005},
+    block: {block: 0.005},
+    skillDamage: {skillDamage: 0.01},
+    speed: {speed: 4},
+    constitution: {hpPercent: 0.01, attackPercent: 0.01},
+    mind: {hpPercent: 0.01, skillDamage: 0.01},
+    antiMage: {mageReduce: 0.01},
+    antiRanger: {rangerReduce: 0.01},
+    antiAssassin: {assassinReduce: 0.01},
+    antiPriest: {priestReduce: 0.01},
+    stunImmune: {stunImmune: 0.01},
+    freezeImmune: {freezeImmune: 0.01},
+    petrifyImmune: {petrifyImmune: 0.01},
+    twineImmune: {twineImmune: 0.01}
+  },
+  "Mage": {
+    hpPercent: {hpPercent: 0.005},
+    attackPercent: {attackPercent: 0.005},
+    crit: {crit: 0.005},
+    precision: {precision: 0.005},
+    skillDamage: {skillDamage: 0.01},
+    speed: {speed: 4},
+    constitution: {hpPercent: 0.01, attackPercent: 0.01},
+    mind: {hpPercent: 0.01, skillDamage: 0.01},
+    antiWarrior: {warriorReduce: 0.01},
+    antiRanger: {rangerReduce: 0.01},
+    antiAssassin: {assassinReduce: 0.01},
+    antiPriest: {priestReduce: 0.01},
+    stunImmune: {stunImmune: 0.01},
+    freezeImmune: {freezeImmune: 0.01},
+    petrifyImmune: {petrifyImmune: 0.01},
+    twineImmune: {twineImmune: 0.01}
+  },
+  "Ranger": {
+    hpPercent: {hpPercent: 0.005},
+    attackPercent: {attackPercent: 0.005},
+    block: {block: 0.005},
+    precision: {precision: 0.005},
+    skillDamage: {skillDamage: 0.01},
+    speed: {speed: 4},
+    constitution: {hpPercent: 0.01, attackPercent: 0.01},
+    mind: {hpPercent: 0.01, skillDamage: 0.01},
+    antiWarrior: {warriorReduce: 0.01},
+    antiMage: {mageReduce: 0.01},
+    antiAssassin: {assassinReduce: 0.01},
+    antiPriest: {priestReduce: 0.01},
+    stunImmune: {stunImmune: 0.01},
+    freezeImmune: {freezeImmune: 0.01},
+    petrifyImmune: {petrifyImmune: 0.01},
+    twineImmune: {twineImmune: 0.01}
+  },
+  "Assassin": {
+    hpPercent: {hpPercent: 0.005},
+    critDamage: {critDamage: 0.005},
+    crit: {crit: 0.005},
+    armorBreak: {armorBreak: 0.005},
+    skillDamage: {skillDamage: 0.01},
+    speed: {speed: 4},
+    constitution: {hpPercent: 0.01, attackPercent: 0.01},
+    mind: {hpPercent: 0.01, skillDamage: 0.01},
+    antiWarrior: {warriorReduce: 0.01},
+    antiMage: {mageReduce: 0.01},
+    antiRanger: {rangerReduce: 0.01},
+    antiPriest: {priestReduce: 0.01},
+    stunImmune: {stunImmune: 0.01},
+    freezeImmune: {freezeImmune: 0.01},
+    petrifyImmune: {petrifyImmune: 0.01},
+    twineImmune: {twineImmune: 0.01}
+  },
+  "Priest": {
+    hpPercent: {hpPercent: 0.005},
+    block: {block: 0.005},
+    crit: {crit: 0.005},
+    speed: {speed: 2},
+    skillDamage: {skillDamage: 0.01},
+    speed2: {speed: 1, attackPercent: 0.005},
+    constitution: {hpPercent: 0.01, attackPercent: 0.01},
+    mind: {hpPercent: 0.01, skillDamage: 0.01},
+    antiWarrior: {warriorReduce: 0.01},
+    antiMage: {mageReduce: 0.01},
+    antiRanger: {rangerReduce: 0.01},
+    antiAssassin: {assassinReduce: 0.01},
+    stunImmune: {stunImmune: 0.01},
+    freezeImmune: {freezeImmune: 0.01},
+    petrifyImmune: {petrifyImmune: 0.01},
+    twineImmune: {twineImmune: 0.01}
+  }
+};
+
+/* End of guildTech.js */
+
+
+/* Start of skin.js */
+
+var skins = {
+  "Aida": {
+    "Dark Eclipse": {controlImmune: 0.05, hpPercent: 0.03, attackPercent: 0.03},
+    "Legendary Dark Eclipse": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
+    "Luo River Lady": {speed: 4, hpPercent: 0.05, damageReduce: 0.03},
+    "Legendary Luo River Lady": {speed: 6, hpPercent: 0.08, damageReduce: 0.04}
+  },
+  
+  "Amen-Ra": {
+    "Dread Puppet": {speed: 4, hpPercent: 0.05, damageReduce:0.04},
+    "Legendary Dread Puppet": {speed: 6, hpPercent: 0.08, damageReduce:0.04},
+    "Monstrous Tribunal": {hpPercent: 0.03, attackPercent: 0.03, controlImmune: 0.05},
+    "Legendary Monstrous Tribunal": {hpPercent: 0.06, attackPercent: 0.06, controlImmune: 0.06}
+  },
+  
+  "Amuvor": {
+    "Celestial Messenger": {hpPercent: 0.03, armorBreak: 0.05},
+    "Original Sin": {attackPercent: 0.03, crit: 0.02, critDamage: 0.05},
+    "Legendary Original Sin": {attackPercent: 0.06, crit: 0.03, critDamage: 0.075}
+  },
+  
+  "Aspen": {
+    "Dragonic Warrior": {hpPercent: 0.05, attackPercent: 0.03, critDamage: 0.05},
+    "Legendary Dragonic Warrior": {hpPercent: 0.08, attackPercent: 0.06, critDamage: 0.075},
+    "Santa": {speed: 4, attackPercent: 0.03, critDamage: 0.05},
+    "Legendary Santa": {speed: 6, attackPercent: 0.06, critDamage: 0.1}
+  },
+  
+  "Belrain": {
+    "Christmas Tiny Reindeer": {hpPercent: 0.03, attackPercent: 0.03, speed: 4},
+    "Legendary Christmas Tiny Reindeer": {hpPercent: 0.06, attackPercent: 0.06, speed: 6},
+    "Lead Singer of the Angel Band": {attackPercent: 0.03, damageReduce: 0.03, holyDamage: 0.05},
+    "Legendary Lead Singer of the Angel Band": {attackPercent: 0.06, damageReduce: 0.04, holyDamage: 0.08}
+  },
+  
+  "Carrie": {
+    "Little Red Riding Hood": {hpPercent: 0.03, attackPercent: 0.03, damageReduce: 0.03},
+    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04}
+  },
+  
+  "Cthuga": {
+    "Devils Night": {hpPercent: 0.03, attackPercent: 0.03, controlImmune: 0.05},
+    "Legendary Devils Night": {hpPercent: 0.06, attackPercent: 0.06, controlImmune: 0.06},
+    "Domineering Boss": {attackPercent: 0.03, controlImmune: 0.05, damageReduce: 0.03},
+    "Legendary Domineering Boss": {attackPercent: 0.06, controlImmune: 0.06, damageReduce: 0.04}
+  },
+  
+  "Dark Arthindol": {
+    "Gone Like a Dream": {speed: 4, attackPercent: 0.03, critDamage: 0.05},
+    "Legendary Gone Like a Dream": {speed: 6, attackPercent: 0.06, critDamage: 0.1},
+    "Revenge Bride": {hpPercent: 0.03, attackPercent: 0.02, skillDamage: 0.1},
+    "Legendar Revenge Bride": {hpPercent: 0.06, attackPercent: 0.04, skillDamage: 0.15},
+  },
+  
+  "Delacium": {
+    "Jellybane": {hpPercent: 0.03, attackPercent: 0.03, crit: 0.2},
+    "Legendary Jellybane": {hpPercent: 0.06, attackPercent: 0.06, crit: 0.3}
+  },
+  
+  "Elyvia": {
+    "Sweet Dance": {hpPercent: 0.03, controlImmune: 0.04, speed: 4},
+    "Legendary Sweet Dance": {hpPercent: 0.06, controlImmune: 0.06, speed: 6},
+  },
+  
+  "Emily": {
+    "Fractured Rose": {hpPercent: 0.03, block: 0.04, speed: 4},
+    "Legendary Fractured Rose": {hpPercent: 0.06, block: 0.06, speed: 6}
+  },
+  
+  "Faith Blade": {
+    "Apocalypse Armor": {holyDamage: 0.05, crit: 0.02, critDamage: 0.05},
+    "Legendary Apocalypse Armor": {holyDamage: 0.08, crit: 0.03, critDamage: 0.075},
+    "Chaos Messenger": {holyDamage: 0.05, crit: 0.02}
+  },
+  
+  "Garuda": {
+    "Super Harvest": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
+    "Legendary Super Harvest": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04},
+    "Law of the West": {holyDamage: 0.06, damageReduce: 0.04, critDamage: 0.05},
+    "Legendary Law of the West": {holyDamage: 0.1, damageReduce: 0.05, critDamage: 0.1}
+  },
+  
+  "Gustin": {
+    "Grand Carnival": {controlImmune: 0.05, hpPercent: 0.05, attackPercent: 0.03},
+    "Legendary Grand Carnival": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
+  },
+  
+  "Horus": {
+    "Bloody War God": {hpPercent: 0.03, attackPercent: 0.03, critDamage: 0.05},
+    "Legendary Bloody War God": {hpPercent: 0.06, attackPercent: 0.06, critDamage: 0.075},
+    "Steam Fantasy": {damageReduce: 0.04, attackPercent: 0.03, block: 0.04},
+    "Legendary Steam Fantasy": {damageReduce: 0.05, attackPercent: 0.06, block: 0.06}
+  },
+  
+  "Ithaqua": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
+  },
+  
+  "Kroos": {
+    "Mourners": {hpPercent: 0.03, damageReduce: 0.03, speed: 4},
+    "Legendary Mourners": {hpPercent: 0.06, damageReduce: 0.04, speed: 6}
+  },
+  
+  "Michelle": {
+    "Seraph": {hpPercent: 0.05, damageReduce: 0.03},
+    "Legendary Seraph": {hpPercent: 0.08, damageReduce: 0.04},
+    "True Love Queen": {hpPercent: 0.05, attackPercent: 0.03, speed: 4},
+    "Legendary True Love Queen": {hpPercent: 0.08, attackPercent: 0.06, speed: 6}
+  },
+  
+  "Mihm": {
+    "Ace Quarterback": {holyDamage: 0.05, attackPercent: 0.02, speed: 4},
+    "Legendary Ace Quarterback": {holyDamage: 0.08, attackPercent: 0.04, speed: 6},
+    "Frost Eye": {hpPercent: 0.03, attackPercent: 0.02, damageReduce: 0.03},
+    "Legendary Frost Eye": {hpPercent: 0.06, attackPercent: 0.04, damageReduce: 0.04}
+  },
+  
+  "Nakia": {
+    "Crescent Emissary": {attackPercent: 0.03, hpPercent: 0.03, damageReduce: 0.03},
+    "Legendary Crescent Emissary": {attackPercent: 0.06, hpPercent: 0.06, damageReduce: 0.04}
+  },
+  
+  "Oberon": {
+    "Blue Luan": {speed: 4, attackPercent: 0.03, holyDamage: 0.05},
+    "Legendary Blue Luan": {speed: 6, attackPercent: 0.06, holyDamage: 0.08},
+    "Golden Memories": {speed: 4, hpPercent: 0.05, damageReduce: 0.03},
+    "Legendary Golden Memories": {speed: 6, hpPercent: 0.08, damageReduce: 0.04},
+  },
+  
+  "Penny": {
+    "Infinite Joy": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
+    "Legendary Infinite Joy": {controlImmune: 0.06, critDamage: 0.1, hpPercent: 0.06},
+    "Lion and Dragon Dance": {attackPercent: 0.03, controlImmune: 0.05, damageReduce: 0.03},
+    "Legendary Lion and Dragon Dance": {attackPercent: 0.06, controlImmune: 0.06, damageReduce: 0.04},
+  },
+  
+  "Sherlock": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
+  },
+  
+  "Tara": {
+    "Heroic Knight": {damageReduce: 0.04, controlImmune: 0.04, speed: 4},
+    "Legendary Heroic Knight": {damageReduce: 0.05, controlImmune: 0.06, speed: 6},
+    "Spirit of Creation": {holyDamage: 0.06, attackPercent: 0.03, hpPercent: 0.03},
+    "Legendary Spirit of Creation": {holyDamage: 0.1, attackPercent: 0.06, hpPercent: 0.06}
+  },
+  
+  "UniMax-3000": {
+    "League MVP": {controlImmune: 0.05, hpPercent: 0.03, attackPercent: 0.03},
+    "Legendary League MVP": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
+  }
+};
+
+/* End of skin.js */
+
+
+/* Start of stone.js */
+
+var stones = {
+  "None": {},
+  "S3 Attack, Attack, Armor Break": {attack: 1550, attackPercent: 0.24, armorBreak: 0.5},
+  "S3 Attack, Attack, Holy": {attack: 1550, attackPercent: 0.24, holyDamage: 0.36},
+  "S3 Attack, Attack, Precision": {attack: 1550, attackPercent: 0.24, precision: 0.24},
+  "S3 Attack, Attack, Skill": {attack: 1550, attackPercent: 0.24, skillDamage: 0.8},
+  "S3 Attack, Block": {attackPercent: 0.28, block: 0.28},
+  "S3 Crit, Armor Break": {crit: 0.23, armorBreak: 0.5},
+  "S3 Crit, Crit, Attack": {attackPercent: 0.1, crit: 0.23, critDamage: 0.55},
+  "S3 Crit, Precision": {precision: 0.23, crit: 0.23},
+  "S3 HP, Attack": {hpPercent: 0.33, attackPercent: 0.26},
+  "S3 HP, Attack, Holy": {hpPercent: 0.28, attack: 1550, holyDamage: 0.36},
+  "S3 HP, Block": {hpPercent: 0.35, block: 0.28},
+  "S3 HP, Crit": {hpPercent: 0.33, crit: 0.23},
+  "S3 HP, Heal": {hpPercent: 0.33, effectBeingHealed: 0.29},
+  "S3 HP, Heal, Attack": {hpPercent: 0.28, attack: 1550, healEffect: 0.29},
+  "S3 HP, HP": {hp: 25000, hpPercent: 0.46},
+  "S3 HP, Precision": {hpPercent: 0.33, precision: 0.24},
+  "S3 Skill, Holy": {skillDamage: 0.8, holyDamage: 0.36},
+  "S3 Skill, Precision": {skillDamage: 0.8, precision: 0.23},
+  "S3 Speed, Attack": {attackPercent: 0.26, speed: 115},
+  "S3 Speed, Crit": {speed: 115, crit: 0.23},
+  "S3 Speed, Heal": {speed: 115, healEffect: 0.29},
+  "S3 Speed, HP": {hpPercent: 0.32, speed: 115},
+  "S3 Speed, Precision": {speed: 115, precision: 0.23}
+};
+
+/* End of stone.js */
+
+
+/* Start of baseMonsterStats.js */
+
+var baseMonsterStats = {
+  "None": {
+    className: monster,
+    stats: {}
+  },
+  
+  "Deer": {
+    className: mDeer,
+    stats: {
+      attack: 9604,
+      hp: 231805,
+      armorPercent: 0.2,
+      block: 0.15,
+      speed: 220,
+      fixedAttack: 91238,
+      fixedHP: 3477075
+    }
+  },
+  
+  "Phoenix": {
+    className: mPhoenix,
+    stats: {
+      attack: 10377,
+      hp: 201409,
+      critDamage: 0.2,
+      holyDamage: 0.2,
+      speed: 220,
+      fixedAttack: 98581,
+      fixedHP: 3234270
+    }
+  }
+};
+
+/* End of baseMonsterStats.js */
+
+
+/* Start of baseHeroStats.js */
+
+// hero base stats dictionary
+// base stats before anything is applied, even passives
+
+var baseHeroStats = {
+  "None": {
+    className: hero,
+    heroFaction: "",
+    heroClass: "",
+    stats: {
+      baseHP: 0,
+      baseAttack: 0,
+      baseArmor: 0,
+      baseSpeed: 0,
+      growHP: 0,
+      growAttack: 0,
+      growArmor: 0,
+      growSpeed: 0
+    }
+  },
+  
+  "Aida": {
+    className: Aida,
+    heroFaction: "Light",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 7234,
+      baseAttack: 512,
+      baseArmor: 58,
+      baseSpeed: 226,
+      growHP: 723.4,
+      growAttack: 51.2,
+      growArmor: 5.8,
+      growSpeed: 2
+    }
+  },
+  
+  "Amen-Ra": {
+    className: AmenRa,
+    heroFaction: "Dark",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 8986,
+      baseAttack: 338,
+      baseArmor: 61,
+      baseSpeed: 235,
+      growHP: 898.6,
+      growAttack: 34,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
+  "Amuvor": {
+    className: Amuvor,
+    heroFaction: "Dark",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 7363,
+      baseAttack: 484,
+      baseArmor: 60,
+      baseSpeed: 235,
+      growHP: 736.3,
+      growAttack: 48.4,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Aspen": {
+    className: Aspen,
+    heroFaction: "Dark",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 8986,
+      baseAttack: 338,
+      baseArmor: 61,
+      baseSpeed: 235,
+      growHP: 898.6,
+      growAttack: 34,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
+  "Belrain": {
+    className: Belrain,
+    heroFaction: "Light",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 7127,
+      baseAttack: 386,
+      baseArmor: 60,
+      baseSpeed: 210,
+      growHP: 712.7,
+      growAttack: 38.6,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Carrie": {
+    className: Carrie,
+    heroFaction: "Dark",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 9680,
+      baseAttack: 343,
+      baseArmor: 60,
+      baseSpeed: 226,
+      growHP: 968,
+      growAttack: 34.3,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Cthuga": {
+    className: Cthuga,
+    heroFaction: "Abyss",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 7486,
+      baseAttack: 447,
+      baseArmor: 63,
+      baseSpeed: 218,
+      growHP: 748.6,
+      growAttack: 44.7,
+      growArmor: 6.3,
+      growSpeed: 2
+    }
+  },
+  
+  "Dark Arthindol": {
+    className: DarkArthindol,
+    heroFaction: "Dark",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 6900,
+      baseAttack: 422,
+      baseArmor: 58,
+      baseSpeed: 207,
+      growHP: 690,
+      growAttack: 42.2,
+      growArmor: 5.8,
+      growSpeed: 2
+    }
+  },
+  
+  "Delacium": {
+    className: Delacium,
+    heroFaction: "Abyss",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 7587,
+      baseAttack: 433,
+      baseArmor: 63,
+      baseSpeed: 226,
+      growHP: 758.7,
+      growAttack: 43.3,
+      growArmor: 6.3,
+      growSpeed: 2
+    }
+  },
+  
+  "Elyvia": {
+    className: Elyvia,
+    heroFaction: "Forest",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 7057,
+      baseAttack: 354,
+      baseArmor: 60,
+      baseSpeed: 228,
+      growHP: 705.7,
+      growAttack: 35.4,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Emily": {
+    className: Emily,
+    heroFaction: "Fortress",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 7005,
+      baseAttack: 356,
+      baseArmor: 63,
+      baseSpeed: 195,
+      growHP: 700.5,
+      growAttack: 36,
+      growArmor: 6.3,
+      growSpeed: 2
+    }
+  },
+  
+  "Faith Blade": {
+    className: FaithBlade,
+    heroFaction: "Light",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 9147,
+      baseAttack: 507,
+      baseArmor: 60,
+      baseSpeed: 235,
+      growHP: 914.7,
+      growAttack: 50.4,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Garuda": {
+    className: Garuda,
+    heroFaction: "Forest",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 8202,
+      baseAttack: 353,
+      baseArmor: 62,
+      baseSpeed: 235,
+      growHP: 820.2,
+      growAttack: 35.3,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
+  "Gustin": {
+    className: Gustin,
+    heroFaction: "Shadow",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 8252,
+      baseAttack: 343,
+      baseArmor: 62,
+      baseSpeed: 220,
+      growHP: 825.2,
+      growAttack: 34.3,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
+  "Horus": {
+    className: Horus,
+    heroFaction: "Shadow",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 8252,
+      baseAttack: 343,
+      baseArmor: 62,
+      baseSpeed: 227,
+      growHP: 825.2,
+      growAttack: 34.3,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
+  "Ithaqua": {
+    className: Ithaqua,
+    heroFaction: "Shadow",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 9436,
+      baseAttack: 478,
+      baseArmor: 62,
+      baseSpeed: 235,
+      growHP: 943.6,
+      growAttack: 47.8,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
+  "Kroos": {
+    className: Kroos,
+    heroFaction: "Abyss",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 7587,
+      baseAttack: 433,
+      baseArmor: 63,
+      baseSpeed: 195,
+      growHP: 758.7,
+      growAttack: 43.3,
+      growArmor: 6.3,
+      growSpeed: 2
+    }
+  },
+  
+  "Michelle": {
+    className: Michelle,
+    heroFaction: "Light",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 8287,
+      baseAttack: 343,
+      baseArmor: 60,
+      baseSpeed: 220,
+      growHP: 828.7,
+      growAttack: 34.3,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Mihm": {
+    className: Mihm,
+    heroFaction: "Dark",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 7134,
+      baseAttack: 402,
+      baseArmor: 58,
+      baseSpeed: 226,
+      growHP: 713.4,
+      growAttack: 40.2,
+      growArmor: 5.8,
+      growSpeed: 2
+    }
+  },
+  
+  "Nakia": {
+    className: Nakia,
+    heroFaction: "Abyss",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 8473,
+      baseAttack: 456,
+      baseArmor: 61,
+      baseSpeed: 245,
+      growHP: 847.3,
+      growAttack: 45.6,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
+  "Oberon": {
+    className: Oberon,
+    heroFaction: "Forest",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 6980,
+      baseAttack: 410,
+      baseArmor: 61,
+      baseSpeed: 220,
+      growHP: 698,
+      growAttack: 41,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
+  "Penny": {
+    className: Penny,
+    heroFaction: "Fortress",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 7937,
+      baseAttack: 397,
+      baseArmor: 60,
+      baseSpeed: 236,
+      growHP: 793.7,
+      growAttack: 39.7,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Sherlock": {
+    className: Sherlock,
+    heroFaction: "Fortress",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 7980,
+      baseAttack: 425,
+      baseArmor: 60,
+      baseSpeed: 220,
+      growHP: 798,
+      growAttack: 42.5,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Tara": {
+    className: Tara,
+    heroFaction: "Light",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 9010,
+      baseAttack: 338,
+      baseArmor: 61,
+      baseSpeed: 235,
+      growHP: 901,
+      growAttack: 34,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
+  "UniMax-3000": {
+    className: UniMax3000,
+    heroFaction: "Fortress",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 9100,
+      baseAttack: 306,
+      baseArmor: 82,
+      baseSpeed: 248,
+      growHP: 910,
+      growAttack: 30.6,
+      growArmor: 8.5,
+      growSpeed: 2
+    }
+  }
+};
+
+/* End of baseHeroStats.js */
+
+
+/* Start of utilityFunctions.js */
+
+function formatNum(num) {
+  return "<span class ='num'>" + num.toLocaleString() + "</span>";
+}
+
+
+// UUIDv4
+function uuid() {
+  return (`${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
+}
+
+
+function speedSort(heroA, heroB) {
+  if (heroA._currentStats["speed"] > heroB._currentStats["speed"]) {
+    return -1;
+  } else if (heroA._currentStats["speed"] < heroB._currentStats["speed"]) {
+    return 1;
+  } else if (heroA._attOrDef == "att" && heroB._attOrDef == "def") {
+    return -1;
+  } else if (heroA._attOrDef == "def" && heroB._attOrDef == "att") {
+    return 1;
+  } else if (heroA._heroPos < heroB._heroPos) {
+    return -1;
+  } else {
+    return 1;
+  }
+}
+
+
+function slotSort(heroA, heroB) {
+  if (heroA._attOrDef == "att" && heroB._attOrDef == "def") {
+    return -1;
+  } else if (heroA._attOrDef == "def" && heroB._attOrDef == "att") {
+    return 1;
+  } else if (heroA._heroPos < heroB._heroPos) {
+    return -1;
+  } else {
+    return 1;
+  }
+}
+
+
+function isMonster(source) {
+  if ("_monsterName" in source) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+function isDispellable(strName) {
+  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink"].includes(strName)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+
+function isControlEffect(strName, effects={}) {
+  if (["stun", "petrify", "freeze", "twine", "Silence", "Taunt", "Seal of Light", "Horrify", "Shapeshift"].includes(strName)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+function isDot(strName, effects={}) {
+  if (["burn", "bleed", "poison", "dot", "burnTrue"].includes(strName)) {
+    return true;
+  } else {
+    for (var e in effects) {
+      if (["burn", "bleed", "poison", "dot", "burnTrue"].includes(e)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+}
+
+
+function isFrontLine(target, arrTargets) {
+  var frontCount = 0;
+  var backCount = 0;
+  
+  for (var i = 0; i < 2; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      frontCount++;
+    }
+  }
+  
+  for (var i = 2; i < arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      backCount++;
+    }
+  }
+  
+  if (frontCount > 0 && target._heroPos < 2) {
+    return true;
+  } else if (frontCount == 0 && target._heroPos >= 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+function isBackLine(target, arrTargets) {
+  var frontCount = 0;
+  var backCount = 0;
+  
+  for (var i = 0; i < 2; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      frontCount++;
+    }
+  }
+  
+  for (var i = 2; i < arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      backCount++;
+    }
+  }
+  
+  if (backCount > 0 && target._heroPos >= 2) {
+    return true;
+  } else if (backCount == 0 && target._heroPos < 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+function isAttribute(strName, effects={}) {
+  var arrAttributes = [
+    "attack", "attackPercent", "armor", "armorPercent", "hp", "hpPercent", "speed",
+    "energy", "precision", "block", "crit", "critDamage", "holyDamage", "armorBreak",
+    "controlImmune", "skillDamage", "damageReduce", "allDamageReduce", "controlPrecision",
+    "healEffect", "effectBeingHealed", "critDamageReduce", "dotReduce", "fixedAttack", 
+    "fixedHP", "allDamageTaken", "allDamageDealt", "damageAgainstBurning", "damageAgainstBleed",
+    "warriorReduce", "mageReduce", "rangerReduce", "assassinReduce", "priestReduce",
+    "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune"
+  ];
+  
+  if (arrAttributes.includes(strName)) {
+    return true;
+  } else {
+    for (var e in effects) {
+      if (arrAttributes.includes(e)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+}
+
+
+function getFrontTargets(source, arrTargets) {
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
+  if (arrTargets[0]._currentStats["totalHP"] > 0) {
+    copyTargets.push(arrTargets[0]);
+  }
+  if (arrTargets[1]._currentStats["totalHP"] > 0) {
+    copyTargets.push(arrTargets[1]);
+  }
+  
+  if (copyTargets.length == 0) {
+    for (var h=2; h<arrTargets.length; h++) {
+      if (arrTargets[h]._currentStats["totalHP"] > 0) {
+        copyTargets.push(arrTargets[h]);
+      }
+    }
+  }
+  
+  return copyTargets;
+}
+
+
+function getBackTargets(source, arrTargets) {
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
+  for (var h=2; h<arrTargets.length; h++) {
+    if (arrTargets[h]._currentStats["totalHP"] > 0) {
+      copyTargets.push(arrTargets[h]);
+    }
+  }
+  
+  if (copyTargets.length == 0) {
+    for (var h=0; h<2; h++) {
+      if (arrTargets[h]._currentStats["totalHP"] > 0) {
+        copyTargets.push(arrTargets[h]);
+      }
+    }
+  }
+  
+  return copyTargets;
+}
+
+
+function getAllTargets(source, arrTargets) {
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
+  for (var i=0; i<arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      copyTargets.push(arrTargets[i]);
+    }
+  }
+  
+  return copyTargets;
+}
+
+
+function getRandomTargets(source, arrTargets) {
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
+  for (var i=0; i<arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      arrTargets[i]._rng = Math.random();
+      copyTargets.push(arrTargets[i]);
+    }
+  }
+  
+  copyTargets.sort(function(a,b) {
+    if (a._rng > b._rng) {
+      return 1;
+    } else if (a._rng < b._rng) {
+      return -1;
+    } else {
+      return 0;
+    }
+  });
+  
+  return copyTargets;
+}
+
+
+function getLowestHPTargets(source, arrTargets) {
+  // get living targets with lowest current HP
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
+  for (var i=0; i<arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      copyTargets.push(arrTargets[i]);
+    }
+  }
+  
+  copyTargets.sort(function(a,b) {
+    if (a._currentStats["totalHP"] > b._currentStats["totalHP"]) {
+      return 1;
+    } else if (a._currentStats["totalHP"] < b._currentStats["totalHP"]) {
+      return -1;
+    } else if (a._heroPos < b._heroPos) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+  
+  return copyTargets;
+}
+
+
+function getLowestHPPercentTargets(source, arrTargets) {
+  // get living targets with lowest current HP percent
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
+  for (var i=0; i<arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      copyTargets.push(arrTargets[i]);
+    }
+  }
+  
+  copyTargets.sort(function(a,b) {
+    if (a._currentStats["totalHP"] / a._stats["totalHP"] > b._currentStats["totalHP"] / b._stats["totalHP"]) {
+      return 1;
+    } else if (a._currentStats["totalHP"] / a._stats["totalHP"] < b._currentStats["totalHP"] / b._stats["totalHP"]) {
+      return -1;
+    } else if (a._heroPos < b._heroPos) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+  
+  return copyTargets;
+}
+
+
+function getHighestHPTargets(source, arrTargets) {
+  // get living target with highest current HP
+  var copyTargets = [];
+  
+  arrTargets = getTauntedTargets(source, arrTargets);
+  if (arrTargets.length == 1) { return arrTargets; }
+  
+  for (var i=0; i<arrTargets.length; i++) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      copyTargets.push(arrTargets[i]);
+    }
+  }
+  
+  copyTargets.sort(function(a,b) {
+    if (a._currentStats["totalHP"] > b._currentStats["totalHP"]) {
+      return -1;
+    } else if (a._currentStats["totalHP"] < b._currentStats["totalHP"]) {
+      return 1;
+    } else if (a._heroPos < b._heroPos) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+  
+  return copyTargets;
+}
+
+
+function getTauntedTargets(source, arrTargets) {
+  var copyTargets = [];
+  
+  if (!(isMonster(source))) {
+    if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
+      for (var s in source._debuffs["Taunt"]) {
+        if (source._debuffs["Taunt"][s]["source"]._currentStats["totalHP"] > 0) {
+          copyTargets.push(source._debuffs["Taunt"][s]["source"]);
+          return copyTargets;
+        }
+      }
+    }
+  }
+  
+  return arrTargets;
+}
+
+/* End of utilityFunctions.js */
 
 
 /* Start of simulation.js */
