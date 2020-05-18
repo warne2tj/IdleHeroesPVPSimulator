@@ -7134,6 +7134,7 @@ function handleCall(e) {
   
   
   var numWins = runSim(attMonsterName, defMonsterName, e.data[4]);
+  console.log(numWins);
   postMessage([e.data[5], e.data[0], e.data[2], numWins]);
 }
 

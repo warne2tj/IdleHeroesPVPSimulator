@@ -103,7 +103,7 @@ function processWorker(e) {
   var numSims = parseInt(document.getElementById("numSims").value);
   var teamKeys = Object.keys(allTeams);
   var wid = e.data[0];
-  var numAttWins = parseInt(e.data[3]);
+  var numAttWins = e.data[3];
   var numDefWins = numSims - numAttWins;
   
   
