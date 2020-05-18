@@ -115,7 +115,7 @@ function runSim() {
               result = orderOfAttack[orderNum].doActive();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
               
-              temp = processDeathQueue(oCombatLog);
+              temp = processDeathQueue();
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               someoneWon = checkForWin();
               if (someoneWon != "") {break;}
@@ -145,7 +145,7 @@ function runSim() {
                 if(numSims == 1) {oCombatLog.innerHTML += temp;}
               }
               
-              temp = processDeathQueue(oCombatLog);
+              temp = processDeathQueue();
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               someoneWon = checkForWin();
               if (someoneWon != "") {break;}
@@ -162,7 +162,7 @@ function runSim() {
               result = orderOfAttack[orderNum].doBasic();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
               
-              temp = processDeathQueue(oCombatLog);
+              temp = processDeathQueue();
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               someoneWon = checkForWin();
               if (someoneWon != "") {break;}
@@ -171,7 +171,7 @@ function runSim() {
               temp = orderOfAttack[orderNum].getEnergy(orderOfAttack[orderNum], 50);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
-              temp = processDeathQueue(oCombatLog);
+              temp = processDeathQueue();
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               someoneWon = checkForWin();
               if (someoneWon != "") {break;}
@@ -182,7 +182,7 @@ function runSim() {
             }
           }
               
-          temp = processDeathQueue(oCombatLog);
+          temp = processDeathQueue();
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
           
           someoneWon = checkForWin();
@@ -211,7 +211,7 @@ function runSim() {
         if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
       }
       
-      temp = processDeathQueue(oCombatLog);
+      temp = processDeathQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
       
       someoneWon = checkForWin();
@@ -230,7 +230,7 @@ function runSim() {
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
-      temp = processDeathQueue(oCombatLog);
+      temp = processDeathQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
       
       someoneWon = checkForWin();
@@ -252,7 +252,7 @@ function runSim() {
         }
       }
       
-      temp = processDeathQueue(oCombatLog);
+      temp = processDeathQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
       
       someoneWon = checkForWin();
@@ -267,7 +267,7 @@ function runSim() {
         }
       }
       
-      temp = processDeathQueue(oCombatLog);
+      temp = processDeathQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
       
       someoneWon = checkForWin();
@@ -289,7 +289,7 @@ function runSim() {
         if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
       }
       
-      temp = processDeathQueue(oCombatLog);
+      temp = processDeathQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
       
       someoneWon = checkForWin();
@@ -308,7 +308,7 @@ function runSim() {
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
-      temp = processDeathQueue(oCombatLog);
+      temp = processDeathQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
       
       someoneWon = checkForWin();
@@ -330,7 +330,7 @@ function runSim() {
         }
       }
       
-      temp = processDeathQueue(oCombatLog);
+      temp = processDeathQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
       
       someoneWon = checkForWin();
@@ -345,7 +345,7 @@ function runSim() {
         }
       }
       
-      temp = processDeathQueue(oCombatLog);
+      temp = processDeathQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
       
       someoneWon = checkForWin();
@@ -593,7 +593,7 @@ function alertDidActive(source, e) {
   
   
 // tell all heroes a hero died
-function processDeathQueue(oCombatLog) {
+function processDeathQueue() {
   var result = "";
   var temp = "";
   var copyQueue;
