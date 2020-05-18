@@ -101,21 +101,21 @@ function runMassLoop() {
 function processWorker(e) {
   var oLog = document.getElementById("summaryLog");
   var numSims = parseInt(document.getElementById("numSims").value);
-  var wid = parseInt(e.data[5]);
-  var numAttWins = parseInt(e.data[4]);
+  var wid = e.data[0];
+  var numAttWins = parseInt(e.data[3]);
   var numDefWins = numSims - numAttWins;
   
   
   workerStatus[wid][1] = false;
-  allTeams[attIndex]["attWins"] += numAttWins;
-  allTeams[defIndex]["defWins"] += numDefWins;
+  allTeams[e.data[1]]["attWins"] += numAttWins;
+  allTeams[e.data[2]]["defWins"] += numDefWins;
   
-  if (numAttWins > allTeams[defIndex]["weakAgainstWins"]) {
-    allTeams[defIndex]["weakAgainst"] = allTeams[attIndex]["teamName"];
-    allTeams[defIndex]["weakAgainstWins"] = numAttWins;
+  if (numAttWins > allTeams[e.data[2]]["weakAgainstWins"]) {
+    allTeams[e.data[2]]["weakAgainst"] = allTeams[e.data[1]]["teamName"];
+    allTeams[e.data[2]]["weakAgainstWins"] = numAttWins;
   }
     
-  oLog.innerHTML = "<div><span class='att'>" + allTeams[e.data[0]]["teamName"] + " (" + allTeams[e.data[0]]["species"] + ")</span> versus <span class='def'>" + allTeams[e.data[2]]["teamName"] + " (" + allTeams[e.data[2]]["species"] + ")</span>: Won " + formatNum(numAttWins) + " out of " + formatNum(numSims) + ".</div>" + oLog.innerHTML;
+  oLog.innerHTML = "<div><span class='att'>" + allTeams[e.data[1]]["teamName"] + " (" + allTeams[e.data[1]]["species"] + ")</span> versus <span class='def'>" + allTeams[e.data[2]]["teamName"] + " (" + allTeams[e.data[2]]["species"] + ")</span>: Won " + formatNum(numAttWins) + " out of " + formatNum(numSims) + ".</div>" + oLog.innerHTML;
   
   
   if (attIndex >= teamKeys.length || stopLoop) {
