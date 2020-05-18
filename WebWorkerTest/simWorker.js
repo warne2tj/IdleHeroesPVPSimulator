@@ -7096,7 +7096,7 @@ function handleCall(e) {
   }
   
   for (var p = 0; p < 60; p += 10) {
-    tHero = new baseHeroStats[e.data[3][p]]["className"](e.data[3][p], 1 + (p % 10), "att");
+    tHero = new baseHeroStats[e.data[3][p]]["className"](e.data[3][p], 1 + (p % 10), "def");
     
     tHero._heroLevel = 330;
     tHero._skin = e.data[3][p+1];
