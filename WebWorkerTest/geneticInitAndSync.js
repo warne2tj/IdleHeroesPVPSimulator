@@ -101,7 +101,7 @@ function runMassLoop() {
     
     allTeams = {};
     attIndex = 0;
-    defIndex = 1;
+    defIndex = 0;
     
     for (var t in jsonConfig) {
       allTeams[teamIndex] = {};
@@ -294,11 +294,7 @@ function processWorker(e) {
     
     
     defIndex++;
-    if (defIndex == attIndex) {
-      defIndex++;
-    }
-    
-    if (defIndex == teamKeys.length) {
+    if (defIndex >= teamKeys.length) {
       attIndex++;
       defIndex = 0;
       

@@ -7035,7 +7035,8 @@ var attFrame = "IDA Maverick +9";
 var defFrame = "IDA Maverick +9";
 var attHeroes = [];
 var defHeroes = [];
-var allTeams = {};
+var allAttTeams = {};
+var allDefTeams = {};
 var wid;
 var numSims;
 
@@ -7061,16 +7062,18 @@ function handleCall(e) {
     var team;
     var tHero;
     
-    allTeams = {};
+    allAttTeams = {};
+    allDefTeams = {};
     
     for (var t in jsonConfig) {
-      allTeams[teamIndex] = {};
-      allTeams[teamIndex]["pet"] = jsonConfig[t][60];
-      
+      // add team as attacker
+      allAttTeams[teamIndex] = {};
+      allAttTeams[teamIndex]["pet"] = jsonConfig[t][60];
+      attMonsterName = jsonConfig[t][60];
       team = [];
       
       for (var p = 0; p < 60; p += 10) {
-        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], Math.floor(p / 10), "");
+        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], Math.floor(p / 10), "att");
         
         tHero._heroLevel = 330;
         tHero._skin = jsonConfig[t][p+1];
@@ -7104,32 +7107,69 @@ function handleCall(e) {
         team.push(tHero);
       }
     
-      allTeams[teamIndex]["team"] = team;
+      allAttTeams[teamIndex]["team"] = team;
+      
+      
+      // add team as defender
+      allDefTeams[teamIndex] = {};
+      allDefTeams[teamIndex]["pet"] = jsonConfig[t][60];
+      defMonsterName = jsonConfig[t][60];
+      team = [];
+      
+      for (var p = 0; p < 60; p += 10) {
+        tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], Math.floor(p / 10), "def");
+        
+        tHero._heroLevel = 330;
+        tHero._skin = jsonConfig[t][p+1];
+        tHero._stone = jsonConfig[t][p+3];
+        tHero._artifact = jsonConfig[t][p+4];
+        tHero._enable1 = jsonConfig[t][p+5];
+        tHero._enable2 = jsonConfig[t][p+6];
+        tHero._enable3 = jsonConfig[t][p+7];
+        tHero._enable4 = jsonConfig[t][p+8];
+        tHero._enable5 = jsonConfig[t][p+9];
+        
+        if (jsonConfig[t][p+2] == "Class Gear") { 
+          tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
+          tHero._armor = classGearMapping[tHero._heroClass]["armor"];
+          tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
+          tHero._accessory = classGearMapping[tHero._heroClass]["accessory"];
+          
+        } else if (jsonConfig[t][p+2] == "Split HP") { 
+          tHero._weapon = "6* Thorny Flame Whip";
+          tHero._armor = classGearMapping[tHero._heroClass]["armor"];
+          tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
+          tHero._accessory = "6* Flame Necklace";
+          
+        } else if (jsonConfig[t][p+2] == "Split Attack") { 
+          tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
+          tHero._armor = "6* Flame Armor";
+          tHero._shoe = "6* Flame Boots";
+          tHero._accessory = "6* Flame Necklace";
+        }
+        
+        team.push(tHero);
+      }
+    
+      allDefTeams[teamIndex]["team"] = team;
+      
+      
+      // update stats for team
+      for (var h = 0; h < 6; h++) {
+        allAttTeams[teamIndex]["team"][h].updateCurrentStats();
+        allDefTeams[teamIndex]["team"][h].updateCurrentStats();
+      }
+      
       teamIndex++;
     }
   }
   
 
-  attHeroes = allTeams[e.data[1]]["team"];
-  defHeroes = allTeams[e.data[2]]["team"];
+  attHeroes = allAttTeams[e.data[1]]["team"];
+  defHeroes = allDefTeams[e.data[2]]["team"];
   
-  attMonsterName = allTeams[e.data[1]]["pet"];
-  defMonsterName = allTeams[e.data[2]]["pet"];
-  
-  for (var p = 0; p < 6; p++) {
-    attHeroes[p]._attOrDef = "att";
-    attHeroes[p]._allies = attHeroes;
-    attHeroes[p]._enemies = defHeroes;
-
-    defHeroes[p]._attOrDef = "def";
-    defHeroes[p]._allies = defHeroes;
-    defHeroes[p]._enemies = attHeroes;
-  }
-  
-  for (var p = 0; p < 6; p++) {
-    attHeroes[p].updateCurrentStats();
-    defHeroes[p].updateCurrentStats();
-  }
+  attMonsterName = allAttTeams[e.data[1]]["pet"];
+  defMonsterName = allDefTeams[e.data[2]]["pet"];
   
   var numWins = runSim(attMonsterName, defMonsterName, numSims);
   postMessage([wid, e.data[1], e.data[2], numWins]);
