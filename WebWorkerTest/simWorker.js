@@ -7130,8 +7130,7 @@ function handleCall(e) {
     attHeroes[p].updateCurrentStats();
     defHeroes[p].updateCurrentStats();
   }
-  console.log(allTeams[e.data[1]]["team"]);
-  console.log(allTeams[e.data[2]]["team"]);
+  
   var numWins = runSim(attMonsterName, defMonsterName, numSims);
   postMessage([wid, e.data[1], e.data[2], numWins]);
 }
