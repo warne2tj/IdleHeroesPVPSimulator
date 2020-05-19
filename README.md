@@ -44,11 +44,13 @@ Head to the wiki for more details.
   
 ### To Do List
   * Implement new heroes as they release
+  * implement Asmodel
   * implement rest of monsters
   * implement enhanced artifacts
   * parse through skills in data mining spreadsheet
   * ----------- Priority 2 ------------
-  * do cleanup on damage type, damage sources, buff types, debuff types
   * refactor targeting to take parameter for number of targets
+  * refactor check for win into take damage
+  * refactor on damage type, damage sources, buff types, debuff types
   * improve look of hero stat sheet, buff, and debuff descriptions
-  * refactor combat log output to read and flow better
+  * improve combat log output to read and flow better
