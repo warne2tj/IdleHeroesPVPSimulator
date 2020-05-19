@@ -7171,6 +7171,14 @@ function handleCall(e) {
   attMonsterName = allAttTeams[e.data[1]]["pet"];
   defMonsterName = allDefTeams[e.data[2]]["pet"];
   
+  for (var p = 0; p < 6; p++) {
+    attHeroes[p]._allies = attHeroes;
+    attHeroes[p]._enemies = defHeroes;
+
+    defHeroes[p]._allies = defHeroes;
+    defHeroes[p]._enemies = attHeroes;
+  }
+  
   var numWins = runSim(attMonsterName, defMonsterName, numSims);
   postMessage([wid, e.data[1], e.data[2], numWins]);
 }
