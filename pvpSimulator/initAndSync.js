@@ -132,6 +132,83 @@ function storeLocal(i) {
 }
 
 
+function swapAttDef() {
+  createConfig();
+  
+  var oConfig = document.getElementById("configText");
+  var configString = oConfig.value;
+  
+  configString = configString.replace(/\"att/g, "@@@");
+  configString = configString.replace(/\"def/g, "\"att");
+  configString = configString.replace(/@@@/g, "\"def");
+  
+  oConfig.value = configString;
+  
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+  }
+  
+  loadConfig();
+  createConfig();
+}
+
+
+function swapHero() {
+  var heroA = document.getElementById("heroA").value;
+  var heroB = document.getElementById("heroB").value;
+  
+  if (heroA != heroB) {
+    createConfig();
+    
+    var oConfig = document.getElementById("configText");
+    var configString = oConfig.value;
+    var reA = new RegExp(heroA, "g");
+    var reB = new RegExp(heroB, "g");
+    
+    configString = configString.replace(reA, "@@@");
+    configString = configString.replace(reB, heroA);
+    configString = configString.replace(/@@@/g, heroB);
+    
+    oConfig.value = configString;
+    
+    if (typeof(Storage) !== "undefined") {
+      localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+    }
+    
+    loadConfig();
+    createConfig();
+  }
+}
+
+
+function copyHero() {
+  var heroA = document.getElementById("heroA").value;
+  var heroB = document.getElementById("heroB").value;
+  
+  if (heroA != heroB) {
+    createConfig();
+    
+    var oConfig = document.getElementById("configText");
+    var jsonConfig = JSON.parse(oConfig.value);
+    
+    for (x in jsonConfig) {
+      if (x.substring(0,8) == heroA) {
+        jsonConfig[heroB + x.substring(8)] = jsonConfig[x];
+      }
+    }
+    
+    oConfig.value = JSON.stringify(jsonConfig);
+    
+    if (typeof(Storage) !== "undefined") {
+      localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
+    }
+    
+    loadConfig();
+    createConfig();
+  }
+}
+
+
 // When the user clicks on the button, scroll to the top of the document
 function topFunction() {
   document.body.scrollTop = 0; // For Safari

@@ -45,7 +45,7 @@
   </div>  
   
   
-  <button class="accordion colorC">Generate or Load Configuration</button>
+  <button class="accordion colorC">Manage Configuration</button>
   <div class="panel">
     <div>
       <div>Generate configuration into text area below and copy to clipboard or load configuration from text area below.</div>
@@ -53,6 +53,42 @@
       <div>
         <input type="submit" value="Generate" onclick="createConfig();"></input>
         <input type="submit" value="Load" onclick="loadConfig();"></input>
+        <input type="submit" value="Swap Attacker and Defender" onclick="swapAttDef();"></input>
+        <input type="submit" value="Swap Hero A and B" onclick="swapHero();"></input>
+        <input type="submit" value="Copy Hero A to B" onclick="copyHero();"></input>
+        
+        <label for="heroA">Hero A</label>
+        <select id="heroA">
+          <option value="attHero0">Attacker Slot 1</option>
+          <option value="attHero1">Attacker Slot 2</option>
+          <option value="attHero2">Attacker Slot 3</option>
+          <option value="attHero3">Attacker Slot 4</option>
+          <option value="attHero4">Attacker Slot 5</option>
+          <option value="attHero5">Attacker Slot 6</option>
+          <option value="defHero0">Defender Slot 1</option>
+          <option value="defHero1">Defender Slot 2</option>
+          <option value="defHero2">Defender Slot 3</option>
+          <option value="defHero3">Defender Slot 4</option>
+          <option value="defHero4">Defender Slot 5</option>
+          <option value="defHero5">Defender Slot 6</option>
+        </select>
+        
+        <label for="heroB">Hero B</label>
+        <select id="heroB">
+          <option value="attHero0">Attacker Slot 1</option>
+          <option value="attHero1">Attacker Slot 2</option>
+          <option value="attHero2">Attacker Slot 3</option>
+          <option value="attHero3">Attacker Slot 4</option>
+          <option value="attHero4">Attacker Slot 5</option>
+          <option value="attHero5">Attacker Slot 6</option>
+          <option value="defHero0">Defender Slot 1</option>
+          <option value="defHero1">Defender Slot 2</option>
+          <option value="defHero2">Defender Slot 3</option>
+          <option value="defHero3">Defender Slot 4</option>
+          <option value="defHero4">Defender Slot 5</option>
+          <option value="defHero5">Defender Slot 6</option>
+        </select>
+        
         <textarea id="configText" rows="20" onchange="storeLocal(this);">
 {
 	"attHolyhpPercent": "1",

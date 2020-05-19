@@ -166,8 +166,11 @@ input[type=submit] {
   cursor: pointer;
   margin: 5px;
 }
+input[type=submit]:hover {
+  background-color: #3C9F40;
+}
 
-input[type=text]#numSims {
+#numSims, #heroA, #heroB {
   width: auto;
 }
 

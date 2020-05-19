@@ -44,11 +44,9 @@ Head to the wiki for more details.
   
 ### To Do List
   * Implement new heroes as they release
-  * add swap, copy, move functionality for team management
   * implement rest of monsters
   * implement enhanced artifacts
   * parse through skills in data mining spreadsheet
-  * adjust GA algorithm to have separate config for defense teams targeting defensive wins, clone top 10 from attack
   * ----------- Priority 2 ------------
   * do cleanup on damage type, damage sources, buff types, debuff types
   * refactor targeting to take parameter for number of targets
