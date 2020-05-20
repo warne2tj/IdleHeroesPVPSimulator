@@ -104,7 +104,6 @@ function runSim() {
             if(numSims == 1) {oCombatLog.innerHTML += "<p>" + orderOfAttack[orderNum].heroDesc() + " is under control effect, turn skipped.</p>";}
           } else {
             if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-            orderOfAttack[orderNum]._rng = Math.random();
             
             // decide on action
             if (orderOfAttack[orderNum]._currentStats["energy"] >= 100 && !("Silence" in orderOfAttack[orderNum]._debuffs)) {
