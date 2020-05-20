@@ -101,7 +101,6 @@ class Aida extends hero {
       
       for (var i=0; i<targets.length; i++) {
         if (targets[i]._currentStats["totalHP"] > 0) {
-          this._rng = Math.random();
           damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
           result += targets[i].takeDamage(this, "Final Verdict", damageResult);
           
@@ -173,7 +172,6 @@ class Aida extends hero {
     }
     
     for (var i=0; i<numTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal");
       result += targets[i].takeDamage(this, "Order Restore", damageResult, 0);
       
@@ -227,7 +225,6 @@ class AmenRa extends hero {
         targets = getRandomTargets(this, this._enemies);
         
         if (targets.length > 0) {
-          this._rng = Math.random();
           damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 2, "passive", "normal");
           result += targets[0].takeDamage(this, "Terrible Feast", damageResult);
         }
@@ -264,7 +261,6 @@ class AmenRa extends hero {
     
     for (var i in targets) {
       if (targets[i]._currentStats["totalHP"] > 0) {
-        targets[i]._rng = Math.random();
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2);
         result += targets[i].takeDamage(this, "Shadow Defense", damageResult);
         
@@ -351,8 +347,6 @@ class Amuvor extends hero {
     }
     
     for (var i=0; i<maxTargets; i++) {
-      this._rng = Math.random();
-      
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3.5);
       result = targets[i].takeDamage(this, "Scarlet Contract", damageResult);
       
@@ -503,7 +497,6 @@ class Aspen extends hero {
     }
     
     for (var i = 0; i < maxTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.6);
       result += targets[i].takeDamage(this, "Dread's Coming", damageResult);
       
@@ -618,7 +611,6 @@ class Belrain extends hero {
     }
     
     for (var i=0; i<numTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.82);
       result += targets[i].takeDamage(this, "Holylight Sparkle", damageResult);
       
@@ -742,8 +734,6 @@ class Carrie extends hero {
     }
     
     for (var i=0; i<numTargets; i++) {
-      this._rng = Math.random();
-      
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.2);
       result += targets[i].takeDamage(this, "Energy Devouring", damageResult);
       
@@ -1021,7 +1011,6 @@ class DarkArthindol extends hero {
     var targets = getAllTargets(this, this._enemies);
     
     for (var i=0; i < targets.length; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 0.98);
       result += targets[i].takeDamage(this, "Chaotic Shade", damageResult);
       
@@ -1119,7 +1108,6 @@ class Delacium extends hero {
     if (targets.length < maxTargets) { maxTargets = targets.length; }
     
     for (var i=0; i<maxTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.5, "basic", "normal");
       result += targets[i].takeDamage(this, "Basic Attack", damageResult);
       
@@ -1148,7 +1136,6 @@ class Delacium extends hero {
     if (targets.length < maxTargets) { maxTargets = targets.length; }
     
     for (var i=0; i<maxTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 4);
       result += targets[i].takeDamage(this, "Ray of Delacium", damageResult);
       
@@ -1333,7 +1320,6 @@ class Emily extends hero {
     if (targets.length < maxTargets) { maxTargets = targets.length; }
     
     for (var i = 0; i < maxTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.8, "basic", "normal");
       result += targets[i].takeDamage(this, "Element Fission", damageResult);
       
@@ -1356,7 +1342,6 @@ class Emily extends hero {
     var targets = getAllTargets(this, this._enemies);
     
     for (var i=0; i < targets.length; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.16);
       result += targets[i].takeDamage(this, "Nether Nightmare", damageResult);
       
@@ -1401,7 +1386,6 @@ class Garuda extends hero {
       
       for (var i=0; i<e.length; i++) {
         if (e[i][1]._currentStats["totalHP"] > 0) {
-          this._rng = Math.random();
           damageResult = this.calcDamage(e[i][1], this._currentStats["totalAttack"] * 2.5, "passive", "normal");
           result += e[i][1].takeDamage(this, "Instinct of Hunt", damageResult);
         }
@@ -1449,7 +1433,6 @@ class Garuda extends hero {
     }
     
     for (var i=0; i<numTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 4.8);
       result += targets[i].takeDamage(this, "Fatal Feather", damageResult);
       
@@ -1462,11 +1445,9 @@ class Garuda extends hero {
     if ("Feather Blade" in this._buffs) {
       var numBlades = Object.keys(this._buffs["Feather Blade"]).length;
       for (var i=1; i<= numBlades; i++) {
-        this._rng = Math.random();
         targets = getRandomTargets(this, this._enemies);
         
         if (targets.length > 0) {
-          this._rng = Math.random();
           damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active2", "normal", 3.2);
           result += targets[0].takeDamage(this, "Feather Blade", damageResult);
         }
@@ -1531,7 +1512,6 @@ class FaithBlade extends hero {
     }
     
     for (var i=0; i<maxTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3);
       result += targets[i].takeDamage(this, "Blade Assault", damageResult);
       
@@ -1812,8 +1792,6 @@ class Horus extends hero {
     }
     
     for (var i=0; i<numTargets; i++) {
-      this._rng = Math.random();
-      
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.06);
       result += targets[i].takeDamage(this, "Torment of Flesh and Soul", damageResult);
       
@@ -1858,7 +1836,6 @@ class Horus extends hero {
     var targets = getFrontTargets(this, this._enemies);
     
     for (var i=0; i<targets.length; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal");
       result += targets[i].takeDamage(this, "Basic Attack", damageResult);
       
@@ -1945,8 +1922,6 @@ class Ithaqua extends hero {
         if (this._enemies[i]._currentStats["totalHP"] > 0) {
           result += this._enemies[i].getDebuff(this, "Ghost Possessed", 3);
         }
-        
-        this._rng = Math.random();
       }
     }
     
@@ -1996,8 +1971,6 @@ class Ithaqua extends hero {
           healAmount = this.calcHeal(this, damageResult["damageAmount"] + hpDamageResult["damageAmount"]);
           result += this.getHeal(this, healAmount);
         }
-        
-        this._rng = Math.random();
       }
     }
     
@@ -2067,7 +2040,6 @@ class Kroos extends hero {
     var targets = getBackTargets(this, this._enemies);
     
     for (var i = 0; i < targets.length; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.90, "basic", "normal");
       result += targets[i].takeDamage(this, "Vicious Fire Perfusion", damageResult);
       
@@ -2107,7 +2079,6 @@ class Kroos extends hero {
     }
     
     for (var i=0; i<maxTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
       result += targets[i].takeDamage(this, "Weak Curse", damageResult);
       
@@ -2334,7 +2305,6 @@ class Nakia extends hero {
       
       for (var i = 0; i < e.length; i++) {
         if (e[i][1]._currentStats["totalHP"] > 0 && e[i][1].hasStatus("bleed")) {
-          this._rng = Math.random();
           damageResult = this.calcDamage(e[i][1], this._currentStats["totalAttack"], "passive", "bleed");
           result += e[i][1].getDebuff(this, "Relentless Rage", 3, {bleed: Math.round(damageResult["damageAmount"])});
           
@@ -2369,7 +2339,6 @@ class Nakia extends hero {
     }
     
     for (var i in targets) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "bleed");
       result += targets[i].getDebuff(this, "Abyss of Torment", 3, {bleed: Math.round(damageResult["damageAmount"]), speed: 30});
     }
@@ -2400,7 +2369,6 @@ class Nakia extends hero {
     });
     
     for (var i = 0; i < maxTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.3);
       result += targets[i].takeDamage(this, "Ferocious Bite", damageResult);
       
@@ -2448,7 +2416,6 @@ class Oberon extends hero {
       if (targets.length < maxTargets) { maxTargets = targets.length; }
       
       for (var i = 0; i < maxTargets; i++) {
-        this._rng = Math.random();
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 6, "passive", "poison", 1, 1, 3);
         result += targets[i].getDebuff(this, "Natural Manipulation", 3, {poison: Math.round(damageResult["damageAmount"] / 3)});
       }
@@ -2489,7 +2456,6 @@ class Oberon extends hero {
     var i = 0;
     
     for ( ; i < targets.length; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.85);
       result += targets[i].takeDamage(this, "Lethal Twining", damageResult);
       
@@ -2508,7 +2474,6 @@ class Oberon extends hero {
     
     for ( ; i < targets.length; i++) {
       if (targets[i]._currentStats["totalHP"] > 0) {
-        this._rng = Math.random();
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.25);
         result += targets[i].takeDamage(this, "Lethal Twining", damageResult);
         
@@ -2528,7 +2493,6 @@ class Oberon extends hero {
     
     for ( ; i < targets.length; i++) {
       if (targets[i]._currentStats["totalHP"] > 0) {
-        this._rng = Math.random();
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.65);
         result += targets[i].takeDamage(this, "Lethal Twining", damageResult);
         
@@ -2685,7 +2649,6 @@ class Penny extends hero {
     
     for (var i in targets) {
       if (targets[i]._currentStats["totalHP"] > 0) {
-        targets[i]._rng = Math.random();
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
         result += targets[i].takeDamage(this, "Gunshot Symphony", damageResult);
         
@@ -2865,7 +2828,6 @@ class Sherlock extends hero {
     }
     
     for (var i=0; i<maxTargets; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3);
       result += targets[i].takeDamage(this, "Master Showman", damageResult);
       
@@ -2908,7 +2870,6 @@ class Tara extends hero {
       
       for (var i=0; i<targets.length; i++) {
         if (targets[i]._currentStats["totalHP"] > 0) {
-          this._rng = Math.random();
           damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal");
           result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult, 0);
           
@@ -3077,7 +3038,6 @@ class UniMax3000 extends hero {
     var targets = getBackTargets(this, this._enemies);
     
     for (var i=0; i<targets.length; i++) {
-      this._rng = Math.random();
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 4.2);
       result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
       

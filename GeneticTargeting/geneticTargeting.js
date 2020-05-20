@@ -243,7 +243,6 @@ function nextMatchup() {
     
     if (stopLoop) { 
       oLog.innerHTML = "<p>Loop stopped by user.</p>" + oLog.innerHTML; 
-      
     } else {
       var summary = "";
       var totalFights = numSims;
@@ -254,6 +253,75 @@ function nextMatchup() {
       
       teamKeys.sort(function(a,b) {
         if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {
+          return -1;
+        } else if (allTeams[a]["attWins"] < allTeams[b]["attWins"]) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      
+      
+      // get first 10% "most diverse" teams by looking at similarity score
+      var rank = 1;
+      var maxRank = Math.floor(teamKeys.length * 0.1);
+      var diffFound;
+      var similarityScore;
+      var heroCount = {};
+      var teamDNA;
+      var arrTeams = [];
+      var tempTeam;
+      
+      for (var i in heroNames) {
+        heroCount[heroNames[i]] = 0;
+      }
+      
+      for (var p in teamKeys) {
+        if (rank <= maxRank) {
+          teamDNA = allTeams[teamKeys[p]]["dna"];
+          tempTeam = Object.assign({}, heroCount);
+          diffFound = true;
+          
+          for (var g = 0; g < 60; g += 10) {
+            tempTeam[teamDNA[g]]++;
+          }
+          
+          for (var x in arrTeams) {
+            similarityScore = 0;
+            
+            for (var h in arrTeams[x]) {
+              if (arrTeams[x][h] > 0 && tempTeam[h] > 0) {
+                if (arrTeams[x][h] > tempTeam[h]) {
+                  similarityScore += tempTeam[h];
+                } else {
+                  similarityScore += arrTeams[x][h];
+                }
+              }
+            }
+            
+            if (similarityScore / 6 >= 0.5) {
+              diffFound = false;
+            }
+          }
+          
+          if (diffFound) {
+            allTeams[teamKeys[p]]["rank"] = rank;
+            rank++;
+            arrTeams.push(tempTeam);
+          } else {
+            allTeams[teamKeys[p]]["rank"] = maxRank + 1;
+          }
+        } else {
+          allTeams[teamKeys[p]]["rank"] = maxRank + 1;
+        }
+      }
+      
+      teamKeys.sort(function(a,b) {
+        if (allTeams[a]["rank"] < allTeams[b]["rank"]) {
+          return -1;
+        } else if (allTeams[a]["rank"] > allTeams[b]["rank"]) {
+          return 1;
+        } else if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {
           return -1;
         } else if (allTeams[a]["attWins"] < allTeams[b]["attWins"]) {
           return 1;
