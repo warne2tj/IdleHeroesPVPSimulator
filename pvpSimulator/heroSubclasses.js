@@ -7,6 +7,17 @@ class Aida extends hero {
   }
   
   
+  handleTriggers(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "balanceMark") {
+      return this.balanceMark(trigger[2]);
+    }
+    
+    return result;
+  }
+  
+  
   balanceMark(target) {
     var result = "";
     

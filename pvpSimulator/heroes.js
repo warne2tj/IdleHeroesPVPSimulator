@@ -631,18 +631,19 @@ class hero {
     
     var blocked = false;
     var critted = false;
-    this._rng = Math.random();
+    var blockRoll = Math.random();
+    var critRoll = Math.random();
     
-    if (this._rng >= (1 - critChance) && this._rng >= (1 - blockChance)) {
+    if (critRoll < critChance && blockRoll < blockChance) {
       // blocked crit
       attackDamage = attackDamage * 0.56 * (1-critDamageReduce) * critDamage;
       blocked = true;
       critted = true;
-    } else if (this._rng >= (1 - critChance) && this._rng < (1 - blockChance)) {
+    } else if (critRoll < critChance) {
       // crit
       attackDamage = attackDamage * (1-critDamageReduce) * critDamage;
       critted = true;
-    } else if (this._rng < (1 - critChance) && this._rng >= (1 - blockChance)) {
+    } else if (blockRoll < blockChance) {
       // blocked normal
       attackDamage = attackDamage * 0.7;
       blocked = true;
@@ -1285,8 +1286,6 @@ class hero {
         result += this.removeBuff("Guardian Shadow");
       }
     } else {
-      damageInRound += damageResult["damageAmount"];
-      
       if (this._currentStats["totalHP"] <= damageResult["damageAmount"]) {
         // hero would die, check for unbending will
         if (this._enable5 == "UnbendingWill" && this._currentStats["unbendingWillTriggered"] == 0 && damageResult["damageSource"] != "mark") {

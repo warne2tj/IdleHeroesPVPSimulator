@@ -1,7 +1,7 @@
 var deathQueue = [];
 var basicQueue = [];
 var activeQueue = [];
-var damageInRound = 0;
+var triggerQueue = [];
 
 
 function runSim() {
@@ -16,6 +16,7 @@ function runSim() {
   var someoneWon = "";
   var endRoundDesc = "";
   var numLiving = 0;
+  var tempTrigger;
   
   var attMonsterName = document.getElementById("attMonster").value;
   var attMonster = new baseMonsterStats[attMonsterName]["className"](attMonsterName, "att");
@@ -69,9 +70,6 @@ function runSim() {
     for (roundNum = 1; roundNum <= 15; roundNum++) {
       // @ start of round
       
-      // track amount of damage done in a round for Aida
-      damageInRound = 0;
-      
       // Output detailed combat log only if running a single simulation
       if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Round " + formatNum(roundNum) + " Start</p>";}
       
@@ -98,6 +96,7 @@ function runSim() {
         deathQueue = [];
         basicQueue = [];
         activeQueue = [];
+        triggerQueue = [];
         
         if (orderOfAttack[orderNum]._currentStats["totalHP"] > 0) {
           if(orderOfAttack[orderNum].isUnderStandardControl()) {
@@ -140,7 +139,10 @@ function runSim() {
               // check for Aida's Balance Mark debuffs
               if ("Balance Mark" in orderOfAttack[orderNum]._debuffs) {
                 var firstKey = Object.keys(orderOfAttack[orderNum]._debuffs["Balance Mark"])[0];
-                temp = orderOfAttack[orderNum]._debuffs["Balance Mark"][firstKey]["source"].balanceMark(orderOfAttack[orderNum]);
+                triggerQueue.push([orderOfAttack[orderNum]._debuffs["Balance Mark"][firstKey]["source"], "balanceMark", orderOfAttack[orderNum]]);
+                //temp = orderOfAttack[orderNum]._debuffs["Balance Mark"][firstKey]["source"].balanceMark(orderOfAttack[orderNum]);
+                tempTrigger = triggerQueue.shift();
+                temp = tempTrigger[0].handleTriggers(tempTrigger);
                 if(numSims == 1) {oCombatLog.innerHTML += temp;}
               }
               
