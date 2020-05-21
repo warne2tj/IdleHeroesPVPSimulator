@@ -1,68 +1,3 @@
-/* 
-Important Notes
-  * Don't forget to check for Tara's Seal of Light if needed.
-  * Don't forget to check for CC if needed.
-  * When getting targets, check that the target is alive. In case all targets are dead. 
-      Some effects still happen with no currently living targets.
-      i.e. only sleepless left to resurrect at end of round, kroos attack still heals
-  * After doing damage, check that damageresult doesn't contain CarrieDodge.
-  * When overriding events, you might need to check that the target or source of the event is the same as the hero being called
-      Depending on the details of the skill that is. 
-      Some react to anyone triggering the event, some only react to themselves.
-  * Rng for a hero's attack is initially generated at the beginning of their turn. 
-      Need to regenerate if they do further attacks. 
-      But maybe not depending on if subsequent attacks use the same roll. This is an open question.
-  
-  
-
-Important Function prototypes
-
-  this.calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0)
-      return {"damageAmount", "critted", "blocked", "damageSource", "damageType", "e5Description"} 
-      damageSource = passive, basic, active, mark, monster, basic2, active2, debuff
-        basic2, active2: for skills that do multiple attacks, Carrie dodge only checked once per skill 
-        active2: does not apply skill damage but applies other skill related effects
-      damageType = normal, burn, bleed, poison, hpPercent, energy, true
-
-
-  this.takeDamage(source, strAttackDesc, damageResult{}, armorReduces=1)
-      
-  this.calcHeal(target, healAmount)
-
-  this.getHeal(source, amount)
-
-  this.getEnergy(source, amount)
-  
-  this.loseEnergy(source, amount)
-
-  this.getBuff(source, buffName, duration, effects{})
-  
-  this.removeBuff(strBuffName, stack="")
-
-  this.getDebuff(source, debuffName, duration, effects{})
-  
-  this.removeDebuff(strDebuffName, stack="")
-  
-  this.hasStatus(strStatus)
-  
-  this.isUnderStandardControl()
-  
-  isControlEffect(strName, effects)
-  
-  startOfRound(roundNum)
-  
-  endOfRound(roundNum)
-
-  basicQueue[], activeQueue[] = push([source, target, damageAmount, critted]) to call the event
-
-  deathQueue[] = push([source, target]) to call the event
-  
-  this.eventAllyBasic(source, e), this.eventAllyActive(source, e), this.eventAllyDied(e), this.eventEnemyDied(e) = called by all heroes so they can react to an event
-
-  this.eventEnemyBasic(source, e), this.eventEnemyActive(source, e) = if overridden, call the super() version so the enemy still gains energy on an attack
-    
-*/
-
 
 // Aida
 class Aida extends hero {
@@ -151,7 +86,7 @@ class Aida extends hero {
     }
     
     
-    if (!("CarrieDodge" in damageResult)) {
+    if (damageResult["damageAmount"] > 0) {
       healAmount = this.calcHeal(this, (damageResult["damageAmount"] + additionalDamageResult["damageAmount"]) * 0.35);
       result += this.getHeal(this, healAmount);
     }
@@ -172,8 +107,8 @@ class Aida extends hero {
     }
     
     for (var i=0; i<numTargets; i++) {
-      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal");
-      result += targets[i].takeDamage(this, "Order Restore", damageResult, 0);
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1, 1, 0, 1, 0);
+      result += targets[i].takeDamage(this, "Order Restore", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
         targets[i].getDebuff(this, "Balance Mark", 3, {});
@@ -657,7 +592,7 @@ class Carrie extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+  takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var outcomeRoll = Math.random();
     
@@ -669,7 +604,7 @@ class Carrie extends hero {
       damageResult["damageAmount"] = 0;
       damageResult["CarrieDodge"] = true;
     } else {
-      result = super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+      result = super.takeDamage(source, strAttackDesc, damageResult);
     }
     
     
@@ -852,16 +787,16 @@ class Cthuga extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+  takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     
     if (!(isMonster(source)) && ["burn", "bleed"].includes(damageResult["damageType"])) {
       damageResult["damageAmount"] = 0;
     }
     
-    result = super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    result = super.takeDamage(source, strAttackDesc, damageResult);
     
-    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && !(isMonster(source)) && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
+    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && !(isMonster(source)) && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
       if (source.hasStatus("burn")) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Soul Shackle</span> triggered.</div>";
         result += this.getBuff(this, "Soul Shackle Attack", 3, {attackPercent: 0.10});
@@ -873,7 +808,7 @@ class Cthuga extends hero {
       }
     }
     
-    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
+    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
       var burnDamageResult = {};
       var bleedDamageResult = {};
       var targets = getRandomTargets(this, this._enemies);
@@ -964,11 +899,11 @@ class DarkArthindol extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+  takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var preHP = this._currentStats["totalHP"];
     
-    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    result += super.takeDamage(source, strAttackDesc, damageResult);
     
     var postHP = this._currentStats["totalHP"];
     
@@ -1186,8 +1121,8 @@ class Elyvia extends hero {
     
     for (var i in e) {
       if ("Fairy's Guard" in e[i][1]._buffs) {
-        var damageResult = e[i][1].calcDamage(e[i][1], e[i][1]._currentStats["totalAttack"] * 3, "passive", "normal");
-        result += source.takeDamage(e[i][1], "Fairy's Guard", damageResult, 0);
+        var damageResult = e[i][1].calcDamage(e[i][1], e[i][1]._currentStats["totalAttack"] * 3, "passive", "normal", 1, 1, 0, 1, 0);
+        result += source.takeDamage(e[i][1], "Fairy's Guard", damageResult);
         
         var healAmount = e[i][1].calcHeal(e[i][1], e[i][1]._currentStats["totalAttack"] * 1.5);
         result += e[i][1].getHeal(e[i][1], healAmount);
@@ -1287,10 +1222,10 @@ class Emily extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+  takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     
-    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    result += super.takeDamage(source, strAttackDesc, damageResult);
     
     if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] < 0.50 && this._currentStats["courageousTriggered"] == 0) {
       this._currentStats["courageousTriggered"] = 1;
@@ -1486,8 +1421,8 @@ class FaithBlade extends hero {
     var targets = getLowestHPTargets(this, this._enemies);
     
     if (targets.length > 0) {
-      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 2, "basic", "normal");
-      result += targets[0].takeDamage(this, "Basic Attack", damageResult, 0);
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 2, "basic", "normal", 1, 1, 0, 1, 0);
+      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
@@ -1517,8 +1452,8 @@ class FaithBlade extends hero {
       
       if (!("CarrieDodge" in damageResult)) {
         if (targets[i]._currentStats["totalHP"] > 0) {
-          additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active2", "normal", 1.08);
-          result += targets[i].takeDamage(this, "Blade Assault 2", additionalDamageResult, 0);
+          additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active2", "normal", 1.08, 1, 0, 1, 0);
+          result += targets[i].takeDamage(this, "Blade Assault 2", additionalDamageResult);
         }
         
         if (targets[i]._currentStats["totalHP"] > 0) {
@@ -1639,11 +1574,11 @@ class Gustin extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+  takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var preHP = this._currentStats["totalHP"];
     
-    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    result += super.takeDamage(source, strAttackDesc, damageResult);
     
     var postHP = this._currentStats["totalHP"];
     var damageAmount = 0.70 * (preHP - postHP);
@@ -1653,7 +1588,7 @@ class Gustin extends hero {
       result += source.takeDamage(this, "Link of Souls", damageResult);
     }
     
-    return result
+    return result;
   }
   
   
@@ -1767,8 +1702,8 @@ class Horus extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
-    var result = super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = super.takeDamage(source, strAttackDesc, damageResult);
     
     if (damageResult["blocked"] == true) {
       this._currentStats["blockCount"]++;
@@ -2013,10 +1948,10 @@ class Kroos extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+  takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     
-    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    result += super.takeDamage(source, strAttackDesc, damageResult);
     
     if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] < 0.50 && this._currentStats["flameInvasionTriggered"] == 0) {
       this._currentStats["flameInvasionTriggered"] = 1;
@@ -2554,44 +2489,22 @@ class Penny extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+  takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var reflectDamageResult = {};
     var tempDamageAmount = damageResult["damageAmount"];
-    var tempHolyDamage = damageResult["holyDamage"];
-    
-    var armorBreak = source._currentStats["armorBreak"] >= 1 ? 1 : source._currentStats["armorBreak"];
-    var armorMitigation = armorReduces * (this._currentStats["totalArmor"] * (1 - armorBreak) / (180 + 20*(this._heroLevel)));
-    var reduceDamage = this._currentStats["damageReduce"] > 0.75 ? 0.75 : this._currentStats["damageReduce"];
-    var classDamageReduce = this._currentStats[source._heroClass.toLowerCase() + "Reduce"];
-    var allDamageReduce = this._currentStats["allDamageReduce"];
-    
-    if (["hpPercent", "energy", "true"].includes(damageResult["damageType"])) {
-      armorMitigation = 0;
-      reduceDamage = 0;
-      classDamageReduce = 0;
-    }
-    
-    if (isDot(damageResult["damageType"])) {
-      var dotReduce = this._currentStats["dotReduce"];
-      tempDamageAmount = tempDamageAmount * (1 - dotReduce);
-    }
-    
-    tempDamageAmount = Math.round(tempDamageAmount * (1-allDamageReduce) * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce));
-    tempHolyDamage = Math.round(tempHolyDamage * (1-allDamageReduce) * (1-reduceDamage) * (1-classDamageReduce));
     
     
     if (["active", "active2", "basic", "basic2"].includes(damageResult["damageSource"]) && "Reflection Armor" in this._buffs && !("Guardian Shadow" in this._buffs)) {
       damageResult["damageAmount"] = damageResult["damageAmount"] / 2;
-      damageResult["holyDamage"] = damageResult["holyDamage"] / 2;
       
-      result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+      result += super.takeDamage(source, strAttackDesc, damageResult);
       
       result += "<div><span class='skill'>Reflection Armor</span> consumed.</div>";
-      tempDamageAmount = Math.floor(tempDamageAmount / 2) + Math.floor(tempHolyDamage / 2);
+      tempDamageAmount = Math.floor(tempDamageAmount / 2)
       
       reflectDamageResult = source.calcDamage(this, tempDamageAmount, "passive", "true");
-      result += source.takeDamage(this, "Reflection Armor", reflectDamageResult, armorReduces);
+      result += source.takeDamage(this, "Reflection Armor", reflectDamageResult);
       this._currentStats["damageHealed"] += tempDamageAmount;
       
       var keyDelete = Object.keys(this._buffs["Reflection Armor"]);
@@ -2602,7 +2515,7 @@ class Penny extends hero {
       }
       
     } else {
-      result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+      result += super.takeDamage(source, strAttackDesc, damageResult);
     }
     
     return result;
@@ -2709,10 +2622,10 @@ class Sherlock extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+  takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     
-    result += super.takeDamage(source, strAttackDesc, damageResult, armorReduces);
+    result += super.takeDamage(source, strAttackDesc, damageResult);
     
     var postHP = this._currentStats["totalHP"];
     
@@ -2870,8 +2783,8 @@ class Tara extends hero {
       
       for (var i=0; i<targets.length; i++) {
         if (targets[i]._currentStats["totalHP"] > 0) {
-          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal");
-          result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult, 0);
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 1, 0, 1, 0);
+          result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
           
           if (Math.random() < 0.3) {
             result += targets[i].getDebuff(this, "Power of Light", 99, {});
@@ -2984,13 +2897,13 @@ class UniMax3000 extends hero {
   }
   
   
-  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1) {
+  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1, armorReduces=1) {
     var result = "";
     
     if ("Rampage" in this._buffs) {
-      result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, canCrit, dotRounds, 0);
+      result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, canCrit, dotRounds, 0, armorReduces);
     } else {
-      result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, canCrit, dotRounds, canBlock);
+      result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, canCrit, dotRounds, canBlock, armorReduces);
     }
     
     return result;
