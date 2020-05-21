@@ -511,28 +511,42 @@ class hero {
   
   // can further extend this to account for new mechanics by adding parameters to the end
   // supply a default value so as to not break other calls to this function
-  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1) {
+  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1, armorReduces=1) {
     // Get damage related stats
     var critChance = canCrit * this._currentStats["crit"];
     var critDamage = 2*this._currentStats["critDamage"] + 1.5;
     var precision = this._currentStats["precision"];
     var precisionDamageIncrease = 1;
     var holyDamageIncrease = this._currentStats["holyDamage"] * .7;
-    var holyDamage = attackDamage * holyDamageIncrease;
     var lethalFightback = 1;
     var damageAgainstBurning = 1;
     var damageAgainstBleed = 1;
     var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
+    var armorBreak = 0;
+    var allDamageTaken = 1 + target._currentStats["allDamageTaken"];
     
-    if (critChance < 0) { critChance = 0; }
-    if (precision < 0) { precision = 0; }
-    
+    // mitigation stats
     var critDamageReduce = target._currentStats["critDamageReduce"];
-    var blockChance = canBlock * (target._currentStats["block"] - precision);
+    var classDamageReduce = 0;
+    var damageReduce = target._currentStats["damageReduce"]
+    var allDamageReduce = target._currentStats["allDamageReduce"];
+    var dotReduce = 0;
     
+    if (isMonster(this)) {
+      armorBreak = 0;
+      classDamageReduce = 0;
+    } else {
+      armorBreak = this._currentStats["armorBreak"] >= 1 ? 1 : this._currentStats["armorBreak"];
+      classDamageReduce = target._currentStats[target._heroClass.toLowerCase() + "Reduce"];
+    }
+    
+    if (armorBreak > 1) { armorBreak = 1; }
+    
+    var armorMitigation = armorReduces * ((1 - armorBreak) * target._currentStats["totalArmor"] / (180 + 20*(this._heroLevel)));
+    
+    // faction advantage
     var factionA = this._heroFaction;
     var factionB = target._heroFaction;
-    var factionBonus = 1;
     var e5Desc = "";
     
     if (
@@ -543,27 +557,43 @@ class hero {
       (factionA == "Dark" && factionB == "Light") ||
       (factionA == "Light" && factionB == "Dark")
     ) {
-      factionBonus += 0.3;
+      damageReduce -= 0.3;
       precision += 0.15;
     }
     precisionDamageIncrease = precision >= 1.5 ? 1.45 : 1.0 + precision * 0.3;
-
+    
+    
     if (
       this._enable2 == "LethalFightback" && 
       this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
-      !(["burn", "bleed", "poison", "dot", "hpPercent", "true"].includes(damageType)) &&
+      !(["burn", "burnTrue", "bleed", "poison", "dot", "hpPercent", "true"].includes(damageType)) &&
       (damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic")
     ) {
       lethalFightback = 1.12;
       e5Desc = "<div><span class='skill'>Lethal Fightback</span> triggered additional damage.</div>";
     }
     
+    
+    // caps and min
+    if (critDamage > 4.5) { critDamage = 4.5; }
+    if (critChance < 0) { critChance = 0; }
+    if (precision < 0) { precision = 0; }
+    if (damageReduce > 0.75) { damageReduce = 0.75; }
+    
+    var blockChance = canBlock * (target._currentStats["block"] - precision);
+    
+    
+    // status modifiers
     if (target.hasStatus("burn")) {
        damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
     if (target.hasStatus("bleed")) {
       damageAgainstBleed += this._currentStats["damageAgainstBleed"];
+    }
+    
+    if (isDot(damageType)) {
+      dotReduce = target._currentStats["dotReduce"];
     }
     
     
@@ -581,19 +611,23 @@ class hero {
       blockChance = 0;
     }
     
-    if (["hpPercent", "energy", "true"].includes(damageType) || damageSource == "debuff") {
+    if (["hpPercent", "energy", "true", "burnTrue"].includes(damageType) || damageSource == "debuff") {
       precisionDamageIncrease = 1;
-      holyDamage = 0;
-      factionBonus = 1;
+      holyDamageIncrease = 0;
       damageAgainstBurning = 1;
       damageAgainstBleed = 1;
       critChance = 0;
       blockChance = 0;
+      armorMitigation = 0;
+      damageReduce = 0;
+      classDamageReduce = 0;
+      allDamageTaken = 1;
     }
     
     
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning * damageAgainstBleed * allDamageDealt;
-    holyDamage = holyDamage * skillDamage * precisionDamageIncrease * factionBonus * lethalFightback * damageAgainstBurning * damageAgainstBleed * allDamageDealt;    
+    // calculate damage
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleed * allDamageDealt;
+    attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1-classDamageReduce) * allDamageTaken;
     
     var blocked = false;
     var critted = false;
@@ -602,18 +636,15 @@ class hero {
     if (this._rng >= (1 - critChance) && this._rng >= (1 - blockChance)) {
       // blocked crit
       attackDamage = attackDamage * 0.56 * (1-critDamageReduce) * critDamage;
-      holyDamage = holyDamage * 0.56 * (1-critDamageReduce) * critDamage;
       blocked = true;
       critted = true;
     } else if (this._rng >= (1 - critChance) && this._rng < (1 - blockChance)) {
       // crit
       attackDamage = attackDamage * (1-critDamageReduce) * critDamage;
-      holyDamage = holyDamage * (1-critDamageReduce) * critDamage;
       critted = true;
     } else if (this._rng < (1 - critChance) && this._rng >= (1 - blockChance)) {
       // blocked normal
       attackDamage = attackDamage * 0.7;
-      holyDamage = holyDamage * 0.7;
       blocked = true;
     } else {
       // normal
@@ -623,14 +654,12 @@ class hero {
     if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike" && !(["burn", "bleed", "poison", "dot", "hpPercent", "true"].includes(damageType))) {
       if (critted == false) {
         attackDamage *= 1.3;
-        holyDamage *= 1.3;
         e5Desc = "<div><span class='skill'>Balanced Strike</span> triggered additional damage on non-crit.</div>";
       }
     }
     
     return {
       "damageAmount": attackDamage,
-      "holyDamage": holyDamage, 
       "critted": critted, 
       "blocked": blocked, 
       "damageSource": damageSource, 
@@ -642,18 +671,16 @@ class hero {
   
   calcHeal(target, healAmount) {
     var healEffect = this._currentStats["healEffect"] + 1;
-    return healAmount * healEffect;
-  }
-  
-  
-  getHeal(source, amount) {
-    var result = "";
     var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
     if (effectBeingHealed < 0) { effectBeingHealed = 0; }
     
-    var amountHealed = Math.round(amount * effectBeingHealed);
+    return Math.round(healAmount * effectBeingHealed * healEffect);
+  }
+  
+  
+  getHeal(source, amountHealed) {
+    var result = "";
     
-      
     if (!(isMonster(source)) && "Healing Curse" in this._debuffs) {
       var debuffKeys = Object.keys(this._debuffs["Healing Curse"]);
       var debuffStack = this._debuffs["Healing Curse"][debuffKeys[0]];
@@ -895,8 +922,15 @@ class hero {
           this._currentStats["totalArmor"] = this.calcCombatArmor();
           
         } else if (isDot(strStatName)) {
-          damageResult = source.calcDamage(this, effects[strStatName], "debuff", "true");
-          damageResult["damageType"] = strStatName;
+          damageResult = {
+            damageAmount: effects[strStatName],
+            damageSource: "debuff",
+            damageType: strStatName,
+            critted: false,
+            blocked: false,
+            e5Description: ""
+          };
+          
           strDamageResult = this.takeDamage(source, "Debuff " + debuffName, damageResult);
           
         } else if (["rounds", "stacks"].includes(strStatName)) {
@@ -1143,8 +1177,15 @@ class hero {
             for (var strStatName in this._debuffs[b][s]["effects"]) {
               if (isDot(strStatName)) {
                 if (this._currentStats["totalHP"] > 0) {
-                  damageResult = this._debuffs[b][s]["source"].calcDamage(this, this._debuffs[b][s]["effects"][strStatName], "debuff", strStatName);
-                  damageResult["damageType"] = strStatName;
+                  damageResult = {
+                    damageAmount: this._debuffs[b][s]["effects"][strStatName],
+                    damageSource: "debuff",
+                    damageType: strStatName,
+                    critted: false,
+                    blocked: false,
+                    e5Description: ""
+                  };
+                  
                   result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
                   result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
                 }
@@ -1220,46 +1261,14 @@ class hero {
   
   
   
-  takeDamage(source, strAttackDesc, damageResult, armorReduces=1) {
+  takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var beforeHP = this._currentStats["totalHP"];
     
-    var armorBreak = 0;
-    var classDamageReduce = 0;
-    
-    if (isMonster(source)) {
-      armorBreak = 0;
-      classDamageReduce = 0;
-    } else {
-      armorBreak = source._currentStats["armorBreak"] >= 1 ? 1 : source._currentStats["armorBreak"];
-      classDamageReduce = this._currentStats[source._heroClass.toLowerCase() + "Reduce"];
-    }
-    
-    var armorMitigation = armorReduces * (this._currentStats["totalArmor"] * (1 - armorBreak) / (180 + 20*(this._heroLevel)));
-    var reduceDamage = this._currentStats["damageReduce"] > 0.75 ? 0.75 : this._currentStats["damageReduce"];
-    var allDamageReduce = this._currentStats["allDamageReduce"];
-    var allDamageTaken = 1 + this._currentStats["allDamageTaken"];
+    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"]);
     
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
-    
-    
-    if (["hpPercent", "energy", "true", "burnTrue"].includes(damageResult["damageType"])) {
-      armorMitigation = 0;
-      reduceDamage = 0;
-      classDamageReduce = 0;
-      allDamageTaken = 1;
-    }
-    
-    if (isDot(damageResult["damageType"])) {
-      var dotReduce = this._currentStats["dotReduce"];
-      damageResult["damageAmount"] = damageResult["damageAmount"] * (1 - dotReduce);
-      damageResult["holyDamage"] = damageResult["holyDamage"] * (1 - dotReduce);
-    }
-    
-    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"] * (1-allDamageReduce) * (1-reduceDamage) * (1-armorMitigation) * (1-classDamageReduce) * allDamageTaken);
-    damageResult["holyDamage"] = Math.round(damageResult["holyDamage"] * (1-allDamageReduce) * (1-reduceDamage) * (1-classDamageReduce) * allDamageTaken);
-    damageResult["damageAmount"] += damageResult["holyDamage"];
     
     // amenra shields
     if ("Guardian Shadow" in this._buffs && !(["passive", "mark"].includes(damageResult["damageSource"])) && !(isMonster(source))) {
