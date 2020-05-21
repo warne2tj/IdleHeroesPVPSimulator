@@ -203,7 +203,7 @@ class AmenRa extends hero {
     var result = "";
     var damageResult = {};
     var targets = getFrontTargets(this, this._enemies);
-    var controlPrecision = this._currentStats["controlPrecision"];
+    var controlPrecision = 1 + this._currentStats["controlPrecision"];
     
     for (var i in targets) {
       if (targets[i]._currentStats["totalHP"] > 0) {
@@ -211,7 +211,7 @@ class AmenRa extends hero {
         result += targets[i].takeDamage(this, "Shadow Defense", damageResult);
         
         
-        if (!("CarrieDodge" in damageResult) && targets[i]._currentStats["totalHP"] > 0 && Math.random() < (0.7 + controlPrecision)) {
+        if (!("CarrieDodge" in damageResult) && targets[i]._currentStats["totalHP"] > 0 && Math.random() < (0.7 * controlPrecision)) {
           result += targets[i].getDebuff(this, "petrify", 2, {});
         }
         
@@ -462,7 +462,7 @@ class Aspen extends hero {
             beforeHorrifyCount = Object.keys(targets[i]._debuffs["Horrify"]).length;
           }
           
-          if (Math.random() < 0.5 + this._currentStats["controlPrecision"]) {
+          if (Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
             result += targets[i].getDebuff(this, "Horrify", 2, {});
           }
           
@@ -961,7 +961,7 @@ class DarkArthindol extends hero {
       result += targets[i].takeDamage(this, "Chaotic Shade", damageResult);
       
       if (!("CarrieDodge" in damageResult) && targets[0]._currentStats["totalHP"] > 0) {
-        if (Math.random() < 0.3 + this._currentStats["controlPrecision"]) {
+        if (Math.random() < 0.3 * (1 + this._currentStats["controlPrecision"])) {
           result += targets[i].getDebuff(this, "petrify", 2, {});
         }
         
@@ -1970,7 +1970,7 @@ class Kroos extends hero {
       
       var targets = getAllTargets(this, this._enemies);
       for (var h in targets) {
-        if (Math.random() < 0.75 + this._currentStats["controlPrecision"]) {
+        if (Math.random() < 0.75 * (1 + this._currentStats["controlPrecision"])) {
           result += targets[h].getDebuff(this, "stun", 2, {});
         }
       }
@@ -2127,7 +2127,7 @@ class Michelle extends hero {
       result += targets[i].takeDamage(this, "Divine Sanction", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.4 + this._currentStats["controlPrecision"]) {
+        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.4 * (1 + this._currentStats["controlPrecision"])) {
           result += targets[i].getDebuff(this, "stun", 2);
         }
         
@@ -2728,7 +2728,7 @@ class Sherlock extends hero {
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[0]._currentStats["totalHP"] > 0 && !("Shapeshift" in targets[0]._debuffs) && Math.random() < 0.5 + this._currentStats["controlPrecision"]) {
+        if (targets[0]._currentStats["totalHP"] > 0 && !("Shapeshift" in targets[0]._debuffs) && Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
           result += targets[0].getDebuff(this, "Shapeshift", 15, {stacks: 3});
         }
         
@@ -2756,7 +2756,7 @@ class Sherlock extends hero {
       result += targets[i].takeDamage(this, "Master Showman", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[i]._currentStats["totalHP"] > 0 && !("Shapeshift" in targets[i]._debuffs) && Math.random() < ccChance + this._currentStats["controlPrecision"]) {
+        if (targets[i]._currentStats["totalHP"] > 0 && !("Shapeshift" in targets[i]._debuffs) && Math.random() < ccChance * (1 + this._currentStats["controlPrecision"])) {
           result += targets[i].getDebuff(this, "Shapeshift", 15, {stacks: 3});
         }
         
@@ -2932,7 +2932,7 @@ class UniMax3000 extends hero {
         result += source.getDebuff(this, "Frenzied Taunt", 2, {attackPercent: 0.2});
         result += this.getBuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
         
-        if (Math.random() < 0.3 + this._currentStats["controlPrecision"]) {
+        if (Math.random() < 0.3 * (1 + this._currentStats["controlPrecision"])) {
           result += source.getDebuff(this, "Taunt", 2, {});
         }
       }
@@ -2972,7 +2972,7 @@ class UniMax3000 extends hero {
           result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
         }
         
-        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.5 + this._currentStats["controlPrecision"]) {
+        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
           result += targets[i].getDebuff(this, "Taunt", 2, {});
         }
       }
