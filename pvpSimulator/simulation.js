@@ -407,18 +407,10 @@ function processQueue() {
     });
     
     for (var i in copyQueue) {
-      if (["eventAllyActive", "eventEnemyActive", "eventAllyBasic", "eventEnemyBasic"].includes(copyQueue[i][1]) 
-        && copyQueue[i][0]._currentStats["totalHP"] > 0
-        && copyQueue[i][0].isNotSealed()
-      ) {
-        result += copyQueue[i][0].handleTrigger(copyQueue[i]);
-      } else if ((["eventAllyDied", "eventEnemyDied"].includes(copyQueue[i][1]) 
-        && copyQueue[i][0]._currentStats["totalHP"] > 0
-        && copyQueue[i][0].isNotSealed())
+      if ((copyQueue[i][0]._currentStats["totalHP"] > 0 && copyQueue[i][0].isNotSealed())
         || copyQueue[i][0]._heroName == "Carrie"
+        || copyQueue[i][1].includes("Mark")
       ) {
-        result += copyQueue[i][0].handleTrigger(copyQueue[i]);
-      } else {
         result += copyQueue[i][0].handleTrigger(copyQueue[i]);
       }
     }

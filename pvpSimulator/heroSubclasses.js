@@ -48,7 +48,7 @@ class Aida extends hero {
         result += targets[i].takeDamage(this, "Final Verdict", damageResult);
         
         if (targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
+          result += targets[i].getDebuff(this, "Effect Being Healed", 99, {effectBeingHealed: 0.1});
         }
       }
     }
@@ -145,7 +145,7 @@ class AmenRa extends hero {
   handleTrigger(trigger) {
     var result = "";
     
-    if (trigger[1] == "eventAllyActive" && !(this.isUnderStandardControl())) {
+    if (trigger[1] == "eventAllyActive") {
       result += this.eventAllyActive();
     }
     
@@ -252,7 +252,7 @@ class Amuvor extends hero {
   handleTrigger(trigger) {
     var result = "";
     
-    if (trigger[1] == "eventAllyActive" && this.isNotSealed() && this._currentStats["totalHP"] > 0) {
+    if (trigger[1] == "eventAllyActive") {
       result += this.eventAllyActive(trigger[2]);
     }
     
@@ -321,7 +321,7 @@ class Amuvor extends hero {
         
         hpDamageResult = this.calcDamage(targets[i], hpDamage, "active2", "hpPercent");
         result += targets[i].takeDamage(this, "Scarlet Contract HP", hpDamageResult);
-        result += targets[i].getDebuff(this, "Scarlet Contract", 2, {effectBeingHealed: 0.3});
+        result += targets[i].getDebuff(this, "Effect Being Healed", 2, {effectBeingHealed: 0.3});
       }
       
       if (targets[i]._currentStats["totalHP"] > 0 && !("CarrieDodge" in damageResult) && targets[i]._heroClass == "Priest") {
@@ -333,7 +333,7 @@ class Amuvor extends hero {
         activeQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"] + priestDamageResult["damageAmount"], damageResult["critted"]]);
       }
       
-      result += this.getBuff(this, "Scarlet Contract", 3, {crit: 0.4});
+      result += this.getBuff(this, "Crit", 3, {crit: 0.4});
     }
     
     return result;
@@ -351,17 +351,35 @@ class Aspen extends hero {
   }
   
   
-  eventAllyActive(source, e) {
+  handleTrigger(trigger) {
     var result = "";
-    if (source.heroDesc() == this.heroDesc()) {
-      result += this.getBuff(this, "Soul Sacrifice Attack", 99, {attackPercent: 0.15, critDamage: 0.15});
-      result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
+    
+    if ((trigger[1] == "eventAllyActive" || trigger[1] == "eventAllyBasic") && trigger[0].heroDesc() == trigger[2].heroDesc()) {
+      result += this.eventAllyActive(trigger[2]);
+    } else if (trigger[1] == "enemyHorrified") {
+      result += this.enemyHorrified();
     }
+    
     return result;
   }
   
   
-  eventAllyBasic(source, e) { return this.eventAllyActive(source, e); }
+  enemyHorrified() {
+    var result = "";
+    var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.5);
+    result += this.getHeal(this, healAmount);
+    result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
+    return result;
+  }
+  
+  
+  eventAllyActive(source, e) {
+    var result = "";
+    result += this.getBuff(this, "Attack Percent", 99, {attackPercent: 0.15});
+    result += this.getBuff(this, "Crit Damage", 99, {critDamage: 0.15});
+    result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
+    return result;
+  }
   
   
   getBuff(source, buffName, duration, effects) {
@@ -400,27 +418,7 @@ class Aspen extends hero {
         result += targets[0].takeDamage(this, "Rage of Shadow HP", hpDamageResult);
         
         if (targets[0]._currentStats["totalHP"] > 0) {
-          var beforeHorrifyCount = 0;
-          if (!("Horrify" in targets[0]._debuffs)) {
-            beforeHorrifyCount = 0;
-          } else {
-            beforeHorrifyCount = Object.keys(targets[0]._debuffs["Horrify"]).length;
-          }
-          
           result += targets[0].getDebuff(this, "Horrify", 2, {});
-          
-          var afterHorrifyCount = 0;
-          if (!("Horrify" in targets[0]._debuffs)) {
-            afterHorrifyCount = 0;
-          } else {
-            afterHorrifyCount = Object.keys(targets[0]._debuffs["Horrify"]).length;
-          }
-          
-          if (afterHorrifyCount > beforeHorrifyCount) {
-            var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.5);
-            result += this.getHeal(this, healAmount);
-            result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
-          }
           
           if (targets[0]._currentStats["totalHP"] > 0 && (targets[0]._currentStats["totalHP"] / targets[0]._stats["totalHP"]) < 0.35) {
             additionalDamage = 1.6 * (damageResult["damageAmount"] + hpDamageResult["damageAmount"]);
@@ -470,28 +468,8 @@ class Aspen extends hero {
         result += targets[i].takeDamage(this, "Dread's Coming HP", hpDamageResult);
         
         if (targets[i]._currentStats["totalHP"] > 0) {
-          var beforeHorrifyCount = 0;
-          if (!("Horrify" in targets[i]._debuffs)) {
-            beforeHorrifyCount = 0;
-          } else {
-            beforeHorrifyCount = Object.keys(targets[i]._debuffs["Horrify"]).length;
-          }
-          
           if (Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
             result += targets[i].getDebuff(this, "Horrify", 2, {});
-          }
-          
-          var afterHorrifyCount = 0;
-          if (!("Horrify" in targets[i]._debuffs)) {
-            afterHorrifyCount = 0;
-          } else {
-            afterHorrifyCount = Object.keys(targets[i]._debuffs["Horrify"]).length;
-          }
-          
-          if (afterHorrifyCount > beforeHorrifyCount) {
-            var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.5);
-            result += this.getHeal(this, healAmount);
-            result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
           }
           
           if (targets[i]._currentStats["totalHP"] > 0 && (targets[i]._currentStats["totalHP"] / targets[i]._stats["totalHP"]) < 0.35) {

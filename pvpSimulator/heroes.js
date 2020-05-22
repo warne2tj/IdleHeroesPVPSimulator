@@ -969,6 +969,10 @@ class hero {
             result += source._allies[h].twine(this);
           }
         }
+      } else if (debuffName == "Horrify") {
+        for (var h in this._enemies) {
+          triggerQueue.push([this._enemies[h], "enemyHorrified"])
+        }
       }
     }
     
@@ -1240,9 +1244,7 @@ class hero {
       
       for (var d in this._debuffs) {
         if (isDispellable(d)) {
-          for (var s in this._debuffs[d]) {
-            listDebuffs.push([d, s]);
-          }
+          listDebuffs.push(d);
         }
       }
       
@@ -1250,7 +1252,7 @@ class hero {
       
       if (listDebuffs.length > 0) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Purify</span> removed debuff.</div>";
-        result += this.removeDebuff(listDebuffs[rng][0], listDebuffs[rng][1]);
+        result += this.removeDebuff(listDebuffs[rng]);
       }
     }
     
@@ -1305,13 +1307,11 @@ class hero {
           this._currentStats["unbendingWillStacks"] = 3;
           this._currentStats["damageHealed"] += damageResult["damageAmount"];
           result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
-          damageResult["damageAmount"] = 0;
           
         } else if (this._currentStats["unbendingWillStacks"] > 0 && damageResult["damageSource"] != "mark") {
           this._currentStats["unbendingWillStacks"] -= 1;
           this._currentStats["damageHealed"] += damageResult["damageAmount"];
           result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
-          damageResult["damageAmount"] = 0;
           
           if (this._currentStats["unbendingWillStacks"] == 0) {
             result += "<div><span class='skill'>Unbending Will</span> ended.</div>";
