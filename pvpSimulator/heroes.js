@@ -1205,7 +1205,7 @@ class hero {
   }
   
   
-  tickEnable3(numLiving) {
+  tickEnable3() {
     var result = "";
     
     if (this._enable3 == "Resilience") {
@@ -1217,6 +1217,17 @@ class hero {
       }
       
     } else if (this._enable3 == "SharedFate") {
+      var numLiving = 0;
+      
+      for (var h in this._allies) {
+        if (this._allies[h]._currentStats["totalHP"] > 0) { numLiving++; }
+      }
+      
+      for (var h in this._enemies) {
+        if (this._enemies[h]._currentStats["totalHP"] > 0) { numLiving++; }
+      }
+      
+      
       var attBuff = numLiving * 0.012;
       if (numLiving > 0) {
         result += "<div>" + this.heroDesc() + " gained Shared Fate. Increased attack by " + formatNum(attBuff * 100) + "%.</div>";
@@ -1250,7 +1261,8 @@ class hero {
   // a bunch of functions for override by hero subclasses as needed to trigger special abilities.
   // usually you'll want to check that the hero is still alive before triggering their effect
   
-  passiveStats() { return; }
+  passiveStats() { return {}; }
+  handleTrigger(e) { return ""; }
   eventAllyBasic(e) { return ""; }
   eventEnemyBasic(e) { return ""; }
   eventAllyActive(e) { return ""; }
@@ -1322,7 +1334,13 @@ class hero {
           
           result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>";
 
-          deathQueue.push([source, this]);
+          for (var h in this._allies) {
+            triggerQueue.push([this._allies[h], "eventAllyDied", source, this]);
+          }
+          
+          for (var h in this._enemies) {
+            triggerQueue.push([this._enemies[h], "eventEnemyDied", source, this]);
+          }
         }
         
       } else {

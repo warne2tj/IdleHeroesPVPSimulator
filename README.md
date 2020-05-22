@@ -44,10 +44,11 @@ Head to the wiki for more details.
   
 ### To Do List
   * Implement new heroes as they release
+  * Test and fix bugs
+  * parse through skills in data mining spreadsheet
   * implement Asmodel
   * implement rest of monsters
   * implement enhanced artifacts
-  * parse through skills in data mining spreadsheet
   * ----------- Priority 2 ------------
   * refactor targeting to take parameter for number of targets
   * refactor check for win into take damage

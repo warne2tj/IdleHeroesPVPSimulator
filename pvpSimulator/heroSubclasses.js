@@ -7,7 +7,7 @@ class Aida extends hero {
   }
   
   
-  handleTriggers(trigger) {
+  handleTrigger(trigger) {
     var result = "";
     
     if (trigger[1] == "balanceMark") {
@@ -29,7 +29,6 @@ class Aida extends hero {
       }
       
       var damageResult = this.calcDamage(target, damageAmount, "mark", "hpPercent");
-      result += target.removeDebuff("Balance Mark");
       result += target.takeDamage(this, "Balance Mark", damageResult);
     }
     
@@ -122,9 +121,13 @@ class Aida extends hero {
       result += targets[i].takeDamage(this, "Order Restore", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        targets[i].getDebuff(this, "Balance Mark", 3, {});
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
+    }
+    
+    targets = getAllTargets(this, this._enemies);
+    for (var i = 0; i < targets.length; i++) {
+      result += targets[i].getDebuff(this, "Balance Mark", 3, {});
     }
     
     return result;

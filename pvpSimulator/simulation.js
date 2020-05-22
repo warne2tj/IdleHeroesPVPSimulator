@@ -1,4 +1,3 @@
-var deathQueue = [];
 var basicQueue = [];
 var activeQueue = [];
 var triggerQueue = [];
@@ -93,7 +92,6 @@ function runSim() {
       
       for (var orderNum = 0; orderNum < orderOfAttack.length; orderNum++) {
         // @ start of hero action
-        deathQueue = [];
         basicQueue = [];
         activeQueue = [];
         triggerQueue = [];
@@ -112,11 +110,6 @@ function runSim() {
               // do active
               result = orderOfAttack[orderNum].doActive();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
-              
-              temp = processDeathQueue();
-              if(numSims == 1) {oCombatLog.innerHTML += temp;}
-              someoneWon = checkForWin();
-              if (someoneWon != "") {break;}
               
               // monster gains energy from hero active
               if (orderOfAttack[orderNum]._attOrDef == "att") {
@@ -140,54 +133,76 @@ function runSim() {
               if ("Balance Mark" in orderOfAttack[orderNum]._debuffs) {
                 var firstKey = Object.keys(orderOfAttack[orderNum]._debuffs["Balance Mark"])[0];
                 triggerQueue.push([orderOfAttack[orderNum]._debuffs["Balance Mark"][firstKey]["source"], "balanceMark", orderOfAttack[orderNum]]);
-                //temp = orderOfAttack[orderNum]._debuffs["Balance Mark"][firstKey]["source"].balanceMark(orderOfAttack[orderNum]);
-                tempTrigger = triggerQueue.shift();
-                temp = tempTrigger[0].handleTriggers(tempTrigger);
-                if(numSims == 1) {oCombatLog.innerHTML += temp;}
               }
               
-              temp = processDeathQueue();
-              if(numSims == 1) {oCombatLog.innerHTML += temp;}
-              someoneWon = checkForWin();
-              if (someoneWon != "") {break;}
+              for (var h in this._allies) {
+                triggerQueue.push(this._allies[i], "eventAllyActive", orderOfAttack[orderNum], activeQueue);
+              }
               
-              
-              // process active queue
-              temp = alertDidActive(orderOfAttack[orderNum], activeQueue);
+              for (var h in this._enemies) {
+                triggerQueue.push(this._allies[i], "eventEnemyActive", orderOfAttack[orderNum], activeQueue);
+              }
+  
+  
+              // get energy after getting hit by active
+              temp = "";
+              for (var i=0; i<activeQueue.length; i++) {
+                if (activeQueue[i][1]._currentStats["totalHP"] > 0) {
+                  if (activeQueue[i][2] > 0) {
+                    if (activeQueue[i][3] == true) {
+                      // double energy on being critted
+                      temp += activeQueue[i][1].getEnergy(activeQueue[i][1], 20);
+                    } else {
+                      temp += activeQueue[i][1].getEnergy(activeQueue[i][1], 10);
+                    }
+                  }
+                }
+              }
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
             } else if ("Horrify" in orderOfAttack[orderNum]._debuffs) {
               if(numSims == 1) {oCombatLog.innerHTML += "<p>" + orderOfAttack[orderNum].heroDesc() + " is Horrified, basic attack skipped.</p>";}
+              
             } else {
               // do basic
               result = orderOfAttack[orderNum].doBasic();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
               
-              temp = processDeathQueue();
-              if(numSims == 1) {oCombatLog.innerHTML += temp;}
-              someoneWon = checkForWin();
-              if (someoneWon != "") {break;}
-              
               // hero gains 50 energy after doing basic
               temp = orderOfAttack[orderNum].getEnergy(orderOfAttack[orderNum], 50);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
-              temp = processDeathQueue();
-              if(numSims == 1) {oCombatLog.innerHTML += temp;}
-              someoneWon = checkForWin();
-              if (someoneWon != "") {break;}
+              for (var h in this._allies) {
+                triggerQueue.push(this._allies[i], "eventAllyBasic", orderOfAttack[orderNum], basicQueue);
+              }
               
-              // process basic queue
-              temp = alertDidBasic(orderOfAttack[orderNum], basicQueue);
+              for (var h in this._enemies) {
+                triggerQueue.push(this._allies[i], "eventEnemyBasic", orderOfAttack[orderNum], basicQueue);
+              }
+              
+              // get energy after getting hit by basic
+              temp = "";
+              for (var i=0; i<basicQueue.length; i++) {
+                if (basicQueue[i][1]._currentStats["totalHP"] > 0) {
+                  if (basicQueue[i][2] > 0) {
+                    if (basicQueue[i][3] == true) {
+                      // double energy on being critted
+                      temp += basicQueue[i][1].getEnergy(basicQueue[i][1], 20);
+                    } else {
+                      temp += basicQueue[i][1].getEnergy(basicQueue[i][1], 10);
+                    }
+                  }
+                }
+              }
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
             }
           }
               
-          temp = processDeathQueue();
+              
+          // process triggers and events    
+          temp = processQueue();
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
-          
           someoneWon = checkForWin();
-          
           if (someoneWon != "") {break;}
         }
       }
@@ -198,7 +213,6 @@ function runSim() {
       if(numSims == 1) {oCombatLog.innerHTML += "<p></p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";}
       
       
-      // attack first
       // handle monster stuff
       if (attMonster._monsterName != "None") {
         monsterResult = "<p></p><div>" + attMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
@@ -212,72 +226,6 @@ function runSim() {
         if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
       }
       
-      temp = processDeathQueue();
-      if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      
-      someoneWon = checkForWin();
-      if (someoneWon != "") {break;}
-      
-      
-      // handle buffs and debuffs
-      if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-      for (var h in attHeroes) {
-        temp = attHeroes[h].tickBuffs();
-        if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      }
-      
-      for (var h in attHeroes) {
-        temp = attHeroes[h].tickDebuffs();
-        if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      }
-      
-      temp = processDeathQueue();
-      if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      
-      someoneWon = checkForWin();
-      if (someoneWon != "") {break;}
-      
-      
-      // get number of living heroes for shared fate enable
-      numLiving = 0;
-      if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-      for (var h in orderOfAttack) {
-        if (orderOfAttack[h]._currentStats["totalHP"] > 0) { numLiving++; }
-      }
-      
-      // trigger E3 enables
-      for (var h in attHeroes) {
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) { 
-          temp = attHeroes[h].tickEnable3(numLiving);
-          if(numSims == 1) {oCombatLog.innerHTML += temp;}
-        }
-      }
-      
-      temp = processDeathQueue();
-      if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      
-      someoneWon = checkForWin();
-      if (someoneWon != "") {break;}
-      
-      
-      // trigger hero end of round abilities
-      for (var h in attHeroes) {
-        if (attHeroes[h].isNotSealed()) {
-          temp = attHeroes[h].endOfRound(roundNum);
-          if(numSims == 1) {oCombatLog.innerHTML += temp;}
-        }
-      }
-      
-      temp = processDeathQueue();
-      if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      
-      someoneWon = checkForWin();
-      if (someoneWon != "") {break;}
-      
-      
-      
-      // defender second
-      // handle monster stuff
       if (defMonster._monsterName != "None") {
         monsterResult = "<p></p><div>" + defMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
         defMonster._energy += 20;
@@ -290,65 +238,51 @@ function runSim() {
         if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
       }
       
-      temp = processDeathQueue();
+      temp = processQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      
       someoneWon = checkForWin();
       if (someoneWon != "") {break;}
       
       
-      // handle buffs and debuffs
+      // handle attacker end of round
       if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-      for (var h in defHeroes) {
-        temp = defHeroes[h].tickBuffs();
+      for (var h in attHeroes) {
+        temp = "";
+        
+        if (attHeroes[h]._currentStats["totalHP"] > 0) {
+          temp = attHeroes[h].tickBuffs();
+          temp += attHeroes[h].tickDebuffs();
+          
+          if (attHeroes[h].isNotSealed()) {
+            temp += attHeroes[h].tickEnable3();
+            temp += attHeroes[h].endOfRound(roundNum);
+          }
+        }
+        
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
+      
+      // handle defender end of round
+      if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
       for (var h in defHeroes) {
-        temp = defHeroes[h].tickDebuffs();
+        temp = "";
+        
+        if (attHeroes[h]._currentStats["totalHP"] > 0) {
+          temp = defHeroes[h].tickBuffs();
+          temp += defHeroes[h].tickDebuffs();
+          
+          if (defHeroes[h].isNotSealed()) {
+            temp += defHeroes[h].tickEnable3(numLiving);
+            temp += defHeroes[h].endOfRound(roundNum);
+          }
+        }
+        
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
-      temp = processDeathQueue();
+      temp = processQueue();
       if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      
-      someoneWon = checkForWin();
-      if (someoneWon != "") {break;}
-      
-      
-      // get number of living heroes for shared fate enable
-      numLiving = 0;
-      if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-      for (var h in orderOfAttack) {
-        if (orderOfAttack[h]._currentStats["totalHP"] > 0) { numLiving++; }
-      }
-      
-      // trigger E3 enables
-      for (var h in defHeroes) {
-        if (defHeroes[h]._currentStats["totalHP"] > 0) { 
-          temp = defHeroes[h].tickEnable3(numLiving);
-          if(numSims == 1) {oCombatLog.innerHTML += temp;}
-        }
-      }
-      
-      temp = processDeathQueue();
-      if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      
-      someoneWon = checkForWin();
-      if (someoneWon != "") {break;}
-      
-      
-      // trigger hero end of round abilities
-      for (var h in defHeroes) {
-        if (defHeroes[h].isNotSealed()) {
-          temp = defHeroes[h].endOfRound(roundNum);
-          if(numSims == 1) {oCombatLog.innerHTML += temp;}
-        }
-      }
-      
-      temp = processDeathQueue();
-      if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      
       someoneWon = checkForWin();
       if (someoneWon != "") {break;}
       
@@ -441,226 +375,33 @@ function runSim() {
   
   return winCount;
 }
-
-
-// alerters to trigger other heroes in response to an action
-
-// tell all heroes a hero did a basic attack and the outcome
-function alertDidBasic(source, e) {
-  var result = "";
-  var temp = "";
-  var livingAllies = [];
-  var livingEnemies = [];
-    
-  e.sort(function(a,b) {
-    if (a[1]._attOrDef == "att" && b[1]._attOrDef == "def") {
-      return -1;
-    } else if (a[1]._attOrDef == "def" && b[1]._attOrDef == "att") {
-      return 1;
-    } else if (a[1]._heroPos < b[1]._heroPos) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
   
   
-  // enemies get energy after getting hit by basic
-  for (var i=0; i<e.length; i++) {
-    if (e[i][1]._currentStats["totalHP"] > 0) {
-      if (e[i][2] > 0) {
-        if (e[i][3] == true) {
-          // double energy on being critted
-          result += e[i][1].getEnergy(e[i][1], 20);
-        } else {
-          result += e[i][1].getEnergy(e[i][1], 10);
-        }
-      }
-    }
-  }
-  
-  
-  // get currently living allies and enemies
-  for (var i = 0; i < source._allies.length; i++) {
-    if (source._allies[i]._heroName != "None" && source._allies[i]._currentStats["totalHP"] > 0) {
-      livingAllies.push(source._allies[i])
-    }
-  }
-  
-  for (var i = 0; i < source._enemies.length; i++) {
-    if (source._enemies[i]._heroName != "None" && 
-      (source._enemies[i]._currentStats["totalHP"] > 0 || source._enemies[i]._heroName == "Elyvia")
-    ) {
-      livingEnemies.push(source._enemies[i])
-    }
-  }
-  
-  
-  // alert living allies and enemies
-  for (var i = 0; i < livingAllies.length; i++) {
-    if (livingAllies[i].isNotSealed()) {
-      temp = livingAllies[i].eventAllyBasic(source, e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-  }
-  
-  for (var i = 0; i < livingEnemies.length; i++) {
-    if (livingEnemies[i].isNotSealed()) {
-      temp = livingEnemies[i].eventEnemyBasic(source, e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-  }
-  
-  return result;
-}
-
-
-// tell all heroes a hero did an active and the outcome
-function alertDidActive(source, e) {
-  var result = "";
-  var temp = "";
-  var livingAllies = [];
-  var livingEnemies = [];
-    
-  e.sort(function(a,b) {
-    if (a[1]._attOrDef == "att" && b[1]._attOrDef == "def") {
-      return -1;
-    } else if (a[1]._attOrDef == "def" && b[1]._attOrDef == "att") {
-      return 1;
-    } else if (a[1]._heroPos < b[1]._heroPos) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
-  
-  
-  // enemies get energy after getting hit by active
-  for (var i=0; i<e.length; i++) {
-    if (e[i][1]._currentStats["totalHP"] > 0) {
-      if (e[i][2] > 0) {
-        if (e[i][3] == true) {
-          // double energy on being critted
-          result += e[i][1].getEnergy(e[i][1], 20);
-        } else {
-          result += e[i][1].getEnergy(e[i][1], 10);
-        }
-      }
-    }
-  }
-  
-  
-  // get currently living allies and enemies
-  for (var i = 0; i < source._allies.length; i++) {
-    if (source._allies[i]._heroName != "None" && source._allies[i]._currentStats["totalHP"] > 0) {
-      livingAllies.push(source._allies[i])
-    }
-  }
-  
-  for (var i = 0; i < source._enemies.length; i++) {
-    if (source._enemies[i]._heroName != "None" && 
-      (source._enemies[i]._currentStats["totalHP"] > 0 || source._enemies[i]._heroName == "Elyvia")
-    ) {
-      livingEnemies.push(source._enemies[i])
-    }
-  }
-  
-  
-  // alert living allies and enemies
-  for (var i = 0; i < livingAllies.length; i++) {
-    if (livingAllies[i].isNotSealed()) {
-      temp = livingAllies[i].eventAllyActive(source, e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-  }
-  
-  for (var i = 0; i < livingEnemies.length; i++) {
-    if (livingEnemies[i].isNotSealed()) {
-      temp = livingEnemies[i].eventEnemyActive(source, e);
-      if (temp != "") {
-        result += "<div>" + temp + "</div>";
-      }
-    }
-  }
-  
-  return result;
-}
-  
-  
-// tell all heroes a hero died
-function processDeathQueue() {
+// process all triggers and events
+function processQueue() {
   var result = "";
   var temp = "";
   var copyQueue;
-  var livingAttackers;
-  var livingDefenders;
-  var livingAllies;
-  var livingEnemies;
   
-  
-  while (deathQueue.length > 0) {
-    copyQueue = [];
-    for (var i=0; i<deathQueue.length; i++) {
-      copyQueue.push(deathQueue[i]);
-    }
-    deathQueue = [];
+  while (triggerQueue.length > 0) {
+    copyQueue = triggerQueue.slice();
+    triggerQueue = [];
+    // stopped here
     
     copyQueue.sort(function(a,b) {
-      if (a[1]._attOrDef == "att" && b[1]._attOrDef == "def") {
+      if (a[0]._attOrDef == "att" && b[0]._attOrDef == "def") {
         return -1;
-      } else if (a[1]._attOrDef == "def" && b[1]._attOrDef == "att") {
+      } else if (a[0]._attOrDef == "def" && b[0]._attOrDef == "att") {
         return 1;
-      } else if (a[1]._heroPos < b[1]._heroPos) {
+      } else if (a[0]._heroPos < b[0]._heroPos) {
         return -1;
       } else {
         return 1;
       }
     });
     
-    // get currently living attackers and defenders
-    livingAttackers = [];
-    for (var i = 0; i < attHeroes.length; i++) {
-      if ((attHeroes[i]._heroName != "None" && attHeroes[i]._currentStats["totalHP"] > 0) || attHeroes[i]._heroName == "Carrie") {
-        livingAttackers.push(attHeroes[i])
-      }
-    }
-    
-    livingDefenders = [];
-    for (var i = 0; i < defHeroes.length; i++) {
-      if ((defHeroes[i]._heroName != "None" && defHeroes[i]._currentStats["totalHP"] > 0) || defHeroes[i]._heroName == "Carrie") {
-        livingDefenders.push(defHeroes[i])
-      }
-    }
-    
-    for (var i=0; i<copyQueue.length; i++) {
-      if (copyQueue[i][1]._attOrDef == "att") {
-        livingAllies = livingAttackers;
-        livingEnemies = livingDefenders;
-      } else {
-        livingAllies = livingDefenders;
-        livingEnemies = livingAttackers;
-      }
-      
-      
-      for (var j = 0; j < livingAllies.length; j++) {
-        temp = livingAllies[j].eventAllyDied(copyQueue[i]);
-        if (temp != "") {
-          result += "<div>" + temp + "</div>";
-        }
-      }
-      
-      for (var j = 0; j < livingEnemies.length; j++) {
-        temp = livingEnemies[j].eventEnemyDied(copyQueue[i]);
-        if (temp != "") {
-          result += "<div>" + temp + "</div>";
-        }
-      }
+    for (var i in copyQueue) {
+      result += copyQueue[i][0].handleTrigger(copyQueue[i]);
     }
   }
   
