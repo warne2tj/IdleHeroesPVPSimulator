@@ -148,7 +148,7 @@ class AmenRa extends hero {
   handleTrigger(trigger) {
     var result = "";
     
-    if (trigger[1] == "eventAllyActive" && this.isNotSealed() && !(this.isUnderStandardControl())) {
+    if (trigger[1] == "eventAllyActive" && !(this.isUnderStandardControl())) {
       result += this.eventAllyActive();
     }
     
@@ -255,7 +255,7 @@ class Amuvor extends hero {
   handleTrigger(trigger) {
     var result = "";
     
-    if (trigger[1] == "eventAllyActive" && this.isNotSealed() && !(this.isUnderStandardControl())) {
+    if (trigger[1] == "eventAllyActive" && this.isNotSealed() && this._currentStats["totalHP"] > 0) {
       result += this.eventAllyActive(trigger[2]);
     }
     
