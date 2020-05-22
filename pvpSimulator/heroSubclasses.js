@@ -223,7 +223,7 @@ class AmenRa extends hero {
         result += targets[i].takeDamage(this, "Shadow Defense", damageResult);
         
         
-        if (!("CarrieDodge" in damageResult) && targets[i]._currentStats["totalHP"] > 0 && Math.random() < (0.7 * controlPrecision)) {
+        if (!("CarrieDodge" in damageResult) && targets[i]._currentStats["totalHP"] > 0 && Math.random() < (0.7 * (1 + controlPrecision))) {
           result += targets[i].getDebuff(this, "petrify", 2, {});
         }
         
@@ -252,7 +252,18 @@ class Amuvor extends hero {
   }
   
   
-  eventAllyActive(source, e) {
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventAllyActive" && this.isNotSealed() && !(this.isUnderStandardControl())) {
+      result += this.eventAllyActive(trigger[2]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyActive(source) {
     var result = "";
     
     // Does not trigger himself on his own active
@@ -330,8 +341,6 @@ class Amuvor extends hero {
       
       result += this.getBuff(this, "Scarlet Contract", 3, {crit: 0.4});
     }
-    
-    result += this.getBuff(this, "Fury of Justice", 99, {});
     
     return result;
     
