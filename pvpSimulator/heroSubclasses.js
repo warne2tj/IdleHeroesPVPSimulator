@@ -39,25 +39,22 @@ class Aida extends hero {
   endOfRound(roundNum) {
     var result = "";
     var healAmount = 0;
-    
-    if (this._currentStats["totalHP"] > 0) {
-      var damageResult = {};
-      var targets = getAllTargets(this, this._enemies);
+    var damageResult = {};
+    var targets = getAllTargets(this, this._enemies);
       
-      for (var i=0; i<targets.length; i++) {
+    for (var i=0; i<targets.length; i++) {
+      if (targets[i]._currentStats["totalHP"] > 0) {
+        damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
+        result += targets[i].takeDamage(this, "Final Verdict", damageResult);
+        
         if (targets[i]._currentStats["totalHP"] > 0) {
-          damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
-          result += targets[i].takeDamage(this, "Final Verdict", damageResult);
-          
-          if (targets[i]._currentStats["totalHP"] > 0) {
-            result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
-          }
+          result += targets[i].getDebuff(this, "Final Verdict", 99, {effectBeingHealed: 0.1});
         }
       }
-      
-      healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.15);
-      result += this.getHeal(this, healAmount);
     }
+    
+    healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.15);
+    result += this.getHeal(this, healAmount);
     
     return result;
   }
@@ -266,14 +263,11 @@ class Amuvor extends hero {
   eventAllyActive(source) {
     var result = "";
     
-    // Does not trigger himself on his own active
-    if (this.heroDesc() != source.heroDesc()) {
-      result += "<div>" + this.heroDesc() + " <span class='skill'>Energy Oblivion</span> triggered.</div>";
-      
-      var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 2);
-      result += this.getHeal(this, healAmount)
-      result += this.getEnergy(this, 35);
-    }
+    result += "<div>" + this.heroDesc() + " <span class='skill'>Energy Oblivion</span> triggered.</div>";
+    
+    var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 2);
+    result += this.getHeal(this, healAmount)
+    result += this.getEnergy(this, 35);
     
     return result;
   }
@@ -614,6 +608,7 @@ class Belrain extends hero {
 class Carrie extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
     super(sHeroName, iHeroPos, attOrDef);
+    this._stats["revive"] = 1;
     this._stats["spiritPowerStacks"] = 0;
   }
   

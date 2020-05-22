@@ -76,14 +76,14 @@ function runSim() {
       
       // trigger hero start of round abilities
       for (var h in attHeroes) {
-        if (attHeroes[h].isNotSealed()) {
+        if ((attHeroes[h].isNotSealed() && attHeroes[h]._currentStats["totalHP"] > 0) || attHeroes[h]._currentStats["revive"] == 1) {
           temp = attHeroes[h].startOfRound(roundNum);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
       }
       
       for (var h in defHeroes) {
-        if (defHeroes[h].isNotSealed()) {
+        if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats["totalHP"] > 0) {
           temp = defHeroes[h].startOfRound(roundNum);
           if(numSims == 1) {oCombatLog.innerHTML += temp;}
         }
@@ -250,13 +250,16 @@ function runSim() {
         temp = "";
         
         if (attHeroes[h]._currentStats["totalHP"] > 0) {
-          temp = attHeroes[h].tickBuffs();
+          temp += attHeroes[h].tickBuffs();
           temp += attHeroes[h].tickDebuffs();
+        }
           
-          if (attHeroes[h].isNotSealed()) {
-            temp += attHeroes[h].tickEnable3();
-            temp += attHeroes[h].endOfRound(roundNum);
-          }
+        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
+          temp += attHeroes[h].tickEnable3();
+        }
+        
+        if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._heroName == "Carrie") {
+          temp += attHeroes[h].endOfRound(roundNum);
         }
         
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
@@ -268,14 +271,17 @@ function runSim() {
       for (var h in defHeroes) {
         temp = "";
         
-        if (attHeroes[h]._currentStats["totalHP"] > 0) {
-          temp = defHeroes[h].tickBuffs();
+        if (defHeroes[h]._currentStats["totalHP"] > 0) {
+          temp += defHeroes[h].tickBuffs();
           temp += defHeroes[h].tickDebuffs();
+        }
           
-          if (defHeroes[h].isNotSealed()) {
-            temp += defHeroes[h].tickEnable3(numLiving);
-            temp += defHeroes[h].endOfRound(roundNum);
-          }
+        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
+          temp += defHeroes[h].tickEnable3();
+        }
+        
+        if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._heroName == "Carrie") {
+          temp += defHeroes[h].endOfRound(roundNum);
         }
         
         if(numSims == 1) {oCombatLog.innerHTML += temp;}
