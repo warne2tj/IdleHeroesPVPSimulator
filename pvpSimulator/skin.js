@@ -93,8 +93,8 @@ var skins = {
   },
   
   "Ithaqua": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
+    "Football Babe": {hpPercent: 0.03, attackPercent: 0.03, crit: 0.02},
+    "Legendary Football Babe": {hpPercent: 0.06, attackPercent: 0.06, crit: 0.03}
   },
   
   "Kroos": {

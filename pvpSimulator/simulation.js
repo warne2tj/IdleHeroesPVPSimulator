@@ -135,12 +135,12 @@ function runSim() {
                 triggerQueue.push([orderOfAttack[orderNum]._debuffs["Balance Mark"][firstKey]["source"], "balanceMark", orderOfAttack[orderNum]]);
               }
               
-              for (var h in this._allies) {
-                triggerQueue.push(this._allies[i], "eventAllyActive", orderOfAttack[orderNum], activeQueue);
+              for (var h in orderOfAttack[orderNum]._allies) {
+                triggerQueue.push([orderOfAttack[orderNum]._allies[h], "eventAllyActive", orderOfAttack[orderNum], activeQueue]);
               }
               
-              for (var h in this._enemies) {
-                triggerQueue.push(this._allies[i], "eventEnemyActive", orderOfAttack[orderNum], activeQueue);
+              for (var h in orderOfAttack[orderNum]._enemies) {
+                triggerQueue.push([orderOfAttack[orderNum]._enemies[h], "eventEnemyActive", orderOfAttack[orderNum], activeQueue]);
               }
   
   
@@ -172,12 +172,12 @@ function runSim() {
               temp = orderOfAttack[orderNum].getEnergy(orderOfAttack[orderNum], 50);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
-              for (var h in this._allies) {
-                triggerQueue.push(this._allies[i], "eventAllyBasic", orderOfAttack[orderNum], basicQueue);
+              for (var h in orderOfAttack[orderNum]._allies) {
+                triggerQueue.push([orderOfAttack[orderNum]._allies[h], "eventAllyBasic", orderOfAttack[orderNum], basicQueue]);
               }
               
-              for (var h in this._enemies) {
-                triggerQueue.push(this._allies[i], "eventEnemyBasic", orderOfAttack[orderNum], basicQueue);
+              for (var h in orderOfAttack[orderNum]._enemies) {
+                triggerQueue.push([orderOfAttack[orderNum]._enemies[h], "eventEnemyBasic", orderOfAttack[orderNum], basicQueue]);
               }
               
               // get energy after getting hit by basic

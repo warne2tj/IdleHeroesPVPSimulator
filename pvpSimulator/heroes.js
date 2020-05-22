@@ -1333,6 +1333,14 @@ class hero {
           }
           
           result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(0) + ".</div><div>" + this.heroDesc() + " died.</div>";
+      
+          for (var b in this._buffs) {
+            result += this.removeBuff(b);
+          }
+          
+          for (var d in this._debuffs) {
+            result += this.removeDebuff(d);
+          }
 
           for (var h in this._allies) {
             triggerQueue.push([this._allies[h], "eventAllyDied", source, this]);

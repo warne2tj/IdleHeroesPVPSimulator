@@ -145,6 +145,35 @@ class AmenRa extends hero {
   }
   
   
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventAllyActive" && this.isNotSealed() && !(this.isUnderStandardControl())) {
+      result += this.eventAllyActive();
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyActive() {
+    var result = "";
+    var damageResult = {};
+    var targets;
+    
+    for (var i=1; i<=3; i++) {
+      targets = getRandomTargets(this, this._enemies);
+      
+      if (targets.length > 0) {
+        damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 2, "passive", "normal");
+        result += targets[0].takeDamage(this, "Terrible Feast", damageResult);
+      }
+    }
+    
+    return result;
+  }
+  
+  
   getDebuff(source, debuffName, duration, effects) {
     var result = "";
     
@@ -158,26 +187,6 @@ class AmenRa extends hero {
       }
     } else {
       result = super.getDebuff(source, debuffName, duration, effects);
-    }
-    
-    return result;
-  }
-  
-  
-  eventAllyActive(source, e) {
-    var result = "";
-    var damageResult = {};
-    var targets;
-    
-    if (!(this.isUnderStandardControl())) {
-      for (var i=1; i<=3; i++) {
-        targets = getRandomTargets(this, this._enemies);
-        
-        if (targets.length > 0) {
-          damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 2, "passive", "normal");
-          result += targets[0].takeDamage(this, "Terrible Feast", damageResult);
-        }
-      }
     }
     
     return result;
@@ -625,14 +634,6 @@ class Carrie extends hero {
     if (this._currentStats["totalHP"] <= 0 && damageResult["damageSource"].substring(0, 7) != "passive") {
       this._currentStats["spiritPowerStacks"] = 0;
       result += "<div>" + this.heroDesc() + " became a <span class='skill'>Shadowy Spirit</span>.</div>";
-      
-      for (var b in this._buffs) {
-        this.removeBuff(b);
-      }
-      
-      for (var d in this._debuffs) {
-        this.removeDebuff(d);
-      }
     }
     
     return result;
