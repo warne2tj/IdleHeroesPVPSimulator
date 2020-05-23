@@ -50,8 +50,8 @@ Head to the wiki for more details.
   * implement rest of monsters
   * implement enhanced artifacts
   * ----------- Priority 2 ------------
-  * refactor targeting to take parameter for number of targets
-  * refactor check for win into take damage
-  * refactor on damage type, damage sources, buff types, debuff types
+  * refactor and simplify targeting to take parameter for number of targets
+  * refactor and simplify damage type, damage sources, buff types, debuff types
+  * refactor and simplify how carrie's dodge is checked for
   * improve look of hero stat sheet, buff, and debuff descriptions
   * improve combat log output to read and flow better

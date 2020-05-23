@@ -16,6 +16,7 @@ function runSim() {
   var endRoundDesc = "";
   var numLiving = 0;
   var tempTrigger;
+  var currentHero;
   
   var attMonsterName = document.getElementById("attMonster").value;
   var attMonster = new baseMonsterStats[attMonsterName]["className"](attMonsterName, "att");
@@ -44,15 +45,12 @@ function runSim() {
     defMonster._energy = 0;
     
     // snapshot stats as they are
-    orderOfAttack = [];
-    
     numOfHeroes = attHeroes.length;
     for (var i = 0; i < numOfHeroes; i++) {
       if (attHeroes[i]._heroName != "None") {
         attHeroes[i].snapshotStats();
         attHeroes[i]._buffs = {};
         attHeroes[i]._debuffs = {};
-        orderOfAttack.push(attHeroes[i]);
       }
     }
     
@@ -62,7 +60,21 @@ function runSim() {
         defHeroes[i].snapshotStats();
         defHeroes[i]._buffs = {};
         defHeroes[i]._debuffs = {};
-        orderOfAttack.push(defHeroes[i]);
+      }
+    }
+    
+    // trigger start of battle abilities
+    for (var h in attHeroes) {
+      if ((attHeroes[h].isNotSealed() && attHeroes[h]._currentStats["totalHP"] > 0) || attHeroes[h]._currentStats["revive"] == 1) {
+        temp = attHeroes[h].startOfBattle();
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      }
+    }
+    
+    for (var h in defHeroes) {
+      if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats["totalHP"] > 0) {
+        temp = defHeroes[h].startOfBattle();
+        if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
     }
     
@@ -72,47 +84,36 @@ function runSim() {
       // Output detailed combat log only if running a single simulation
       if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Round " + formatNum(roundNum) + " Start</p>";}
       
-      orderOfAttack.sort(speedSort);
       
-      // trigger hero start of round abilities
-      for (var h in attHeroes) {
-        if ((attHeroes[h].isNotSealed() && attHeroes[h]._currentStats["totalHP"] > 0) || attHeroes[h]._currentStats["revive"] == 1) {
-          temp = attHeroes[h].startOfRound(roundNum);
-          if(numSims == 1) {oCombatLog.innerHTML += temp;}
-        }
-      }
+      orderOfAttack = attHeroes.concat(defHeroes);
       
-      for (var h in defHeroes) {
-        if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats["totalHP"] > 0) {
-          temp = defHeroes[h].startOfRound(roundNum);
-          if(numSims == 1) {oCombatLog.innerHTML += temp;}
-        }
-      }
-      
-      
-      for (var orderNum = 0; orderNum < orderOfAttack.length; orderNum++) {
+      while (orderOfAttack.length > 0) {
         // @ start of hero action
         basicQueue = [];
         activeQueue = [];
         triggerQueue = [];
         
-        if (orderOfAttack[orderNum]._currentStats["totalHP"] > 0) {
-          if(orderOfAttack[orderNum].isUnderStandardControl()) {
-            if(numSims == 1) {oCombatLog.innerHTML += "<p>" + orderOfAttack[orderNum].heroDesc() + " is under control effect, turn skipped.</p>";}
+        
+        orderOfAttack.sort(speedSort);
+        currentHero = orderOfAttack.shift();
+        
+        if (currentHero._currentStats["totalHP"] > 0) {
+          if(currentHero.isUnderStandardControl()) {
+            if(numSims == 1) {oCombatLog.innerHTML += "<p>" + currentHero.heroDesc() + " is under control effect, turn skipped.</p>";}
           } else {
             if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
             
             // decide on action
-            if (orderOfAttack[orderNum]._currentStats["energy"] >= 100 && !("Silence" in orderOfAttack[orderNum]._debuffs)) {
+            if (currentHero._currentStats["energy"] >= 100 && !("Silence" in currentHero._debuffs)) {
               // set hero energy to 0
-              orderOfAttack[orderNum]._currentStats["energy"] = 0;
+              currentHero._currentStats["energy"] = 0;
               
               // do active
-              result = orderOfAttack[orderNum].doActive();
+              result = currentHero.doActive();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
               
               // monster gains energy from hero active
-              if (orderOfAttack[orderNum]._attOrDef == "att") {
+              if (currentHero._attOrDef == "att") {
                 if (attMonster._monsterName != "None") {
                   monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
                   attMonster._energy += 10;
@@ -130,17 +131,17 @@ function runSim() {
               }
               
               // check for Aida's Balance Mark debuffs
-              if ("Balance Mark" in orderOfAttack[orderNum]._debuffs) {
-                var firstKey = Object.keys(orderOfAttack[orderNum]._debuffs["Balance Mark"])[0];
-                triggerQueue.push([orderOfAttack[orderNum]._debuffs["Balance Mark"][firstKey]["source"], "balanceMark", orderOfAttack[orderNum]]);
+              if ("Balance Mark" in currentHero._debuffs) {
+                var firstKey = Object.keys(currentHero._debuffs["Balance Mark"])[0];
+                triggerQueue.push([currentHero._debuffs["Balance Mark"][firstKey]["source"], "balanceMark", currentHero, currentHero._debuffs["Balance Mark"][firstKey]["effects"]["attackAmount"]]);
               }
               
-              for (var h in orderOfAttack[orderNum]._allies) {
-                triggerQueue.push([orderOfAttack[orderNum]._allies[h], "eventAllyActive", orderOfAttack[orderNum], activeQueue]);
+              for (var h in currentHero._allies) {
+                triggerQueue.push([currentHero._allies[h], "eventAllyActive", currentHero, activeQueue]);
               }
               
-              for (var h in orderOfAttack[orderNum]._enemies) {
-                triggerQueue.push([orderOfAttack[orderNum]._enemies[h], "eventEnemyActive", orderOfAttack[orderNum], activeQueue]);
+              for (var h in currentHero._enemies) {
+                triggerQueue.push([currentHero._enemies[h], "eventEnemyActive", currentHero, activeQueue]);
               }
   
   
@@ -160,24 +161,24 @@ function runSim() {
               }
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
-            } else if ("Horrify" in orderOfAttack[orderNum]._debuffs) {
-              if(numSims == 1) {oCombatLog.innerHTML += "<p>" + orderOfAttack[orderNum].heroDesc() + " is Horrified, basic attack skipped.</p>";}
+            } else if ("Horrify" in currentHero._debuffs) {
+              if(numSims == 1) {oCombatLog.innerHTML += "<p>" + currentHero.heroDesc() + " is Horrified, basic attack skipped.</p>";}
               
             } else {
               // do basic
-              result = orderOfAttack[orderNum].doBasic();
+              result = currentHero.doBasic();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
               
               // hero gains 50 energy after doing basic
-              temp = orderOfAttack[orderNum].getEnergy(orderOfAttack[orderNum], 50);
+              temp = currentHero.getEnergy(currentHero, 50);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
-              for (var h in orderOfAttack[orderNum]._allies) {
-                triggerQueue.push([orderOfAttack[orderNum]._allies[h], "eventAllyBasic", orderOfAttack[orderNum], basicQueue]);
+              for (var h in currentHero._allies) {
+                triggerQueue.push([currentHero._allies[h], "eventAllyBasic", currentHero, basicQueue]);
               }
               
-              for (var h in orderOfAttack[orderNum]._enemies) {
-                triggerQueue.push([orderOfAttack[orderNum]._enemies[h], "eventEnemyBasic", orderOfAttack[orderNum], basicQueue]);
+              for (var h in currentHero._enemies) {
+                triggerQueue.push([currentHero._enemies[h], "eventEnemyBasic", currentHero, basicQueue]);
               }
               
               // get energy after getting hit by basic
@@ -258,7 +259,7 @@ function runSim() {
           temp += attHeroes[h].tickEnable3();
         }
         
-        if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._heroName == "Carrie") {
+        if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
           temp += attHeroes[h].endOfRound(roundNum);
         }
         
@@ -280,7 +281,7 @@ function runSim() {
           temp += defHeroes[h].tickEnable3();
         }
         
-        if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._heroName == "Carrie") {
+        if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
           temp += defHeroes[h].endOfRound(roundNum);
         }
         
@@ -410,6 +411,7 @@ function processQueue() {
       if ((copyQueue[i][0]._currentStats["totalHP"] > 0 && copyQueue[i][0].isNotSealed())
         || copyQueue[i][0]._heroName == "Carrie"
         || copyQueue[i][1].includes("Mark")
+        || copyQueue[i][1] == "eventSelfDied"
       ) {
         result += copyQueue[i][0].handleTrigger(copyQueue[i]);
       }

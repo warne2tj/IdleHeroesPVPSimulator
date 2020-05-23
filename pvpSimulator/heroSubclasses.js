@@ -11,21 +11,21 @@ class Aida extends hero {
     var result = "";
     
     if (trigger[1] == "balanceMark") {
-      return this.balanceMark(trigger[2]);
+      return this.balanceMark(trigger[2], trigger[3]);
     }
     
     return result;
   }
   
   
-  balanceMark(target) {
+  balanceMark(target, attackAmount) {
     var result = "";
     
     if (target._currentStats["totalHP"] > 0) {
       var damageAmount = target._stats["totalHP"] * 0.25;
       
-      if (damageAmount > this._currentStats["totalAttack"] * 30) {
-        damageAmount = this._currentStats["totalAttack"] * 30;
+      if (damageAmount > attackAmount * 30) {
+        damageAmount = attackAmount * 30;
       }
       
       var damageResult = this.calcDamage(target, damageAmount, "mark", "hpPercent");
@@ -124,7 +124,7 @@ class Aida extends hero {
     
     targets = getAllTargets(this, this._enemies);
     for (var i = 0; i < targets.length; i++) {
-      result += targets[i].getDebuff(this, "Balance Mark", 3, {});
+      result += targets[i].getDebuff(this, "Balance Mark", 3, {attackAmount: this._currentStats["totalAttack"]});
     }
     
     return result;
@@ -503,27 +503,22 @@ class Belrain extends hero {
   }
   
   
-  eventAllyDied(e) { 
+  handleTrigger(trigger) {
     var result = "";
     
-    if (e[1].heroDesc() == this.heroDesc()) {
-      var targets = getAllTargets(this, this._allies);
-      var healEffect = 1 + this._currentStats["healEffect"];
-      var healAmount = Math.round(this._currentStats["totalAttack"] * 4 * healEffect);
-      
-      for (var i=0; i<targets.length; i++) {
-        result += targets[i].getBuff(this, "Light of Souls", 4, {heal: healAmount});
-      }
+    if ((trigger[1] == "eventAllyDied") && trigger[0].heroDesc() == trigger[2].heroDesc()) {
+      result += this.eventAllyDied();
+    } else if (trigger[1] == "eventSelfDied") {
+      result += this.eventSelfDied();
     }
     
-    return result; 
+    return result;
   }
   
   
-  doBasic() {
-    var result = super.doBasic();
-    var healEffect = 1 + this._currentStats["healEffect"];
-    var healAmount = Math.round(this._currentStats["totalAttack"] * 2.5 * healEffect);
+  eventAllyBasic() {
+    var result = "";
+    var healAmount;
     var targets = getLowestHPTargets(this, this._allies);
     var maxTargets = 3;
     
@@ -532,10 +527,26 @@ class Belrain extends hero {
     }
     
     for (var i=0; i<maxTargets; i++) {
-      result += targets[i].getBuff(this, "Sanctity Will", 2, {heal: healAmount});
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 2.5);
+      result += targets[i].getBuff(this, "Heal", 2, {heal: healAmount});
     }
     
     return result;
+  }
+  
+  
+  eventSelfDied() { 
+    var result = "";
+    
+    var targets = getAllTargets(this, this._allies);
+    var healAmount;
+    
+    for (var i=0; i<targets.length; i++) {
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 4);
+      result += targets[i].getBuff(this, "Heal", 4, {heal: healAmount});
+    }
+    
+    return result; 
   }
   
   
@@ -565,7 +576,9 @@ class Belrain extends hero {
     }
     
     for (var i=0; i<numTargets; i++) {
-      result += targets[i].getBuff(this, "Holylight Sparkle", 3, {attackPercent: 0.3, speed: 30, effectBeingHealed: 0.2});
+      result += targets[i].getBuff(this, "Attack Percent", 3, {attackPercent: 0.3});
+      result += targets[i].getBuff(this, "Speed", 3, {speed: 30});
+      result += targets[i].getBuff(this, "Effect Being Healed", 3, {effectBeingHealed: 0.2});
       
       if (Math.random() < 0.4) {
         for (var d in this._debuffs) {
@@ -727,22 +740,6 @@ class Carrie extends hero {
   }
   
   
-  startOfRound(roundNum) {
-    var result = "";
-    
-    if (this._currentStats["totalHP"] <= 0) {
-      if (this._currentStats["spiritPowerStacks"] >= 4) {
-        this._currentStats["spiritPowerStacks"] = 0;
-        this._currentStats["totalHP"] = this._stats["totalHP"];
-        this._currentStats["energy"] = 100;
-        result += "<div>" + this.heroDesc() + " has revived with full health and energy.</div>";
-      }
-    }
-    
-    return result;
-  }
-  
-  
   endOfRound(roundNum) {
     var result = "";
     
@@ -750,23 +747,34 @@ class Carrie extends hero {
       var damageResult = {};
       var targets = getLowestHPTargets(this, this._enemies);
       var maxDamage = 15 * this._currentStats["totalAttack"];
-      var maxTargets = 1;
       
-      if (targets.length < maxTargets) {
-        maxTargets = targets.length;
-      }
-      
-      for (var i=0; i<maxTargets; i++) {
-        var damageAmount = 0.5 * (targets[i]._stats["totalHP"] - targets[i]._currentStats["totalHP"]);
+      if (targets.length > 0) {
+        var damageAmount = 0.5 * (targets[0]._stats["totalHP"] - targets[0]._currentStats["totalHP"]);
         
         if (damageAmount > maxDamage) {
           damageAmount = maxDamage;
         }
         
-        damageResult = this.calcDamage(targets[i], damageAmount, "passive", "hpPercent");
-        result += targets[i].takeDamage(this, "Shadowy Spirit", damageResult);
+        damageResult = this.calcDamage(targets[0], damageAmount, "passive", "hpPercent");
+        result += targets[0].takeDamage(this, "Shadowy Spirit", damageResult);
         
-        this._currentStats["spiritPowerStacks"] += 1;
+      }
+      
+      
+      this._currentStats["spiritPowerStacks"] += 1;
+      if (this._currentStats["spiritPowerStacks"] >= 4) {
+        for (var b in this._buffs) {
+          this.removeBuff(b);
+        }
+        
+        for (var d in this._debuffs) {
+          this.removeDebuff(d);
+        }
+        
+        this._currentStats["spiritPowerStacks"] = 0;
+        this._currentStats["totalHP"] = this._stats["totalHP"];
+        this._currentStats["energy"] = 100;
+        result += "<div>" + this.heroDesc() + " has revived with full health and energy.</div>";
       }
     }
     
@@ -1480,21 +1488,9 @@ class Gustin extends hero {
     this.applyStatChange({hpPercent: 0.25, speed: 30, controlImmune: 0.3, effectBeingHealed: 0.3}, "PassiveStats");
   }
   
-  startOfRound(roundNum) {
+  startOfBattle() {
     var targets = getRandomTargets(this, this._enemies);
-    var linked = false;
-    var result = "";
-    
-    if (targets.length > 0) {
-      for (var i = 0; i < targets.length; i++) {
-        if ("Link of Souls" in targets[i]._debuffs) { linked = true; }
-      }
-      
-      if (!(linked)) {
-        result += targets[0].getDebuff(this, "Link of Souls", 99, {});
-      }
-    }
-    
+    var result = targets[0].getDebuff(this, "Link of Souls", 99, {});
     return result;
   }
   
@@ -1519,6 +1515,20 @@ class Gustin extends hero {
       if (targets.length > 0) {
         var healAmount = this.calcHeal(this, 0.25 * targets[0]._stats["totalHP"]);
         result += targets[0].getHeal(this, healAmount);
+      }
+    }
+    
+    
+    var linked = false;
+    targets = getRandomTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      for (var i = 0; i < targets.length; i++) {
+        if ("Link of Souls" in targets[i]._debuffs) { linked = true; }
+      }
+      
+      if (!(linked)) {
+        result += targets[0].getDebuff(this, "Link of Souls", 99, {});
       }
     }
     
@@ -2051,7 +2061,7 @@ class Michelle extends hero {
   }
   
   
-  startOfRound(roundNum) {
+  endOfRound(roundNum) {
     var result = "";
     
     if (this._currentStats["totalHP"] <= 0 && this._currentStats["revive"] == 1) {          
