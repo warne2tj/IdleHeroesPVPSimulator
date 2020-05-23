@@ -2,7 +2,6 @@ var basicQueue = [];
 var activeQueue = [];
 var triggerQueue = [];
 
-
 function runSim() {
   var oCombatLog = document.getElementById("combatLog");
   var numSims = document.getElementById("numSims").value;
@@ -429,14 +428,14 @@ function checkForWin() {
   
   numOfHeroes = attHeroes.length;
   for (var i = 0; i < numOfHeroes; i++) {
-    if (attHeroes[i]._currentStats["totalHP"] > 0 || attHeroes[i]._currentStats["revive"] == 1) {
+    if (attHeroes[i]._currentStats["totalHP"] > 0 || (attHeroes[i]._currentStats["revive"] == 1 && attHeroes[i]._heroName != "Carrie")) {
       attAlive++;
     }
   }
   
   numOfHeroes = defHeroes.length;
   for (var i = 0; i < numOfHeroes; i++) {
-    if (defHeroes[i]._currentStats["totalHP"] > 0 || defHeroes[i]._currentStats["revive"] == 1) {
+    if (defHeroes[i]._currentStats["totalHP"] > 0 || (defHeroes[i]._currentStats["revive"] == 1 && defHeroes[i]._heroName != "Carrie")) {
       defAlive++;
     }
   }

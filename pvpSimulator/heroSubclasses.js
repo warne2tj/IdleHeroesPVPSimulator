@@ -330,7 +330,7 @@ class Amuvor extends hero {
       }
       
       if (!("CarrieDodge" in damageResult)) {
-        activeQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"] + priestDamageResult["damageAmount"], damageResult["critted"]]);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"] + priestDamageResult["damageAmount"], damageResult["critted"] || priestDamageResult["critted"]]);
       }
       
       result += this.getBuff(this, "Crit", 3, {crit: 0.4});
@@ -610,6 +610,85 @@ class Carrie extends hero {
   }
   
   
+  handleTrigger(trigger) {
+    if ((trigger[1] == "eventAllyDied" || trigger[1] == "eventEnemyDied") && this._currentStats["totalHP"] <= 0) {
+      return this.eventAllyDied();
+    } else if (trigger[1] == "devouringMark") {
+      if (trigger[2]._currentStats["totalHP"] > 0 && trigger[2]._currentStats["energy"] >= 100) {
+        return this.devouringMark(trigger[2], trigger[3], trigger[4]);
+      }
+    }
+    
+    return "";
+  }
+  
+  
+  devouringMark(target, attackAmount, energyAmount) {
+    var result = "";
+    var damageResult = {};
+    
+    // attack % per energy damage seems to be true damage
+    damageResult = this.calcDamage(target, attackAmount * 0.1 * energyAmount, "mark", "energy");
+    result = target.takeDamage(this, "Devouring Mark", damageResult);
+    result += target.removeDebuff("Devouring Mark");
+    
+    if (target._currentStats["totalHP"] > 0) {
+      result += "<div>Energy set to " + formatNum(0) + ".</div>";
+      target._currentStats["energy"] = 0;
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyDied(e) { 
+    this._currentStats["spiritPowerStacks"] += 1;
+    return ""; 
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] <= 0) {
+      var damageResult = {};
+      var targets = getLowestHPTargets(this, this._enemies);
+      var maxDamage = 15 * this._currentStats["totalAttack"];
+      
+      if (targets.length > 0) {
+        var damageAmount = 0.5 * (targets[0]._stats["totalHP"] - targets[0]._currentStats["totalHP"]);
+        
+        if (damageAmount > maxDamage) {
+          damageAmount = maxDamage;
+        }
+        
+        damageResult = this.calcDamage(targets[0], damageAmount, "passive", "hpPercent");
+        result += targets[0].takeDamage(this, "Shadowy Spirit", damageResult);
+        
+      }
+      
+      
+      this._currentStats["spiritPowerStacks"] += 1;
+      if (this._currentStats["spiritPowerStacks"] >= 4) {
+        for (var b in this._buffs) {
+          this.removeBuff(b);
+        }
+        
+        for (var d in this._debuffs) {
+          this.removeDebuff(d);
+        }
+        
+        this._currentStats["spiritPowerStacks"] = 0;
+        this._currentStats["totalHP"] = this._stats["totalHP"];
+        this._currentStats["energy"] = 100;
+        result += "<div>" + this.heroDesc() + " has revived with full health and energy.</div>";
+      }
+    }
+    
+    return result;
+  }
+  
+  
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var outcomeRoll = Math.random();
@@ -684,97 +763,19 @@ class Carrie extends hero {
       
       // attack % per energy damage seems to be true damage
       if (targets[i]._currentStats["totalHP"] > 0 && !("CarrieDodge" in damageResult)) {
-        var additionalDamageAmount = this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"];
-        additionalDamageResult = this.calcDamage(targets[i], additionalDamageAmount, "active2", "energy");
-        result += targets[i].takeDamage(this, "Energy Oscillation", additionalDamageResult);
+        if (targets[i]._currentStats["energy"] > 0) {
+          var additionalDamageAmount = this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"];
+          additionalDamageResult = this.calcDamage(targets[i], additionalDamageAmount, "active2", "energy");
+          result += targets[i].takeDamage(this, "Energy Oscillation", additionalDamageResult);
+        }
       
         if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
-          result += targets[i].getDebuff(this, "Devouring Mark", 99, {});
+          result += targets[i].getDebuff(this, "Devouring Mark", 99, {attackAmount: this._currentStats["totalAttack"]});
         }
       }
       
       if (!("CarrieDodge" in damageResult)) {
         activeQueue.push([this, targets[i], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
-      }
-    }
-    
-    return result;
-  }
-  
-  
-  devouringMark(target) {
-    var result = "";
-    var damageResult = {};
-    
-    // attack % per energy damage seems to be true damage
-    damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 0.1 * target._currentStats["energy"], "mark", "energy");
-    result = target.takeDamage(this, "Devouring Mark", damageResult);
-    
-    if (target._currentStats["totalHP"] > 0) {
-      result += target.removeDebuff("Devouring Mark");
-      result += "<div>Energy set to " + formatNum(0) + ".</div>";
-      target._currentStats["energy"] = 0;
-    }
-    
-    return result;
-  }
-  
-  
-  eventAllyDied(e) { 
-    var result = "";
-    
-    if (this._currentStats["totalHP"] <= 0 && e[1].heroDesc() != this.heroDesc()) {
-      this._currentStats["spiritPowerStacks"] += 1;
-    }
-    
-    return result; 
-  }
-  
-  
-  eventEnemyDied(e) { 
-    if (this._currentStats["totalHP"] <= 0) {
-      this._currentStats["spiritPowerStacks"] += 1;
-    }
-    
-    return ""; 
-  }
-  
-  
-  endOfRound(roundNum) {
-    var result = "";
-    
-    if (this._currentStats["totalHP"] <= 0) {
-      var damageResult = {};
-      var targets = getLowestHPTargets(this, this._enemies);
-      var maxDamage = 15 * this._currentStats["totalAttack"];
-      
-      if (targets.length > 0) {
-        var damageAmount = 0.5 * (targets[0]._stats["totalHP"] - targets[0]._currentStats["totalHP"]);
-        
-        if (damageAmount > maxDamage) {
-          damageAmount = maxDamage;
-        }
-        
-        damageResult = this.calcDamage(targets[0], damageAmount, "passive", "hpPercent");
-        result += targets[0].takeDamage(this, "Shadowy Spirit", damageResult);
-        
-      }
-      
-      
-      this._currentStats["spiritPowerStacks"] += 1;
-      if (this._currentStats["spiritPowerStacks"] >= 4) {
-        for (var b in this._buffs) {
-          this.removeBuff(b);
-        }
-        
-        for (var d in this._debuffs) {
-          this.removeDebuff(d);
-        }
-        
-        this._currentStats["spiritPowerStacks"] = 0;
-        this._currentStats["totalHP"] = this._stats["totalHP"];
-        this._currentStats["energy"] = 100;
-        result += "<div>" + this.heroDesc() + " has revived with full health and energy.</div>";
       }
     }
     
@@ -792,28 +793,10 @@ class Cthuga extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult) {
+  handleTrigger(trigger) {
     var result = "";
     
-    if (!(isMonster(source)) && ["burn", "bleed"].includes(damageResult["damageType"])) {
-      damageResult["damageAmount"] = 0;
-    }
-    
-    result = super.takeDamage(source, strAttackDesc, damageResult);
-    
-    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && !(isMonster(source)) && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
-      if (source.hasStatus("burn")) {
-        result += "<div>" + this.heroDesc() + " <span class='skill'>Soul Shackle</span> triggered.</div>";
-        result += this.getBuff(this, "Soul Shackle Attack", 3, {attackPercent: 0.10});
-      }
-      
-      if (source.hasStatus("bleed")) {
-        var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 0.6);
-        result += this.getBuff(this, "Soul Shackle Heal", 3, {heal: healAmount});
-      }
-    }
-    
-    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
+    if (trigger[1] == "eventTookDamage") {
       var burnDamageResult = {};
       var bleedDamageResult = {};
       var targets = getRandomTargets(this, this._enemies);
@@ -822,13 +805,50 @@ class Cthuga extends hero {
       if (targets.length < maxTargets) { maxTargets = targets.length; }
       
       for (var i = 0; i < maxTargets; i++) {
-        burnDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.5, "passive", "burn");
-        bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.5, "passive", "bleed");
+        burnDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.5, "passive", "burn", 1, 1, 3);
+        bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.5, "passive", "bleed", 1, 1, 3);
         
-        result += targets[i].getDebuff(this, "Flame Chase Burn", 3, {burn: Math.round(burnDamageResult["damageAmount"])});
+        result += targets[i].getDebuff(this, "Burn", 3, {burn: Math.round(burnDamageResult["damageAmount"])}, false, "passive");
         
         if (targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].getDebuff(this, "Flame Chase Bleed", 3, {bleed: Math.round(bleedDamageResult["damageAmount"])});
+          result += targets[i].getDebuff(this, "Bleed", 3, {bleed: Math.round(bleedDamageResult["damageAmount"])}, false, "passive");
+        }
+      }
+      
+    } else if (trigger[1] == "eventTookDamageFromBurning") {
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Soul Shackle</span> triggered.</div>";
+        result += this.getBuff(this, "Attack Percent", 3, {attackPercent: 0.10});
+        
+    } else if (trigger[1] == "eventTookDamageFromBleeding") {
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Soul Shackle</span> triggered.</div>";
+        var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 0.6);
+        result += this.getBuff(this, "Heal", 3, {heal: healAmount});
+        
+    }
+    
+    return result;
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = "";
+    
+    if (!(isMonster(source)) && ["burn", "bleed", "burnTrue", "bleedTrue"].includes(damageResult["damageType"])) {
+      damageResult["damageAmount"] = 0;
+    }
+    
+    result = super.takeDamage(source, strAttackDesc, damageResult);
+    
+    if (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic") {
+      triggerQueue.push([this, "eventTookDamage"]);
+      
+      if (!(isMonster(source))) {
+        if (source.hasStatus("burn") || source.hasStatus("burnTrue")) {
+          triggerQueue.push([this, "eventTookDamageFromBurning"]);
+        }
+        
+        if (source.hasStatus("bleed") || source.hasStatus("bleedTrue")) {
+          triggerQueue.push([this, "eventTookDamageFromBleeding"]);
         }
       }
     }
@@ -862,7 +882,7 @@ class Cthuga extends hero {
             isBleedOrBurn = false;
             
             for (var e in targets[i]._debuffs[d][s]["effects"]) {
-              if (["bleed", "burn"].includes(e)) {
+              if (["bleed", "burn", "burnTrue", "bleedTrue"].includes(e)) {
                 isBleedOrBurn = true;
                 detonateDamage += (targets[i]._debuffs[d][s]["duration"] - 1) * targets[i]._debuffs[d][s]["effects"][e];
               }

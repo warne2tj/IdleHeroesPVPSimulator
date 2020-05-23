@@ -737,7 +737,7 @@ class hero {
       
       if ("Devouring Mark" in this._debuffs && this._currentStats["energy"] >= 100) {
         var s = Object.keys(this._debuffs["Devouring Mark"])[0];
-        result += this._debuffs["Devouring Mark"][s]["source"].devouringMark(this);
+        triggerQueue.push([this._debuffs["Devouring Mark"][s]["source"], "devouringMark", this, this._debuffs["Devouring Mark"][s]["effects"]["attackAmount"], this._currentStats["energy"]]);
       }
     }
     
@@ -878,7 +878,7 @@ class hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="") {
     var damageResult = {};
     var strDamageResult = "";
     var result = "";
@@ -925,16 +925,17 @@ class hero {
           this._currentStats["totalArmor"] = this.calcCombatArmor();
           
         } else if (isDot(strStatName)) {
-          damageResult = {
-            damageAmount: effects[strStatName],
-            damageSource: "debuff",
-            damageType: strStatName,
-            critted: false,
-            blocked: false,
-            e5Description: ""
-          };
-          
-          strDamageResult = this.takeDamage(source, "Debuff " + debuffName, damageResult);
+          if (this._currentStats["totalHP"] > 0) {
+            damageResult = {
+              damageAmount: effects[strStatName],
+              damageSource: damageSource,
+              damageType: strStatName,
+              critted: false,
+              blocked: false,
+              e5Description: ""
+            };
+            result += "<div>" + this.takeDamage(source, "Debuff " + debuffName, damageResult) + "</div>";
+          }
           
         } else if (["rounds", "stacks", "attackAmount"].includes(strStatName)) {
           //ignore, used to track other stuff
@@ -955,7 +956,7 @@ class hero {
       
       // handle special debuffs
       if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
-        result += source.devouringMark(this);
+        triggerQueue.push([source, "devouringMark", this, effects["attackAmount"], this._currentStats["energy"]]);
         
       } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
         result += this.getDebuff(source, "Seal of Light", 2, {});
@@ -1187,7 +1188,7 @@ class hero {
                   if (this._currentStats["totalHP"] > 0) {
                     damageResult = {
                       damageAmount: this._debuffs[b][s]["effects"][strStatName],
-                      damageSource: "debuff",
+                      damageSource: "passive",
                       damageType: strStatName,
                       critted: false,
                       blocked: false,
@@ -1345,7 +1346,9 @@ class hero {
           triggerQueue.push([this, "eventSelfDied", source, this]);
 
           for (var h in this._allies) {
-            triggerQueue.push([this._allies[h], "eventAllyDied", source, this]);
+            if (this._heroPos != this._allies[h]._heroPos) {
+              triggerQueue.push([this._allies[h], "eventAllyDied", source, this]);
+            }
           }
           
           for (var h in this._enemies) {
