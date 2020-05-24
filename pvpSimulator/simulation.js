@@ -414,9 +414,9 @@ function processQueue() {
     for (var i in copyQueue) {
       if ((copyQueue[i][0]._currentStats["totalHP"] > 0 && copyQueue[i][0].isNotSealed())
         || copyQueue[i][0]._heroName == "Carrie"
-        || (copyQueue[i][0]._heroName == "Elyvia" && ["eventEnemyActive", "eventEnemyBasic"].includes(copyQueue[i][1]))
         || copyQueue[i][1].includes("Mark")
         || copyQueue[i][1] == "eventSelfDied"
+        || (copyQueue[i][0]._heroName == "Elyvia" && ["eventEnemyActive", "eventEnemyBasic"].includes(copyQueue[i][1]))
       ) {
         result += copyQueue[i][0].handleTrigger(copyQueue[i]);
       }

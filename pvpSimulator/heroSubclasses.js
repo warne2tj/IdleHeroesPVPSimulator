@@ -1086,7 +1086,7 @@ class Delacium extends hero {
       }
       
       if (!("CarrieDodge" in damageResult)) {
-        basicQueue.push([this, targets[0], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"] || additionalDamageResult["critted"]]);
+        basicQueue.push([this, targets[i], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"] || additionalDamageResult["critted"]]);
       }
     }
     
@@ -1125,7 +1125,7 @@ class Delacium extends hero {
       }
       
       if (!("CarrieDodge" in damageResult)) {
-        activeQueue.push([this, targets[0], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"] || additionalDamageResult["critted"]]);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"] || additionalDamageResult["critted"]]);
       }
     }
     
@@ -1250,6 +1250,28 @@ class Emily extends hero {
   }
   
   
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventHPlte50" && this._currentStats["courageousTriggered"] == 0) {
+      this._currentStats["courageousTriggered"] = 1;
+      result += "<div>" + this.heroDesc() + " <span class='skill'>Courageous</span> triggered.</div>";
+      
+      var targets = getAllTargets(this, this._allies);
+      for (var h in targets) {
+        result += targets[h].getBuff(this, "Attack Percent", 3, {attackPercent: 0.29});
+      }
+      
+      targets = getAllTargets(this, this._enemies);
+      for (var h in targets) {
+        result += targets[h].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.29});
+      }
+    }
+    
+    return result;
+  }
+  
+  
   passiveStats() {
     // apply Spiritual Blessing passive
     this.applyStatChange({hpPercent: 0.40, speed: 50}, "PassiveStats");
@@ -1261,22 +1283,11 @@ class Emily extends hero {
     
     result += super.takeDamage(source, strAttackDesc, damageResult);
     
-    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] < 0.50 && this._currentStats["courageousTriggered"] == 0) {
-      this._currentStats["courageousTriggered"] = 1;
-      result += "<div>" + this.heroDesc() + " <span class='skill>Courageous</span> triggered.</div>";
-      
-      var targets = getAllTargets(this, this._allies);
-      for (var h in targets) {
-        result += targets[h].getBuff(this, "Courageous", 3, {attackPercent: 0.29});
-      }
-      
-      targets = getAllTargets(this, this._enemies);
-      for (var h in targets) {
-        result += targets[h].getDebuff(this, "Courageous", 3, {armorPercent: 0.29});
-      }
+    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50 && this._currentStats["courageousTriggered"] == 0) {
+      triggerQueue.push([this, "eventHPlte50"]);
     }
     
-    return result
+    return result;
   }
   
   
@@ -1293,10 +1304,7 @@ class Emily extends hero {
       result += targets[i].takeDamage(this, "Element Fission", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].getDebuff(this, "Element Fission", 3, {crit: 0.20});
-        }
-        
+        result += targets[i].getDebuff(this, "Crit", 3, {crit: 0.20});
         basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
@@ -1315,18 +1323,15 @@ class Emily extends hero {
       result += targets[i].takeDamage(this, "Nether Nightmare", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].getDebuff(this, "Nether Nightmare", 3, {precision: 0.40});
-        }
-        
-        
+        result += targets[i].getDebuff(this, "Precision", 3, {precision: 0.40});
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
     targets = getAllTargets(this, this._allies);
     for (var i=0; i < targets.length; i++) {
-      result += targets[i].getBuff(this, "Nether Nightmare", 3, {speed: 30, attackPercent: 0.20});
+      result += targets[i].getBuff(this, "Speed", 3, {speed: 30});
+      result += targets[i].getBuff(this, "Attack Percent", 3, {attackPercent: 0.20});
     }
     
     return result;
