@@ -172,8 +172,13 @@ function runSim() {
               temp = currentHero.getEnergy(currentHero, 50);
               if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
+              
+              triggerQueue.push([currentHero, "eventSelfBasic", basicQueue]);
+              
               for (var h in currentHero._allies) {
-                triggerQueue.push([currentHero._allies[h], "eventAllyBasic", currentHero, basicQueue]);
+                if (currentHero._heroPos != currentHero._allies[h]._heroPos) {
+                  triggerQueue.push([currentHero._allies[h], "eventAllyBasic", currentHero, basicQueue]);
+                }
               }
               
               for (var h in currentHero._enemies) {

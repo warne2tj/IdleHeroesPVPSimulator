@@ -11,7 +11,9 @@ class Aida extends hero {
     var result = "";
     
     if (trigger[1] == "balanceMark") {
-      return this.balanceMark(trigger[2], trigger[3]);
+      if (trigger[2]._currentStats["totalHP"] > 0) {
+        return this.balanceMark(trigger[2], trigger[3]);
+      }
     }
     
     return result;
@@ -20,17 +22,14 @@ class Aida extends hero {
   
   balanceMark(target, attackAmount) {
     var result = "";
+    var damageAmount = target._stats["totalHP"] * 0.25;
     
-    if (target._currentStats["totalHP"] > 0) {
-      var damageAmount = target._stats["totalHP"] * 0.25;
-      
-      if (damageAmount > attackAmount * 30) {
-        damageAmount = attackAmount * 30;
-      }
-      
-      var damageResult = this.calcDamage(target, damageAmount, "mark", "hpPercent");
-      result += target.takeDamage(this, "Balance Mark", damageResult);
+    if (damageAmount > attackAmount * 30) {
+      damageAmount = attackAmount * 30;
     }
+    
+    var damageResult = this.calcDamage(target, damageAmount, "mark", "hpPercent");
+    result += target.takeDamage(this, "Balance Mark", damageResult);
     
     return result;
   }
@@ -43,14 +42,9 @@ class Aida extends hero {
     var targets = getAllTargets(this, this._enemies);
       
     for (var i=0; i<targets.length; i++) {
-      if (targets[i]._currentStats["totalHP"] > 0) {
-        damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
-        result += targets[i].takeDamage(this, "Final Verdict", damageResult);
-        
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].getDebuff(this, "Effect Being Healed", 99, {effectBeingHealed: 0.1});
-        }
-      }
+      damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
+      result += targets[i].takeDamage(this, "Final Verdict", damageResult);
+      result += targets[i].getDebuff(this, "Effect Being Healed", 99, {effectBeingHealed: 0.1});
     }
     
     healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.15);
@@ -215,18 +209,16 @@ class AmenRa extends hero {
     var controlPrecision = 1 + this._currentStats["controlPrecision"];
     
     for (var i in targets) {
-      if (targets[i]._currentStats["totalHP"] > 0) {
-        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2);
-        result += targets[i].takeDamage(this, "Shadow Defense", damageResult);
-        
-        
-        if (!("CarrieDodge" in damageResult) && targets[i]._currentStats["totalHP"] > 0 && Math.random() < (0.7 * (1 + controlPrecision))) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2);
+      result += targets[i].takeDamage(this, "Shadow Defense", damageResult);
+      
+      
+      if (!("CarrieDodge" in damageResult)) {
+        if (Math.random() < (0.7 * (1 + controlPrecision))) {
           result += targets[i].getDebuff(this, "petrify", 2, {});
         }
         
-        if (!("CarrieDodge" in damageResult)) {
-          activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
-        }
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
@@ -506,17 +498,17 @@ class Belrain extends hero {
   handleTrigger(trigger) {
     var result = "";
     
-    if ((trigger[1] == "eventAllyDied") && trigger[0].heroDesc() == trigger[2].heroDesc()) {
-      result += this.eventAllyDied();
+    if (trigger[1] == "eventSelfBasic") {
+      return this.eventSelfBasic();
     } else if (trigger[1] == "eventSelfDied") {
-      result += this.eventSelfDied();
+      return this.eventSelfDied();
     }
     
     return result;
   }
   
   
-  eventAllyBasic() {
+  eventSelfBasic() {
     var result = "";
     var healAmount;
     var targets = getLowestHPTargets(this, this._allies);
@@ -809,10 +801,7 @@ class Cthuga extends hero {
         bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.5, "passive", "bleed", 1, 1, 3);
         
         result += targets[i].getDebuff(this, "Burn", 3, {burn: Math.round(burnDamageResult["damageAmount"])}, false, "passive");
-        
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].getDebuff(this, "Bleed", 3, {bleed: Math.round(bleedDamageResult["damageAmount"])}, false, "passive");
-        }
+        result += targets[i].getDebuff(this, "Bleed", 3, {bleed: Math.round(bleedDamageResult["damageAmount"])}, false, "passive");
       }
       
     } else if (trigger[1] == "eventTookDamageFromBurning") {
@@ -924,6 +913,32 @@ class DarkArthindol extends hero {
   }
   
   
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventSelfBasic" && trigger[2].length > 0) {
+      if (trigger[2][0][1]._currentStats["totalHP"] > 0) {
+        return this.eventSelfBasic(trigger[2][0][1]);
+      }
+    } else if (trigger[1] == "eventTookDamage") {
+      result += this.getBuff(this, "Attack Percent", 6, {attackPercent: 0.03});
+      result += this.getBuff(this, "Skill Damage", 6, {skillDamage: 0.05});
+      result += this.getEnergy(this, 10);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic(target) {
+    var result = "";
+    result += "<div><span class='skill'>Petrify</span> drained target's energy.</div>";
+    result += target.loseEnergy(this, 50)
+    result += target.getDebuff(this, "petrify", 1, {});
+    return result;
+  }
+  
+  
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var preHP = this._currentStats["totalHP"];
@@ -933,11 +948,10 @@ class DarkArthindol extends hero {
     var postHP = this._currentStats["totalHP"];
     
     if (this.isNotSealed() && (preHP - postHP)/this._stats["totalHP"] >= 0.03) {
-      result += this.getBuff(this, "Preemptive Defense", 6, {attackPercent: 0.03, skillDamage: 0.05});
-      result += this.getEnergy(this, 10);
+      triggerQueue.push([this, "eventTookDamage"]);
     }
     
-    return result
+    return result;
   }
   
   
@@ -949,12 +963,6 @@ class DarkArthindol extends hero {
     if (targets.length > 0) {
       damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
-      
-      if (!("CarrieDodge" in damageResult) && targets[0]._currentStats["totalHP"] > 0) {
-        result += "<div><span class='skill'>Petrify</span> drained target's energy.</div>";
-        result += targets[0].loseEnergy(this, 50)
-        result += targets[0].getDebuff(this, "petrify", 1, {});
-      }
         
       if (!("CarrieDodge" in damageResult)) {
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
@@ -990,7 +998,7 @@ class DarkArthindol extends hero {
       }
     }
     
-    result += this.getBuff(this, "Chaotic Shade", 2, {damageReduce: 0.4});
+    result += this.getBuff(this, "Damage Reduce", 2, {damageReduce: 0.4});
     
     return result;
   }

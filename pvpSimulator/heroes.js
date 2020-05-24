@@ -458,6 +458,8 @@ class hero {
   // utility functions for combat
   
   hasStatus(strStatus) {
+    if (this._currentStats["totalHP"] <= 0) { return false; }
+    
     var result = false;
     var b = "";
     var s = "";
@@ -492,6 +494,8 @@ class hero {
   
   
   isUnderStandardControl() {
+    if (this._currentStats["totalHP"] <= 0) { return false; }
+    
     if (this.hasStatus("petrify") || this.hasStatus("stun") || this.hasStatus("twine") || this.hasStatus("freeze") || this.hasStatus("Shapeshift")) { 
       return true;
     } else {
@@ -501,6 +505,8 @@ class hero {
   
   
   isNotSealed() {
+    if (this._currentStats["totalHP"] <= 0) { return false; }
+    
     if ("Seal of Light" in this._debuffs || "Shapeshift" in this._debuffs) {
       return false;
     } else {
@@ -682,6 +688,8 @@ class hero {
   
   
   getHeal(source, amountHealed) {
+    if (this._currentStats["totalHP"] <= 0) { return ""; }
+    
     var result = "";
     
     if (!(isMonster(source)) && "Healing Curse" in this._debuffs) {
@@ -723,6 +731,8 @@ class hero {
   
   
   getEnergy(source, amount) {
+    if (this._currentStats["totalHP"] <= 0) { return ""; }
+    
     var result = "";
     
     if (this._currentStats["totalHP"] > 0) {
@@ -746,6 +756,8 @@ class hero {
   
   
   loseEnergy(source, amount) {
+    if (this._currentStats["totalHP"] <= 0) { return ""; }
+    
     var result = ""
     
     result = "<div>" + source.heroDesc() + " drained from " + this.heroDesc() + " " + formatNum(amount) + " energy. Energy at "; 
@@ -830,6 +842,8 @@ class hero {
   
   
   getBuff(source, buffName, duration, effects={}) {
+    if (this._currentStats["totalHP"] <= 0) { return ""; }
+    
     var result = "";
     var healResult = "";
     
@@ -879,6 +893,8 @@ class hero {
   
   
   getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="") {
+    if (this._currentStats["totalHP"] <= 0) { return ""; }
+    
     var damageResult = {};
     var strDamageResult = "";
     var result = "";
@@ -1270,6 +1286,7 @@ class hero {
   
   passiveStats() { return {}; }
   handleTrigger(e) { return ""; }
+  eventSelfBasic(e) { return ""; }
   eventAllyBasic(e) { return ""; }
   eventEnemyBasic(e) { return ""; }
   eventAllyActive(e) { return ""; }
@@ -1283,6 +1300,8 @@ class hero {
   
   
   takeDamage(source, strAttackDesc, damageResult) {
+    if (this._currentStats["totalHP"] <= 0) { return ""; }
+    
     var result = "";
     var beforeHP = this._currentStats["totalHP"];
     
