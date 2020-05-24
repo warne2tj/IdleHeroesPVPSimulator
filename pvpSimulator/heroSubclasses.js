@@ -1348,51 +1348,52 @@ class Garuda extends hero {
   }
   
   
-  eventAllyBasic(source, e) {
+  handleTrigger(trigger) {
     var result = "";
     
-    if (!(this.isUnderStandardControl())) {
-      var damageResult = {};
-      
-      result += "<div>" + this.heroDesc() + " <span class='skill'>Instinct of Hunt</span> passive triggered.</div>";
-      result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
-      result += this.getBuff(this, "Instinct of Hunt", 2, {crit: 0.05});
-      
-      for (var i=0; i<e.length; i++) {
-        if (e[i][1]._currentStats["totalHP"] > 0) {
-          damageResult = this.calcDamage(e[i][1], this._currentStats["totalAttack"] * 2.5, "passive", "normal");
-          result += e[i][1].takeDamage(this, "Instinct of Hunt", damageResult);
-        }
+    if (["eventAllyBasic", "eventAllyActive"].includes(trigger[1]) && !(this.isUnderStandardControl())) {
+        return this.eventAllyBasic(trigger[3]);
+    } else if (trigger[1] == "eventSelfBasic") {
+        return this.eventAllyBasic(trigger[2]);
+    } else if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1])) {
+      return this.eventAllyDied();
+    }
+    
+    return result;
+  }
+  
+  
+  eventAllyBasic(e) {
+    var result = "";
+    var damageResult = {};
+    
+    result += "<div>" + this.heroDesc() + " <span class='skill'>Instinct of Hunt</span> passive triggered.</div>";
+    
+    for (var i=0; i<e.length; i++) {
+      if (e[i][1]._currentStats["totalHP"] > 0) {
+        damageResult = this.calcDamage(e[i][1], this._currentStats["totalAttack"] * 2.5, "passive", "normal");
+        result += e[i][1].takeDamage(this, "Instinct of Hunt", damageResult);
       }
     }
     
+    result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
+    result += this.getBuff(this, "Crit", 2, {crit: 0.05});
+    
     return result;
   }
   
   
-  eventAllyActive(source, e) {
-    return this.eventAllyBasic(source, e);
-  }
-  
-  
-  eventAllyDied(e) {
+  eventAllyDied() {
     var result = "";
     
-    if (this.isNotSealed()) {
-      result += "<div>" + this.heroDesc() + " <span class='skill'>Unbeatable Force</span> passive triggered.</div>";
-      
-      var healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.3);
-      result += this.getHeal(this, healAmount);
-      result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
-      result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
-    }
+    result += "<div>" + this.heroDesc() + " <span class='skill'>Unbeatable Force</span> passive triggered.</div>";
+    
+    var healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.3);
+    result += this.getHeal(this, healAmount);
+    result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
+    result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
     
     return result;
-  }
-  
-  
-  eventEnemyDied(e) {
-    return this.eventAllyDied(e);
   }
   
   
@@ -1442,14 +1443,21 @@ class FaithBlade extends hero {
   }
   
   
-  eventEnemyDied(e) {
+  handleTrigger(trigger) {
     var result = "";
     
-    if (this.isNotSealed()) {
-      result += this.getEnergy(this, 100);
-      result += this.getBuff(this, "Blood Nourishing", 3, {holyDamage: 0.30});
+    if (trigger[1] == "eventEnemyDied") {
+      return this.eventEnemyDied();
     }
     
+    return result;
+  }
+  
+  
+  eventEnemyDied() {
+    var result = "";
+    result += this.getEnergy(this, 100);
+    result += this.getBuff(this, "Holy Damage", 3, {holyDamage: 0.30});
     return result;
   }
   
@@ -1475,7 +1483,7 @@ class FaithBlade extends hero {
   doActive() { 
     var result = "";
     var damageResult = {};
-    var additionalDamageResult = {damageAmount: 0};
+    var additionalDamageResult = {damageAmount: 0, critted: false};
     var hpDamage = 0;
     var hpDamageResult = {damageAmount: 0};
     var targets = getLowestHPTargets(this, this._enemies);
@@ -1486,27 +1494,28 @@ class FaithBlade extends hero {
     }
     
     for (var i=0; i<maxTargets; i++) {
-      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3);
-      result += targets[i].takeDamage(this, "Blade Assault", damageResult);
+      if (targets[i]._currentStats["totalHP"] >= this._currentStats["totalHP"]) {
+        result += targets[i].getDebuff(this, "stun", 2);
+      }
+      
+      hpDamage = 0.20 * (targets[i]._stats["totalHP"] - targets[i]._currentStats["totalHP"]);
+      if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
+      hpDamageResult = this.calcDamage(targets[i], hpDamage, "active2", "hpPercent");
+      result += targets[i].takeDamage(this, "Blade Assault HP", hpDamageResult);
+        
       
       if (!("CarrieDodge" in damageResult)) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3);
+          result += targets[i].takeDamage(this, "Blade Assault", damageResult);
+        }
+        
         if (targets[i]._currentStats["totalHP"] > 0) {
           additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active2", "normal", 1.08, 1, 0, 1, 0);
           result += targets[i].takeDamage(this, "Blade Assault 2", additionalDamageResult);
         }
         
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          hpDamage = 0.20 * (targets[i]._stats["totalHP"] - targets[i]._currentStats["totalHP"]);
-          if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
-          hpDamageResult = this.calcDamage(targets[i], hpDamage, "active2", "hpPercent");
-          result += targets[i].takeDamage(this, "Blade Assault HP", hpDamageResult);
-        }
-        
-        if (targets[i]._currentStats["totalHP"] > this._currentStats["totalHP"]) {
-          result += targets[i].getDebuff(this, "stun", 2);
-        }
-        
-        activeQueue.push([this, targets[i], damageResult["damageAmount"] + additionalDamageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + additionalDamageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"] || additionalDamageResult["critted"]]);
       }
     }
     
