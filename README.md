@@ -53,5 +53,6 @@ Head to the wiki for more details.
   * refactor and simplify targeting to take parameter for number of targets
   * refactor and simplify damage type, damage sources, buff types, debuff types
   * refactor and simplify how carrie's dodge is checked for
+  * refactor to combine buffs and debuffs into single object?
   * improve look of hero stat sheet, buff, and debuff descriptions
   * improve combat log output to read and flow better

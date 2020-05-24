@@ -1086,7 +1086,7 @@ class Delacium extends hero {
       }
       
       if (!("CarrieDodge" in damageResult)) {
-        basicQueue.push([this, targets[0], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
+        basicQueue.push([this, targets[0], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"] || additionalDamageResult["critted"]]);
       }
     }
     
@@ -1114,17 +1114,10 @@ class Delacium extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
           for (var b in targets[i]._debuffs) {
-            if (isControlEffect(b)) {
-              for (var s in targets[i]._debuffs[b]) {
+            for (var s in targets[i]._debuffs[b]) {
+              if (isDot(b, targets[i]._debuffs[b][s]["effects"]) || isAttribute(b, targets[i]._debuffs[b][s]["effects"]) || isControlEffect(b, targets[i]._debuffs[b][s]["effects"])) {
                 targets[i]._debuffs[b][s]["duration"] += 2;
-                result += "<div><span class='skill'>Ray of Delacium</span> extended duration of <span class='skill'>" + b + "</span>.</div>";
-              }
-            } else {
-              for (var s in targets[i]._debuffs[b]) {
-                if (isDot(b, targets[i]._debuffs[b][s]["effects"]) || isAttribute(b, targets[i]._debuffs[b][s]["effects"])) {
-                  targets[i]._debuffs[b][s]["duration"] += 2;
-                  result += "<div><span class='skill'>Ray of Delacium</span> extended duration of <span class='skill'>" + b + "</span>.</div>";
-                }
+                result += "<div><span class='skill'>Ray of Delacium</span> extended duration of Debuff <span class='skill'>" + b + "</span>.</div>";
               }
             }
           }
@@ -1132,7 +1125,7 @@ class Delacium extends hero {
       }
       
       if (!("CarrieDodge" in damageResult)) {
-        activeQueue.push([this, targets[0], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
+        activeQueue.push([this, targets[0], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"] || additionalDamageResult["critted"]]);
       }
     }
     
@@ -1146,6 +1139,33 @@ class Elyvia extends hero {
   passiveStats() {
     // apply Nothing Scare Elyvia passive
     this.applyStatChange({hpPercent: 0.30, attackPercent: 0.25, effectBeingHealed: 0.30}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventSelfBasic") {
+      return this.eventSelfBasic();
+    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1])) {
+      return this.eventEnemyBasic(trigger[2], trigger[3]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic() {
+    var result = "";
+    var targets = getRandomTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      if (!("Shrink" in targets[0]._debuffs)) {
+        result += targets[0].getDebuff(this, "Shrink", 2, {allDamageTaken: -0.30, allDamageDealt: 0.50});
+      }
+    }
+    
+    return result;
   }
   
   
@@ -1163,11 +1183,6 @@ class Elyvia extends hero {
     }
     
     return result;
-  }
-  
-  
-  eventEnemyActive(source, e) {
-    return this.eventEnemyBasic(source, e);
   }
   
   
@@ -1193,20 +1208,6 @@ class Elyvia extends hero {
       var targets = getRandomTargets(this, this._allies);
       if (targets.length > 0) {
         result += targets[0].getBuff(this, "Fairy's Guard", 2, {});
-      }
-    }
-    
-    return result;
-  }
-  
-  
-  doBasic() {
-    var result = super.doBasic();
-    var targets = getRandomTargets(this, this._enemies);
-    
-    if (targets.length > 0) {
-      if (!("Shrink" in targets[0]._debuffs)) {
-        result += targets[0].getDebuff(this, "Shrink", 2, {allDamageTaken: -0.30, allDamageDealt: 0.50});
       }
     }
     
