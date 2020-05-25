@@ -1526,10 +1526,29 @@ class FaithBlade extends hero {
 
 // Gustin
 class Gustin extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["linkCount"] = 0;
+  }
+  
   passiveStats() {
     // apply Shadow Imprint passive
     this.applyStatChange({hpPercent: 0.25, speed: 30, controlImmune: 0.3, effectBeingHealed: 0.3}, "PassiveStats");
   }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (["eventEnemyBasic", "eventEnemyActive"].includes(trigger[1])) {
+      return this.eventEnemyBasic(trigger[3]);
+    } else if (trigger[1] == "eventTookDamage") {
+      return this.eventTookDamage(trigger[2], trigger[3]);
+    }
+    
+    return result;
+  }
+  
   
   startOfBattle() {
     var targets = getRandomTargets(this, this._enemies);
@@ -1538,9 +1557,31 @@ class Gustin extends hero {
   }
   
   
+  eventTookDamage(source, damageAmount) {
+    var result = "";
+    
+    if (source._currentStats["totalHP"] > 0 && this._currentStats["linkCount"] < 5) {
+      var damageResult = this.calcDamage(source, damageAmount, "passive", "true");
+      result += source.takeDamage(this, "Link of Souls", damageResult);
+      this._currentStats["linkCount"]++;
+    }
+    
+    return result;
+  }
+  
+  
   endOfRound(roundNum) {
     var result = "";
     var targets = [];
+    
+    if ("Demon Totem" in this._buffs) {
+      targets = getLowestHPTargets(this, this._allies);
+      if (targets.length > 0) {
+        var healAmount = this.calcHeal(this, 0.25 * targets[0]._stats["totalHP"]);
+        result += targets[0].getHeal(this, healAmount);
+      }
+    }
+    
     
     if (Math.random() < 0.5 && this._currentStats["totalHP"] > 0) {
       targets = getRandomTargets(this, this._enemies);
@@ -1550,14 +1591,6 @@ class Gustin extends hero {
       for (var i = 0; i < maxTargets; i++) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Cloak of Fog</span> drained " + targets[i].heroDesc() + " energy.</div>";
         result += targets[i].loseEnergy(this, 30);
-      }
-    }
-    
-    if ("Demon Totem" in this._buffs) {
-      targets = getLowestHPTargets(this, this._allies);
-      if (targets.length > 0) {
-        var healAmount = this.calcHeal(this, 0.25 * targets[0]._stats["totalHP"]);
-        result += targets[0].getHeal(this, healAmount);
       }
     }
     
@@ -1575,11 +1608,13 @@ class Gustin extends hero {
       }
     }
     
+    this._currentStats["linkCount"] = 0;
+    
     return result;
   }
   
   
-  eventEnemyBasic(source, e) {
+  eventEnemyBasic(e) {
     var result = "";
     
     if ("Demon Totem" in this._buffs) {
@@ -1619,11 +1654,6 @@ class Gustin extends hero {
   }
   
   
-  eventEnemyActive(source, e) {
-    return this.eventEnemyBasic(source, e);
-  }
-  
-  
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var preHP = this._currentStats["totalHP"];
@@ -1633,9 +1663,8 @@ class Gustin extends hero {
     var postHP = this._currentStats["totalHP"];
     var damageAmount = 0.70 * (preHP - postHP);
     
-    if (damageAmount > 0 && source._currentStats["totalHP"] > 0  && (damageResult["damageType"].substring(0, 6) == "active" || damageResult["damageType"].substring(0, 5) == "basic")) {
-      var damageResult = this.calcDamage(source, damageAmount, "passive", "true");
-      result += source.takeDamage(this, "Link of Souls", damageResult);
+    if (damageAmount > 0) {
+      triggerQueue.push([this, "eventTookDamage", source, damageAmount]);
     }
     
     return result;
@@ -1647,6 +1676,7 @@ class Gustin extends hero {
     var damageResult = {};
     var targets = getRandomTargets(this, this._enemies);
     var maxTargets = 2;
+    var buffRemoved;
     
     if (targets.length < maxTargets) {
       maxTargets = targets.length;
@@ -1658,12 +1688,18 @@ class Gustin extends hero {
       
       if (!("CarrieDodge" in damageResult)) {
         if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.60) {
+          buffRemoved = false;
+          
           for (var b in targets[i]._buffs) {
             for (var s in targets[i]._buffs[b]) {
               if (isAttribute(b, targets[i]._buffs[b][s]["effects"])) {
                 result += targets[i].removeBuff(b, s);
+                buffRemoved = true;
+                break;
               }
             }
+            
+            if (buffRemoved) { break; } 
           }
         }
         
