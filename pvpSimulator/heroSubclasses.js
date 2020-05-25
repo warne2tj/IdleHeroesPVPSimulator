@@ -2269,25 +2269,28 @@ class Mihm extends hero {
   }
   
   
-  eventEnemyDied(e) {
+  handleTrigger(trigger) {
     var result = "";
     
-    if (this.isNotSealed() && this._currentStats["totalHP"] > 0) {
-      var targets = getAllTargets(this, this._enemies);
-      var damageResult = {};
-      
-      for (var i = 0; i < targets.length; i++) {
-        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2, "passive", "dot");
-        result += targets[i].getDebuff(this, "Shadow Fission", 2, {dot: damageResult["damageAmount"]});
-      }
+    if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1])) {
+      return this.eventEnemyDied();
     }
     
     return result;
   }
   
   
-  eventAllyDied(e) {
-    return this.eventEnemyDied(e);
+  eventEnemyDied() {
+    var result = "";
+    var targets = getAllTargets(this, this._enemies);
+    var damageResult = {};
+    
+    for (var i = 0; i < targets.length; i++) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2, "passive", "dot", 1, 1, 1);
+      result += targets[i].getDebuff(this, "Shadow Fission", 2, {dot: Math.round(damageResult["damageAmount"])}, "passive");
+    }
+    
+    return result;
   }
   
   
@@ -2301,10 +2304,7 @@ class Mihm extends hero {
       result += targets[0].takeDamage(this, "Energy Absorbing", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[0]._currentStats["totalHP"] > 0) {
-          result += targets[0].loseEnergy(this, 60);
-        }
-        
+        result += targets[0].loseEnergy(this, 60);
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
@@ -2325,12 +2325,13 @@ class Mihm extends hero {
       if (!("CarrieDodge" in damageResult)) {
         if (targets[0]._currentStats["totalHP"] > 0) {
           if (isFrontLine(targets[0], this._enemies)) {
-            result += targets[0].getDebuff(this, "Collapse Rays Armor", 3, {armorPercent: 0.75});
+            result += targets[0].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.75});
             result += targets[0].getDebuff(this, "petrify", 2);
           }
           
           if (isBackLine(targets[0], this._enemies)) {
-            result += targets[0].getDebuff(this, "Collapse Rays Backline", 3, {attackPercent: 0.30, speed: 80});
+            result += targets[0].getDebuff(this, "Attack Percent", 3, {attackPercent: 0.30});
+            result += targets[0].getDebuff(this, "Speed", 3, {speed: 80});
           }
         }
         
