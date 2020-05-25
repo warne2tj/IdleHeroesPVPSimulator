@@ -136,8 +136,13 @@ function runSim() {
                 triggerQueue.push([currentHero._debuffs["Balance Mark"][firstKey]["source"], "balanceMark", currentHero, currentHero._debuffs["Balance Mark"][firstKey]["effects"]["attackAmount"]]);
               }
               
+              
+              triggerQueue.push([currentHero, "eventSelfActive", activeQueue]);
+              
               for (var h in currentHero._allies) {
-                triggerQueue.push([currentHero._allies[h], "eventAllyActive", currentHero, activeQueue]);
+                if (currentHero._heroPos != currentHero._allies[h]._heroPos) {
+                  triggerQueue.push([currentHero._allies[h], "eventAllyActive", currentHero, activeQueue]);
+                }
               }
               
               for (var h in currentHero._enemies) {

@@ -139,7 +139,7 @@ class AmenRa extends hero {
   handleTrigger(trigger) {
     var result = "";
     
-    if (trigger[1] == "eventAllyActive") {
+    if (["eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
       result += this.eventAllyActive();
     }
     
@@ -244,7 +244,7 @@ class Amuvor extends hero {
   handleTrigger(trigger) {
     var result = "";
     
-    if (trigger[1] == "eventAllyActive") {
+    if (["eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
       result += this.eventAllyActive(trigger[2]);
     }
     
@@ -346,8 +346,8 @@ class Aspen extends hero {
   handleTrigger(trigger) {
     var result = "";
     
-    if ((trigger[1] == "eventAllyActive" || trigger[1] == "eventAllyBasic") && trigger[0].heroDesc() == trigger[2].heroDesc()) {
-      result += this.eventAllyActive(trigger[2]);
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+      result += this.eventSelfBasic();
     } else if (trigger[1] == "enemyHorrified") {
       result += this.enemyHorrified();
     }
@@ -365,7 +365,7 @@ class Aspen extends hero {
   }
   
   
-  eventAllyActive(source, e) {
+  eventSelfBasic() {
     var result = "";
     result += this.getBuff(this, "Attack Percent", 99, {attackPercent: 0.15});
     result += this.getBuff(this, "Crit Damage", 99, {critDamage: 0.15});
@@ -1353,7 +1353,7 @@ class Garuda extends hero {
     
     if (["eventAllyBasic", "eventAllyActive"].includes(trigger[1]) && !(this.isUnderStandardControl())) {
         return this.eventAllyBasic(trigger[3]);
-    } else if (trigger[1] == "eventSelfBasic") {
+    } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
         return this.eventAllyBasic(trigger[2]);
     } else if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1])) {
       return this.eventAllyDied();
@@ -1733,7 +1733,7 @@ class Horus extends hero {
   handleTrigger(trigger) {
     var result = "";
     
-    if (["eventEnemyActive", "eventAllyActive"].includes(trigger[1])) {
+    if (["eventEnemyActive", "eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
       return this.eventEnemyActive();
     } else if (trigger[1] == "eventTookDamage") {
       return this.eventTookDamage();
@@ -1883,37 +1883,44 @@ class Ithaqua extends hero {
   }
   
   
-  eventEnemyDied(e) {
+  handleTrigger(trigger) {
     var result = "";
     
-    if (this.isNotSealed() && e[0].heroDesc() == this.heroDesc()) {
-      var targets = getRandomTargets(this, this._enemies);
-      
-      if (targets.length > 0) {
-        result += targets[0].getDebuff(this, "Ghost Possessed", 3);
-      }
-      
-      result += this.getBuff(this, "Poisonous Blade", 3, {armorBreak: 1.0});
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+      return this.eventSelfActive(trigger[2]);
+    } else if (trigger[1] == "eventEnemyDied" && trigger[2].heroDesc() == this.heroDesc()) {
+      return this.eventEnemyDied();
     }
     
     return result;
   }
   
   
-  eventAllyActive(source, e) {
+  eventEnemyDied(e) {
+    var result = "";
+    var targets = getRandomTargets(this, this._enemies);
+    
+    if (targets.length > 0) {
+      result += targets[0].getDebuff(this, "Ghost Possessed", 3);
+    }
+    
+    result += this.getBuff(this, "Armor Break", 3, {armorBreak: 1.0});
+    return result;
+  }
+  
+  
+  eventSelfActive(e) {
     var result = "";
     var damageResult = {};
     
-    if (source.heroDesc() == this.heroDesc()) {
-      for (var i in e) {
-        if (e[i][1]._currentStats["totalHP"] > 0) {
-          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poison");
-          result += e[i][1].getDebuff(this, "Poisonous Blade - Poison", 2, {poison: Math.round(damageResult["damageAmount"])});
-          
-          if (e[i][1]._currentStats["totalHP"] > 0 && e[i][3] == true) {
-            damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleed");
-            result += e[i][1].getDebuff(this, "Poisonous Blade - Bleed", 2, {bleed: Math.round(damageResult["damageAmount"])});
-          }
+    for (var i in e) {
+      if (e[i][1]._currentStats["totalHP"] > 0) {
+        damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poison");
+        result += e[i][1].getDebuff(this, "Poison", 2, {poison: Math.round(damageResult["damageAmount"])}, "passive");
+        
+        if (e[i][1]._currentStats["totalHP"] > 0 && e[i][3] == true) {
+          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleed");
+          result += e[i][1].getDebuff(this, "Bleed", 2, {bleed: Math.round(damageResult["damageAmount"])}, "passive");
         }
       }
     }
@@ -1922,19 +1929,14 @@ class Ithaqua extends hero {
   }
   
   
-  eventAllyBasic(source, e) {
-    return this.eventAllyActive(source, e);
-  }
-  
-  
   doBasic() {
     var result = "";
     var damageResult = {};
-    var targets = getLowestHPTargets(this, this._enemies);
+    var targets = getAllTargets(this, this._enemies);
     var healAmount = 0;
     
     for (var i=0; i < this._enemies.length; i++) {
-      if (this._enemies[i]._currentStats["totalHP"] > 0 && "Ghost Possessed" in this._enemies[i]._debuffs) {
+      if ("Ghost Possessed" in this._enemies[i]._debuffs) {
         damageResult = this.calcDamage(this._enemies[i], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
         result += this._enemies[i].takeDamage(this, "GP - Basic Attack", damageResult);
         
@@ -1943,19 +1945,17 @@ class Ithaqua extends hero {
           healAmount = this.calcHeal(this, damageResult["damageAmount"]);
           result += this.getHeal(this, healAmount);
         }
-        
-        if (this._enemies[i]._currentStats["totalHP"] > 0) {
-          result += this._enemies[i].getDebuff(this, "Ghost Possessed", 3);
-        }
       }
     }
     
+    
+    targets = getLowestHPTargets(this, this._enemies);
     if (targets.length > 0) {
       damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[0]._currentStats["totalHP"] > 0) {
+        if (targets[0]._currentStats["totalHP"] > 0 && !("Ghost Possessed" in targets[0]._debuffs)) {
           result += targets[0].getDebuff(this, "Ghost Possessed", 3);
         }
         
@@ -1970,47 +1970,46 @@ class Ithaqua extends hero {
   doActive() {
     var result = "";
     var damageResult = {};
-    var targets = getLowestHPTargets(this, this._enemies);
+    var targets = getAllTargets(this, this._enemies);
     var healAmount = 0;
     var hpDamage = 0;
     var hpDamageResult = {damageAmount: 0};
     
     for (var i=0; i < this._enemies.length; i++) {
-      if (this._enemies[i]._currentStats["totalHP"] > 0 && "Ghost Possessed" in this._enemies[i]._debuffs) {
+      if ("Ghost Possessed" in this._enemies[i]._debuffs) {
         damageResult = this.calcDamage(this._enemies[i], this._currentStats["totalAttack"], "active", "normal", 4.4);
         result += this._enemies[i].takeDamage(this, "GP - Ghost Possession", damageResult);
         
         if (!("CarrieDodge" in damageResult)) {
           if (this._enemies[i]._currentStats["totalHP"] > 0) {
-            hpDamage = this._enemies[i]._currentStats["totalHP"] * 0.10;
+            hpDamage = this._enemies[i]._stats["totalHP"] * 0.10;
             if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
             hpDamageResult = this.calcDamage(this._enemies[i], hpDamage, "active2", "hpPercent");
-            result += this._enemies[i].takeDamage(this, "Ghost Possession HP", hpDamageResult);
-            
-            if (this._enemies[i]._currentStats["totalHP"] > 0) {
-              result += this._enemies[i].getDebuff(this, "Ghost Possessed", 3);
-            }
+            result += this._enemies[i].takeDamage(this, "GP - Ghost Possession HP", hpDamageResult);
           }
-        
-          activeQueue.push([this, this._enemies[0], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+          
           healAmount = this.calcHeal(this, damageResult["damageAmount"] + hpDamageResult["damageAmount"]);
           result += this.getHeal(this, healAmount);
+        
+          activeQueue.push([this, this._enemies[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
         }
       }
     }
     
+    
+    targets = getLowestHPTargets(this, this._enemies);
     if (targets.length > 0) {
       damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 4.4);
       result += targets[0].takeDamage(this, "Ghost Possession", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
         if (targets[0]._currentStats["totalHP"] > 0) {
-          hpDamage = targets[0]._currentStats["totalHP"] * 0.10;
+          hpDamage = targets[0]._stats["totalHP"] * 0.10;
           if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
           hpDamageResult = this.calcDamage(targets[0], hpDamage, "active2", "hpPercent");
           result += targets[0].takeDamage(this, "Ghost Possession HP", hpDamageResult);
           
-          if (targets[0]._currentStats["totalHP"] > 0) {
+          if (targets[0]._currentStats["totalHP"] > 0 && !("Ghost Possessed" in targets[0]._debuffs)) {
             result += targets[0].getDebuff(this, "Ghost Possessed", 3);
           }
         }
