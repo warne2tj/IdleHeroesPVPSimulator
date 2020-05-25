@@ -881,6 +881,9 @@ class hero {
       } else if (strStatName == "heal") {
         healResult = this.getHeal(source, effects[strStatName]);
         
+      } else if (strStatName == "attackAmount") {
+        // ignore, used for snapshotting attack
+        
       } else {
         this._currentStats[strStatName] += effects[strStatName];
         
@@ -1020,8 +1023,8 @@ class hero {
           } else if (strStatName == "armorPercent") {
             this._currentStats["totalArmor"] = this.calcCombatArmor();
             
-          } else if(strStatName == "heal") {
-            // do nothing, already healed
+          } else if(["heal", "attackAmount"].includes(strStatName)) {
+            // do nothing
             
           } else {
             this._currentStats[strStatName] -= this._buffs[strBuffName][s]["effects"][strStatName];
@@ -1115,7 +1118,7 @@ class hero {
                 } else if (strStatName == "armorPercent") {
                   this._currentStats["totalArmor"] = this.calcCombatArmor();
                   
-                } else if (strStatName == "heal") {
+                } else if (["heal", "attackAmount"].includes(strStatName)) {
                   // do nothing
                 } else {
                   this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];

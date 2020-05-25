@@ -2148,6 +2148,19 @@ class Michelle extends hero {
   }
   
   
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (["eventAllyActive", "eventAllyBasic"].includes(trigger[1]) && "Blaze of Seraph" in trigger[2]._buffs) {
+      return this.eventAllyBasic(trigger[2], trigger[3]);
+    } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && "Blaze of Seraph" in this._buffs) {
+      return this.eventAllyBasic(this, trigger[2]);
+    }
+    
+    return result;
+  }
+  
+  
   endOfRound(roundNum) {
     var result = "";
     
@@ -2164,7 +2177,7 @@ class Michelle extends hero {
       this._currentStats["totalHP"] = this._stats["totalHP"];
       this._currentStats["energy"] = 100;
       result += "<div>" + this.heroDesc() + " has revived with full health and energy.</div>";
-      result += this.getBuff(this, "Blaze of Seraph", 99);
+      result += this.getBuff(this, "Blaze of Seraph", 2, {attackAmount: this._currentStats["totalAttack"]});
     }
     
     return result;
@@ -2173,25 +2186,38 @@ class Michelle extends hero {
   
   eventAllyBasic(source, e) {
     var result = "";
+    var firstKey = Object.keys(source._buffs["Blaze of Seraph"])[0];
+    var maxAmount = 5 * source._buffs["Blaze of Seraph"][firstKey]["effects"]["attackAmount"];
     
-    if ("Blaze of Seraph" in source._buffs) {
-      for (var i = 0; i < e.length; i++) {
-        var damageAmount = e[i][1]._stats["totalHP"] * 0.06;
-        if (damageAmount > this._currentStats["totalAttack"] * 5) {
-          damageAmount = this._currentStats["totalAttack"] * 5;
-        }
-        
-        var damageResult = this.calcDamage(e[i][1], damageAmount, "passive", "hpPercent");
-        result += e[i][1].getDebuff(this, "Blaze of Seraph Burn", 2, {burnTrue: Math.round(damageResult["damageAmount"])});
+    for (var i = 0; i < e.length; i++) {
+      var damageAmount = e[i][1]._stats["totalHP"] * 0.06;
+      if (damageAmount > maxAmount) {
+        damageAmount = maxAmount;
       }
+      
+      var damageResult = this.calcDamage(e[i][1], damageAmount, "passive", "hpPercent");
+      result += e[i][1].getDebuff(this, "Burn", 2, {burnTrue: Math.round(damageResult["damageAmount"])}, "passive");
     }
     
     return result;
   }
   
   
-  eventAllyActive(source, e) {
-    return this.eventAllyBasic(source, e);
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getFrontTargets(this, this._enemies);
+    
+    for (var i in targets) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal");
+      result += targets[i].takeDamage(this, "Basic Attack", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
   }
   
   
@@ -2210,7 +2236,7 @@ class Michelle extends hero {
       result += targets[i].takeDamage(this, "Divine Sanction", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.4 * (1 + this._currentStats["controlPrecision"])) {
+        if (Math.random() < 0.4 * (1 + this._currentStats["controlPrecision"])) {
           result += targets[i].getDebuff(this, "stun", 2);
         }
         
@@ -2226,7 +2252,7 @@ class Michelle extends hero {
     
     targets = getRandomTargets(this, this._allies);
     if (targets.length > 0) {
-      result += targets[0].getBuff(this, "Blaze of Seraph", 3);
+      result += targets[0].getBuff(this, "Blaze of Seraph", 3, {attackAmount: this._currentStats["totalAttack"]});
     }
     
     return result;
