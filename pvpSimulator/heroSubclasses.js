@@ -606,7 +606,7 @@ class Carrie extends hero {
     if ((trigger[1] == "eventAllyDied" || trigger[1] == "eventEnemyDied") && this._currentStats["totalHP"] <= 0) {
       return this.eventAllyDied();
     } else if (trigger[1] == "devouringMark") {
-      if (trigger[2]._currentStats["totalHP"] > 0 && trigger[2]._currentStats["energy"] >= 100) {
+      if (trigger[2]._currentStats["totalHP"] > 0 && "Devouring Mark" in trigger[2]._debuffs) {
         return this.devouringMark(trigger[2], trigger[3], trigger[4]);
       }
     }
@@ -2037,12 +2037,10 @@ class Kroos extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult) {
+  handleTrigger(trigger) {
     var result = "";
     
-    result += super.takeDamage(source, strAttackDesc, damageResult);
-    
-    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] < 0.50 && this._currentStats["flameInvasionTriggered"] == 0) {
+    if (trigger[1] == "eventHPlte50" && this._currentStats["flameInvasionTriggered"] == 0) {
       this._currentStats["flameInvasionTriggered"] = 1;
       result += "<div>" + this.heroDesc() + " <span class='skill'>Flame Invasion</span> triggered.</div>";
       
@@ -2052,6 +2050,19 @@ class Kroos extends hero {
           result += targets[h].getDebuff(this, "stun", 2, {});
         }
       }
+    }
+    
+    return result;
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = "";
+    
+    result += super.takeDamage(source, strAttackDesc, damageResult);
+    
+    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50 && this._currentStats["flameInvasionTriggered"] == 0) {
+      triggerQueue.push([this, "eventHPlte50"]);
     }
     
     return result
@@ -2068,10 +2079,7 @@ class Kroos extends hero {
       result += targets[i].takeDamage(this, "Vicious Fire Perfusion", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].getDebuff(this, "Vicious Fire Perfusion", 3, {armorPercent: 0.15});
-        }
-        
+        result += targets[i].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.15});
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
@@ -2107,17 +2115,14 @@ class Kroos extends hero {
       result += targets[i].takeDamage(this, "Weak Curse", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          if (!("Weak Curse" in targets[i]._debuffs)) {
-            result += targets[i].getDebuff(this, "Weak Curse", 3, {allDamageTaken: -0.50});
-          }
+        if (!("Weak Curse" in targets[i]._debuffs)) {
+          result += targets[i].getDebuff(this, "All Damage Taken", 3, {allDamageTaken: -0.50});
         }
         
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
-    this._currentStats["energy"] = 0;
     targets = getRandomTargets(this, this._allies);
     if (targets.length > 0) {
       result += targets[0].getEnergy(this, 100);
