@@ -313,7 +313,6 @@ class Amuvor extends hero {
         
         hpDamageResult = this.calcDamage(targets[i], hpDamage, "active2", "hpPercent");
         result += targets[i].takeDamage(this, "Scarlet Contract HP", hpDamageResult);
-        result += targets[i].getDebuff(this, "Effect Being Healed", 2, {effectBeingHealed: 0.3});
       }
       
       if (targets[i]._currentStats["totalHP"] > 0 && !("CarrieDodge" in damageResult) && targets[i]._heroClass == "Priest") {
@@ -322,6 +321,7 @@ class Amuvor extends hero {
       }
       
       if (!("CarrieDodge" in damageResult)) {
+        result += targets[i].getDebuff(this, "Effect Being Healed", 2, {effectBeingHealed: 0.3});
         activeQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"] + priestDamageResult["damageAmount"], damageResult["critted"] || priestDamageResult["critted"]]);
       }
       
@@ -1723,13 +1723,27 @@ class Horus extends hero {
     this._stats["blockCount"] = 0;
   }
   
+  
   passiveStats() {
     // apply Corrupted Rebirth passive
     this.applyStatChange({hpPercent: 0.4, attackPercent: 0.3, armorBreak: 0.4, block: 0.6}, "PassiveStats");
   }
   
   
-  eventEnemyBasic(source, e) {
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (["eventEnemyActive", "eventAllyActive"].includes(trigger[1])) {
+      return this.eventEnemyActive();
+    } else if (trigger[1] == "eventTookDamage") {
+      return this.eventTookDamage();
+    }
+    
+    return result;
+  }
+  
+  
+  eventTookDamage() {
     var result = "";
     
     if (this._currentStats["blockCount"] >= 3) {
@@ -1768,23 +1782,11 @@ class Horus extends hero {
   }
   
   
-  eventAllyBasic(source, e) {
-    return this.eventEnemyBasic(source, e);
-  }
-  
-  
-  eventEnemyActive(source, e) {
+  eventEnemyActive() {
     var result = "";
-    
-    result += this.getBuff(this, "Descending Raven", 99, {attackPercent: 0.05, critDamage:0.02});
-    result += this.eventEnemyBasic(e);
-    
+    result += this.getBuff(this, "Attack Percent", 99, {attackPercent: 0.05});
+    result += this.getBuff(this, "Crit Damage", 99, {critDamage:0.02});
     return result;
-  }
-  
-  
-  eventAllyActive(source, e) {
-    return this.eventEnemyActive(source, e);
   }
   
   
@@ -1793,6 +1795,7 @@ class Horus extends hero {
     
     if (damageResult["blocked"] == true) {
       this._currentStats["blockCount"]++;
+      triggerQueue.push([this, "eventTookDamage"]);
     }
     
     return result;
@@ -1803,8 +1806,10 @@ class Horus extends hero {
     var result = "";
     var damageResult = {};
     var bleedDamageResult = {};
+    var hpDamage = 0;
+    var hpDamageResult = {damageAmount: 0}
     var additionalDamage = 0;
-    var additionalDamageResult = {damageAmount: 0};
+    var additionalDamageResult = {damageAmount: 0, critted: false};
     var targets = getRandomTargets(this, this._enemies);
     var numTargets = 3;
     
@@ -1820,30 +1825,29 @@ class Horus extends hero {
       if (targets[i]._currentStats["totalHP"] > 0 && !("CarrieDodge" in damageResult)) {
         bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active2", "bleed", 1, 3);
         bleedDamageResult["damageAmount"] = Math.round(bleedDamageResult["damageAmount"]);
-        result += targets[i].getDebuff(this, "Torment of Flesh and Soul", 3, {bleed: bleedDamageResult["damageAmount"]});
+        result += targets[i].getDebuff(this, "Bleed", 3, {bleed: bleedDamageResult["damageAmount"]}, false, "active");
       }
       
       
       if (targets[i]._currentStats["totalHP"] > 0 && !("CarrieDodge" in damageResult)) {
         if (isFrontLine(targets[i], this._enemies)) {
-          additionalDamage = targets[i]._stats["totalHP"] * 0.15;
+          hpDamage = targets[i]._stats["totalHP"] * 0.15;
           var maxDamage = this._currentStats["totalAttack"] * 15;
-          if (additionalDamage > maxDamage) { additionalDamage = maxDamage; }
+          if (hpDamage > maxDamage) { hpDamage = maxDamage; }
           
-          additionalDamageResult = this.calcDamage(targets[i], additionalDamage, "active2", "hpPercent");
-          result += targets[i].takeDamage(this, "Torment of Flesh and Soul Front Line", additionalDamageResult);
-          
+          hpDamageResult = this.calcDamage(targets[i], hpDamage, "active2", "hpPercent");
+          result += targets[i].takeDamage(this, "Torment of Flesh and Soul Front Line", hpDamageResult);
         }
         
-        if (damageResult["critted"] == true && isBackLine(targets[i], this._enemies)){
-          additionalDamageResult = this.calcDamage(targets[i], damageResult["damageAmount"] * 1.08, "active2", "true");
+        if (isBackLine(targets[i], this._enemies)){
+          additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active2", "normal", 1.08, 2);
           result += targets[i].takeDamage(this, "Torment of Flesh and Soul Back Line", additionalDamageResult);
         }
         
       }
       
       if (!("CarrieDodge" in damageResult)) {
-        activeQueue.push([this, targets[i], damageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"]]);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"] + additionalDamageResult["damageAmount"], damageResult["critted"] || additionalDamageResult["critted"]]);
       }
     }
     

@@ -632,6 +632,10 @@ class hero {
       allDamageTaken = 1;
     }
     
+    if (canCrit == 2) {
+      critChance = 1;
+    }
+    
     
     // calculate damage
     attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleed * allDamageDealt;
