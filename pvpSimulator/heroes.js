@@ -974,6 +974,10 @@ class hero {
         }
       }
       
+      if (isControl) {
+        triggerQueue.push([this, "eventGotCC", source, debuffName, keyAt]);
+      }
+      
       result += "</div>";
       
       
@@ -1301,6 +1305,7 @@ class hero {
   eventSelfDied(e) { return ""; }
   eventAllyDied(e) { return ""; }
   eventEnemyDied(e) { return ""; }
+  eventGotCC(source, ccName, ccStackID) { return ""; }
   startOfBattle() { return ""; }
   endOfRound(roundNum) { return ""; }
   

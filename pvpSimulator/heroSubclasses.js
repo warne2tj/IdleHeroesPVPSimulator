@@ -2747,49 +2747,84 @@ class Sherlock extends hero {
   }
   
   
-  takeDamage(source, strAttackDesc, damageResult) {
+  handleTrigger(trigger) {
     var result = "";
     
-    result += super.takeDamage(source, strAttackDesc, damageResult);
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+      return this.eventSelfBasic(trigger[2]);
+    } else if (trigger[1] == "eventHPlte30" && this._currentStats["wellCalculatedStacks"] > 1) {
+      return this.eventHPlte30();
+    } else if (trigger[1] == "eventGotCC" && this._currentStats["wellCalculatedStacks"] > 0) {
+      return this.eventGotCC(trigger[2], trigger[3], trigger[4]);
+    }
     
-    var postHP = this._currentStats["totalHP"];
+    return result;
+  }
+  
+  
+  eventGotCC(source, ccName, ccStackID) {
+    var result = "";
+    var targets = getRandomTargets(this, this._enemies);
+    var ccStack = this._debuffs[ccName][ccStackID];
     
-    if (this.isNotSealed() && this._currentStats["totalHP"] > 0 && postHP/this._stats["totalHP"] < 0.50 && this._currentStats["wellCalculatedStacks"] > 1) {
-      this._currentStats["wellCalculatedStacks"] -= 2;
-      
-      var targets = getHighestHPTargets(this, this._enemies);
-      
-      if (targets.length > 0) {
-        if (targets[0]._currentStats["totalHP"] > this._currentStats["totalHP"]) {
-          var swapAmount = targets[0]._currentStats["totalHP"] - this._currentStats["totalHP"];
-          if (swapAmount > this._currentStats["totalAttack"] * 50) { swapAmount = Math.floor(this._currentStats["totalAttack"] * 50);}
-          
-          this._currentStats["totalHP"] += swapAmount;
-          targets[0]._currentStats["totalHP"] -= swapAmount;
-          
-          this._currentStats["damageHealed"] += swapAmount;
-          this._currentStats["damageDealt"] += swapAmount;
-          
-          result += "<div>" + this.heroDesc() + " <span class='skill'>Deceiving Tricks</span> swapped " + formatNum(swapAmount) + " HP with " + source.heroDesc() + ".</div>";
-        }
+    this._currentStats["wellCalculatedStacks"] -= 1;
+    result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> transfered <span class='skill'>" + ccName + "</span.</div>";
+    
+    if (targets.length > 0) {
+      result += this.removeDebuff(ccName, ccStackID);
+      result += targets[0].getDebuff(this, ccName, ccStack["duration"], ccStack["effects"]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventHPlte30() {
+    var result = "";
+    var targets = getHighestHPTargets(this, this._enemies);
+    
+    this._currentStats["wellCalculatedStacks"] -= 2;
+    
+    if (targets.length > 0) {
+      if (targets[0]._currentStats["totalHP"] > this._currentStats["totalHP"]) {
+        var swapAmount = targets[0]._currentStats["totalHP"] - this._currentStats["totalHP"];
+        if (swapAmount > this._currentStats["totalAttack"] * 50) { swapAmount = Math.floor(this._currentStats["totalAttack"] * 50);}
+        
+        this._currentStats["totalHP"] += swapAmount;
+        targets[0]._currentStats["totalHP"] -= swapAmount;
+        
+        this._currentStats["damageHealed"] += swapAmount;
+        this._currentStats["damageDealt"] += swapAmount;
+        
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Deceiving Tricks</span> swapped " + formatNum(swapAmount) + " HP with " + targets[0].heroDesc() + ".</div>";
       }
     }
     
-    return result
+    return result;
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = "";
+    result += super.takeDamage(source, strAttackDesc, damageResult);
+    
+    if (this._currentStats["totalHP"]/this._stats["totalHP"] <= 0.30 && this._currentStats["wellCalculatedStacks"] > 1) {
+      triggerQueue.push([this, "eventHPlte30"]);
+    }
+    
+    return result;
   }
   
   
   endOfRound(roundNum) {
     var result = "";
     
-    if (this._currentStats["totalHP"] > 0) {
-      if(Math.random() < 0.5) {
-        result = "<div>" + this.heroDesc() + " gained <span class='num'>2</span> stacks of <span class='skill'>Well-Calculated</span>.</div>";
-        this._currentStats["wellCalculatedStacks"] += 2;
-      } else {
-        result = "<div>" + this.heroDesc() + " gained <span class='num'>1</span> stack of <span class='skill'>Well-Calculated</span>.</div>";
-        this._currentStats["wellCalculatedStacks"] += 1;
-      }
+    if(Math.random() < 0.5) {
+      result = "<div>" + this.heroDesc() + " gained <span class='num'>2</span> stacks of <span class='skill'>Well-Calculated</span>.</div>";
+      this._currentStats["wellCalculatedStacks"] += 2;
+    } else {
+      result = "<div>" + this.heroDesc() + " gained <span class='num'>1</span> stack of <span class='skill'>Well-Calculated</span>.</div>";
+      this._currentStats["wellCalculatedStacks"] += 1;
     }
     
     return result;
@@ -2799,28 +2834,7 @@ class Sherlock extends hero {
   getDebuff(source, debuffName, duration, effects) {
     var result = "";
     
-    if (isControlEffect(debuffName, effects) && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0 && !(["Seal of Light", "Magic Trick"].includes(debuffName))) {
-      var controlImmune = this._currentStats["controlImmune"];
-      
-      if ((debuffName + "Immune") in this._currentStats) {
-        controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
-      }
-      
-      if (Math.random() < controlImmune) {
-        result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
-      } else {
-        this._currentStats["wellCalculatedStacks"] -= 1;
-        
-        // transfer cc
-        result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> transfered <span class='skill'>" + debuffName + "</span.</div>";
-        
-        var targets = getRandomTargets(this, this._enemies);
-        if (targets.length > 0) {
-          result += targets[0].getDebuff(this, debuffName, duration, effects)
-        }
-      }
-      
-    } else if (debuffName.includes("Mark") && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0) {
+    if (debuffName.includes("Mark") && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0) {
       this._currentStats["wellCalculatedStacks"] -= 1;
       result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> prevented <span class='skill'>" + debuffName + "</span.</div>";
       
@@ -2835,14 +2849,14 @@ class Sherlock extends hero {
   doBasic() {
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies);
+    var targets = getRandomTargets(this, this._enemies);
     
     if (targets.length > 0) {
       damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[0]._currentStats["totalHP"] > 0 && !("Shapeshift" in targets[0]._debuffs) && Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
+        if (!("Shapeshift" in targets[0]._debuffs) && Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
           result += targets[0].getDebuff(this, "Shapeshift", 15, {stacks: 3});
         }
         
@@ -2870,7 +2884,7 @@ class Sherlock extends hero {
       result += targets[i].takeDamage(this, "Master Showman", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[i]._currentStats["totalHP"] > 0 && !("Shapeshift" in targets[i]._debuffs) && Math.random() < ccChance * (1 + this._currentStats["controlPrecision"])) {
+        if (!("Shapeshift" in targets[i]._debuffs) && Math.random() < ccChance * (1 + this._currentStats["controlPrecision"])) {
           result += targets[i].getDebuff(this, "Shapeshift", 15, {stacks: 3});
         }
         
