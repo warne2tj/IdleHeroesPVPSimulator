@@ -992,7 +992,7 @@ class hero {
       } else if (debuffName == "twine") {
         for (var h in source._allies) {
           if (source._allies[h]._heroName == "Oberon") {
-            result += source._allies[h].twine(this);
+            triggerQueue.push([source._allies[h], "eventTwine"]);
           }
         }
       } else if (debuffName == "Horrify") {

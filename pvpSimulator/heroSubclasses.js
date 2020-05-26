@@ -2469,47 +2469,23 @@ class Oberon extends hero {
   }
   
   
-  twine(target) {
+  handleTrigger(trigger) {
     var result = "";
     
-    if (this.isNotSealed() && this._currentStats["totalHP"] > 0) {
-      var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.8);
-      result += this.getHeal(this, healAmount);
-      result += this.getBuff(this, "Natural Manipulation", 6, {attackPercent: 0.20});
-      
-      
-      var damageResult = {};
-      var targets = getRandomTargets(this, this._enemies);
-      var maxTargets = 3;
-      
-      if (targets.length < maxTargets) { maxTargets = targets.length; }
-      
-      for (var i = 0; i < maxTargets; i++) {
-        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 6, "passive", "poison", 1, 1, 3);
-        result += targets[i].getDebuff(this, "Natural Manipulation", 3, {poison: Math.round(damageResult["damageAmount"] / 3)});
-      }
+    if (trigger[1] == "eventSelfBasic") {
+      return this.eventSelfBasic();
+    } else if (trigger[1] == "eventTwine") {
+      return this.eventTwine();
     }
     
     return result;
   }
   
   
-  doBasic() {
+  eventSelfBasic() {
     var result = "";
-    var damageResult = {};
-    var targets = getAllTargets(this, this._enemies);
+    var targets = getRandomTargets(this, this._enemies);
     
-    if (targets.length > 0) {
-      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
-      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
-      
-      if (!("CarrieDodge" in damageResult)) {
-        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
-      }
-    }
-    
-    
-    targets = getRandomTargets(this, this._enemies);
     if (targets.length > 0) {
       result += targets[0].getDebuff(this, "Sow Seeds", 1, {rounds: 1});
     }
@@ -2518,63 +2494,62 @@ class Oberon extends hero {
   }
   
   
+  eventTwine() {
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var maxTargets = 3;
+    
+    if (targets.length < maxTargets) { maxTargets = targets.length; }
+    
+    for (var i = 0; i < maxTargets; i++) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2, "passive", "poison", 1, 1, 3);
+      result += targets[i].getDebuff(this, "Poison", 3, {poison: Math.round(damageResult["damageAmount"])});
+    }
+    
+    
+    var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.8);
+    result += this.getHeal(this, healAmount);
+    result += this.getBuff(this, "Attack Percent", 6, {attackPercent: 0.20});
+  
+    return result;
+  }
+  
+  
   doActive() { 
     var result = "";
     var damageResult = {};
     var targets = getRandomTargets(this, this._enemies);
-    var i = 0;
     
-    for ( ; i < targets.length; i++) {
-      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.85);
-      result += targets[i].takeDamage(this, "Lethal Twining", damageResult);
+    if (targets.length > 0) {
+      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 1.85);
+      result += targets[0].takeDamage(this, "Lethal Twining", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          result+= targets[i].getDebuff(this, "twine", 2);
-        }
-        
-        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+        result+= targets[0].getDebuff(this, "twine", 2);
+        activeQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
+    }
+    
+    
+    if (targets.length > 1) {
+      damageResult = this.calcDamage(targets[1], this._currentStats["totalAttack"], "active", "normal", 2.25);
+      result += targets[1].takeDamage(this, "Lethal Twining", damageResult);
       
-      i++;
-      break;
-    }
-    
-    
-    for ( ; i < targets.length; i++) {
-      if (targets[i]._currentStats["totalHP"] > 0) {
-        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.25);
-        result += targets[i].takeDamage(this, "Lethal Twining", damageResult);
-        
-        if (!("CarrieDodge" in damageResult)) {
-          if (targets[i]._currentStats["totalHP"] > 0) {
-            result+= targets[i].getDebuff(this, "Sow Seeds", 1, {rounds: 2});
-          }
-          
-          activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
-        }
-        
-        i++;
-        break;
+      if (!("CarrieDodge" in damageResult)) {
+        result+= targets[1].getDebuff(this, "Sow Seeds", 1, {rounds: 2});
+        activeQueue.push([this, targets[1], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
     
-    for ( ; i < targets.length; i++) {
-      if (targets[i]._currentStats["totalHP"] > 0) {
-        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.65);
-        result += targets[i].takeDamage(this, "Lethal Twining", damageResult);
-        
-        if (!("CarrieDodge" in damageResult)) {
-          if (targets[i]._currentStats["totalHP"] > 0) {
-            result+= targets[i].getDebuff(this, "Sow Seeds", 2, {rounds: 2});
-          }
-          
-          activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
-        }
-        
-        i++;
-        break;
+    if (targets.length > 2) {
+      damageResult = this.calcDamage(targets[2], this._currentStats["totalAttack"], "active", "normal", 2.65);
+      result += targets[2].takeDamage(this, "Lethal Twining", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        result+= targets[2].getDebuff(this, "Sow Seeds", 2, {rounds: 2});
+        activeQueue.push([this, targets[2], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
