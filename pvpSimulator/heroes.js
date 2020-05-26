@@ -986,12 +986,8 @@ class hero {
         triggerQueue.push([source, "devouringMark", this, effects["attackAmount"], this._currentStats["energy"]]);
         
       } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
+        result += this.removeDebuff("Power of Light");
         result += this.getDebuff(source, "Seal of Light", 2, {});
-        
-      } else if (debuffName == "Seal of Light") {
-        if ("Power of Light" in this._debuffs) {
-          result += this.removeDebuff("Power of Light");
-        }
         
       } else if (debuffName == "twine") {
         for (var h in source._allies) {

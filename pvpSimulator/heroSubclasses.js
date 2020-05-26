@@ -2653,7 +2653,7 @@ class Penny extends hero {
     var result = "";
     var isControl = isControlEffect(debuffName, effects);
     
-    if ("Dynamite Armor" in this._buffs && isControl) {
+    if ("Dynamite Armor" in this._buffs && isControl && this.isNotSealed()) {
       var controlImmune = this._currentStats["controlImmune"];
       
       if (isControl) {
@@ -2913,31 +2913,34 @@ class Tara extends hero {
   }
   
   
-  eventAllyBasic(source, e) {
+  handleTrigger(trigger) {
     var result = "";
     
-    if (this.heroDesc() == source.heroDesc() && !(this.isUnderStandardControl())) {
-      var damageResult = {};
-      var targets = getAllTargets(this, this._enemies);
-      
-      for (var i=0; i<targets.length; i++) {
-        if (targets[i]._currentStats["totalHP"] > 0) {
-          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 1, 0, 1, 0);
-          result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
-          
-          if (Math.random() < 0.3) {
-            result += targets[i].getDebuff(this, "Power of Light", 99, {});
-          }
-        }
-      }
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+      return this.eventSelfBasic();
     }
     
     return result;
   }
   
   
-  eventAllyActive(source, e) {
-    return this.eventAllyBasic(source, e);
+  eventSelfBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getAllTargets(this, this._enemies);
+    
+    for (var i=0; i<targets.length; i++) {
+      if (targets[i]._currentStats["totalHP"] > 0) {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 1, 0, 1, 0);
+        result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
+        
+        if (Math.random() < 0.3) {
+          result += targets[i].getDebuff(this, "Power of Light", 15, {});
+        }
+      }
+    }
+    
+    return result;
   }
   
   
@@ -2951,11 +2954,8 @@ class Tara extends hero {
       result = targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
+        result += targets[0].getDebuff(this, "Power of Light", 15, {});
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
-      }
-      
-      if (!("CarrieDodge" in damageResult)) {
-        result += targets[0].getDebuff(this, "Power of Light", 99, {});
       }
     }
     
@@ -2967,34 +2967,52 @@ class Tara extends hero {
     var result = "";
     var damageResult = {};
     var targets = getRandomTargets(this, this._enemies);
-    var numAdditionalAttacks = 0;
+    var numAttacks = 2;
+    var didCrit = false;
+    var damageDone = 0;
     
     if (targets.length > 0) {
       damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 3);
-      result = targets[0].takeDamage(this, "Seal of Light", damageResult);
+      didCrit = didCrit || damageResult["critted"];
+      result += targets[0].takeDamage(this, "Seal of Light", damageResult);
+      damageDone += damageResult["damageAmount"];
       
       if (!("CarrieDodge" in damageResult)) {
-        var numAdditionalAttacks = Math.floor(Math.random() * 3) + 1;
-        damageResult["damageSource"] = "active2";
-        
-        for (var i=0; i<numAdditionalAttacks; i++) {
+        if (targets[0]._currentStats["totalHP"] > 0) {
+          damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active2", "normal", 3);
+          didCrit = didCrit || damageResult["critted"];
           result += targets[0].takeDamage(this, "Seal of Light", damageResult);
+          damageDone += damageResult["damageAmount"];
         }
         
-        result += targets[0].getDebuff(this, "Power of Light", 99, {});
-        activeQueue.push([this, targets[0], damageResult["damageAmount"] * (numAdditionalAttacks + 1), damageResult["critted"]]);
+        if (targets[0]._currentStats["totalHP"] > 0 && Math.random() < 0.5) {
+          damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active2", "normal", 3);
+          didCrit = didCrit || damageResult["critted"];
+          result += targets[0].takeDamage(this, "Seal of Light", damageResult);
+          damageDone += damageResult["damageAmount"];
+        }
+        
+        if (targets[0]._currentStats["totalHP"] > 0 && Math.random() < 0.34) {
+          damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active2", "normal", 3);
+          didCrit = didCrit || damageResult["critted"];
+          result += targets[0].takeDamage(this, "Seal of Light", damageResult);
+          damageDone += damageResult["damageAmount"];
+        }
+        
+        result += targets[0].getDebuff(this, "Power of Light", 15, {});
+        activeQueue.push([this, targets[0], damageDone, didCrit]);
       }
       
       targets = getAllTargets(this, this._enemies);
       for (var h in targets) {
         if ("Power of Light" in targets[h]._debuffs && Math.random() < 0.6) {
-          result += targets[h].getDebuff(this, "Power of Light", 99, {});
+          result += targets[h].getDebuff(this, "Power of Light", 15, {});
         }
       }
       
     }
       
-    result += this.getBuff(this, "Tara Holy Damage Buff", 99, {holyDamage: 0.5});
+    result += this.getBuff(this, "Holy Damage", 15, {holyDamage: 0.5});
     
     return result;
   }
