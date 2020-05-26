@@ -2567,11 +2567,37 @@ class Penny extends hero {
   }
   
   
-  eventAllyBasic(source, e) {
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+      return this.eventSelfBasic(trigger[2]);
+    } else if (trigger[1] == "eventTookDamage") {
+      return this.eventTookDamage(trigger[2], trigger[3]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventTookDamage(target, damageAmount) {
+    var result = "";
+    var reflectDamageResult;
+    
+    result += "<div><span class='skill'>Reflection Armor</span> consumed.</div>";
+    
+    reflectDamageResult = this.calcDamage(target, damageAmount, "passive", "true");
+    result += target.takeDamage(this, "Reflection Armor", reflectDamageResult);
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic(e) {
     var result = "";
     
     for (var i in e) {
-      if (this.heroDesc() == source.heroDesc() && e[i][3] == true) {
+      if (e[i][3] == true) {
         var damageResult = {};
         var targets = getAllTargets(this, this._enemies);
         
@@ -2593,28 +2619,20 @@ class Penny extends hero {
   }
   
   
-  eventAllyActive(source, e) {
-    return this.eventAllyBasic(source, e);
-  }
-  
-  
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     var reflectDamageResult = {};
     var tempDamageAmount = damageResult["damageAmount"];
     
     
-    if (["active", "active2", "basic", "basic2"].includes(damageResult["damageSource"]) && "Reflection Armor" in this._buffs && !("Guardian Shadow" in this._buffs)) {
-      damageResult["damageAmount"] = damageResult["damageAmount"] / 2;
+    if (["active", "active2", "basic", "basic2"].includes(damageResult["damageSource"]) && "Reflection Armor" in this._buffs && !("Guardian Shadow" in this._buffs) && this.isNotSealed()) {
+      damageResult["damageAmount"] = Math.round(damageResult["damageAmount"] / 2);
       
       result += super.takeDamage(source, strAttackDesc, damageResult);
       
-      result += "<div><span class='skill'>Reflection Armor</span> consumed.</div>";
-      tempDamageAmount = Math.floor(tempDamageAmount / 2)
-      
-      reflectDamageResult = source.calcDamage(this, tempDamageAmount, "passive", "true");
-      result += source.takeDamage(this, "Reflection Armor", reflectDamageResult);
+      tempDamageAmount = Math.floor(tempDamageAmount / 2);
       this._currentStats["damageHealed"] += tempDamageAmount;
+      triggerQueue.push([this, "eventTookDamage", source, tempDamageAmount]);
       
       var keyDelete = Object.keys(this._buffs["Reflection Armor"]);
       if (keyDelete.length <= 1) {
@@ -2680,7 +2698,7 @@ class Penny extends hero {
       }
     }
     
-    result += this.getBuff(this, "Gunshot Symphony", 2, {critDamage: 0.4});
+    result += this.getBuff(this, "Crit Damage", 2, {critDamage: 0.4});
     result += this.getBuff(this, "Reflection Armor", 99, {});
     
     return result;
@@ -2699,12 +2717,10 @@ class Penny extends hero {
         result += targets[0].takeDamage(this, "Fatal Fireworks", damageResult);
         
         if (!("CarrieDodge" in damageResult)) {
+          burnDamageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active2", "burn", 1.5, 1, 6);
+          result += targets[0].getDebuff(this, "Burn", 6, {burn: Math.round(burnDamageResult["damageAmount"])}, "active2");
+          
           activeQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
-        }
-        
-        if (!("CarrieDodge" in damageResult) && targets[0]._currentStats["totalHP"] > 0) {
-          burnDamageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active2", "burn", 1.5, 6);
-          result += targets[0].getDebuff(this, "Fatal Fireworks Burn", 6, {burn: Math.round(burnDamageResult["damageAmount"])});
         }
       }
     }
