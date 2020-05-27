@@ -71,7 +71,8 @@ class mDeer extends monster {
     if (targets.length < numTargets) {numTargets = targets.length;}
     
     for (var i=0; i < numTargets; i++) {
-      result += targets[i].getBuff(this, "Deer Buff", 2, {armorPercent: 0.37, attackPercent: 0.15});
+      result += targets[i].getBuff(this, "Armor Percent", 2, {armorPercent: 0.37});
+      result += targets[i].getBuff(this, "Attack Percent", 2, {attackPercent: 0.15});
       
       healAmount = Math.floor(targets[i]._stats["totalHP"] * 0.2);
       result += targets[i].getHeal(this, healAmount);
@@ -96,7 +97,9 @@ class mPhoenix extends monster {
     for (var i=0; i < numTargets; i++) {
       damageResult = this.calcDamage(targets[i], 451830, "monster", "true");
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
-      result += targets[i].getDebuff(this, "Phoenix Burn", 3, {burnTrue: 363465});
+      
+      damageResult = this.calcDamage(targets[i], 363465, "monster", "burnTrue");
+      result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: 363465}, false, "monster");
     }
     
     var healAmount = 0;
@@ -105,7 +108,8 @@ class mPhoenix extends monster {
     if (targets.length < numTargets) {numTargets = targets.length;}
     
     for (var i=0; i < numTargets; i++) {
-      result += targets[i].getBuff(this, "Phoenix Buff", 3, {heal: 500353, damageAgainstBurning: 0.8});
+      result += targets[i].getBuff(this, "Heal", 3, {heal: 500353});
+      result += targets[i].getBuff(this, "Damage Against Burning", 3, {damageAgainstBurning: 0.8});
     }
     
     this._energy = 0;
