@@ -4377,15 +4377,20 @@ class Sherlock extends hero {
   
   eventGotCC(source, ccName, ccStackID) {
     var result = "";
-    var targets = getRandomTargets(this, this._enemies);
-    var ccStack = this._debuffs[ccName][ccStackID];
     
-    this._currentStats["wellCalculatedStacks"] -= 1;
-    result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> transfered <span class='skill'>" + ccName + "</span.</div>";
-    
-    if (targets.length > 0) {
-      result += this.removeDebuff(ccName, ccStackID);
-      result += targets[0].getDebuff(this, ccName, ccStack["duration"], ccStack["effects"]);
+    if (ccName in this._debuffs) {
+      if (ccStackID in this._debuffs[ccName]) {
+        var targets = getRandomTargets(this, this._enemies);
+        var ccStack = this._debuffs[ccName][ccStackID];
+        
+        this._currentStats["wellCalculatedStacks"] -= 1;
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> transfered <span class='skill'>" + ccName + "</span.</div>";
+        
+        if (targets.length > 0) {
+          result += this.removeDebuff(ccName, ccStackID);
+          result += targets[0].getDebuff(this, ccName, ccStack["duration"], ccStack["effects"]);
+        }
+      }
     }
     
     return result;
@@ -6065,7 +6070,6 @@ var baseHeroStats = {
 
 
 /* Start of utilityFunctions.js */
-
 function formatNum(num) {
   return "<span class ='num'>" + num.toLocaleString() + "</span>";
 }
@@ -6128,7 +6132,7 @@ function isDispellable(strName) {
 
 
 function isControlEffect(strName, effects={}) {
-  if (["stun", "petrify", "freeze", "twine", "Silence", "Taunt", "Seal of Light", "Horrify", "Shapeshift"].includes(strName)) {
+  if (["stun", "petrify", "freeze", "twine", "Silence", "Seal of Light", "Horrify", "Shapeshift"].includes(strName)) {
     return true;
   } else {
     return false;
@@ -6410,7 +6414,7 @@ function getHighestHPTargets(source, arrTargets) {
 function getTauntedTargets(source, arrTargets) {
   var copyTargets = [];
   
-  if (!(isMonster(source))) {
+  if (!(isMonster(source)) && arrTargets.length > 0) {
     if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
       for (var s in source._debuffs["Taunt"]) {
         if (source._debuffs["Taunt"][s]["source"]._currentStats["totalHP"] > 0) {
@@ -6690,14 +6694,14 @@ function runSim(attMonsterName, defMonsterName, numSims) {
       //if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
       for (var h in attHeroes) {
         temp = "";
+          
+        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
+          temp += attHeroes[h].tickEnable3();
+        }
         
         if (attHeroes[h]._currentStats["totalHP"] > 0) {
           temp += attHeroes[h].tickBuffs();
           temp += attHeroes[h].tickDebuffs();
-        }
-          
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
-          temp += attHeroes[h].tickEnable3();
         }
         
         if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
@@ -6712,14 +6716,14 @@ function runSim(attMonsterName, defMonsterName, numSims) {
       //if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
       for (var h in defHeroes) {
         temp = "";
+          
+        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
+          temp += defHeroes[h].tickEnable3();
+        }
         
         if (defHeroes[h]._currentStats["totalHP"] > 0) {
           temp += defHeroes[h].tickBuffs();
           temp += defHeroes[h].tickDebuffs();
-        }
-          
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
-          temp += defHeroes[h].tickEnable3();
         }
         
         if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {

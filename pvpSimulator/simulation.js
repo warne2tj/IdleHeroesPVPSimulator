@@ -259,14 +259,14 @@ function runSim() {
       if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
       for (var h in attHeroes) {
         temp = "";
+          
+        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
+          temp += attHeroes[h].tickEnable3();
+        }
         
         if (attHeroes[h]._currentStats["totalHP"] > 0) {
           temp += attHeroes[h].tickBuffs();
           temp += attHeroes[h].tickDebuffs();
-        }
-          
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
-          temp += attHeroes[h].tickEnable3();
         }
         
         if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
@@ -281,14 +281,14 @@ function runSim() {
       if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
       for (var h in defHeroes) {
         temp = "";
+          
+        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
+          temp += defHeroes[h].tickEnable3();
+        }
         
         if (defHeroes[h]._currentStats["totalHP"] > 0) {
           temp += defHeroes[h].tickBuffs();
           temp += defHeroes[h].tickDebuffs();
-        }
-          
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
-          temp += defHeroes[h].tickEnable3();
         }
         
         if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {

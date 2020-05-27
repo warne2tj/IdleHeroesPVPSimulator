@@ -60,7 +60,7 @@ function isDispellable(strName) {
 
 
 function isControlEffect(strName, effects={}) {
-  if (["stun", "petrify", "freeze", "twine", "Silence", "Taunt", "Seal of Light", "Horrify", "Shapeshift"].includes(strName)) {
+  if (["stun", "petrify", "freeze", "twine", "Silence", "Seal of Light", "Horrify", "Shapeshift"].includes(strName)) {
     return true;
   } else {
     return false;
@@ -342,7 +342,7 @@ function getHighestHPTargets(source, arrTargets) {
 function getTauntedTargets(source, arrTargets) {
   var copyTargets = [];
   
-  if (!(isMonster(source))) {
+  if (!(isMonster(source)) && arrTargets.length > 0) {
     if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
       for (var s in source._debuffs["Taunt"]) {
         if (source._debuffs["Taunt"][s]["source"]._currentStats["totalHP"] > 0) {

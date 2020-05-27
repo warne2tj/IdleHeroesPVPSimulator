@@ -2764,15 +2764,20 @@ class Sherlock extends hero {
   
   eventGotCC(source, ccName, ccStackID) {
     var result = "";
-    var targets = getRandomTargets(this, this._enemies);
-    var ccStack = this._debuffs[ccName][ccStackID];
     
-    this._currentStats["wellCalculatedStacks"] -= 1;
-    result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> transfered <span class='skill'>" + ccName + "</span.</div>";
-    
-    if (targets.length > 0) {
-      result += this.removeDebuff(ccName, ccStackID);
-      result += targets[0].getDebuff(this, ccName, ccStack["duration"], ccStack["effects"]);
+    if (ccName in this._debuffs) {
+      if (ccStackID in this._debuffs[ccName]) {
+        var targets = getRandomTargets(this, this._enemies);
+        var ccStack = this._debuffs[ccName][ccStackID];
+        
+        this._currentStats["wellCalculatedStacks"] -= 1;
+        result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> transfered <span class='skill'>" + ccName + "</span.</div>";
+        
+        if (targets.length > 0) {
+          result += this.removeDebuff(ccName, ccStackID);
+          result += targets[0].getDebuff(this, ccName, ccStack["duration"], ccStack["effects"]);
+        }
+      }
     }
     
     return result;

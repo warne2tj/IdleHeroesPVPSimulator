@@ -377,7 +377,7 @@ function evolve(teamKeys) {
   var dnaString1;
   var children = [];
   
-  var numCreate = parseInt(document.getElementById("numCreate").value);
+  var numCreate = teamKeys.length;
   var i20p = Math.floor(numCreate * 0.2);
   var i30p = Math.floor(numCreate * 0.3);
   var i50p = Math.floor(numCreate * 0.5);
