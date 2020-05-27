@@ -44,7 +44,7 @@ class Aida extends hero {
     for (var i=0; i<targets.length; i++) {
       damageResult = this.calcDamage(this, targets[i]._currentStats["totalAttack"] * 3, "passive", "normal");
       result += targets[i].takeDamage(this, "Final Verdict", damageResult);
-      result += targets[i].getDebuff(this, "Effect Being Healed", 99, {effectBeingHealed: 0.1});
+      result += targets[i].getDebuff(this, "Effect Being Healed", 15, {effectBeingHealed: 0.1});
     }
     
     healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.15);
@@ -194,7 +194,7 @@ class AmenRa extends hero {
       targets = getRandomTargets(this, this._enemies);
       
       if (targets.length > 0) {
-        result += targets[0].getDebuff(this, "Healing Curse", 99, {});
+        result += targets[0].getDebuff(this, "Healing Curse", 15, {});
       }
     }
     
@@ -224,8 +224,8 @@ class AmenRa extends hero {
     
     targets = getAllTargets(this, this._allies);
     for (i in targets) {
-      result += targets[i].getBuff(this, "Guardian Shadow", 99, {});
-      result += targets[i].getBuff(this, "Guardian Shadow", 99, {});
+      result += targets[i].getBuff(this, "Guardian Shadow", 15, {});
+      result += targets[i].getBuff(this, "Guardian Shadow", 15, {});
     }
     
     return result;
@@ -360,16 +360,16 @@ class Aspen extends hero {
     var result = "";
     var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.5);
     result += this.getHeal(this, healAmount);
-    result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
+    result += this.getBuff(this, "Shield", 15, {controlImmune: 0.2, damageReduce: 0.06});
     return result;
   }
   
   
   eventSelfBasic() {
     var result = "";
-    result += this.getBuff(this, "Attack Percent", 99, {attackPercent: 0.15});
-    result += this.getBuff(this, "Crit Damage", 99, {critDamage: 0.15});
-    result += this.getBuff(this, "Shield", 99, {controlImmune: 0.2, damageReduce: 0.06});
+    result += this.getBuff(this, "Attack Percent", 15, {attackPercent: 0.15});
+    result += this.getBuff(this, "Crit Damage", 15, {critDamage: 0.15});
+    result += this.getBuff(this, "Shield", 15, {controlImmune: 0.2, damageReduce: 0.06});
     return result;
   }
   
@@ -762,7 +762,7 @@ class Carrie extends hero {
         }
       
         if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
-          result += targets[i].getDebuff(this, "Devouring Mark", 99, {attackAmount: this._currentStats["totalAttack"]});
+          result += targets[i].getDebuff(this, "Devouring Mark", 15, {attackAmount: this._currentStats["totalAttack"]});
         }
       }
       
@@ -1376,7 +1376,7 @@ class Garuda extends hero {
       }
     }
     
-    result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
+    result += this.getBuff(this, "Feather Blade", 15, {damageReduce: 0.04});
     result += this.getBuff(this, "Crit", 2, {crit: 0.05});
     
     return result;
@@ -1390,8 +1390,8 @@ class Garuda extends hero {
     
     var healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.3);
     result += this.getHeal(this, healAmount);
-    result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
-    result += this.getBuff(this, "Feather Blade", 99, {damageReduce: 0.04});
+    result += this.getBuff(this, "Feather Blade", 15, {damageReduce: 0.04});
+    result += this.getBuff(this, "Feather Blade", 15, {damageReduce: 0.04});
     
     return result;
   }
@@ -1552,7 +1552,7 @@ class Gustin extends hero {
   
   startOfBattle() {
     var targets = getRandomTargets(this, this._enemies);
-    var result = targets[0].getDebuff(this, "Link of Souls", 99, {});
+    var result = targets[0].getDebuff(this, "Link of Souls", 15, {});
     return result;
   }
   
@@ -1604,7 +1604,7 @@ class Gustin extends hero {
       }
       
       if (!(linked)) {
-        result += targets[0].getDebuff(this, "Link of Souls", 99, {});
+        result += targets[0].getDebuff(this, "Link of Souls", 15, {});
       }
     }
     
@@ -1784,8 +1784,8 @@ class Horus extends hero {
   
   eventEnemyActive() {
     var result = "";
-    result += this.getBuff(this, "Attack Percent", 99, {attackPercent: 0.05});
-    result += this.getBuff(this, "Crit Damage", 99, {critDamage:0.02});
+    result += this.getBuff(this, "Attack Percent", 15, {attackPercent: 0.05});
+    result += this.getBuff(this, "Crit Damage", 15, {critDamage:0.02});
     return result;
   }
   
@@ -2610,8 +2610,8 @@ class Penny extends hero {
           }
         }
         
-        result += this.getBuff(this, "Dynamite Armor", 99, {});
-        result += this.getBuff(this, "Reflection Armor", 99, {});
+        result += this.getBuff(this, "Dynamite Armor", 15, {});
+        result += this.getBuff(this, "Reflection Armor", 15, {});
       }
     }
     
@@ -2699,7 +2699,7 @@ class Penny extends hero {
     }
     
     result += this.getBuff(this, "Crit Damage", 2, {critDamage: 0.4});
-    result += this.getBuff(this, "Reflection Armor", 99, {});
+    result += this.getBuff(this, "Reflection Armor", 15, {});
     
     return result;
   }
@@ -2725,7 +2725,7 @@ class Penny extends hero {
       }
     }
     
-    result += this.getBuff(this, "Dynamite Armor", 99, {});
+    result += this.getBuff(this, "Dynamite Armor", 15, {});
     
     return result;
   }
@@ -3028,26 +3028,55 @@ class UniMax3000 extends hero {
   }
   
   
-  endOfRound(roundNum) {
+  handleTrigger(trigger) {
     var result = "";
     
-    if (this._currentStats["totalHP"] > 0) {
-      var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.2);
+    if (trigger[1] == "eventSelfBasic") {
+      return this.eventSelfBasic();
+    } else if (trigger[1] == "eventTookDamage") {
+      return this.eventTookDamage(trigger[2]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventTookDamage(target) {
+    var result = "";
+    
+    if (target._currentStats["totalHP"] > 0) {
+      var attackStolen = Math.floor(target._currentStats["attack"] * 0.2);
       
-      result += this.getHeal(this, healAmount);
-      result += this.getHeal(this, healAmount);
-      result += this.getHeal(this, healAmount);
+      result += "<div>" + this.heroDesc() + " <span class='skill'>Frenzied Taunt</span> triggered.</div>"
+      result += target.getDebuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
+      result += this.getBuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
       
-      if (roundNum == 4) {
-        for (var d in this._debuffs) {
-          if (isControlEffect(d)) {
-            result += this.removeDebuff(d);
-          }
-        }
-        
-        result += this.getBuff(this, "Energy Overload", 99, {critDamage: 0.5});
-        result += this.getBuff(this, "Rampage", 99, {crit: 1.0});
+      if (Math.random() < 0.3 * (1 + this._currentStats["controlPrecision"])) {
+        result += target.getDebuff(this, "Taunt", 2);
       }
+    }
+    
+    return result;
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.2);
+      
+    result += this.getHeal(this, healAmount);
+    result += this.getHeal(this, healAmount);
+    result += this.getHeal(this, healAmount);
+      
+    if (roundNum == 4) {
+      for (var d in this._debuffs) {
+        if (isControlEffect(d)) {
+          result += this.removeDebuff(d);
+        }
+      }
+      
+      result += this.getBuff(this, "Crit Damage", 15, {critDamage: 0.5});
+      result += this.getBuff(this, "Rampage", 15);
     }
     
     return result;
@@ -3058,7 +3087,7 @@ class UniMax3000 extends hero {
     var result = "";
     
     if ("Rampage" in this._buffs) {
-      result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, canCrit, dotRounds, 0, armorReduces);
+      result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, 2, dotRounds, 0, armorReduces);
     } else {
       result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, canCrit, dotRounds, canBlock, armorReduces);
     }
@@ -3067,36 +3096,16 @@ class UniMax3000 extends hero {
   }
   
   
-  eventEnemyBasic(source, e) {
-    var result = "";
-    
-    for (var i in e) {
-      if (this._currentStats["totalHP"] > 0 && e[i][1].heroDesc() == this.heroDesc()) {
-        var attackStolen = Math.floor(source._currentStats["totalAttack"] * 0.2);
-        
-        result += "<div>" + this.heroDesc() + " <span class='skill'>Frenzied Taunt</span> triggered.</div>"
-        result += source.getDebuff(this, "Frenzied Taunt", 2, {attackPercent: 0.2});
-        result += this.getBuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
-        
-        if (Math.random() < 0.3 * (1 + this._currentStats["controlPrecision"])) {
-          result += source.getDebuff(this, "Taunt", 2, {});
-        }
-      }
-    }
-    
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = super.takeDamage(source, strAttackDesc, damageResult);
+    triggerQueue.push([this, "eventTookDamage", source]);
     return result;
   }
   
   
-  eventEnemyActive(source, e) {
-    return this.eventEnemyBasic(source, e);
-  }
-  
-  
-  doBasic() {
-    var result = super.doBasic();
+  eventSelfBasic() {
+    var result = "";
     var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.5);
-    
     result += this.getBuff(this, "Frenzied Taunt", 2, {heal: healAmount});
     return result;
   }
@@ -3112,19 +3121,19 @@ class UniMax3000 extends hero {
       result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        activeQueue.push([this, targets[i], damageResult["damageAmount"] * 2, damageResult["critted"]]);
-        
         if (targets[i]._currentStats["totalHP"] > 0) {
           result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
         }
         
-        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
+        if (Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
           result += targets[i].getDebuff(this, "Taunt", 2, {});
         }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] * 2, damageResult["critted"]]);
       }
     }
     
-    result += this.getBuff(this, "Iron Whirlwind", 2, {allDamageReduce: 0.2});
+    result += this.getBuff(this, "All Damage Reduce", 2, {allDamageReduce: 0.2});
     
     return result;
   }
