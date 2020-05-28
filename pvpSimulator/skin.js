@@ -19,6 +19,12 @@ var skins = {
     "Legendary Original Sin": {attackPercent: 0.06, crit: 0.03, critDamage: 0.075}
   },
   
+  "Asmodel": {
+    "King of War": {hpPercent: 0.03, attackPercent: 0.02},
+    "Frozen Heart": {attackPercent: 0.02, crit: 0.02, critDamage: 0.05},
+    "Legendary Frozen Heart": {attackPercent: 0.04, crit: 0.03, critDamage: 0.10}
+  },
+  
   "Aspen": {
     "Dragonic Warrior": {hpPercent: 0.05, attackPercent: 0.03, critDamage: 0.05},
     "Legendary Dragonic Warrior": {hpPercent: 0.08, attackPercent: 0.06, critDamage: 0.075},

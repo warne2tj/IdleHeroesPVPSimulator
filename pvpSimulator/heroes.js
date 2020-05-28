@@ -1410,6 +1410,14 @@ class hero {
       }
     }
     
+    
+    if (damageResult["critted"] && "Crit Mark" in this._debuffs) {
+      for (var s in this._debuffs["Crit Mark"]) {
+        triggerQueue.push([this._debuffs["Crit Mark"][s]["source"], "critMark", this, this._debuffs["Crit Mark"][s]["effects"]["attackAmount"]]);
+      }
+    }
+    
+    
     if (this._currentStats["totalHP"] > 0 && "Shapeshift" in this._debuffs && damageResult["damageAmount"] > 0 && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
       var shapeshiftKey = Object.keys(this._debuffs["Shapeshift"])[0];
       if (this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"] > 1) {

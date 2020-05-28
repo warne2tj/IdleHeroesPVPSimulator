@@ -66,6 +66,22 @@ var baseHeroStats = {
     }
   },
   
+  "Asmodel": {
+    className: Asmodel,
+    heroFaction: "Light",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 9357,
+      baseAttack: 332,
+      baseArmor: 62,
+      baseSpeed: 235,
+      growHP: 935.7,
+      growAttack: 33,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
   "Aspen": {
     className: Aspen,
     heroFaction: "Dark",

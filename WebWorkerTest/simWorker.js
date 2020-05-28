@@ -1553,6 +1553,14 @@ class hero {
       }
     }
     
+    
+    if (damageResult["critted"] && "Crit Mark" in this._debuffs) {
+      for (var s in this._debuffs["Crit Mark"]) {
+        triggerQueue.push([this._debuffs["Crit Mark"][s]["source"], "critMark", this, this._debuffs["Crit Mark"][s]["effects"]["attackAmount"]]);
+      }
+    }
+    
+    
     if (this._currentStats["totalHP"] > 0 && "Shapeshift" in this._debuffs && damageResult["damageAmount"] > 0 && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
       var shapeshiftKey = Object.keys(this._debuffs["Shapeshift"])[0];
       if (this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"] > 1) {
@@ -4757,6 +4765,111 @@ class UniMax3000 extends hero {
   }
 }
 
+
+// Asmodel
+class Asmodel extends hero {
+  passiveStats() {
+    // apply Asmodeus passive
+    this.applyStatChange({hpPercent: 0.40, attackPercent: 0.35, holyDamage: 0.50, crit: 0.35, controlImmune: 0.30}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "critMark") {
+      if (trigger[2]._currentStats["totalHP"] > 0) {
+        return this.critMark(trigger[2], trigger[3]);
+      }
+    } else if (trigger[1] == "eventTookDamage") {
+      return this.eventTookDamage();
+    }
+    
+    return result;
+  }
+  
+  
+  eventTookDamage() {
+    var result = "";
+    var targets = getAllTargets(this, this._enemies);
+    var damageResult;
+    
+    for (var i in targets) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.8, "mark", "normal");
+      result += targets[i].getDebuff(this, "Crit Mark", 15, {attackAmount: damageResult});
+    }
+    
+    result += this.getBuff(this, "Damage Reduce", 1, {damageReduce: 0.25});
+    
+    return result;
+  }
+  
+  
+  critMark(target, damageResult) {
+    var result = "";
+    result += target.takeDamage(this, "Crit Mark", damageResult);
+    return result;
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = super.takeDamage(source, strAttackDesc, damageResult);
+    triggerQueue.push([this, "eventTookDamage"]);
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var targets = getFrontTargets(this, this._enemies);
+    
+    for (var i in targets) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.6, "basic", "normal");
+      result += targets[i].takeDamage(this, "Basic Attack", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.5, "mark", "normal");
+        result += targets[i].getDebuff(this, "Crit Mark", 15, {attackAmount: damageResult});
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    result += this.getBuff(this, "Crit Damage", 3, {critDamage: 0.40});
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var maxTargets = 4;
+    
+    if (targets.length < maxTargets) {
+      maxTargets = targets.length;
+    }
+    
+    for (var i=0; i<maxTargets; i++) {
+      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.25);
+      result += targets[i].takeDamage(this, "Divine Burst", damageResult);
+      
+      if (!("CarrieDodge" in damageResult)) {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "mark", "normal");
+        result += targets[i].getDebuff(this, "Crit Mark", 15, {attackAmount: damageResult});
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    result += this.getBuff(this, "Attack Percent", 3, {attackPercent: 0.40});
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -5436,6 +5549,12 @@ var skins = {
     "Legendary Original Sin": {attackPercent: 0.06, crit: 0.03, critDamage: 0.075}
   },
   
+  "Asmodel": {
+    "King of War": {hpPercent: 0.03, attackPercent: 0.02},
+    "Frozen Heart": {attackPercent: 0.02, crit: 0.02, critDamage: 0.05},
+    "Legendary Frozen Heart": {attackPercent: 0.04, crit: 0.03, critDamage: 0.10}
+  },
+  
   "Aspen": {
     "Dragonic Warrior": {hpPercent: 0.05, attackPercent: 0.03, critDamage: 0.05},
     "Legendary Dragonic Warrior": {hpPercent: 0.08, attackPercent: 0.06, critDamage: 0.075},
@@ -5709,6 +5828,22 @@ var baseHeroStats = {
       growHP: 736.3,
       growAttack: 48.4,
       growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Asmodel": {
+    className: Asmodel,
+    heroFaction: "Light",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 9357,
+      baseAttack: 332,
+      baseArmor: 62,
+      baseSpeed: 235,
+      growHP: 935.7,
+      growAttack: 33,
+      growArmor: 6.2,
       growSpeed: 2
     }
   },

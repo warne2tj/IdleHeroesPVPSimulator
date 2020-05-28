@@ -13,6 +13,7 @@ Head to the wiki for more details.
   * Aida
   * Amen-Ra
   * Amuvor
+  * Asmodel
   * Aspen
   * Belrain
   * Carrie
@@ -44,7 +45,6 @@ Head to the wiki for more details.
   
 ### To Do List
   * Implement new heroes as they release
-  * implement Asmodel
   * implement rest of monsters
   * implement enhanced artifacts
   * ----------- Priority 2 ------------
