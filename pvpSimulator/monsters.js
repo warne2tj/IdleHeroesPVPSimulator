@@ -117,3 +117,36 @@ class mPhoenix extends monster {
     return result;
   }
 }
+
+
+class mWolf extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 602441, "monster", "true");
+      result += targets[i].takeDamage(this, "Violent Bite", damageResult);
+      
+      damageResult = this.calcDamage(targets[i], 559177, "monster", "bleedTrue");
+      result += targets[i].getDebuff(this, "Bleed", 3, {bleedTrue: 363465}, false, "monster");
+    }
+    
+    var healAmount = 0;
+    targets = getRandomTargets(this, this._allies);
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff(this, "Damage Against Bleeding", 3, {damageAgainstBleeding: 0.8});
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
