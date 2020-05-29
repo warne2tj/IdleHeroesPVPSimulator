@@ -5,7 +5,7 @@ var baseMonsterStats = {
   },
   
   "Deer": {
-    className: mDeer,
+    className: mDyne,
     stats: {
       attack: 9604,
       hp: 231805,
@@ -14,6 +14,32 @@ var baseMonsterStats = {
       speed: 220,
       fixedAttack: 91238,
       fixedHP: 3477075
+    }
+  },
+  
+  "Dragon": {
+    className: mNiederhog,
+    stats: {
+      attack: 10547,
+      hp: 211085,
+      critDamage: 0.20,
+      crit: 0.10,
+      speed: 220,
+      fixedAttack: 100196,
+      fixedHP: 3166275
+    }
+  },
+  
+  "Fox": {
+    className: mFox,
+    stats: {
+      attack: 10890,
+      hp: 204610,
+      skillDamage: 0.20,
+      precision: 0.10,
+      speed: 220,
+      fixedAttack: 103455,
+      fixedHP: 3069150
     }
   },
   
@@ -30,8 +56,21 @@ var baseMonsterStats = {
     }
   },
   
+  "Sphinx": {
+    className: mSphinx,
+    stats: {
+      attack: 10033,
+      hp: 221445,
+      precision: 0.10,
+      holyDamage: 0.20,
+      speed: 220,
+      fixedAttack: 95313,
+      fixedHP: 3321675
+    }
+  },
+  
   "Wolf": {
-    className: mWolf,
+    className: mFenlier,
     stats: {
       attack: 11405,
       hp: 195545,

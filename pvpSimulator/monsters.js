@@ -28,15 +28,32 @@ class monster {
   
   
   calcDamage(target, attackDamage, damageSource, damageType) {
+    var damageAmount = attackDamage;
+    var allDamageReduce = target._currentStats["allDamageReduce"];
+    var dotReduce = 0;
+    
+    if (isDot(damageType)) {
+      dotReduce = target._currentStats["dotReduce"];
+    }
+    
+    damageAmount = Math.round(damageAmount * (1 - allDamageReduce) * (1 - dotReduce));
+    
     return {
-      "damageAmount": attackDamage,
-      "holyDamage": 0, 
+      "damageAmount": damageAmount,
       "critted": false, 
       "blocked": false, 
       "damageSource": damageSource, 
       "damageType": damageType, 
       "e5Description": ""
     };
+  }
+  
+  
+  calcHeal(target, healAmount) {
+    var effectBeingHealed = 1 + target._currentStats["effectBeingHealed"];
+    if (effectBeingHealed < 0) { effectBeingHealed = 0; }
+    
+    return Math.round(healAmount * effectBeingHealed);
   }
   
   
@@ -51,7 +68,7 @@ class monster {
 }
 
 
-class mDeer extends monster {
+class mDyne extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
@@ -74,8 +91,105 @@ class mDeer extends monster {
       result += targets[i].getBuff(this, "Armor Percent", 2, {armorPercent: 0.37});
       result += targets[i].getBuff(this, "Attack Percent", 2, {attackPercent: 0.15});
       
-      healAmount = Math.floor(targets[i]._stats["totalHP"] * 0.2);
+      healAmount = this.calcHeal(targets[i], targets[i]._stats["totalHP"] * 0.2);
       result += targets[i].getHeal(this, healAmount);
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mFenlier extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 602441, "monster", "true");
+      result += targets[i].takeDamage(this, "Violent Bite", damageResult);
+      
+      damageResult = this.calcDamage(targets[i], 559177, "monster", "bleedTrue");
+      result += targets[i].getDebuff(this, "Bleed", 3, {bleedTrue: damageResult["damageAmount"]}, "monster");
+    }
+    
+    var healAmount = 0;
+    targets = getRandomTargets(this, this._allies);
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff(this, "Damage Against Bleeding", 3, {damageAgainstBleeding: 0.8});
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mFox extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 636573, "monster", "true");
+      result += targets[i].takeDamage(this, "Soul Shock", damageResult);
+      
+      if (Math.random() < 0.40) {
+        result += targets[i].getDebuff(this, "Silence", 2);
+      }
+    }
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getEnergy(this, 62);
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mNiederhog extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
+      result += targets[i].takeDamage(this, "Dragon Sigh", damageResult);
+      
+      if (Math.random() < 0.36) {
+        result += targets[i].getDebuff(this, "stun", 2);
+      }
+    }
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff(this, "Holy Damage", 2, {holyDamage: 0.75})
     }
     
     this._energy = 0;
@@ -99,7 +213,7 @@ class mPhoenix extends monster {
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
       
       damageResult = this.calcDamage(targets[i], 363465, "monster", "burnTrue");
-      result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: 363465}, false, "monster");
+      result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: damageResult["damageAmount"]}, "monster");
     }
     
     var healAmount = 0;
@@ -108,7 +222,8 @@ class mPhoenix extends monster {
     if (targets.length < numTargets) {numTargets = targets.length;}
     
     for (var i=0; i < numTargets; i++) {
-      result += targets[i].getBuff(this, "Heal", 3, {heal: 500353});
+      healAmount = this.calcHeal(targets[i], 500535);
+      result += targets[i].getBuff(this, "Heal", 3, {heal: healAmount});
       result += targets[i].getBuff(this, "Damage Against Burning", 3, {damageAgainstBurning: 0.8});
     }
     
@@ -119,7 +234,7 @@ class mPhoenix extends monster {
 }
 
 
-class mWolf extends monster {
+class mSphinx extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
@@ -129,20 +244,18 @@ class mWolf extends monster {
     if (targets.length < numTargets) {numTargets = targets.length;}
     
     for (var i=0; i < numTargets; i++) {
-      damageResult = this.calcDamage(targets[i], 602441, "monster", "true");
-      result += targets[i].takeDamage(this, "Violent Bite", damageResult);
-      
-      damageResult = this.calcDamage(targets[i], 559177, "monster", "bleedTrue");
-      result += targets[i].getDebuff(this, "Bleed", 3, {bleedTrue: 363465}, false, "monster");
+      damageResult = this.calcDamage(targets[i], 636141, "monster", "true");
+      result += targets[i].takeDamage(this, "Subduction Hit", damageResult);
+      result += targets[i].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.37});
+      result += targets[i].getDebuff(this, "Speed", 3, {speed: 37});
     }
     
-    var healAmount = 0;
-    targets = getRandomTargets(this, this._allies);
     
+    targets = getRandomTargets(this, this._allies);
     if (targets.length < numTargets) {numTargets = targets.length;}
     
     for (var i=0; i < numTargets; i++) {
-      result += targets[i].getBuff(this, "Damage Against Bleeding", 3, {damageAgainstBleeding: 0.8});
+      result += targets[i].getBuff(this, "Attack Percent", 2, {attackPercent: 0.25});
     }
     
     this._energy = 0;

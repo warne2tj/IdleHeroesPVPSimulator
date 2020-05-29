@@ -692,7 +692,7 @@ class hero {
   
   calcHeal(target, healAmount) {
     var healEffect = this._currentStats["healEffect"] + 1;
-    var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
+    var effectBeingHealed = 1 + target._currentStats["effectBeingHealed"];
     if (effectBeingHealed < 0) { effectBeingHealed = 0; }
     
     return Math.round(healAmount * effectBeingHealed * healEffect);
