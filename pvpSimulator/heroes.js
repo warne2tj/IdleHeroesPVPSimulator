@@ -109,7 +109,9 @@ class hero {
     this._stats["fixedAttack"] = 0;
     this._stats["fixedHP"] = 0;
     this._stats["damageAgainstBurning"] = 0.0;
-    this._stats["damageAgainstBleed"] = 0.0;
+    this._stats["damageAgainstBleeding"] = 0.0;
+    this._stats["damageAgainstPoisoned"] = 0.0;
+    this._stats["damageAgainstFrozen"] = 0.0;
     this._stats["allDamageReduce"] = 0.0;
     this._stats["allDamageTaken"] = 0.0;
     this._stats["allDamageDealt"] = 0.0;
@@ -526,7 +528,9 @@ class hero {
     var holyDamageIncrease = this._currentStats["holyDamage"] * .7;
     var lethalFightback = 1;
     var damageAgainstBurning = 1;
-    var damageAgainstBleed = 1;
+    var damageAgainstBleeding = 1;
+    var damageAgainstPoisoned = 1;
+    var damageAgainstFrozen = 1;
     var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
     var armorBreak = 0;
     var allDamageTaken = 1 + target._currentStats["allDamageTaken"];
@@ -572,7 +576,8 @@ class hero {
     if (
       this._enable2 == "LethalFightback" && 
       this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
-      !(["burn", "burnTrue", "bleed", "poison", "dot", "hpPercent", "true"].includes(damageType)) &&
+      !(["hpPercent", "true"].includes(damageType)) &&
+      !(isDot(damageType)) &&
       (damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic")
     ) {
       lethalFightback = 1.12;
@@ -590,12 +595,20 @@ class hero {
     
     
     // status modifiers
-    if (target.hasStatus("burn")) {
+    if (target.hasStatus("Burn")) {
        damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
-    if (target.hasStatus("bleed")) {
-      damageAgainstBleed += this._currentStats["damageAgainstBleed"];
+    if (target.hasStatus("Bleed")) {
+      damageAgainstBleeding += this._currentStats["damageAgainstBleeding"];
+    }
+    
+    if (target.hasStatus("Poison")) {
+      damageAgainstPoisoned += this._currentStats["damageAgainstPoisoned"];
+    }
+    
+    if (target.hasStatus("freeze")) {
+      damageAgainstFrozen += this._currentStats["damageAgainstFrozen"];
     }
     
     if (isDot(damageType)) {
@@ -619,11 +632,13 @@ class hero {
       blockChance = 0;
     }
     
-    if (["hpPercent", "energy", "true", "burnTrue"].includes(damageType) || damageSource == "debuff") {
+    if (["hpPercent", "energy", "true", "burnTrue", "bleedTrue", "poisonTrue"].includes(damageType) || damageSource == "debuff") {
       precisionDamageIncrease = 1;
       holyDamageIncrease = 0;
       damageAgainstBurning = 1;
-      damageAgainstBleed = 1;
+      damageAgainstBleeding = 1;
+      damageAgainstPoisoned = 1;
+      damageAgainstFrozen = 1;
       critChance = 0;
       blockChance = 0;
       armorMitigation = 0;
@@ -638,7 +653,7 @@ class hero {
     
     
     // calculate damage
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleed * allDamageDealt;
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * allDamageDealt;
     attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1-classDamageReduce) * allDamageTaken;
     
     var blocked = false;
@@ -684,7 +699,7 @@ class hero {
   
   calcHeal(target, healAmount) {
     var healEffect = this._currentStats["healEffect"] + 1;
-    var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
+    var effectBeingHealed = 1 + target._currentStats["effectBeingHealed"];
     if (effectBeingHealed < 0) { effectBeingHealed = 0; }
     
     return Math.round(healAmount * effectBeingHealed * healEffect);
