@@ -116,7 +116,7 @@ class mFenlier extends monster {
       result += targets[i].takeDamage(this, "Violent Bite", damageResult);
       
       damageResult = this.calcDamage(targets[i], 559177, "monster", "bleedTrue");
-      result += targets[i].getDebuff(this, "Bleed", 3, {bleedTrue: damageResult["damageAmount"]}, "monster");
+      result += targets[i].getDebuff(this, "Bleed", 3, {bleedTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
     
@@ -146,10 +146,7 @@ class mFox extends monster {
     for (var i=0; i < numTargets; i++) {
       damageResult = this.calcDamage(targets[i], 636573, "monster", "true");
       result += targets[i].takeDamage(this, "Soul Shock", damageResult);
-      
-      if (Math.random() < 0.40) {
-        result += targets[i].getDebuff(this, "Silence", 2);
-      }
+      result += targets[i].getDebuff(this, "Silence", 2, {}, false, "", 0.40);
     }
     
     targets = getRandomTargets(this, this._allies);
@@ -178,10 +175,7 @@ class mIceGolem extends monster {
     for (var i=0; i < numTargets; i++) {
       damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
       result += targets[i].takeDamage(this, "Frozen", damageResult);
-      
-      if (Math.random() < 0.36) {
-        result += targets[i].getDebuff(this, "freeze", 2);
-      }
+      result += targets[i].getDebuff(this, "freeze", 2, {}, false, "", 0.36);
     }
     
     targets = getRandomTargets(this, this._allies);
@@ -212,7 +206,7 @@ class mJormangund extends monster {
       result += targets[i].takeDamage(this, "Toxic Track", damageResult);
       
       damageResult = this.calcDamage(targets[i], 548328, "monster", "poisonTrue");
-      result += targets[i].getDebuff(this, "Poison", 3, {poisonTrue: damageResult["damageAmount"]}, "monster");
+      result += targets[i].getDebuff(this, "Poison", 3, {poisonTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
     
@@ -242,10 +236,7 @@ class mNiederhog extends monster {
     for (var i=0; i < numTargets; i++) {
       damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
       result += targets[i].takeDamage(this, "Dragon Sigh", damageResult);
-      
-      if (Math.random() < 0.36) {
-        result += targets[i].getDebuff(this, "stun", 2);
-      }
+      result += targets[i].getDebuff(this, "stun", 2, {}, false, "", 0.36);
     }
     
     targets = getRandomTargets(this, this._allies);
@@ -276,7 +267,7 @@ class mPhoenix extends monster {
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
       
       damageResult = this.calcDamage(targets[i], 363465, "monster", "burnTrue");
-      result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: damageResult["damageAmount"]}, "monster");
+      result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
     var healAmount = 0;
@@ -340,10 +331,7 @@ class mStoneGolem extends monster {
     for (var i=0; i < numTargets; i++) {
       damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
       result += targets[i].takeDamage(this, "Death Stares", damageResult);
-      
-      if (Math.random() < 0.36) {
-        result += targets[i].getDebuff(this, "petrify", 2);
-      }
+      result += targets[i].getDebuff(this, "petrify", 2, {}, false, "", 0.36);
     }
     
     targets = getRandomTargets(this, this._allies);

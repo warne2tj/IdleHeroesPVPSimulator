@@ -30,15 +30,32 @@ class monster {
   
   
   calcDamage(target, attackDamage, damageSource, damageType) {
+    var damageAmount = attackDamage;
+    var allDamageReduce = target._currentStats["allDamageReduce"];
+    var dotReduce = 0;
+    
+    if (isDot(damageType)) {
+      dotReduce = target._currentStats["dotReduce"];
+    }
+    
+    damageAmount = Math.round(damageAmount * (1 - allDamageReduce) * (1 - dotReduce));
+    
     return {
-      "damageAmount": attackDamage,
-      "holyDamage": 0, 
+      "damageAmount": damageAmount,
       "critted": false, 
       "blocked": false, 
       "damageSource": damageSource, 
       "damageType": damageType, 
       "e5Description": ""
     };
+  }
+  
+  
+  calcHeal(target, healAmount) {
+    var effectBeingHealed = 1 + target._currentStats["effectBeingHealed"];
+    if (effectBeingHealed < 0) { effectBeingHealed = 0; }
+    
+    return Math.round(healAmount * effectBeingHealed);
   }
   
   
@@ -53,7 +70,7 @@ class monster {
 }
 
 
-class mDeer extends monster {
+class mDyne extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
@@ -76,8 +93,159 @@ class mDeer extends monster {
       result += targets[i].getBuff(this, "Armor Percent", 2, {armorPercent: 0.37});
       result += targets[i].getBuff(this, "Attack Percent", 2, {attackPercent: 0.15});
       
-      healAmount = Math.floor(targets[i]._stats["totalHP"] * 0.2);
+      healAmount = this.calcHeal(targets[i], targets[i]._stats["totalHP"] * 0.2);
       result += targets[i].getHeal(this, healAmount);
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mFenlier extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 602441, "monster", "true");
+      result += targets[i].takeDamage(this, "Violent Bite", damageResult);
+      
+      damageResult = this.calcDamage(targets[i], 559177, "monster", "bleedTrue");
+      result += targets[i].getDebuff(this, "Bleed", 3, {bleedTrue: damageResult["damageAmount"]}, false, "monster");
+    }
+    
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff(this, "Damage Against Bleeding", 3, {damageAgainstBleeding: 0.8});
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mFox extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 636573, "monster", "true");
+      result += targets[i].takeDamage(this, "Soul Shock", damageResult);
+      result += targets[i].getDebuff(this, "Silence", 2, {}, false, "", 0.40);
+    }
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getEnergy(this, 62);
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mIceGolem extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
+      result += targets[i].takeDamage(this, "Frozen", damageResult);
+      result += targets[i].getDebuff(this, "freeze", 2, {}, false, "", 0.36);
+    }
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff(this, "Damage Against Frozen", 2, {damageAgainstFrozen: 1.2})
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mJormangund extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 593312, "monster", "true");
+      result += targets[i].takeDamage(this, "Toxic Track", damageResult);
+      
+      damageResult = this.calcDamage(targets[i], 548328, "monster", "poisonTrue");
+      result += targets[i].getDebuff(this, "Poison", 3, {poisonTrue: damageResult["damageAmount"]}, false, "monster");
+    }
+    
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff(this, "Damage Against Poisoned", 3, {damageAgainstPoisoned: 0.8});
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mNiederhog extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
+      result += targets[i].takeDamage(this, "Dragon Sigh", damageResult);
+      result += targets[i].getDebuff(this, "stun", 2, {}, false, "", 0.36);
+    }
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff(this, "Holy Damage", 2, {holyDamage: 0.75})
     }
     
     this._energy = 0;
@@ -101,7 +269,7 @@ class mPhoenix extends monster {
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
       
       damageResult = this.calcDamage(targets[i], 363465, "monster", "burnTrue");
-      result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: 363465}, false, "monster");
+      result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
     var healAmount = 0;
@@ -110,8 +278,69 @@ class mPhoenix extends monster {
     if (targets.length < numTargets) {numTargets = targets.length;}
     
     for (var i=0; i < numTargets; i++) {
-      result += targets[i].getBuff(this, "Heal", 3, {heal: 500353});
+      healAmount = this.calcHeal(targets[i], 500535);
+      result += targets[i].getBuff(this, "Heal", 3, {heal: healAmount});
       result += targets[i].getBuff(this, "Damage Against Burning", 3, {damageAgainstBurning: 0.8});
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mSphinx extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 636141, "monster", "true");
+      result += targets[i].takeDamage(this, "Subduction Hit", damageResult);
+      result += targets[i].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.37});
+      result += targets[i].getDebuff(this, "Speed", 3, {speed: 37});
+    }
+    
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff(this, "Attack Percent", 2, {attackPercent: 0.25});
+    }
+    
+    this._energy = 0;
+    
+    return result;
+  }
+}
+
+
+class mStoneGolem extends monster {
+  doActive() {
+    var result = "";
+    var damageResult = [];
+    var targets = getRandomTargets(this, this._enemies);
+    var numTargets = 4;
+    
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
+      result += targets[i].takeDamage(this, "Death Stares", damageResult);
+      result += targets[i].getDebuff(this, "petrify", 2, {}, false, "", 0.36);
+    }
+    
+    targets = getRandomTargets(this, this._allies);
+    if (targets.length < numTargets) {numTargets = targets.length;}
+    
+    for (var i=0; i < numTargets; i++) {
+      result += targets[i].getBuff(this, "Crit Damage", 2, {critDamage: 0.75})
     }
     
     this._energy = 0;
@@ -1057,7 +1286,7 @@ class hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="") {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1) {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var damageResult = {};
@@ -1065,21 +1294,26 @@ class hero {
     var result = "";
     var controlImmune = this._currentStats["controlImmune"];
     var isControl = isControlEffect(debuffName, effects);
+    var rollCCHit;
+    var rollCCPen;
     
     
     if (isControl) {
       if ((debuffName + "Immune") in this._currentStats) {
         controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
       }
+      
+      ccChance = 1 - (1 - ccChance * (1 + source._currentStats["controlPrecision"]))
+      rollCCHit = Math.random();
+      rollCCPen = Math.random();
     }
     
-    
-    if (Math.random() < controlImmune && isControl && !(bypassControlImmune)) {
+    if (isControl && rollCCHit >= ccChance) {
+      // failed CC roll
+    } else if (isControl && rollCCPen < controlImmune && !(bypassControlImmune)) {
       result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
     } else {
-      if (duration > 15) {
-        result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span>.";
-      } else if (duration == 1) {
+      if (duration == 1) {
         result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(1) + " round.";
       } else {
         result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(duration) + " rounds.";
@@ -1145,7 +1379,7 @@ class hero {
         
       } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
         result += this.removeDebuff("Power of Light");
-        result += this.getDebuff(source, "Seal of Light", 2, {});
+        result += this.getDebuff(source, "Seal of Light", 2);
         
       } else if (debuffName == "twine") {
         for (var h in source._allies) {
@@ -1801,7 +2035,7 @@ class AmenRa extends hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="", ccChance=1) {
     var result = "";
     
     if (isControlEffect(debuffName, effects)) {
@@ -1810,10 +2044,10 @@ class AmenRa extends hero {
       if (duration == 0) {
         result = "<div>" + this.heroDesc() + " negated <span class='skill'>" + debuffName + "</span> by reducing it's duration to " + formatNum(0) + " rouunds.</div>";
       } else {
-        result = super.getDebuff(source, debuffName, duration, effects);
+        result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance);
       }
     } else {
-      result = super.getDebuff(source, debuffName, duration, effects);
+      result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance);
     }
     
     return result;
@@ -1830,7 +2064,7 @@ class AmenRa extends hero {
       targets = getRandomTargets(this, this._enemies);
       
       if (targets.length > 0) {
-        result += targets[0].getDebuff(this, "Healing Curse", 15, {});
+        result += targets[0].getDebuff(this, "Healing Curse", 15);
       }
     }
     
@@ -1850,10 +2084,7 @@ class AmenRa extends hero {
       
       
       if (!("CarrieDodge" in damageResult)) {
-        if (Math.random() < (0.7 * (1 + controlPrecision))) {
-          result += targets[i].getDebuff(this, "petrify", 2, {});
-        }
-        
+        result += targets[i].getDebuff(this, "petrify", 2, {}, false, "", 0.70);
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
@@ -2046,7 +2277,7 @@ class Aspen extends hero {
         result += targets[0].takeDamage(this, "Rage of Shadow HP", hpDamageResult);
         
         if (targets[0]._currentStats["totalHP"] > 0) {
-          result += targets[0].getDebuff(this, "Horrify", 2, {});
+          result += targets[0].getDebuff(this, "Horrify", 2);
           
           if (targets[0]._currentStats["totalHP"] > 0 && (targets[0]._currentStats["totalHP"] / targets[0]._stats["totalHP"]) < 0.35) {
             additionalDamage = 1.6 * (damageResult["damageAmount"] + hpDamageResult["damageAmount"]);
@@ -2096,9 +2327,7 @@ class Aspen extends hero {
         result += targets[i].takeDamage(this, "Dread's Coming HP", hpDamageResult);
         
         if (targets[i]._currentStats["totalHP"] > 0) {
-          if (Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
-            result += targets[i].getDebuff(this, "Horrify", 2, {});
-          }
+          result += targets[i].getDebuff(this, "Horrify", 2, {}, false, "", 0.50);
           
           if (targets[i]._currentStats["totalHP"] > 0 && (targets[i]._currentStats["totalHP"] / targets[i]._stats["totalHP"]) < 0.35) {
             additionalDamage = 2.2 * (damageResult["damageAmount"] + hpDamageResult["damageAmount"]);
@@ -2570,7 +2799,7 @@ class DarkArthindol extends hero {
     var result = "";
     result += "<div><span class='skill'>Petrify</span> drained target's energy.</div>";
     result += target.loseEnergy(this, 50)
-    result += target.getDebuff(this, "petrify", 1, {});
+    result += target.getDebuff(this, "petrify", 1);
     return result;
   }
   
@@ -2619,9 +2848,7 @@ class DarkArthindol extends hero {
       result += targets[i].takeDamage(this, "Chaotic Shade", damageResult);
       
       if (!("CarrieDodge" in damageResult) && targets[0]._currentStats["totalHP"] > 0) {
-        if (Math.random() < 0.3 * (1 + this._currentStats["controlPrecision"])) {
-          result += targets[i].getDebuff(this, "petrify", 2, {});
-        }
+        result += targets[i].getDebuff(this, "petrify", 2, {}, false, "", 0.30);
         
         if (Math.random() < 0.3) {
           result += "<div><span class='skill'>Chaotic Shade</span> drained target's energy.</div>";
@@ -3188,7 +3415,7 @@ class Gustin extends hero {
   
   startOfBattle() {
     var targets = getRandomTargets(this, this._enemies);
-    var result = targets[0].getDebuff(this, "Link of Souls", 15, {});
+    var result = targets[0].getDebuff(this, "Link of Souls", 15);
     return result;
   }
   
@@ -3240,7 +3467,7 @@ class Gustin extends hero {
       }
       
       if (!(linked)) {
-        result += targets[0].getDebuff(this, "Link of Souls", 15, {});
+        result += targets[0].getDebuff(this, "Link of Souls", 15);
       }
     }
     
@@ -3552,11 +3779,11 @@ class Ithaqua extends hero {
     for (var i in e) {
       if (e[i][1]._currentStats["totalHP"] > 0) {
         damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poison");
-        result += e[i][1].getDebuff(this, "Poison", 2, {poison: Math.round(damageResult["damageAmount"])}, "passive");
+        result += e[i][1].getDebuff(this, "Poison", 2, {poison: Math.round(damageResult["damageAmount"])}, false, "passive");
         
         if (e[i][1]._currentStats["totalHP"] > 0 && e[i][3] == true) {
           damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleed");
-          result += e[i][1].getDebuff(this, "Bleed", 2, {bleed: Math.round(damageResult["damageAmount"])}, "passive");
+          result += e[i][1].getDebuff(this, "Bleed", 2, {bleed: Math.round(damageResult["damageAmount"])}, false, "passive");
         }
       }
     }
@@ -3682,9 +3909,7 @@ class Kroos extends hero {
       
       var targets = getAllTargets(this, this._enemies);
       for (var h in targets) {
-        if (Math.random() < 0.75 * (1 + this._currentStats["controlPrecision"])) {
-          result += targets[h].getDebuff(this, "stun", 2, {});
-        }
+        result += targets[h].getDebuff(this, "stun", 2, {}, false, "", 0.75);
       }
     }
     
@@ -3832,7 +4057,7 @@ class Michelle extends hero {
       }
       
       var damageResult = this.calcDamage(e[i][1], damageAmount, "passive", "hpPercent");
-      result += e[i][1].getDebuff(this, "Burn", 2, {burnTrue: Math.round(damageResult["damageAmount"])}, "passive");
+      result += e[i][1].getDebuff(this, "Burn", 2, {burnTrue: Math.round(damageResult["damageAmount"])}, false, "passive");
     }
     
     return result;
@@ -3872,10 +4097,7 @@ class Michelle extends hero {
       result += targets[i].takeDamage(this, "Divine Sanction", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (Math.random() < 0.4 * (1 + this._currentStats["controlPrecision"])) {
-          result += targets[i].getDebuff(this, "stun", 2);
-        }
-        
+        result += targets[i].getDebuff(this, "stun", 2, {}, false, "", 0.40);
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
@@ -3923,7 +4145,7 @@ class Mihm extends hero {
     
     for (var i = 0; i < targets.length; i++) {
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2, "passive", "dot", 1, 1, 1);
-      result += targets[i].getDebuff(this, "Dot", 2, {dot: Math.round(damageResult["damageAmount"])}, "passive");
+      result += targets[i].getDebuff(this, "Dot", 2, {dot: Math.round(damageResult["damageAmount"])}, false, "passive");
     }
     
     return result;
@@ -4009,7 +4231,7 @@ class Nakia extends hero {
     
     for (var i in targets) {
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "passive", "bleed", 1, 1, 3);
-      result += targets[i].getDebuff(this, "Bleed", 3, {bleed: Math.round(damageResult["damageAmount"])}, "passive");
+      result += targets[i].getDebuff(this, "Bleed", 3, {bleed: Math.round(damageResult["damageAmount"])}, false, "passive");
       result += targets[i].getDebuff(this, "Speed", 3, {speed: 30});
     }
     
@@ -4032,10 +4254,10 @@ class Nakia extends hero {
     for (var i in targets) {
       if ("Bleed" in targets[i]._debuffs) {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "passive", "bleed", 1, 1, 3);
-        result += targets[i].getDebuff(this, "Bleed", 3, {bleed: Math.round(damageResult["damageAmount"])}, "passive");
+        result += targets[i].getDebuff(this, "Bleed", 3, {bleed: Math.round(damageResult["damageAmount"])}, false, "passive");
         
         if (didCrit) {
-          result += targets[i].getDebuff(this, "Bleed", 3, {bleed: Math.round(damageResult["damageAmount"])}, "passive");
+          result += targets[i].getDebuff(this, "Bleed", 3, {bleed: Math.round(damageResult["damageAmount"])}, false, "passive");
         }
       }
     }
@@ -4080,11 +4302,11 @@ class Nakia extends hero {
       if (!("CarrieDodge" in damageResult)) {
         if (targets[i]._currentStats["totalHP"] > 0) {
           bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active2", "bleed", 1.98, 1, 15);
-          result += targets[i].getDebuff(this, "Bleed", 15, {bleed: Math.round(bleedDamageResult["damageAmount"])}, "active2");
+          result += targets[i].getDebuff(this, "Bleed", 15, {bleed: Math.round(bleedDamageResult["damageAmount"])}, false, "active2");
         }
         
         if ("Speed" in targets[i]._debuffs && targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].getDebuff(this, "Bleed", 15, {bleed: Math.round(bleedDamageResult["damageAmount"])}, "active2");
+          result += targets[i].getDebuff(this, "Bleed", 15, {bleed: Math.round(bleedDamageResult["damageAmount"])}, false, "active2");
         }
         
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
@@ -4140,7 +4362,7 @@ class Oberon extends hero {
     
     for (var i = 0; i < maxTargets; i++) {
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2, "passive", "poison", 1, 1, 3);
-      result += targets[i].getDebuff(this, "Poison", 3, {poison: Math.round(damageResult["damageAmount"])});
+      result += targets[i].getDebuff(this, "Poison", 3, {poison: Math.round(damageResult["damageAmount"])}, false, "passive");
     }
     
     
@@ -4285,19 +4507,29 @@ class Penny extends hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1) {
     var result = "";
     var isControl = isControlEffect(debuffName, effects);
     
+    
     if ("Dynamite Armor" in this._buffs && isControl && this.isNotSealed()) {
       var controlImmune = this._currentStats["controlImmune"];
+      var rollCCHit;
+      var rollCCPen;
       
       if (isControl) {
         if ((debuffName + "Immune") in this._currentStats) {
           controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
         }
-        
-        if (Math.random() < controlImmune && isControl) {
+      
+        ccChance = 1 - (1 - ccChance * (1 + source._currentStats["controlPrecision"]))
+        rollCCHit = Math.random();
+        rollCCPen = Math.random();
+    
+    
+        if (isControl && rollCCHit >= ccChance) {
+          // failed CC roll
+        } else if (isControl && rollCCPen < controlImmune && !(bypassControlImmune)) {
           result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
         } else {
           result += "<div>" + this.heroDesc() + " consumed <span class='skill'>Dynamite Armor</span> to resist <span class='skill'>" + debuffName + "</span>.</div>";
@@ -4311,7 +4543,7 @@ class Penny extends hero {
         }
       }
     } else {
-      result += super.getDebuff(source, debuffName, duration, effects);
+      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance);
     }
     
     return result;
@@ -4354,7 +4586,7 @@ class Penny extends hero {
         
         if (!("CarrieDodge" in damageResult)) {
           burnDamageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active2", "burn", 1.5, 1, 6);
-          result += targets[0].getDebuff(this, "Burn", 6, {burn: Math.round(burnDamageResult["damageAmount"])}, "active2");
+          result += targets[0].getDebuff(this, "Burn", 6, {burn: Math.round(burnDamageResult["damageAmount"])}, false, "active2");
           
           activeQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
         }
@@ -4472,7 +4704,7 @@ class Sherlock extends hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1) {
     var result = "";
     
     if (debuffName.includes("Mark") && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0) {
@@ -4480,7 +4712,7 @@ class Sherlock extends hero {
       result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> prevented <span class='skill'>" + debuffName + "</span.</div>";
       
     } else {
-      result += super.getDebuff(source, debuffName, duration, effects);
+      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance);
     }
     
     return result;
@@ -4497,8 +4729,8 @@ class Sherlock extends hero {
       result += targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (!("Shapeshift" in targets[0]._debuffs) && Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
-          result += targets[0].getDebuff(this, "Shapeshift", 15, {stacks: 3});
+        if (!("Shapeshift" in targets[0]._debuffs)) {
+          result += targets[0].getDebuff(this, "Shapeshift", 15, {stacks: 3}, false, "", 0.50);
         }
         
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
@@ -4525,8 +4757,8 @@ class Sherlock extends hero {
       result += targets[i].takeDamage(this, "Master Showman", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        if (!("Shapeshift" in targets[i]._debuffs) && Math.random() < ccChance * (1 + this._currentStats["controlPrecision"])) {
-          result += targets[i].getDebuff(this, "Shapeshift", 15, {stacks: 3});
+        if (!("Shapeshift" in targets[i]._debuffs)) {
+          result += targets[i].getDebuff(this, "Shapeshift", 15, {stacks: 3}, false, "", ccChance);
         }
         
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
@@ -4576,7 +4808,7 @@ class Tara extends hero {
         result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
         
         if (Math.random() < 0.3) {
-          result += targets[i].getDebuff(this, "Power of Light", 15, {});
+          result += targets[i].getDebuff(this, "Power of Light", 15);
         }
       }
     }
@@ -4595,7 +4827,7 @@ class Tara extends hero {
       result = targets[0].takeDamage(this, "Basic Attack", damageResult);
       
       if (!("CarrieDodge" in damageResult)) {
-        result += targets[0].getDebuff(this, "Power of Light", 15, {});
+        result += targets[0].getDebuff(this, "Power of Light", 15);
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
@@ -4640,14 +4872,14 @@ class Tara extends hero {
           damageDone += damageResult["damageAmount"];
         }
         
-        result += targets[0].getDebuff(this, "Power of Light", 15, {});
+        result += targets[0].getDebuff(this, "Power of Light", 15);
         activeQueue.push([this, targets[0], damageDone, didCrit]);
       }
       
       targets = getAllTargets(this, this._enemies);
       for (var h in targets) {
         if ("Power of Light" in targets[h]._debuffs && Math.random() < 0.6) {
-          result += targets[h].getDebuff(this, "Power of Light", 15, {});
+          result += targets[h].getDebuff(this, "Power of Light", 15);
         }
       }
       
@@ -4691,10 +4923,7 @@ class UniMax3000 extends hero {
       result += "<div>" + this.heroDesc() + " <span class='skill'>Frenzied Taunt</span> triggered.</div>"
       result += target.getDebuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
       result += this.getBuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
-      
-      if (Math.random() < 0.3 * (1 + this._currentStats["controlPrecision"])) {
-        result += target.getDebuff(this, "Taunt", 2);
-      }
+      result += target.getDebuff(this, "Taunt", 2, {}, false, "", 0.30);
     }
     
     return result;
@@ -4766,9 +4995,7 @@ class UniMax3000 extends hero {
           result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
         }
         
-        if (Math.random() < 0.5 * (1 + this._currentStats["controlPrecision"])) {
-          result += targets[i].getDebuff(this, "Taunt", 2, {});
-        }
+        result += targets[i].getDebuff(this, "Taunt", 2, {}, false, "", 0.50);
         
         activeQueue.push([this, targets[i], damageResult["damageAmount"] * 2, damageResult["critted"]]);
       }

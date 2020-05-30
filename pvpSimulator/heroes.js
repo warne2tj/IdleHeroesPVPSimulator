@@ -914,7 +914,7 @@ class hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="") {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1) {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var damageResult = {};
@@ -922,21 +922,26 @@ class hero {
     var result = "";
     var controlImmune = this._currentStats["controlImmune"];
     var isControl = isControlEffect(debuffName, effects);
+    var rollCCHit;
+    var rollCCPen;
     
     
     if (isControl) {
       if ((debuffName + "Immune") in this._currentStats) {
         controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
       }
+      
+      ccChance = 1 - (1 - ccChance * (1 + source._currentStats["controlPrecision"]))
+      rollCCHit = Math.random();
+      rollCCPen = Math.random();
     }
     
-    
-    if (Math.random() < controlImmune && isControl && !(bypassControlImmune)) {
+    if (isControl && rollCCHit >= ccChance) {
+      // failed CC roll
+    } else if (isControl && rollCCPen < controlImmune && !(bypassControlImmune)) {
       result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
     } else {
-      if (duration > 15) {
-        result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span>.";
-      } else if (duration == 1) {
+      if (duration == 1) {
         result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(1) + " round.";
       } else {
         result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(duration) + " rounds.";
@@ -1002,7 +1007,7 @@ class hero {
         
       } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
         result += this.removeDebuff("Power of Light");
-        result += this.getDebuff(source, "Seal of Light", 2, {});
+        result += this.getDebuff(source, "Seal of Light", 2);
         
       } else if (debuffName == "twine") {
         for (var h in source._allies) {
