@@ -43,6 +43,19 @@ var baseMonsterStats = {
     }
   },
   
+  "Ice Golem": {
+    className: mIceGolem,
+    stats: {
+      attack: 11062,
+      hp: 202020,
+      holyDamage: 0.20,
+      precision: 0.10,
+      speed: 220,
+      fixedAttack: 105089,
+      fixedHP: 3030300
+    }
+  },
+  
   "Phoenix": {
     className: mPhoenix,
     stats: {
@@ -56,6 +69,19 @@ var baseMonsterStats = {
     }
   },
   
+  "Snake": {
+    className: mJormangund,
+    stats: {
+      attack: 11149,
+      hp: 199430,
+      skillDamage: 0.20,
+      block: 0.15,
+      speed: 220,
+      fixedAttack: 105915,
+      fixedHP: 2991450
+    }
+  },
+  
   "Sphinx": {
     className: mSphinx,
     stats: {
@@ -66,6 +92,19 @@ var baseMonsterStats = {
       speed: 220,
       fixedAttack: 95313,
       fixedHP: 3321675
+    }
+  },
+  
+  "Stone Golem": {
+    className: mStoneGolem,
+    stats: {
+      attack: 10719,
+      hp: 207200,
+      precision: 0.10,
+      armorPercent: 0.20,
+      speed: 220,
+      fixedAttack: 101830,
+      fixedHP: 3108000
     }
   },
   

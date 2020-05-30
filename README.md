@@ -40,17 +40,21 @@ Head to the wiki for more details.
   
 ### Implemented Monsters
   * Deer
+  * Dragon
+  * Fox
+  * Ice Golem
   * Phoenix
+  * Snake
+  * Sphinx
+  * Stone Golem
+  * Wolf
 
   
 ### To Do List
   * Implement new heroes as they release
-  * implement rest of monsters
-  * implement enhanced artifacts
-  * ----------- Priority 2 ------------
   * refactor and simplify targeting to take parameter for number of targets
-  * refactor and simplify damage type, damage sources, buff types, debuff types
   * refactor and simplify how carrie's dodge is checked for
-  * refactor to combine buffs and debuffs into single object?
+  * refactor and simplify damage type, damage sources, buff types, debuff types
+  * implement enhanced artifacts
   * improve look of hero stat sheet, buff, and debuff descriptions
   * improve combat log output to read and flow better

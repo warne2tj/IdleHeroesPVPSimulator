@@ -60,7 +60,7 @@ function isDispellable(strName) {
 
 
 function isControlEffect(strName, effects={}) {
-  if (["stun", "petrify", "freeze", "twine", "Silence", "Seal of Light", "Horrify", "Shapeshift"].includes(strName)) {
+  if (["stun", "petrify", "freeze", "twine", "Silence", "Seal of Light", "Horrify", "Shapeshift", "Taunt"].includes(strName)) {
     return true;
   } else {
     return false;
@@ -141,7 +141,8 @@ function isAttribute(strName, effects={}) {
     "energy", "precision", "block", "crit", "critDamage", "holyDamage", "armorBreak",
     "controlImmune", "skillDamage", "damageReduce", "allDamageReduce", "controlPrecision",
     "healEffect", "effectBeingHealed", "critDamageReduce", "dotReduce", "fixedAttack", 
-    "fixedHP", "allDamageTaken", "allDamageDealt", "damageAgainstBurning", "damageAgainstBleed",
+    "fixedHP", "allDamageTaken", "allDamageDealt", "damageAgainstBurning", "damageAgainstBleeding",
+    "damageAgainstPoisoned", "damageAgainstFrozen",
     "warriorReduce", "mageReduce", "rangerReduce", "assassinReduce", "priestReduce",
     "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune"
   ];
@@ -344,9 +345,9 @@ function getTauntedTargets(source, arrTargets) {
   
   if (!(isMonster(source)) && arrTargets.length > 0) {
     if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
-      for (var s in source._debuffs["Taunt"]) {
-        if (source._debuffs["Taunt"][s]["source"]._currentStats["totalHP"] > 0) {
-          copyTargets.push(source._debuffs["Taunt"][s]["source"]);
+      for (var i in arrTargets) {
+        if (arrTargets[i]._heroName == "UniMax-3000" && arrTargets[i]._currentStats["totalHP"] > 0) {
+          copyTargets.push(arrTargets[i]);
           return copyTargets;
         }
       }
