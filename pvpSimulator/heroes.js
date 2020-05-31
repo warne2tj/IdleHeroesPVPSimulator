@@ -1456,12 +1456,15 @@ class hero {
     var result = "";
     var damageResult = {};
     var targets = getAllTargets(this, this._enemies);
+    var targetLock;
     
     if (targets.length > 0) {
-      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
-      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
+      targetLock = targets[0].getTargetLock(this);
+      result += targetLock;
       
-      if (!("CarrieDodge" in damageResult)) {
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
+        result += targets[0].takeDamage(this, "Basic Attack", damageResult);
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
@@ -1475,20 +1478,28 @@ class hero {
     var damageResult = {};
     var targets = getAllTargets(this, this._enemies);
     var maxTargets = 2;
+    var targetLock;
     
     if (targets.length < maxTargets) {
       maxTargets = targets.length;
     }
     
     for (var i=0; i<maxTargets; i++) {
-      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
-      result += targets[i].takeDamage(this, "Active Template", damageResult);
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
       
-      if (!("CarrieDodge" in damageResult)) {
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
+        result += targets[i].takeDamage(this, "Active Template", damageResult);
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
     return result;
+  }
+  
+  
+  getTargetLock(source) {
+    return "";
   }
 }
