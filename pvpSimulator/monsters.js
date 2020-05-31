@@ -72,22 +72,18 @@ class mDyne extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 402068, "monster", "true");
       result += targets[i].takeDamage(this, "Emerald Nourishing", damageResult);
     }
     
+    
     var healAmount = 0;
-    var targets = getRandomTargets(this, this._allies);
+    var targets = getRandomTargets(this, this._allies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Armor Percent", 2, {armorPercent: 0.37});
       result += targets[i].getBuff(this, "Attack Percent", 2, {attackPercent: 0.15});
       
@@ -106,12 +102,9 @@ class mFenlier extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 602441, "monster", "true");
       result += targets[i].takeDamage(this, "Violent Bite", damageResult);
       
@@ -120,10 +113,8 @@ class mFenlier extends monster {
     }
     
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Damage Against Bleeding", 3, {damageAgainstBleeding: 0.8});
     }
     
@@ -138,21 +129,16 @@ class mFox extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 636573, "monster", "true");
       result += targets[i].takeDamage(this, "Soul Shock", damageResult);
       result += targets[i].getDebuff(this, "Silence", 2, {}, false, "", 0.40);
     }
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getEnergy(this, 62);
     }
     
@@ -167,21 +153,16 @@ class mIceGolem extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
       result += targets[i].takeDamage(this, "Frozen", damageResult);
       result += targets[i].getDebuff(this, "freeze", 2, {}, false, "", 0.36);
     }
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Damage Against Frozen", 2, {damageAgainstFrozen: 1.2})
     }
     
@@ -196,12 +177,9 @@ class mJormangund extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 593312, "monster", "true");
       result += targets[i].takeDamage(this, "Toxic Track", damageResult);
       
@@ -210,10 +188,8 @@ class mJormangund extends monster {
     }
     
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Damage Against Poisoned", 3, {damageAgainstPoisoned: 0.8});
     }
     
@@ -228,21 +204,16 @@ class mNiederhog extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
       result += targets[i].takeDamage(this, "Dragon Sigh", damageResult);
       result += targets[i].getDebuff(this, "stun", 2, {}, false, "", 0.36);
     }
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Holy Damage", 2, {holyDamage: 0.75})
     }
     
@@ -257,12 +228,9 @@ class mPhoenix extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 451830, "monster", "true");
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
       
@@ -270,12 +238,10 @@ class mPhoenix extends monster {
       result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
+    
     var healAmount = 0;
-    targets = getRandomTargets(this, this._allies);
-    
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       healAmount = this.calcHeal(targets[i], 500535);
       result += targets[i].getBuff(this, "Heal", 3, {heal: healAmount});
       result += targets[i].getBuff(this, "Damage Against Burning", 3, {damageAgainstBurning: 0.8});
@@ -292,12 +258,9 @@ class mSphinx extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 636141, "monster", "true");
       result += targets[i].takeDamage(this, "Subduction Hit", damageResult);
       result += targets[i].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.37});
@@ -305,10 +268,8 @@ class mSphinx extends monster {
     }
     
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Attack Percent", 2, {attackPercent: 0.25});
     }
     
@@ -323,21 +284,16 @@ class mStoneGolem extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
       result += targets[i].takeDamage(this, "Death Stares", damageResult);
       result += targets[i].getDebuff(this, "petrify", 2, {}, false, "", 0.36);
     }
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Crit Damage", 2, {critDamage: 0.75})
     }
     

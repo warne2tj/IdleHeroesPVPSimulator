@@ -51,10 +51,6 @@ Head to the wiki for more details.
 
   
 ### To Do List
-  * Implement new heroes as they release
-  * refactor and simplify targeting to take parameter for number of targets
-  * refactor and simplify how carrie's dodge is checked for
-  * refactor and simplify damage type, damage sources, buff types, debuff types
   * implement enhanced artifacts
   * improve look of hero stat sheet, buff, and debuff descriptions
   * improve combat log output to read and flow better

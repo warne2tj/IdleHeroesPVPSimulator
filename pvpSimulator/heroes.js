@@ -520,9 +520,10 @@ class hero {
   // can further extend this to account for new mechanics by adding parameters to the end
   // supply a default value so as to not break other calls to this function
   calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1, armorReduces=1) {
+    
     // Get damage related stats
     var critChance = canCrit * this._currentStats["crit"];
-    var critDamage = 2*this._currentStats["critDamage"] + 1.5;
+    var critDamage = 2 * this._currentStats["critDamage"] + 1.5;
     var precision = this._currentStats["precision"];
     var precisionDamageIncrease = 1;
     var holyDamageIncrease = this._currentStats["holyDamage"] * .7;
@@ -532,27 +533,17 @@ class hero {
     var damageAgainstPoisoned = 1;
     var damageAgainstFrozen = 1;
     var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
-    var armorBreak = 0;
+    var armorBreak = this._currentStats["armorBreak"];
     var allDamageTaken = 1 + target._currentStats["allDamageTaken"];
     
     // mitigation stats
     var critDamageReduce = target._currentStats["critDamageReduce"];
-    var classDamageReduce = 0;
+    var classDamageReduce = target._currentStats[this._heroClass.toLowerCase() + "Reduce"];
     var damageReduce = target._currentStats["damageReduce"]
     var allDamageReduce = target._currentStats["allDamageReduce"];
     var dotReduce = 0;
-    
-    if (isMonster(this)) {
-      armorBreak = 0;
-      classDamageReduce = 0;
-    } else {
-      armorBreak = this._currentStats["armorBreak"] >= 1 ? 1 : this._currentStats["armorBreak"];
-      classDamageReduce = target._currentStats[target._heroClass.toLowerCase() + "Reduce"];
-    }
-    
-    if (armorBreak > 1) { armorBreak = 1; }
-    
     var armorMitigation = armorReduces * ((1 - armorBreak) * target._currentStats["totalArmor"] / (180 + 20*(this._heroLevel)));
+    
     
     // faction advantage
     var factionA = this._heroFaction;
@@ -570,15 +561,15 @@ class hero {
       damageReduce -= 0.3;
       precision += 0.15;
     }
-    precisionDamageIncrease = precision >= 1.5 ? 1.45 : 1.0 + precision * 0.3;
+    precisionDamageIncrease = 1 + precision * 0.3;
     
     
     if (
       this._enable2 == "LethalFightback" && 
       this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
-      !(["hpPercent", "true"].includes(damageType)) &&
+      damageType != "true" &&
       !(isDot(damageType)) &&
-      (damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic")
+      (damageSource == "active" || damageSource == "basic")
     ) {
       lethalFightback = 1.12;
       e5Desc = "<div><span class='skill'>Lethal Fightback</span> triggered additional damage.</div>";
@@ -589,9 +580,13 @@ class hero {
     if (critDamage > 4.5) { critDamage = 4.5; }
     if (critChance < 0) { critChance = 0; }
     if (precision < 0) { precision = 0; }
+    if (precisionDamageIncrease < 1) { precisionDamageIncrease = 1; }
+    if (precisionDamageIncrease > 1.45) { precisionDamageIncrease = 1.45; }
+    if (armorBreak > 1) { armorBreak = 1; }
     if (damageReduce > 0.75) { damageReduce = 0.75; }
     
     var blockChance = canBlock * (target._currentStats["block"] - precision);
+    if (blockChance < 0) { blockChance = 0; }
     
     
     // status modifiers
@@ -617,10 +612,10 @@ class hero {
     
     
     // damage source and damage type overrides
-    if (damageSource.substring(0, 6) == "active") {
+    if (damageSource == "active") {
       if (isDot(damageType)) {
         skillDamage += (this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100)) / (dotRounds + 1);
-      } else if (!(["hpPercent", "energy", "true"].includes(damageType))) {
+      } else if (!(["energy", "true"].includes(damageType))) {
         skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
       }
     } else if (isDot(damageType)) {
@@ -632,19 +627,20 @@ class hero {
       blockChance = 0;
     }
     
-    if (["hpPercent", "energy", "true", "burnTrue", "bleedTrue", "poisonTrue"].includes(damageType) || damageSource == "debuff") {
+    if (["energy", "true", "burnTrue", "bleedTrue", "poisonTrue"].includes(damageType)) {
       precisionDamageIncrease = 1;
-      holyDamageIncrease = 0;
       damageAgainstBurning = 1;
       damageAgainstBleeding = 1;
       damageAgainstPoisoned = 1;
       damageAgainstFrozen = 1;
-      critChance = 0;
-      blockChance = 0;
+      allDamageDealt = 1;
+      holyDamageIncrease = 0;
       armorMitigation = 0;
       damageReduce = 0;
       classDamageReduce = 0;
       allDamageTaken = 1;
+      critChance = 0;
+      blockChance = 0;
     }
     
     if (canCrit == 2) {
@@ -679,7 +675,7 @@ class hero {
     }
     
     // E5 Balanced strike
-    if ((damageSource.substring(0, 6) == "active" || damageSource.substring(0, 5) == "basic") && this._enable5 == "BalancedStrike" && !(["burn", "bleed", "poison", "dot", "hpPercent", "true"].includes(damageType))) {
+    if ((damageSource == "active" || damageSource == "basic") && this._enable5 == "BalancedStrike" && !(isDot(damageType)) && damageType != "true") {
       if (critted == false) {
         attackDamage *= 1.3;
         e5Desc = "<div><span class='skill'>Balanced Strike</span> triggered additional damage on non-crit.</div>";
@@ -1422,7 +1418,7 @@ class hero {
 
       
       // balanced strike enable heal
-      if ((damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic") && source._enable5 == "BalancedStrike") {
+      if ((damageResult["damageSource"] == "active" || damageResult["damageSource"] == "basic") && source._enable5 == "BalancedStrike") {
         if (damageResult["critted"] == true) {
           var healAmount = source.calcHeal(source, Math.round(0.15 * (damageResult["damageAmount"])));
           result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>" + source.getHeal(source, healAmount);
@@ -1438,7 +1434,7 @@ class hero {
     }
     
     
-    if (this._currentStats["totalHP"] > 0 && "Shapeshift" in this._debuffs && damageResult["damageAmount"] > 0 && (damageResult["damageSource"].substring(0, 6) == "active" || damageResult["damageSource"].substring(0, 5) == "basic")) {
+    if (this._currentStats["totalHP"] > 0 && "Shapeshift" in this._debuffs && damageResult["damageAmount"] > 0 && (damageResult["damageSource"] == "active" || damageResult["damageSource"] == "basic")) {
       var shapeshiftKey = Object.keys(this._debuffs["Shapeshift"])[0];
       if (this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"] > 1) {
         this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"]--;
@@ -1455,13 +1451,16 @@ class hero {
   doBasic() {
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies);
+    var targets = getAllTargets(this, this._enemies, 1);
+    var targetLock;
     
     if (targets.length > 0) {
-      damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
-      result += targets[0].takeDamage(this, "Basic Attack", damageResult);
+      targetLock = targets[0].getTargetLock(this);
+      result += targetLock;
       
-      if (!("CarrieDodge" in damageResult)) {
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
+        result += targets[0].takeDamage(this, "Basic Attack", damageResult);
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
@@ -1473,22 +1472,25 @@ class hero {
   doActive() { 
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies);
-    var maxTargets = 2;
+    var targets = getAllTargets(this, this._enemies, 2);
+    var targetLock;
     
-    if (targets.length < maxTargets) {
-      maxTargets = targets.length;
-    }
-    
-    for (var i=0; i<maxTargets; i++) {
-      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
-      result += targets[i].takeDamage(this, "Active Template", damageResult);
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
       
-      if (!("CarrieDodge" in damageResult)) {
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
+        result += targets[i].takeDamage(this, "Active Template", damageResult);
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
     return result;
+  }
+  
+  
+  getTargetLock(source) {
+    return "";
   }
 }
