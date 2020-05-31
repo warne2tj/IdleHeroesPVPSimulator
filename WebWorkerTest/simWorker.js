@@ -74,22 +74,18 @@ class mDyne extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 402068, "monster", "true");
       result += targets[i].takeDamage(this, "Emerald Nourishing", damageResult);
     }
     
+    
     var healAmount = 0;
-    var targets = getRandomTargets(this, this._allies);
+    var targets = getRandomTargets(this, this._allies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Armor Percent", 2, {armorPercent: 0.37});
       result += targets[i].getBuff(this, "Attack Percent", 2, {attackPercent: 0.15});
       
@@ -108,12 +104,9 @@ class mFenlier extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 602441, "monster", "true");
       result += targets[i].takeDamage(this, "Violent Bite", damageResult);
       
@@ -122,10 +115,8 @@ class mFenlier extends monster {
     }
     
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Damage Against Bleeding", 3, {damageAgainstBleeding: 0.8});
     }
     
@@ -140,21 +131,16 @@ class mFox extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 636573, "monster", "true");
       result += targets[i].takeDamage(this, "Soul Shock", damageResult);
       result += targets[i].getDebuff(this, "Silence", 2, {}, false, "", 0.40);
     }
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getEnergy(this, 62);
     }
     
@@ -169,21 +155,16 @@ class mIceGolem extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
       result += targets[i].takeDamage(this, "Frozen", damageResult);
       result += targets[i].getDebuff(this, "freeze", 2, {}, false, "", 0.36);
     }
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Damage Against Frozen", 2, {damageAgainstFrozen: 1.2})
     }
     
@@ -198,12 +179,9 @@ class mJormangund extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 593312, "monster", "true");
       result += targets[i].takeDamage(this, "Toxic Track", damageResult);
       
@@ -212,10 +190,8 @@ class mJormangund extends monster {
     }
     
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Damage Against Poisoned", 3, {damageAgainstPoisoned: 0.8});
     }
     
@@ -230,21 +206,16 @@ class mNiederhog extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
       result += targets[i].takeDamage(this, "Dragon Sigh", damageResult);
       result += targets[i].getDebuff(this, "stun", 2, {}, false, "", 0.36);
     }
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Holy Damage", 2, {holyDamage: 0.75})
     }
     
@@ -259,12 +230,9 @@ class mPhoenix extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 451830, "monster", "true");
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
       
@@ -272,12 +240,10 @@ class mPhoenix extends monster {
       result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
+    
     var healAmount = 0;
-    targets = getRandomTargets(this, this._allies);
-    
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       healAmount = this.calcHeal(targets[i], 500535);
       result += targets[i].getBuff(this, "Heal", 3, {heal: healAmount});
       result += targets[i].getBuff(this, "Damage Against Burning", 3, {damageAgainstBurning: 0.8});
@@ -294,12 +260,9 @@ class mSphinx extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 636141, "monster", "true");
       result += targets[i].takeDamage(this, "Subduction Hit", damageResult);
       result += targets[i].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.37});
@@ -307,10 +270,8 @@ class mSphinx extends monster {
     }
     
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Attack Percent", 2, {attackPercent: 0.25});
     }
     
@@ -325,21 +286,16 @@ class mStoneGolem extends monster {
   doActive() {
     var result = "";
     var damageResult = [];
-    var targets = getRandomTargets(this, this._enemies);
-    var numTargets = 4;
+    var targets = getRandomTargets(this, this._enemies, 4);
     
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    for (var i in targets) {
       damageResult = this.calcDamage(targets[i], 809114, "monster", "true");
       result += targets[i].takeDamage(this, "Death Stares", damageResult);
       result += targets[i].getDebuff(this, "petrify", 2, {}, false, "", 0.36);
     }
     
-    targets = getRandomTargets(this, this._allies);
-    if (targets.length < numTargets) {numTargets = targets.length;}
-    
-    for (var i=0; i < numTargets; i++) {
+    targets = getRandomTargets(this, this._allies, 4);
+    for (var i in targets) {
       result += targets[i].getBuff(this, "Crit Damage", 2, {critDamage: 0.75})
     }
     
@@ -1827,7 +1783,7 @@ class hero {
   doBasic() {
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies);
+    var targets = getAllTargets(this, this._enemies, 1);
     var targetLock;
     
     if (targets.length > 0) {
@@ -1848,15 +1804,10 @@ class hero {
   doActive() { 
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies);
-    var maxTargets = 2;
+    var targets = getAllTargets(this, this._enemies, 2);
     var targetLock;
     
-    if (targets.length < maxTargets) {
-      maxTargets = targets.length;
-    }
-    
-    for (var i=0; i<maxTargets; i++) {
+    for (var i in targets) {
       targetLock = targets[i].getTargetLock(this);
       result += targetLock;
       
@@ -6716,8 +6667,8 @@ function isAttribute(strName, effects={}) {
 function getFrontTargets(source, arrTargets) {
   var copyTargets = [];
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets);
+  if (copyTargets.length > 0) { return copyTargets; }
   
   if (arrTargets[0]._currentStats["totalHP"] > 0) {
     copyTargets.push(arrTargets[0]);
@@ -6741,8 +6692,8 @@ function getFrontTargets(source, arrTargets) {
 function getBackTargets(source, arrTargets) {
   var copyTargets = [];
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets);
+  if (copyTargets.length > 0) { return copyTargets; }
   
   for (var h=2; h<arrTargets.length; h++) {
     if (arrTargets[h]._currentStats["totalHP"] > 0) {
@@ -6762,29 +6713,35 @@ function getBackTargets(source, arrTargets) {
 }
 
 
-function getAllTargets(source, arrTargets) {
+function getAllTargets(source, arrTargets, num=6) {
   var copyTargets = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       copyTargets.push(arrTargets[i]);
+      count++;
     }
+    
+    if (count == num) { break; }
   }
   
   return copyTargets;
 }
 
 
-function getRandomTargets(source, arrTargets) {
+function getRandomTargets(source, arrTargets, num=6) {
   var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length == 1) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       arrTargets[i]._rng = Math.random();
       copyTargets.push(arrTargets[i]);
@@ -6801,18 +6758,26 @@ function getRandomTargets(source, arrTargets) {
     }
   });
   
-  return copyTargets;
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
 }
 
 
-function getLowestHPTargets(source, arrTargets) {
+function getLowestHPTargets(source, arrTargets, num=6) {
   // get living targets with lowest current HP
   var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       copyTargets.push(arrTargets[i]);
     }
@@ -6830,18 +6795,26 @@ function getLowestHPTargets(source, arrTargets) {
     }
   });
   
-  return copyTargets;
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
 }
 
 
-function getLowestHPPercentTargets(source, arrTargets) {
+function getLowestHPPercentTargets(source, arrTargets, num=6) {
   // get living targets with lowest current HP percent
   var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       copyTargets.push(arrTargets[i]);
     }
@@ -6859,18 +6832,26 @@ function getLowestHPPercentTargets(source, arrTargets) {
     }
   });
   
-  return copyTargets;
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
 }
 
 
-function getHighestHPTargets(source, arrTargets) {
+function getHighestHPTargets(source, arrTargets, num=6) {
   // get living target with highest current HP
   var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       copyTargets.push(arrTargets[i]);
     }
@@ -6888,25 +6869,34 @@ function getHighestHPTargets(source, arrTargets) {
     }
   });
   
-  return copyTargets;
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
 }
 
 
-function getTauntedTargets(source, arrTargets) {
+function getTauntedTargets(source, arrTargets, num=6) {
   var copyTargets = [];
+  var count = 0;
   
   if (!(isMonster(source)) && arrTargets.length > 0) {
     if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
       for (var i in arrTargets) {
         if (arrTargets[i]._heroName == "UniMax-3000" && arrTargets[i]._currentStats["totalHP"] > 0) {
           copyTargets.push(arrTargets[i]);
-          return copyTargets;
+          count++;
         }
+        
+        if (count == num) { break; }
       }
     }
   }
   
-  return arrTargets;
+  return copyTargets;
 }
 
 /* End of utilityFunctions.js */

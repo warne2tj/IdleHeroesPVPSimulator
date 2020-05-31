@@ -1455,7 +1455,7 @@ class hero {
   doBasic() {
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies);
+    var targets = getAllTargets(this, this._enemies, 1);
     var targetLock;
     
     if (targets.length > 0) {
@@ -1476,15 +1476,10 @@ class hero {
   doActive() { 
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies);
-    var maxTargets = 2;
+    var targets = getAllTargets(this, this._enemies, 2);
     var targetLock;
     
-    if (targets.length < maxTargets) {
-      maxTargets = targets.length;
-    }
-    
-    for (var i=0; i<maxTargets; i++) {
+    for (var i in targets) {
       targetLock = targets[i].getTargetLock(this);
       result += targetLock;
       

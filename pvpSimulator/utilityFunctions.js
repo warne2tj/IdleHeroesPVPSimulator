@@ -164,8 +164,8 @@ function isAttribute(strName, effects={}) {
 function getFrontTargets(source, arrTargets) {
   var copyTargets = [];
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets);
+  if (copyTargets.length > 0) { return copyTargets; }
   
   if (arrTargets[0]._currentStats["totalHP"] > 0) {
     copyTargets.push(arrTargets[0]);
@@ -189,8 +189,8 @@ function getFrontTargets(source, arrTargets) {
 function getBackTargets(source, arrTargets) {
   var copyTargets = [];
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets);
+  if (copyTargets.length > 0) { return copyTargets; }
   
   for (var h=2; h<arrTargets.length; h++) {
     if (arrTargets[h]._currentStats["totalHP"] > 0) {
@@ -210,29 +210,35 @@ function getBackTargets(source, arrTargets) {
 }
 
 
-function getAllTargets(source, arrTargets) {
+function getAllTargets(source, arrTargets, num=6) {
   var copyTargets = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       copyTargets.push(arrTargets[i]);
+      count++;
     }
+    
+    if (count == num) { break; }
   }
   
   return copyTargets;
 }
 
 
-function getRandomTargets(source, arrTargets) {
+function getRandomTargets(source, arrTargets, num=6) {
   var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length == 1) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       arrTargets[i]._rng = Math.random();
       copyTargets.push(arrTargets[i]);
@@ -249,18 +255,26 @@ function getRandomTargets(source, arrTargets) {
     }
   });
   
-  return copyTargets;
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
 }
 
 
-function getLowestHPTargets(source, arrTargets) {
+function getLowestHPTargets(source, arrTargets, num=6) {
   // get living targets with lowest current HP
   var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       copyTargets.push(arrTargets[i]);
     }
@@ -278,18 +292,26 @@ function getLowestHPTargets(source, arrTargets) {
     }
   });
   
-  return copyTargets;
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
 }
 
 
-function getLowestHPPercentTargets(source, arrTargets) {
+function getLowestHPPercentTargets(source, arrTargets, num=6) {
   // get living targets with lowest current HP percent
   var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       copyTargets.push(arrTargets[i]);
     }
@@ -307,18 +329,26 @@ function getLowestHPPercentTargets(source, arrTargets) {
     }
   });
   
-  return copyTargets;
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
 }
 
 
-function getHighestHPTargets(source, arrTargets) {
+function getHighestHPTargets(source, arrTargets, num=6) {
   // get living target with highest current HP
   var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
   
-  arrTargets = getTauntedTargets(source, arrTargets);
-  if (arrTargets.length == 1) { return arrTargets; }
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
   
-  for (var i=0; i<arrTargets.length; i++) {
+  for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
       copyTargets.push(arrTargets[i]);
     }
@@ -336,23 +366,32 @@ function getHighestHPTargets(source, arrTargets) {
     }
   });
   
-  return copyTargets;
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
 }
 
 
-function getTauntedTargets(source, arrTargets) {
+function getTauntedTargets(source, arrTargets, num=6) {
   var copyTargets = [];
+  var count = 0;
   
   if (!(isMonster(source)) && arrTargets.length > 0) {
     if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
       for (var i in arrTargets) {
         if (arrTargets[i]._heroName == "UniMax-3000" && arrTargets[i]._currentStats["totalHP"] > 0) {
           copyTargets.push(arrTargets[i]);
-          return copyTargets;
+          count++;
         }
+        
+        if (count == num) { break; }
       }
     }
   }
   
-  return arrTargets;
+  return copyTargets;
 }
