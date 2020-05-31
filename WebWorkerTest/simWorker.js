@@ -311,7 +311,6 @@ class mStoneGolem extends monster {
 /* Start of heroes.js */
 
 // base hero class, extend this class for each hero
-// base hero class, extend this class for each hero
 class hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
     this._heroName = sHeroName;
@@ -571,7 +570,7 @@ class hero {
     var tl = 0;
     
     for (var techName in tech){
-      techLevel = techLevels[tl];
+      techLevel = techLevels[tl]; //document.getElementById(this._attOrDef + "Tech" + this._heroClass + techName).value;
       tl++;
       
       for (var statToBuff in tech[techName]){
@@ -599,7 +598,7 @@ class hero {
     
     
     // avatar frame
-    var sAvatarFrame;
+    var sAvatarFrame;// = document.getElementById(this._attOrDef + "AvatarFrame").value;
     if (this._attOrDef == "att") {
       sAvatarFrame = attFrame;
     } else {
@@ -663,13 +662,12 @@ class hero {
     
     
     // monster
-    var monsterName;
+    var monsterName; //= document.getElementById(this._attOrDef + "Monster").value;
     if (this._attOrDef == "att") {
       monsterName = attMonsterName;
     } else {
       monsterName = defMonsterName;
     }
-
     this.applyStatChange(baseMonsterStats[monsterName]["stats"], "monster");
     
     
@@ -7383,7 +7381,7 @@ function checkForWin() {
 
 // Make sure dom is not referenced anywhere above
 // search for document and innerhtml
-// need to adjust for avatar frame, pet, and guild tech
+// need to adjust for avatar frame, pet, statues, and guild tech
 
 var attMonsterName;
 var defMonsterName;
