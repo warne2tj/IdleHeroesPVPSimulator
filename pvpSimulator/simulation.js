@@ -40,6 +40,7 @@ function runSim() {
     
     if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(simIterNum) +" Started.</p>"};
     someoneWon = "";
+    uniqID = 0;
     attMonster._energy = 0;
     defMonster._energy = 0;
     

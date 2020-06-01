@@ -6514,10 +6514,15 @@ function formatNum(num) {
 
 
 // UUIDv4
+var uniqID;
 function uuid() {
+  uniqID++;
+  return uniqID;
+  /*
   return (`${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`).replace(/[018]/g, c =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   );
+  */
 }
 
 
@@ -6952,6 +6957,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
     // @ start of single simulation
     
     //if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(simIterNum) +" Started.</p>"};
+    uniqID = 0;
     someoneWon = "";
     attMonster._energy = 0;
     defMonster._energy = 0;
