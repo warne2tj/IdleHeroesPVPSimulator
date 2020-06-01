@@ -6951,7 +6951,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
   for (var simIterNum = 1; simIterNum <= numSims; simIterNum++) {
     // @ start of single simulation
     
-    ////if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(simIterNum) +" Started.</p>"};
+    //if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(simIterNum) +" Started.</p>"};
     someoneWon = "";
     attMonster._energy = 0;
     defMonster._energy = 0;
@@ -6979,14 +6979,14 @@ function runSim(attMonsterName, defMonsterName, numSims) {
     for (var h in attHeroes) {
       if ((attHeroes[h].isNotSealed() && attHeroes[h]._currentStats["totalHP"] > 0) || attHeroes[h]._currentStats["revive"] == 1) {
         temp = attHeroes[h].startOfBattle();
-        ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        //if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
     }
     
     for (var h in defHeroes) {
       if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats["totalHP"] > 0) {
         temp = defHeroes[h].startOfBattle();
-        ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        //if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
     }
     
@@ -7077,7 +7077,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
                   }
                 }
               }
-              ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              //if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
             } else if ("Horrify" in currentHero._debuffs) {
               //if(numSims == 1) {oCombatLog.innerHTML += "<p>" + currentHero.heroDesc() + " is Horrified, basic attack skipped.</p>";}
@@ -7089,7 +7089,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
               
               // hero gains 50 energy after doing basic
               temp = currentHero.getEnergy(currentHero, 50);
-              ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              //if(numSims == 1) {oCombatLog.innerHTML += temp;}
               
               
               triggerQueue.push([currentHero, "eventSelfBasic", basicQueue]);
@@ -7118,14 +7118,14 @@ function runSim(attMonsterName, defMonsterName, numSims) {
                   }
                 }
               }
-              ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              //if(numSims == 1) {oCombatLog.innerHTML += temp;}
             }
           }
               
               
           // process triggers and events    
           temp = processQueue();
-          ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+          //if(numSims == 1) {oCombatLog.innerHTML += temp;}
           someoneWon = checkForWin();
           if (someoneWon != "") {break;}
         }
@@ -7163,7 +7163,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
       }
       
       temp = processQueue();
-      ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      //if(numSims == 1) {oCombatLog.innerHTML += temp;}
       someoneWon = checkForWin();
       if (someoneWon != "") {break;}
       
@@ -7186,7 +7186,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
           temp += attHeroes[h].endOfRound(roundNum);
         }
         
-        ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        //if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
       
@@ -7208,11 +7208,11 @@ function runSim(attMonsterName, defMonsterName, numSims) {
           temp += defHeroes[h].endOfRound(roundNum);
         }
         
-        ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        //if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
       temp = processQueue();
-      ////if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      //if(numSims == 1) {oCombatLog.innerHTML += temp;}
       someoneWon = checkForWin();
       if (someoneWon != "") {break;}
       
@@ -7301,8 +7301,8 @@ function runSim(attMonsterName, defMonsterName, numSims) {
   }
   oCombatLog.innerHTML += "</p>";
   
-  oCombatLog.scrollTop = 0;
-  */
+  oCombatLog.scrollTop = 0;*/
+  
   return winCount;
 }
   
