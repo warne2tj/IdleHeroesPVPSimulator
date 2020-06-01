@@ -770,7 +770,7 @@ class hero {
       return "";
     } else {
       var pos1 = parseInt(this._heroPos) + 1;
-      return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["totalAttack"].toLocaleString() + " attack, " + this._currentStats["energy"].toLocaleString() + " energy)</span>";
+      return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"] + " hp, " + this._currentStats["totalAttack"] + " attack, " + this._currentStats["energy"] + " energy)</span>";
     }
   }
   
@@ -6509,7 +6509,7 @@ var baseHeroStats = {
 
 /* Start of utilityFunctions.js */
 function formatNum(num) {
-  return "<span class ='num'>" + num.toLocaleString() + "</span>";
+  return "<span class ='num'>" + num + "</span>";
 }
 
 
@@ -7386,8 +7386,13 @@ function checkForWin() {
 /* Unique to web worker implementation */
 
 // Make sure dom is not referenced anywhere above
-// search for document and innerhtml
-// need to adjust for avatar frame, pet, statues, and guild tech
+// need to adjust for avatar frame, pet, statues, and guild tech in heroes.js
+// comment out summary in simulation.js
+// replace if(numSims == 1)
+// comment out 4 document lines
+// comment out ocombatlog = ""
+// add to runsim(attMonsterName, defMonsterName, numSims)
+// performance adjustment: remove .toLocaleString()
 
 var attMonsterName;
 var defMonsterName;
