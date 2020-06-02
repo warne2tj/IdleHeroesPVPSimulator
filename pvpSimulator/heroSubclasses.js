@@ -162,7 +162,7 @@ class AmenRa extends hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="", ccChance=1) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="", ccChance=1, maxStacks=0) {
     var result = "";
     
     if (isControlEffect(debuffName, effects)) {
@@ -171,10 +171,10 @@ class AmenRa extends hero {
       if (duration == 0) {
         result = "<div>" + this.heroDesc() + " negated <span class='skill'>" + debuffName + "</span> by reducing it's duration to " + formatNum(0) + " rouunds.</div>";
       } else {
-        result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance);
+        result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, maxStacks);
       }
     } else {
-      result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance);
+      result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, maxStacks);
     }
     
     return result;
@@ -2632,7 +2632,7 @@ class Penny extends hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, maxStacks=0) {
     var result = "";
     var isControl = isControlEffect(debuffName, effects);
     
@@ -2656,6 +2656,14 @@ class Penny extends hero {
           // failed CC roll
         } else if (isControl && rollCCPen < controlImmune && !(bypassControlImmune)) {
           result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
+        } else if (
+          isControl && 
+          (rollCCPen >= controlImmune || !(bypassControlImmune)) 
+          && this._artifact.includes(" Lucky Candy Bar") &&
+          (this._currentStats["firstCC"] == "" || this._currentStats["firstCC"] == debuffName)
+        ) {
+          this._currentStats["firstCC"] = debuffName;
+          result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span> using <span class='skill'>" + this._artifact + "</span>.</div>";
         } else {
           result += "<div>" + this.heroDesc() + " consumed <span class='skill'>Dynamite Armor</span> to resist <span class='skill'>" + debuffName + "</span>.</div>";
           
@@ -2668,7 +2676,7 @@ class Penny extends hero {
         }
       }
     } else {
-      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance);
+      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, maxStacks);
     }
     
     return result;
@@ -2832,7 +2840,7 @@ class Sherlock extends hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, maxStacks=0) {
     var result = "";
     
     if (debuffName.includes("Mark") && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0) {
@@ -2840,7 +2848,7 @@ class Sherlock extends hero {
       result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> prevented <span class='skill'>" + debuffName + "</span.</div>";
       
     } else {
-      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance);
+      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, maxStacks);
     }
     
     return result;

@@ -427,6 +427,8 @@ class hero {
     this._stats["allDamageReduce"] = 0.0;
     this._stats["allDamageTaken"] = 0.0;
     this._stats["allDamageDealt"] = 0.0;
+    this._stats["controlImmunePen"] = 0.0;
+    this._stats["firstCC"] = "";
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
@@ -1234,19 +1236,25 @@ class hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, maxStacks=0) {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var damageResult = {};
     var strDamageResult = "";
     var result = "";
-    var controlImmune = this._currentStats["controlImmune"];
+    var controlImmune;
+    var controlImmunePen;
     var isControl = isControlEffect(debuffName, effects);
     var rollCCHit;
     var rollCCPen;
     
     
     if (isControl) {
+      controlImmune = this._currentStats["controlImmune"];
+      controlImmunePen = this._currentStats["controlImmune"];
+      controlImmune -= controlImmunePen;
+      if (controlImmune < 0) { controlImmune = 0; }
+      
       if ((debuffName + "Immune") in this._currentStats) {
         controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
       }
@@ -1260,6 +1268,14 @@ class hero {
       // failed CC roll
     } else if (isControl && rollCCPen < controlImmune && !(bypassControlImmune)) {
       result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
+    } else if (
+      isControl && 
+      (rollCCPen >= controlImmune || !(bypassControlImmune)) 
+      && this._artifact.includes(" Lucky Candy Bar") &&
+      (this._currentStats["firstCC"] == "" || this._currentStats["firstCC"] == debuffName)
+    ) {
+      this._currentStats["firstCC"] = debuffName;
+      result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span> using <span class='skill'>" + this._artifact + "</span>.</div>";
     } else {
       if (duration == 1) {
         result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(1) + " round.";
@@ -1315,6 +1331,12 @@ class hero {
       }
       
       if (isControl) {
+        if (this._artifact.includes(" Lucky Candy Bar")) {
+          if (!("Hand of Destiny" in this._buffs)) {
+            result += this.getBuff(this, "Hand of Destiny", 1, {allDamageReduce: artifacts[this._artifact]["enhance"]});
+          }
+        }
+        
         triggerQueue.push([this, "eventGotCC", source, debuffName, keyAt]);
       }
       
@@ -1746,6 +1768,16 @@ class hero {
         if (damageResult["critted"] == true) {
           var healAmount = source.calcHeal(source, Math.round(0.15 * (damageResult["damageAmount"])));
           result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>" + source.getHeal(source, healAmount);
+        }
+      }
+      
+      
+      // enhanced kiss of ghost artifact heal
+      if (!(isMonster(source))) {
+        if (source._artifact.includes(" The Kiss of Ghost") && ["active", "basic"].includes(damageResult["damageSource"]) && !(isDot(damageResult["damageType"]))) {
+          let healAmount = source.calcHeal(source, Math.round(artifacts[source._artifact]["enhance"] * (damageResult["damageAmount"])));
+          result += "<div><span class='skill'>" + source._artifact + "</span> triggered heal.</div>"
+          result += source.getHeal(source, healAmount);
         }
       }
     }
@@ -5097,6 +5129,27 @@ var artifacts = {
     limit: "",
     limitStats: {}
   },
+
+  "Glittery Antlers Cane": {
+    stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
+    limit: "",
+    limitStats: {},
+    enhance: 0.03
+  },
+
+  "Radiant Antlers Cane": {
+    stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
+    limit: "",
+    limitStats: {},
+    enhance: 0.045
+  },
+
+  "Splendid Antlers Cane": {
+    stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
+    limit: "",
+    limitStats: {},
+    enhance: 0.06
+  },
   
   "Augustus Magic Ball": {
     stats: {attackPercent: 0.25, speed: 70, block: 0.5},
@@ -5122,6 +5175,26 @@ var artifacts = {
     limitStats: {}
   },
   
+  "Glittery Lucky Candy Bar": {
+    stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Radiant Lucky Candy Bar": {
+    stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
+    limit: "",
+    limitStats: {},
+    enhance: 0.10
+  },
+  
+  "Splendid Lucky Candy Bar": {
+    stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
+    limit: "",
+    limitStats: {},
+    enhance: 0.20
+  },
+  
   "Magic Stone Sword": {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
@@ -5130,6 +5203,24 @@ var artifacts = {
   
   "Ruyi Scepter": {
     stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.5},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Glittery Ruyi Scepter": {
+    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.50, controlImmunePen: 0.10},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Radiant Ruyi Scepter": {
+    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.50, controlImmunePen: 0.20},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Splendid Ruyi Scepter": {
+    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.50, controlImmunePen: 0.30},
     limit: "",
     limitStats: {}
   },
@@ -5144,6 +5235,27 @@ var artifacts = {
     stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
     limit: "",
     limitStats: {}
+  },
+  
+  "Glittery The Kiss of Ghost": {
+    stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
+    limit: "",
+    limitStats: {},
+    enhance: 0.15
+  },
+  
+  "Radiant The Kiss of Ghost": {
+    stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
+    limit: "",
+    limitStats: {},
+    enhance: 0.30
+  },
+  
+  "Splendid The Kiss of Ghost": {
+    stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
+    limit: "",
+    limitStats: {},
+    enhance: 0.45
   },
   
   "Wildfire Torch": {
@@ -7190,6 +7302,11 @@ function runSim(attMonsterName, defMonsterName, numSims) {
           temp += attHeroes[h].endOfRound(roundNum);
         }
         
+        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
+          temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
+          temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
+        }
+        
         //if(numSims == 1) {oCombatLog.innerHTML += temp;}
       }
       
@@ -7210,6 +7327,11 @@ function runSim(attMonsterName, defMonsterName, numSims) {
         
         if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
           temp += defHeroes[h].endOfRound(roundNum);
+        }
+        
+        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
+          temp += "<div>" + defHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
+          temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
         }
         
         //if(numSims == 1) {oCombatLog.innerHTML += temp;}

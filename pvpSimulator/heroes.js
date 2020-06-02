@@ -115,6 +115,8 @@ class hero {
     this._stats["allDamageReduce"] = 0.0;
     this._stats["allDamageTaken"] = 0.0;
     this._stats["allDamageDealt"] = 0.0;
+    this._stats["controlImmunePen"] = 0.0;
+    this._stats["firstCC"] = "";
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
@@ -424,6 +426,7 @@ class hero {
       "totalHP", "totalAttack", "totalArmor", 
       "unbendingWillTriggered", "unbendingWillStacks"
     ];
+    var arrStrStats = ["firstCC"];
     
     heroSheet += "Level " + this._heroLevel + " " + this._heroName + "<br/>";
     heroSheet += this._starLevel + "* " + this._heroFaction + " " + this._heroClass + "<br/>";
@@ -431,6 +434,8 @@ class hero {
     for (var statName in this._stats) {
       if (arrIntStats.includes(statName)) {
         heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed();
+      } else if (arrStrStats.includes(statName)) {
+        heroSheet += "<br/>" + statName + ": " + this._stats[statName];
       } else {
         heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed(2);
       }
@@ -908,19 +913,25 @@ class hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, maxStacks=0) {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var damageResult = {};
     var strDamageResult = "";
     var result = "";
-    var controlImmune = this._currentStats["controlImmune"];
+    var controlImmune;
+    var controlImmunePen;
     var isControl = isControlEffect(debuffName, effects);
     var rollCCHit;
     var rollCCPen;
     
     
     if (isControl) {
+      controlImmune = this._currentStats["controlImmune"];
+      controlImmunePen = this._currentStats["controlImmune"];
+      controlImmune -= controlImmunePen;
+      if (controlImmune < 0) { controlImmune = 0; }
+      
       if ((debuffName + "Immune") in this._currentStats) {
         controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
       }
@@ -934,6 +945,14 @@ class hero {
       // failed CC roll
     } else if (isControl && rollCCPen < controlImmune && !(bypassControlImmune)) {
       result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
+    } else if (
+      isControl && 
+      (rollCCPen >= controlImmune || !(bypassControlImmune)) 
+      && this._artifact.includes(" Lucky Candy Bar") &&
+      (this._currentStats["firstCC"] == "" || this._currentStats["firstCC"] == debuffName)
+    ) {
+      this._currentStats["firstCC"] = debuffName;
+      result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span> using <span class='skill'>" + this._artifact + "</span>.</div>";
     } else {
       if (duration == 1) {
         result += "<div>" + this.heroDesc() + " gained debuff <span class='skill'>" + debuffName + "</span> for " + formatNum(1) + " round.";
@@ -989,6 +1008,12 @@ class hero {
       }
       
       if (isControl) {
+        if (this._artifact.includes(" Lucky Candy Bar")) {
+          if (!("Hand of Destiny" in this._buffs)) {
+            result += this.getBuff(this, "Hand of Destiny", 1, {allDamageReduce: artifacts[this._artifact]["enhance"]});
+          }
+        }
+        
         triggerQueue.push([this, "eventGotCC", source, debuffName, keyAt]);
       }
       
@@ -1416,10 +1441,21 @@ class hero {
 
       
       // balanced strike enable heal
-      if ((damageResult["damageSource"] == "active" || damageResult["damageSource"] == "basic") && source._enable5 == "BalancedStrike") {
+      if (["active", "basic"].includes(damageResult["damageSource"]) && source._enable5 == "BalancedStrike") {
         if (damageResult["critted"] == true) {
-          var healAmount = source.calcHeal(source, Math.round(0.15 * (damageResult["damageAmount"])));
-          result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>" + source.getHeal(source, healAmount);
+          let healAmount = source.calcHeal(source, Math.round(0.15 * (damageResult["damageAmount"])));
+          result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>"
+          result += source.getHeal(source, healAmount);
+        }
+      }
+      
+      
+      // enhanced kiss of ghost artifact heal
+      if (!(isMonster(source))) {
+        if (source._artifact.includes(" The Kiss of Ghost") && ["active", "basic"].includes(damageResult["damageSource"]) && !(isDot(damageResult["damageType"]))) {
+          let healAmount = source.calcHeal(source, Math.round(artifacts[source._artifact]["enhance"] * (damageResult["damageAmount"])));
+          result += "<div><span class='skill'>" + source._artifact + "</span> triggered heal.</div>"
+          result += source.getHeal(source, healAmount);
         }
       }
     }
@@ -1432,7 +1468,7 @@ class hero {
     }
     
     
-    if (this._currentStats["totalHP"] > 0 && "Shapeshift" in this._debuffs && damageResult["damageAmount"] > 0 && (damageResult["damageSource"] == "active" || damageResult["damageSource"] == "basic")) {
+    if (this._currentStats["totalHP"] > 0 && "Shapeshift" in this._debuffs && damageResult["damageAmount"] > 0 && ["active", "basic"].includes(damageResult["damageSource"])) {
       var shapeshiftKey = Object.keys(this._debuffs["Shapeshift"])[0];
       if (this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"] > 1) {
         this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"]--;

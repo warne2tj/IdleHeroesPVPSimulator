@@ -10,6 +10,27 @@ var artifacts = {
     limit: "",
     limitStats: {}
   },
+
+  "Glittery Antlers Cane": {
+    stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
+    limit: "",
+    limitStats: {},
+    enhance: 0.03
+  },
+
+  "Radiant Antlers Cane": {
+    stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
+    limit: "",
+    limitStats: {},
+    enhance: 0.045
+  },
+
+  "Splendid Antlers Cane": {
+    stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
+    limit: "",
+    limitStats: {},
+    enhance: 0.06
+  },
   
   "Augustus Magic Ball": {
     stats: {attackPercent: 0.25, speed: 70, block: 0.5},
@@ -35,6 +56,26 @@ var artifacts = {
     limitStats: {}
   },
   
+  "Glittery Lucky Candy Bar": {
+    stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Radiant Lucky Candy Bar": {
+    stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
+    limit: "",
+    limitStats: {},
+    enhance: 0.10
+  },
+  
+  "Splendid Lucky Candy Bar": {
+    stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
+    limit: "",
+    limitStats: {},
+    enhance: 0.20
+  },
+  
   "Magic Stone Sword": {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
@@ -42,7 +83,25 @@ var artifacts = {
   },
   
   "Ruyi Scepter": {
-    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.5},
+    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.50},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Glittery Ruyi Scepter": {
+    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.50, controlImmunePen: 0.10},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Radiant Ruyi Scepter": {
+    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.50, controlImmunePen: 0.20},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Splendid Ruyi Scepter": {
+    stats: {hpPercent: 0.25, speed: 75, controlPrecision: 0.50, controlImmunePen: 0.30},
     limit: "",
     limitStats: {}
   },
@@ -57,6 +116,27 @@ var artifacts = {
     stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
     limit: "",
     limitStats: {}
+  },
+  
+  "Glittery The Kiss of Ghost": {
+    stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
+    limit: "",
+    limitStats: {},
+    enhance: 0.15
+  },
+  
+  "Radiant The Kiss of Ghost": {
+    stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
+    limit: "",
+    limitStats: {},
+    enhance: 0.30
+  },
+  
+  "Splendid The Kiss of Ghost": {
+    stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
+    limit: "",
+    limitStats: {},
+    enhance: 0.45
   },
   
   "Wildfire Torch": {
