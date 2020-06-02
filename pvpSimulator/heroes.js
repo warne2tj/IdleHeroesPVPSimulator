@@ -463,28 +463,26 @@ class hero {
     if (this._currentStats["totalHP"] <= 0) { return false; }
     
     var result = false;
-    var b = "";
-    var s = "";
-    var e = "";
     
-    for (b in this._debuffs) {
+    for (let [b, ob] of Object.entries(this._debuffs)) {
       if (b == strStatus) {
         return true; 
       } else {
-        for (s in this._debuffs[b]) {
-          for (e in this._debuffs[b][s]["effects"]) {
+        for (let s of Object.values(ob)) {
+          for (let e of Object.keys(s["effects"])) {
             if (e == strStatus) { return true; }
           }
         }
       }
     }
     
-    for (b in this._buffs) {
+    
+    for (let [b, ob] of Object.entries(this._buffs)) {
       if (b == strStatus) {
         return true; 
       } else {
-        for (s in this._buffs[b]) {
-          for (e in this._buffs[b][s]["effects"]) {
+        for (let s of Object.values(ob)) {
+          for (let e of Object.keys(s["effects"])) {
             if (e == strStatus) { return true; }
           }
         }
@@ -797,22 +795,22 @@ class hero {
     }
     
     // apply buffs
-    for (var b in this._buffs) {
-      for (var s in this._buffs[b]) {
-        for (var e in this._buffs[b][s]["effects"]) {
+    for (let b of Object.values(this._buffs)) {
+      for (let s of Object.values(b)) {
+        for (let [e, oe] of Object.entries(s["effects"])) {
           if (e == "attackPercent") {
-            att = Math.floor(att * (1 + this._buffs[b][s]["effects"][e]));
+            att = Math.floor(att * (1 + oe));
           }
         }
       }
     }
     
     // apply debuffs
-    for (var b in this._debuffs) {
-      for (var s in this._debuffs[b]) {
-        for (var e in this._debuffs[b][s]["effects"]) {
+    for (let b of Object.values(this._debuffs)) {
+      for (let s of Object.values(b)) {
+        for (let [e, oe] of Object.entries(s["effects"])) {
           if (e == "attackPercent") {
-            att = Math.floor(att * (1 - this._debuffs[b][s]["effects"][e]));
+            att = Math.floor(att * (1 + oe));
           }
         }
       }
@@ -831,22 +829,22 @@ class hero {
     }
     
     // apply buffs
-    for (var b in this._buffs) {
-      for (var s in this._buffs[b]) {
-        for (var e in this._buffs[b][s]["effects"]) {
+    for (let b of Object.values(this._debuffs)) {
+      for (let s of Object.values(b)) {
+        for (let [e, oe] of Object.entries(s["effects"])) {
           if (e == "armorPercent") {
-            armr = Math.floor(armr * (1 + this._buffs[b][s]["effects"][e]));
+            armr = Math.floor(armr * (1 + oe));
           }
         }
       }
     }
     
     // apply debuffs
-    for (var b in this._debuffs) {
-      for (var s in this._debuffs[b]) {
-        for (var e in this._debuffs[b][s]["effects"]) {
+    for (let b of Object.values(this._debuffs)) {
+      for (let s of Object.values(b)) {
+        for (let [e, oe] of Object.entries(s["effects"])) {
           if (e == "armorPercent") {
-            armr = Math.floor(armr * (1 - this._debuffs[b][s]["effects"][e]));
+            armr = Math.floor(armr * (1 - oe));
           }
         }
       }
