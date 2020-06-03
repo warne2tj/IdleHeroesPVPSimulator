@@ -106,12 +106,13 @@ function runSim() {
             // decide on action
             if (currentHero._currentStats["energy"] >= 100 && !("Silence" in currentHero._debuffs)) {
               
+              // set hero energy to 0
+              currentHero._currentStats["energySnapshot"] = currentHero._currentStats["energy"];
+              currentHero._currentStats["energy"] = 0;
+              
               // do active
               result = currentHero.doActive();
               if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
-              
-              // set hero energy to 0
-              currentHero._currentStats["energy"] = 0;
               
               // monster gains energy from hero active
               if (currentHero._attOrDef == "att") {

@@ -162,7 +162,7 @@ class AmenRa extends hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="", ccChance=1, maxStacks=0) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="", ccChance=1, unstackable=false) {
     var result = "";
     
     if (isControlEffect(debuffName, effects)) {
@@ -171,10 +171,10 @@ class AmenRa extends hero {
       if (duration == 0) {
         result = "<div>" + this.heroDesc() + " negated <span class='skill'>" + debuffName + "</span> by reducing it's duration to " + formatNum(0) + " rouunds.</div>";
       } else {
-        result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, maxStacks);
+        result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, unstackable);
       }
     } else {
-      result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, maxStacks);
+      result = super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, unstackable);
     }
     
     return result;
@@ -373,15 +373,15 @@ class Aspen extends hero {
   }
   
   
-  getBuff(source, buffName, duration, effects) {
+  getBuff(source, buffName, duration, effects={}, unstackable=false) {
     if ("Shield" in this._buffs && buffName == "Shield") {
       if (Object.keys(this._buffs["Shield"]).length < 5) {
-        return super.getBuff(source, buffName, duration, effects);
+        return super.getBuff(source, buffName, duration, effects, unstackable);
       } else {
         return "";
       }
     } else {
-      return super.getBuff(source, buffName, duration, effects);
+      return super.getBuff(source, buffName, duration, effects, unstackable);
     }
   }
   
@@ -1128,9 +1128,7 @@ class Elyvia extends hero {
     var targets = getRandomTargets(this, this._enemies, 1);
     
     if (targets.length > 0) {
-      if (!("Shrink" in targets[0]._debuffs)) {
-        result += targets[0].getDebuff(this, "Shrink", 2, {allDamageTaken: -0.30, allDamageDealt: 0.50});
-      }
+      result += targets[0].getDebuff(this, "Shrink", 2, {allDamageTaken: -0.30, allDamageDealt: 0.50}, false, "", 1, true);
     }
     
     return result;
@@ -1196,10 +1194,7 @@ class Elyvia extends hero {
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 4);
         result += targets[0].takeDamage(this, "You Miss Lilliput?!", damageResult);
-        
-        if (!("Shrink" in targets[0]._debuffs) && targets[0]._currentStats["totalHP"] > 0) {
-          result += targets[0].getDebuff(this, "Shrink", 2, {allDamageTaken: -0.30, allDamageDealt: 0.50});
-        }
+        result += targets[0].getDebuff(this, "Shrink", 2, {allDamageTaken: -0.30, allDamageDealt: 0.50}, false, "", 1, true);
       }
     }
     
@@ -1675,7 +1670,7 @@ class Gustin extends hero {
       }
     }
     
-    result += this.getBuff(this, "Demon Totem", 3, {});
+    result += this.getBuff(this, "Demon Totem", 3, {}, false);
     this._currentStats["demonTotemStacks"] = 4;
     
     return result;
@@ -1863,7 +1858,7 @@ class Ithaqua extends hero {
     var targets = getRandomTargets(this, this._enemies, 1);
     
     if (targets.length > 0) {
-      result += targets[0].getDebuff(this, "Ghost Possessed", 3);
+      result += targets[0].getDebuff(this, "Ghost Possessed", 3, {}, false, "", 1, true);
     }
     
     result += this.getBuff(this, "Armor Break", 3, {armorBreak: 1.0});
@@ -1923,10 +1918,7 @@ class Ithaqua extends hero {
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
         result += targets[0].takeDamage(this, "Basic Attack", damageResult);
-        
-        if (targets[0]._currentStats["totalHP"] > 0 && !("Ghost Possessed" in targets[0]._debuffs)) {
-          result += targets[0].getDebuff(this, "Ghost Possessed", 3);
-        }
+        result += targets[0].getDebuff(this, "Ghost Possessed", 3, {}, false, "", 1, true);
         
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
@@ -1986,9 +1978,7 @@ class Ithaqua extends hero {
           result += targets[0].takeDamage(this, "Ghost Possession HP", hpDamageResult);
         }
           
-        if (targets[0]._currentStats["totalHP"] > 0 && !("Ghost Possessed" in targets[0]._debuffs)) {
-          result += targets[0].getDebuff(this, "Ghost Possessed", 3);
-        }
+        result += targets[0].getDebuff(this, "Ghost Possessed", 3, {}, false, "", 1, true);
         
         activeQueue.push([this, targets[0], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
       }
@@ -2086,10 +2076,7 @@ class Kroos extends hero {
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.5);
         result += targets[i].takeDamage(this, "Weak Curse", damageResult);
-        
-        if (!("Weak Curse" in targets[i]._debuffs)) {
-          result += targets[i].getDebuff(this, "All Damage Taken", 3, {allDamageTaken: -0.50});
-        }
+        result += targets[i].getDebuff(this, "Weak Curse", 3, {allDamageTaken: -0.50}, false, "", 1, true);
         
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
@@ -2632,7 +2619,7 @@ class Penny extends hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, maxStacks=0) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, unstackable=false) {
     var result = "";
     var isControl = isControlEffect(debuffName, effects);
     
@@ -2676,7 +2663,7 @@ class Penny extends hero {
         }
       }
     } else {
-      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, maxStacks);
+      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, unstackable);
     }
     
     return result;
@@ -2840,7 +2827,7 @@ class Sherlock extends hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, maxStacks=0) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, unstackable=false) {
     var result = "";
     
     if (debuffName.includes("Mark") && this.isNotSealed() && this._currentStats["wellCalculatedStacks"] > 0) {
@@ -2848,7 +2835,7 @@ class Sherlock extends hero {
       result += "<div>" + this.heroDesc() + " <span class='skill'>Well-Calculated</span> prevented <span class='skill'>" + debuffName + "</span.</div>";
       
     } else {
-      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, maxStacks);
+      result += super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, unstackable);
     }
     
     return result;
@@ -2868,10 +2855,7 @@ class Sherlock extends hero {
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
         result += targets[0].takeDamage(this, "Basic Attack", damageResult);
-        
-        if (!("Shapeshift" in targets[0]._debuffs)) {
-          result += targets[0].getDebuff(this, "Shapeshift", 15, {stacks: 3}, false, "", 0.50);
-        }
+        result += targets[0].getDebuff(this, "Shapeshift", 15, {stacks: 3}, false, "", 0.50, true);
         
         basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
@@ -2895,10 +2879,7 @@ class Sherlock extends hero {
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3);
         result += targets[i].takeDamage(this, "Master Showman", damageResult);
-        
-        if (!("Shapeshift" in targets[i]._debuffs)) {
-          result += targets[i].getDebuff(this, "Shapeshift", 15, {stacks: 3}, false, "", ccChance);
-        }
+        result += targets[i].getDebuff(this, "Shapeshift", 15, {stacks: 3}, false, "", ccChance, true);
         
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }

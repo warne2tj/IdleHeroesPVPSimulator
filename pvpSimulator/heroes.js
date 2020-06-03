@@ -617,9 +617,9 @@ class hero {
     // damage source and damage type overrides
     if (damageSource == "active") {
       if (isDot(damageType)) {
-        skillDamage += (this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100)) / (dotRounds + 1);
+        skillDamage += (this._currentStats["skillDamage"] + ((this._currentStats["energySnapshot"] - 100) / 100)) / (dotRounds + 1);
       } else if (!(["energy", "true"].includes(damageType))) {
-        skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energy"] - 100) / 100);
+        skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energySnapshot"] - 100) / 100);
       }
     } else if (isDot(damageType)) {
       skillDamage += this._currentStats["skillDamage"] / (dotRounds + 1);
@@ -859,7 +859,7 @@ class hero {
   }
   
   
-  getBuff(source, buffName, duration, effects={}) {
+  getBuff(source, buffName, duration, effects={}, unstackable=false) {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var result = "";
@@ -872,39 +872,45 @@ class hero {
     } else {
       result += "<div>" + this.heroDesc() + " gained buff <span class='skill'>" + buffName + "</span> for " + formatNum(duration) + " rounds.";
     }
-    
-    
-    var keyAt = uuid();
-    if (buffName in this._buffs) {
-      this._buffs[buffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
-    } else {
-      this._buffs[buffName] = {};
-      this._buffs[buffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
-    }
-    
-    
-    for (var strStatName in effects) {
-      result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
       
-      if (strStatName == "attackPercent") {
-        this._currentStats["totalAttack"] = this.calcCombatAttack();
-        
-      } else if (strStatName == "armorPercent") {
-        this._currentStats["totalArmor"] = this.calcCombatArmor();
-        
-      } else if (strStatName == "heal") {
-        healResult = this.getHeal(source, effects[strStatName]);
-        
-      } else if (strStatName == "attackAmount") {
-        // ignore, used for snapshotting attack
-        
+      
+    if (unstackable && buffName in this._buffs) {
+      let stackObj = Object.values(this._buffs[buffName]);
+      stackObj["duration"] = duration;
+      
+    } else {
+      var keyAt = uuid();
+      if (buffName in this._buffs) {
+        this._buffs[buffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
       } else {
-        this._currentStats[strStatName] += effects[strStatName];
+        this._buffs[buffName] = {};
+        this._buffs[buffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
+      }
+      
+      
+      for (var strStatName in effects) {
+        result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
         
-        if (strStatName == "attack") {
+        if (strStatName == "attackPercent") {
           this._currentStats["totalAttack"] = this.calcCombatAttack();
-        } else if (strStatName == "armor") {
+          
+        } else if (strStatName == "armorPercent") {
           this._currentStats["totalArmor"] = this.calcCombatArmor();
+          
+        } else if (strStatName == "heal") {
+          healResult = this.getHeal(source, effects[strStatName]);
+          
+        } else if (strStatName == "attackAmount") {
+          // ignore, used for snapshotting attack
+          
+        } else {
+          this._currentStats[strStatName] += effects[strStatName];
+          
+          if (strStatName == "attack") {
+            this._currentStats["totalAttack"] = this.calcCombatAttack();
+          } else if (strStatName == "armor") {
+            this._currentStats["totalArmor"] = this.calcCombatArmor();
+          }
         }
       }
     }
@@ -913,7 +919,7 @@ class hero {
   }
   
   
-  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, maxStacks=0) {
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, unstackable=false) {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var damageResult = {};
@@ -961,82 +967,88 @@ class hero {
       }
       
       
-      var keyAt = uuid();
-      if (debuffName in this._debuffs) {
-        this._debuffs[debuffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
+      if (unstackable && debuffName in this._debuffs) {
+        let stackObj = Object.values(this._debuffs[debuffName]);
+        stackObj["duration"] = duration;
+        
       } else {
-        this._debuffs[debuffName] = {};
-        this._debuffs[debuffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
-      }
-      
-      
-      // process effects
-      for (var strStatName in effects) {
-        result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
-        
-        if (strStatName == "attackPercent") {
-          this._currentStats["totalAttack"] = this.calcCombatAttack();
-          
-        } else if (strStatName == "armorPercent") {
-          this._currentStats["totalArmor"] = this.calcCombatArmor();
-          
-        } else if (isDot(strStatName)) {
-          if (this._currentStats["totalHP"] > 0) {
-            damageResult = {
-              damageAmount: effects[strStatName],
-              damageSource: damageSource,
-              damageType: strStatName,
-              critted: false,
-              blocked: false,
-              e5Description: ""
-            };
-            result += "<div>" + this.takeDamage(source, "Debuff " + debuffName, damageResult) + "</div>";
-          }
-          
-        } else if (["rounds", "stacks", "attackAmount"].includes(strStatName)) {
-          //ignore, used to track other stuff
-          
+        var keyAt = uuid();
+        if (debuffName in this._debuffs) {
+          this._debuffs[debuffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
         } else {
-          this._currentStats[strStatName] -= effects[strStatName];
+          this._debuffs[debuffName] = {};
+          this._debuffs[debuffName][keyAt] = {"source": source, "duration": duration, "effects": effects};
+        }
+        
+        
+        // process effects
+        for (var strStatName in effects) {
+          result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
           
-          if (strStatName == "attack") {
+          if (strStatName == "attackPercent") {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
-          } else if (strStatName == "armor") {
+            
+          } else if (strStatName == "armorPercent") {
             this._currentStats["totalArmor"] = this.calcCombatArmor();
-          }
-        }
-      }
-      
-      if (isControl) {
-        if (this._artifact.includes(" Lucky Candy Bar")) {
-          if (!("Hand of Destiny" in this._buffs)) {
-            result += this.getBuff(this, "Hand of Destiny", 1, {allDamageReduce: artifacts[this._artifact]["enhance"]});
+            
+          } else if (isDot(strStatName)) {
+            if (this._currentStats["totalHP"] > 0) {
+              damageResult = {
+                damageAmount: effects[strStatName],
+                damageSource: damageSource,
+                damageType: strStatName,
+                critted: false,
+                blocked: false,
+                e5Description: ""
+              };
+              result += "<div>" + this.takeDamage(source, "Debuff " + debuffName, damageResult) + "</div>";
+            }
+            
+          } else if (["rounds", "stacks", "attackAmount"].includes(strStatName)) {
+            //ignore, used to track other stuff
+            
+          } else {
+            this._currentStats[strStatName] -= effects[strStatName];
+            
+            if (strStatName == "attack") {
+              this._currentStats["totalAttack"] = this.calcCombatAttack();
+            } else if (strStatName == "armor") {
+              this._currentStats["totalArmor"] = this.calcCombatArmor();
+            }
           }
         }
         
-        triggerQueue.push([this, "eventGotCC", source, debuffName, keyAt]);
-      }
-      
-      result += "</div>";
-      
-      
-      // handle special debuffs
-      if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
-        triggerQueue.push([source, "devouringMark", this, effects["attackAmount"], this._currentStats["energy"]]);
-        
-      } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
-        result += this.removeDebuff("Power of Light");
-        result += this.getDebuff(source, "Seal of Light", 2);
-        
-      } else if (debuffName == "twine") {
-        for (var h in source._allies) {
-          if (source._allies[h]._heroName == "Oberon") {
-            triggerQueue.push([source._allies[h], "eventTwine"]);
+        if (isControl) {
+          if (this._artifact.includes(" Lucky Candy Bar")) {
+            if (!("Hand of Destiny" in this._buffs)) {
+              result += this.getBuff(this, "Hand of Destiny", 1, {allDamageReduce: artifacts[this._artifact]["enhance"]});
+            }
           }
+          
+          triggerQueue.push([this, "eventGotCC", source, debuffName, keyAt]);
         }
-      } else if (debuffName == "Horrify") {
-        for (var h in this._enemies) {
-          triggerQueue.push([this._enemies[h], "enemyHorrified"])
+        
+        result += "</div>";
+        
+        
+        // handle special debuffs
+        if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
+          triggerQueue.push([source, "devouringMark", this, effects["attackAmount"], this._currentStats["energy"]]);
+          
+        } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
+          result += this.removeDebuff("Power of Light");
+          result += this.getDebuff(source, "Seal of Light", 2);
+          
+        } else if (debuffName == "twine") {
+          for (var h in source._allies) {
+            if (source._allies[h]._heroName == "Oberon") {
+              triggerQueue.push([source._allies[h], "eventTwine"]);
+            }
+          }
+        } else if (debuffName == "Horrify") {
+          for (var h in this._enemies) {
+            triggerQueue.push([this._enemies[h], "enemyHorrified"])
+          }
         }
       }
     }
