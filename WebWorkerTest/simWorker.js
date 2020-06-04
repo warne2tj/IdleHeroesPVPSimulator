@@ -6030,6 +6030,7 @@ var skins = {
 
 var stones = {
   "None": {},
+  "S3 Attack, Attack": {attack: 4000, attackPercent: 0.37},
   "S3 Attack, Attack, Armor Break": {attack: 1550, attackPercent: 0.24, armorBreak: 0.5},
   "S3 Attack, Attack, Holy": {attack: 1550, attackPercent: 0.24, holyDamage: 0.36},
   "S3 Attack, Attack, Precision": {attack: 1550, attackPercent: 0.24, precision: 0.24},
