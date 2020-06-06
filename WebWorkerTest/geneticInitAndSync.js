@@ -380,15 +380,31 @@ function evolve(teamKeys) {
   var oConfig = document.getElementById("configText");
   var dna1;
   var dnaString1;
-  var children = [];
+  var child = [];
+  var mutationRate = 0.01;
+  var swapRate = 0.10;
   
   var numCreate = teamKeys.length;
+  var i10p = Math.floor(numCreate * 0.1);
   var i20p = Math.floor(numCreate * 0.2);
   var i30p = Math.floor(numCreate * 0.3);
   var i50p = Math.floor(numCreate * 0.5);
   var i60p = Math.floor(numCreate * 0.6);
   var i80p = Math.floor(numCreate * 0.8);
   var i90p = Math.floor(numCreate * 0.9);
+  
+  // speciation
+  var arrTeams = [];
+  var heroCount = {};
+  var teamDNA;
+  var tempTeam;
+  var similarityScore;
+  var speciesCount;
+  
+  for (let i in baseHeroStats) {
+    heroCount[i] = 0;
+  }
+  
   
   oConfig.value = "{\n";
   
@@ -397,47 +413,68 @@ function evolve(teamKeys) {
     dna1 = allTeams[teamKeys[t]]["dna"];
     dnaString1 = "\"" + t + "\": [\n";
     
-    for (var h=0; h<6; h++) {
+    for (let h=0; h<6; h++) {
       dnaString1 += " ";
       
-      for (var g=0; g<10; g++) {
+      for (let g=0; g<10; g++) {
         dnaString1 += " \"" + dna1[h*10 + g] + "\",";
       }
       
       dnaString1 += "\n";
     }
     
+    
+    tempTeam = Object.assign({}, heroCount);
+    for (let g = 0; g < 60; g += 10) {
+      tempTeam[dna1[g]]++;
+    }
+    arrTeams.push(tempTeam);
+    
+    
     dnaString1 += "  \"" + dna1[60] + "\"\n],\n"
     oConfig.value += dnaString1;
   }
   
   
-  // breed next 40% from top 30
-  for (t=i20p; t<i60p; t++) {
-    children = breed(teamKeys, 0, i30p, 0.01, 0.10);
-    oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
-    t++;
-    oConfig.value += "\"" + t + "\": [" + children[1] + "\n],\n";
-  }
+  // breed
+  while (t < numCreate) {
+    child = breed(teamKeys, 0, numCreate-1, mutationRate * (Math.floor(t / 10) + 1), swapRate * (Math.floor(t / 10) + 1));
   
-  // breed next 20% from 21-50
-  for (t=i60p; t<i80p; t++) {
-    children = breed(teamKeys, i20p, i50p, 0.05, 0.20);
-    oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
-    t++;
-    oConfig.value += "\"" + t + "\": [" + children[1] + "\n],\n";
-  }
-  
-  // breed last 20% from 51-90
-  for (t=i80p; t<numCreate; t++) {
-    children = breed(teamKeys, i50p, i90p, 0.20, 0.30);
-    oConfig.value += "\"" + t + "\": [" + children[0] + "\n],\n";
+    teamDNA = child[0];
+    tempTeam = Object.assign({}, heroCount);
+    speciesCount = 0;
     
-    t++;
-    if (t == numCreate-1) {
-      oConfig.value += "\"" + t + "\": [" + children[1] + "\n]\n";
-    } else {
-      oConfig.value += "\"" + t + "\": [" + children[1] + "\n],\n";
+    for (let g = 0; g < 60; g += 10) {
+      tempTeam[teamDNA[g]]++;
+    }
+    
+    for (let x in arrTeams) {
+      similarityScore = 0;
+      
+      for (let h in arrTeams[x]) {
+        if (arrTeams[x][h] > 0 && tempTeam[h] > 0) {
+          if (arrTeams[x][h] > tempTeam[h]) {
+            similarityScore += tempTeam[h];
+          } else {
+            similarityScore += arrTeams[x][h];
+          }
+        }
+      }
+      
+      if (similarityScore / 6 >= 0.5) {
+        speciesCount++;
+      }
+    }
+    
+    if (speciesCount < i10p) {
+      if (t == numCreate-1) {
+        oConfig.value += "\"" + t + "\": [" + child[1] + "\n]\n";
+      } else {
+        oConfig.value += "\"" + t + "\": [" + child[1] + "\n],\n";
+      }
+      
+      arrTeams.push(tempTeam);
+      t++;
     }
   }
   
@@ -456,9 +493,7 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   var dna1;
   var dna2;
   var child1;
-  var child2;
   var dnaString1;
-  var dnaString2;
   var pos1 = 0;
   var pos2 = 0;
   
@@ -496,24 +531,19 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   crossOver = Math.floor(Math.random() * 60) + 1;
   if (crossOver % 10 == 1) { crossOver++; }
   child1 = [];
-  child2 = [];
   
   for (var g = 0; g < crossOver; g++) {
     child1.push(dna1[g]);
-    child2.push(dna2[g]);
   }
   
   for (var g = crossOver; g < 60; g++) {
     child1.push(dna2[g]);
-    child2.push(dna1[g]);
   }
   
   if (crossOver == 60) {
     child1.push(dna2[60]);
-    child2.push(dna1[60]);
   } else {
     child1.push(dna1[60]);
-    child2.push(dna2[60]);
   }
   
   
@@ -588,109 +618,6 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   }
   
   
-  // mutate child 2 genes
-  for (var g = 0; g < 60; g++) {
-    if (Math.random() < mutationRate) {
-      switch(g % 10) {
-        case 0:
-          child2[g] = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
-          
-          skinNames = Object.keys(skins[child2[g]]);
-          legendarySkins = [];
-          for (var s in skinNames) {
-            if (skinNames[s].substring(0, 9) == "Legendary") {
-              legendarySkins.push(skinNames[s]);
-            }
-          }
-          skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
-          child2[g+1] = skinName;
-          break;
-          
-        case 1:
-          skinNames = Object.keys(skins[child2[g-1]]);
-          legendarySkins = [];
-          for (var s in skinNames) {
-            if (skinNames[s].substring(0, 9) == "Legendary") {
-              legendarySkins.push(skinNames[s]);
-            }
-          }
-          skinName = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
-          child2[g] = skinName;
-          break;
-          
-        case 2:
-          child2[g] = equipments[Math.floor(Math.random() * equipments.length)];
-          break;
-          
-        case 3:
-          child2[g] = stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1];
-          break;
-          
-        case 4:
-          child2[g] = artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1];
-          break;
-          
-        case 5:
-          child2[g] = enables1[Math.floor(Math.random() * enables1.length)];
-          break;
-          
-        case 6:
-          child2[g] = enables2[Math.floor(Math.random() * enables2.length)];
-          break;
-          
-        case 7:
-          child2[g] = enables3[Math.floor(Math.random() * enables3.length)];
-          break;
-          
-        case 8:
-          child2[g] = enables4[Math.floor(Math.random() * enables4.length)];
-          break;
-          
-        case 9:
-          child2[g] = enables5[Math.floor(Math.random() * enables5.length)];
-          break;
-      }
-    }
-  }
-  
-  // mutate child 2 pet
-  if (Math.random() < mutationRate) {
-    child2[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
-  }
-  
-  
-  // position swap for child 1
-  if (Math.random() < posSwapRate) {
-    pos1 = Math.floor(Math.random() * 6);
-    pos2 = Math.floor(Math.random() * 6);
-    while (pos1 == pos2) {
-      pos2 = Math.floor(Math.random() * 6);
-    }
-    
-    for (var g=0; g<10; g++) {
-      temp = child1[pos1*10 + g];
-      child1[pos1*10 + g] = child1[pos2*10 + g];
-      child1[pos2*10 + g] = temp;
-    }
-  }
-  
-  
-  // position swap for child 2
-  if (Math.random() < posSwapRate) {
-    pos1 = Math.floor(Math.random() * 6);
-    pos2 = Math.floor(Math.random() * 6);
-    while (pos1 == pos2) {
-      pos2 = Math.floor(Math.random() * 6);
-    }
-    
-    for (var g=0; g<10; g++) {
-      temp = child2[pos1*10 + g];
-      child2[pos1*10 + g] = child2[pos2*10 + g];
-      child2[pos2*10 + g] = temp;
-    }
-  }
-  
-  
   // output child genes
   dnaString1 = "";
   for (var h=0; h<6; h++) {
@@ -702,16 +629,5 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   }
   dnaString1 += "\n  \"" + child1[60] + "\"";
   
-  
-  dnaString2 = "";
-  for (var h=0; h<6; h++) {
-    dnaString2 += "\n ";
-    
-    for (var g=0; g<10; g++) {
-      dnaString2 += " \"" + child2[h*10 + g] + "\",";
-    }
-  }
-  dnaString2 += "\n  \"" + child2[60] + "\"";
-  
-  return [dnaString1, dnaString2];
+  return [child1, dnaString1];
 }
