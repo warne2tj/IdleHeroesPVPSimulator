@@ -77,6 +77,8 @@ class hero {
     this._stats["armor"] = Math.floor(baseStats["baseArmor"] + (this._heroLevel - 1) * baseStats["growArmor"]);
     this._stats["speed"] = Math.floor((baseStats["baseSpeed"] + (this._heroLevel - 1) * baseStats["growSpeed"]) * 1.6);
     
+    this._stats["fixedAttack"] = 0;
+    this._stats["fixedHP"] = 0;
     this._stats["totalHP"] = this._stats["hp"];
     this._stats["totalAttack"] = this._stats["attack"];
     this._stats["totalArmor"] = this._stats["armor"];
@@ -106,8 +108,6 @@ class hero {
     this._stats["healEffect"] = 0.0;
     this._stats["dotReduce"] = 0.0;
     this._stats["controlPrecision"] = 0.0;
-    this._stats["fixedAttack"] = 0;
-    this._stats["fixedHP"] = 0;
     this._stats["damageAgainstBurning"] = 0.0;
     this._stats["damageAgainstBleeding"] = 0.0;
     this._stats["damageAgainstPoisoned"] = 0.0;
@@ -421,11 +421,14 @@ class hero {
   getHeroSheet() {
     console.log("Get stats summary for " + this._heroName);
     var heroSheet = "";
+    
     var arrIntStats = [
       "hp", "attack", "speed", "armor", 
       "totalHP", "totalAttack", "totalArmor", 
-      "unbendingWillTriggered", "unbendingWillStacks"
+      "unbendingWillTriggered", "unbendingWillStacks",
+      "revive", "fixedAttack", "fixedHP", "energy"
     ];
+    
     var arrStrStats = ["firstCC"];
     
     heroSheet += "Level " + this._heroLevel + " " + this._heroName + "<br/>";
@@ -433,11 +436,11 @@ class hero {
     
     for (var statName in this._stats) {
       if (arrIntStats.includes(statName)) {
-        heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed();
+        heroSheet += "<br/>" + translate[statName] + ": " + this._stats[statName].toLocaleString();
       } else if (arrStrStats.includes(statName)) {
-        heroSheet += "<br/>" + statName + ": " + this._stats[statName];
+        heroSheet += "<br/>" + translate[statName] + ": " + this._stats[statName];
       } else {
-        heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed(2);
+        heroSheet += "<br/>" + translate[statName] + ": " + (this._stats[statName] * 100).toFixed() + "%";
       }
     }
     
@@ -889,7 +892,7 @@ class hero {
       
       
       for (var strStatName in effects) {
-        result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+        result += " " + translate[strStatName] + ": " + formatNum(effects[strStatName]) + ".";
         
         if (strStatName == "attackPercent") {
           this._currentStats["totalAttack"] = this.calcCombatAttack();
@@ -983,7 +986,7 @@ class hero {
         
         // process effects
         for (var strStatName in effects) {
-          result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+          result += " " + translate[strStatName] + ": " + formatNum(effects[strStatName]) + ".";
           
           if (strStatName == "attackPercent") {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
@@ -1066,7 +1069,7 @@ class hero {
       // remove the effects
       if (stack == "" || stack == s) {
         for (var strStatName in this._buffs[strBuffName][s]["effects"]) {
-          result += " " + strStatName + " " + formatNum(this._buffs[strBuffName][s]["effects"][strStatName]) + ".";
+          result += " " + translate[strStatName] + ": " + formatNum(this._buffs[strBuffName][s]["effects"][strStatName]) + ".";
 
           if (strStatName == "attackPercent") {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
@@ -1107,7 +1110,7 @@ class hero {
       // remove the effects
       if (stack == "" || stack == s) {
         for (var strStatName in this._debuffs[strDebuffName][s]["effects"]) {
-          result += " " + strStatName + " " + formatNum(this._debuffs[strDebuffName][s]["effects"][strStatName]) + ".";
+          result += " " + translate[strStatName] + ": " + formatNum(this._debuffs[strDebuffName][s]["effects"][strStatName]) + ".";
 
           if (strStatName == "attackPercent") {
             this._currentStats["totalAttack"] = this.calcCombatAttack();

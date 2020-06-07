@@ -51,5 +51,4 @@ Head to the wiki for more details.
 
   
 ### To Do List
-  * improve look of hero stat sheet, buff, and debuff descriptions
   * improve combat log output to read and flow better
