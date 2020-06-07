@@ -1798,6 +1798,7 @@ class hero {
     if (damageResult["critted"] && "Crit Mark" in this._debuffs) {
       for (var s in this._debuffs["Crit Mark"]) {
         triggerQueue.push([this._debuffs["Crit Mark"][s]["source"], "critMark", this, this._debuffs["Crit Mark"][s]["effects"]["attackAmount"]]);
+        this.removeDebuff("Crit Mark");
       }
     }
     
