@@ -464,5 +464,8 @@ var translate = {
   "poison": "Poison",
   "poisonTrue": "Poison (True Damage)",
   "dot": "Generic DoT",
-  "heal": "Heal"
+  "heal": "Heal",
+  "attackAmount": "Snapshot Attack Amount",
+  "rounds": "Number of Rounds",
+  "stacks": "Number of Stacks"
 };
