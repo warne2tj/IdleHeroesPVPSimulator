@@ -48,7 +48,3 @@ Head to the wiki for more details.
   * Sphinx
   * Stone Golem
   * Wolf
-
-  
-### To Do List
-  * improve combat log output to read and flow better

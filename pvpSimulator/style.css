@@ -30,6 +30,16 @@ h2, div, p {
   background-color: #f6f6f6;
   margin-bottom: 18px;
   color: #000;
+  border: 1px solid #000;
+}
+
+
+.log0 {
+  background-color: #f6f6f6;
+}
+
+.log1 {
+  background-color: #fff;
 }
 
 
