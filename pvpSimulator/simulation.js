@@ -1,6 +1,7 @@
 var basicQueue = [];
 var activeQueue = [];
 var triggerQueue = [];
+var logColor = 0;
 
 function runSim() {
   var oCombatLog = document.getElementById("combatLog");
@@ -67,14 +68,16 @@ function runSim() {
     for (var h in attHeroes) {
       if ((attHeroes[h].isNotSealed() && attHeroes[h]._currentStats["totalHP"] > 0) || attHeroes[h]._currentStats["revive"] == 1) {
         temp = attHeroes[h].startOfBattle();
-        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
     }
     
     for (var h in defHeroes) {
       if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats["totalHP"] > 0) {
         temp = defHeroes[h].startOfBattle();
-        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
     }
     
@@ -82,7 +85,8 @@ function runSim() {
       // @ start of round
       
       // Output detailed combat log only if running a single simulation
-      if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Round " + formatNum(roundNum) + " Start</p>";}
+      if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg log" + logColor + "'>Round " + formatNum(roundNum) + " Start</p>";}
+      logColor = (logColor + 1) % 2;
       
       
       orderOfAttack = attHeroes.concat(defHeroes);
@@ -99,9 +103,8 @@ function runSim() {
         
         if (currentHero._currentStats["totalHP"] > 0) {
           if(currentHero.isUnderStandardControl()) {
-            if(numSims == 1) {oCombatLog.innerHTML += "<p>" + currentHero.heroDesc() + " is under control effect, turn skipped.</p>";}
+            if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + currentHero.heroDesc() + " is under control effect, turn skipped.</div>";}
           } else {
-            if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
             
             // decide on action
             if (currentHero._currentStats["energy"] >= 100 && !("Silence" in currentHero._debuffs)) {
@@ -112,7 +115,7 @@ function runSim() {
               
               // do active
               result = currentHero.doActive();
-              if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
+              if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + result + "</div>";}
               
               // monster gains energy from hero active
               if (currentHero._attOrDef == "att") {
@@ -120,7 +123,7 @@ function runSim() {
                   monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
                   attMonster._energy += 10;
                   monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
-                  if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+                  if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + monsterResult + "</div>";}
                 }
                 
               } else {
@@ -128,7 +131,7 @@ function runSim() {
                   monsterResult = "<div>" + defMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
                   defMonster._energy += 10;
                   monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
-                  if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+                  if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + monsterResult + "</div>";}
                 }
               }
               
@@ -166,19 +169,22 @@ function runSim() {
                   }
                 }
               }
-              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
               
             } else if ("Horrify" in currentHero._debuffs) {
-              if(numSims == 1) {oCombatLog.innerHTML += "<p>" + currentHero.heroDesc() + " is Horrified, basic attack skipped.</p>";}
+              if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + currentHero.heroDesc() + " is Horrified, basic attack skipped.</div>";}
               
             } else {
               // do basic
               result = currentHero.doBasic();
-              if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
+              if(numSims == 1) {
+                result = "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + result + "</div>";
+                oCombatLog.innerHTML += result;
+              }  
               
               // hero gains 50 energy after doing basic
               temp = currentHero.getEnergy(currentHero, 50);
-              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
               
               
               triggerQueue.push([currentHero, "eventSelfBasic", basicQueue]);
@@ -207,28 +213,31 @@ function runSim() {
                   }
                 }
               }
-              if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
             }
           }
               
               
           // process triggers and events    
           temp = processQueue();
-          if(numSims == 1) {oCombatLog.innerHTML += temp;}
+          if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'>" + temp + "</div>";}
           someoneWon = checkForWin();
           if (someoneWon != "") {break;}
+        
+          logColor = (logColor + 1) % 2;
         }
       }
       
       if (someoneWon != "") {break;}
       
       // trigger end of round stuff
-      if(numSims == 1) {oCombatLog.innerHTML += "<p></p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";}
+      if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg log" + logColor + "'>End of round " + formatNum(roundNum) + ".</p>";}
+      logColor = (logColor + 1) % 2;
       
       
       // handle monster stuff
       if (attMonster._monsterName != "None") {
-        monsterResult = "<p></p><div>" + attMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
+        monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
         attMonster._energy += 20;
         monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
       
@@ -236,11 +245,12 @@ function runSim() {
           monsterResult += attMonster.doActive();
         }
         
-        if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+        if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + monsterResult + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
       
       if (defMonster._monsterName != "None") {
-        monsterResult = "<p></p><div>" + defMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
+        monsterResult = "<div>" + defMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
         defMonster._energy += 20;
         monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
       
@@ -248,17 +258,17 @@ function runSim() {
           monsterResult += defMonster.doActive();
         }
         
-        if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+        if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + monsterResult + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
       
       temp = processQueue();
-      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'>" + temp + "</div>";}
       someoneWon = checkForWin();
       if (someoneWon != "") {break;}
       
       
       // handle attacker end of round
-      if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
       for (var h in attHeroes) {
         temp = "";
           
@@ -280,12 +290,12 @@ function runSim() {
           temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
         }
         
-        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
       
       
       // handle defender end of round
-      if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
       for (var h in defHeroes) {
         temp = "";
           
@@ -307,11 +317,12 @@ function runSim() {
           temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
         }
         
-        if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
       
       temp = processQueue();
-      if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'>" + temp + "</div>";}
       someoneWon = checkForWin();
       if (someoneWon != "") {break;}
       
@@ -436,7 +447,8 @@ function processQueue() {
         || copyQueue[i][1] == "eventSelfDied"
         || (copyQueue[i][0]._heroName == "Elyvia" && ["eventEnemyActive", "eventEnemyBasic"].includes(copyQueue[i][1]))
       ) {
-        result += copyQueue[i][0].handleTrigger(copyQueue[i]);
+        temp = copyQueue[i][0].handleTrigger(copyQueue[i]);
+        if (temp.length > 0) { result += "<div class='log" + logColor + "'><p></p></div>" + temp; }
       }
     }
   }
