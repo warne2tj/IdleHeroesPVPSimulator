@@ -178,6 +178,22 @@ var baseHeroStats = {
     }
   },
   
+  "Drake": {
+    className: Drake,
+    heroFaction: "Dark",
+    heroClass: "",
+    stats: {
+      baseHP: 7587,
+      baseAttack: 433,
+      baseArmor: 63,
+      baseSpeed: 226,
+      growHP: 758.7,
+      growAttack: 43.3,
+      growArmor: 6.3,
+      growSpeed: 2
+    }
+  },
+  
   "Elyvia": {
     className: Elyvia,
     heroFaction: "Forest",
@@ -374,6 +390,22 @@ var baseHeroStats = {
     className: Penny,
     heroFaction: "Fortress",
     heroClass: "Ranger",
+    stats: {
+      baseHP: 7937,
+      baseAttack: 397,
+      baseArmor: 60,
+      baseSpeed: 236,
+      growHP: 793.7,
+      growAttack: 39.7,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Russell": {
+    className: Russell,
+    heroFaction: "Light",
+    heroClass: "",
     stats: {
       baseHP: 7937,
       baseAttack: 397,

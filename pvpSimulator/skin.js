@@ -19,12 +19,6 @@ var skins = {
     "Legendary Original Sin": {attackPercent: 0.06, crit: 0.03, critDamage: 0.075}
   },
   
-  "Asmodel": {
-    "King of War": {hpPercent: 0.03, attackPercent: 0.02},
-    "Frozen Heart": {attackPercent: 0.02, crit: 0.02, critDamage: 0.05},
-    "Legendary Frozen Heart": {attackPercent: 0.04, crit: 0.03, critDamage: 0.10}
-  },
-  
   "Aspen": {
     "Dragonic Warrior": {hpPercent: 0.05, attackPercent: 0.03, critDamage: 0.05},
     "Legendary Dragonic Warrior": {hpPercent: 0.08, attackPercent: 0.06, critDamage: 0.075},
@@ -41,7 +35,9 @@ var skins = {
   
   "Carrie": {
     "Little Red Riding Hood": {hpPercent: 0.03, attackPercent: 0.03, damageReduce: 0.03},
-    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04}
+    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04},
+    "New": {},
+    "Legendary New": {}
   },
   
   "Cthuga": {
@@ -156,5 +152,21 @@ var skins = {
   "UniMax-3000": {
     "League MVP": {controlImmune: 0.05, hpPercent: 0.03, attackPercent: 0.03},
     "Legendary League MVP": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
+  },
+  
+  "Asmodel": {
+    "King of War": {hpPercent: 0.03, attackPercent: 0.02},
+    "Frozen Heart": {attackPercent: 0.02, crit: 0.02, critDamage: 0.05},
+    "Legendary Frozen Heart": {attackPercent: 0.04, crit: 0.03, critDamage: 0.10}
+  },
+  
+  "Drake": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
+  },
+  
+  "Russell": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
   }
 };
