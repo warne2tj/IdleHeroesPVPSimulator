@@ -429,6 +429,7 @@ class hero {
     this._stats["allDamageDealt"] = 0.0;
     this._stats["controlImmunePen"] = 0.0;
     this._stats["firstCC"] = "";
+    this._stats["dodge"] = 0.0;
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
@@ -910,6 +911,8 @@ class hero {
     if (precisionDamageIncrease > 1.45) { precisionDamageIncrease = 1.45; }
     if (armorBreak > 1) { armorBreak = 1; }
     if (damageReduce > 0.75) { damageReduce = 0.75; }
+    if (damageReduce < 0) { damageReduce = 0; }
+    if (allDamageReduce < 0) { allDamageReduce = 0; }
     
     var blockChance = canBlock * (target._currentStats["block"] - precision);
     if (blockChance < 0) { blockChance = 0; }
@@ -1327,7 +1330,7 @@ class hero {
               result += "<div>" + this.takeDamage(source, "Debuff " + debuffName, damageResult) + "</div>";
             }
             
-          } else if (["rounds", "stacks", "attackAmount"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
             //ignore, used to track other stuff
             
           } else {
@@ -1438,7 +1441,7 @@ class hero {
           } else if (strStatName == "armorPercent") {
             this._currentStats["totalArmor"] = this.calcCombatArmor();
             
-          } else if (["rounds", "stacks", "attackAmount"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
                 // do nothing, used to track other stuff
                 
           } else if (isDot(strStatName)) {
@@ -1549,6 +1552,26 @@ class hero {
               
               if (b == "Sow Seeds") {
                 result += this.getDebuff(this._debuffs[b][s]["source"], "twine", this._debuffs[b][s]["effects"]["rounds"]);
+                
+              } else if (b == "Black Hole Mark") {
+                if (this._currentStats["totalHP"] > 0) {
+                  let bhMark = this._debuffs["Black Hole Mark"][Object.keys(this._debuffs["Black Hole Mark"])[0]];
+                  let damageAmount = bhMark["effects"]["damageAmount"];
+                  
+                  if (damageAmount > bhMark["effects"]["attackAmount"]) {damageAmount = bhMark["effects"]["attackAmount"]; }
+                  
+                  damageResult = {
+                    damageAmount: damageAmount,
+                    damageSource: "mark",
+                    damageType: "true",
+                    critted: false,
+                    blocked: false,
+                    e5Description: ""
+                  };
+                  
+                  result += "<div>" + this.takeDamage(bhMark["source"], "Black Hole Mark", damageResult) + "</div>";
+                }
+                
               } else {
                 // remove the effects
                 for (var strStatName in this._debuffs[b][s]["effects"]) {
@@ -1558,7 +1581,7 @@ class hero {
                   } else if (strStatName == "armorPercent") {
                     this._currentStats["totalArmor"] = this.calcCombatArmor();
                     
-                  } else if (["rounds", "stacks", "attackAmount"].includes(strStatName)) {
+                  } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
                     // do nothing, used to track stuff
                     
                   }  else if (isDot(strStatName)) {
@@ -1710,22 +1733,22 @@ class hero {
         result += this.removeBuff("Guardian Shadow");
       }
     } else {
-      if (this._currentStats["totalHP"] <= damageResult["damageAmount"]) {
+      if (this._currentStats["unbendingWillStacks"] > 0 && damageResult["damageSource"] != "mark") {
+        this._currentStats["unbendingWillStacks"] -= 1;
+        this._currentStats["damageHealed"] += damageResult["damageAmount"];
+        result += "<div>" + formatNum(damageResult["damageAmount"]) + " damage prevented by <span class='skill'>Unbending Will</span>.</div>";
+        
+        if (this._currentStats["unbendingWillStacks"] == 0) {
+          result += "<div><span class='skill'>Unbending Will</span> ended.</div>";
+        }
+        
+      } else if (this._currentStats["totalHP"] <= damageResult["damageAmount"]) {
         // hero would die, check for unbending will
         if (this._enable5 == "UnbendingWill" && this._currentStats["unbendingWillTriggered"] == 0 && damageResult["damageSource"] != "mark") {
           this._currentStats["unbendingWillTriggered"] = 1;
           this._currentStats["unbendingWillStacks"] = 3;
           this._currentStats["damageHealed"] += damageResult["damageAmount"];
-          result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
-          
-        } else if (this._currentStats["unbendingWillStacks"] > 0 && damageResult["damageSource"] != "mark") {
-          this._currentStats["unbendingWillStacks"] -= 1;
-          this._currentStats["damageHealed"] += damageResult["damageAmount"];
-          result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
-          
-          if (this._currentStats["unbendingWillStacks"] == 0) {
-            result += "<div><span class='skill'>Unbending Will</span> ended.</div>";
-          }
+          result += "<div>" + formatNum(damageResult["damageAmount"]) + " damage prevented by <span class='skill'>Unbending Will</span>.</div>";
           
         } else {
           // hero died
@@ -1776,10 +1799,11 @@ class hero {
 
       
       // balanced strike enable heal
-      if ((damageResult["damageSource"] == "active" || damageResult["damageSource"] == "basic") && source._enable5 == "BalancedStrike") {
+      if (["active", "basic"].includes(damageResult["damageSource"]) && source._enable5 == "BalancedStrike") {
         if (damageResult["critted"] == true) {
-          var healAmount = source.calcHeal(source, Math.round(0.15 * (damageResult["damageAmount"])));
-          result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>" + source.getHeal(source, healAmount);
+          let healAmount = source.calcHeal(source, Math.round(0.15 * (damageResult["damageAmount"])));
+          result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>"
+          result += source.getHeal(source, healAmount);
         }
       }
       
@@ -1803,13 +1827,19 @@ class hero {
     }
     
     
-    if (this._currentStats["totalHP"] > 0 && "Shapeshift" in this._debuffs && damageResult["damageAmount"] > 0 && (damageResult["damageSource"] == "active" || damageResult["damageSource"] == "basic")) {
+    if (this._currentStats["totalHP"] > 0 && "Shapeshift" in this._debuffs && damageResult["damageAmount"] > 0 && ["active", "basic"].includes(damageResult["damageSource"])) {
       var shapeshiftKey = Object.keys(this._debuffs["Shapeshift"])[0];
       if (this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"] > 1) {
         this._debuffs["Shapeshift"][shapeshiftKey]["effects"]["stacks"]--;
       } else {
         result += this.removeDebuff("Shapeshift", shapeshiftKey);
       }
+    }
+    
+    
+    if ("Black Hole Mark" in this._debuffs && ["active", "basic"].includes(damageResult["damageSource"])) {
+      let key = Object.keys(this._debuffs["Black Hole Mark"])[0];
+      this._debuffs["Black Hole Mark"][key]["effects"]["damageAmount"] += damageResult["damageAmount"];
     }
     
     result += damageResult["e5Description"];
@@ -1860,7 +1890,11 @@ class hero {
   
   
   getTargetLock(source) {
-    return "";
+    if (Math.random() < this._currentStats["dodge"]) {
+      return "<div>" + source.heroDesc() + " attack against " + this.heroDesc() + " was dodged.</div>";
+    } else {
+      return "";
+    }
   }
 }
   
@@ -2456,7 +2490,7 @@ class Carrie extends hero {
   
   passiveStats() {
     // apply Darkness Befall passive
-    this.applyStatChange({attackPercent: 0.25, controlImmune: 0.3, speed: 60}, "PassiveStats");
+    this.applyStatChange({attackPercent: 0.25, controlImmune: 0.3, speed: 60, dodge: 0.40}, "PassiveStats");
   }
   
   
@@ -2548,15 +2582,6 @@ class Carrie extends hero {
     }
     
     return result;
-  }
-  
-  
-  getTargetLock(source) {
-    if (Math.random() < 0.40) {
-      return "<div>" + source.heroDesc() + " attack against " + this.heroDesc() + " dodged by <span class='skill'>Darkness Befall</span>.</div>";
-    } else {
-      return "";
-    }
   }
   
   
@@ -4579,10 +4604,8 @@ class Penny extends hero {
         damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 4.5);
         result += targets[0].takeDamage(this, "Fatal Fireworks", damageResult);
         
-        if (!("CarrieDodge" in damageResult)) {
-          burnDamageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "burn", 1.5, 1, 6);
-          result += targets[0].getDebuff(this, "Burn", 6, {burn: Math.round(burnDamageResult["damageAmount"])}, false, "active");
-        }
+        burnDamageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "burn", 1.5, 1, 6);
+        result += targets[0].getDebuff(this, "Burn", 6, {burn: Math.round(burnDamageResult["damageAmount"])}, false, "active");
           
         activeQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
@@ -5114,6 +5137,267 @@ class Asmodel extends hero {
   }
 }
 
+
+// Drake
+class Drake extends hero {
+  passiveStats() {
+    // apply Power of Void passive
+    this.applyStatChange({attackPercent: 0.40, critDamage: 0.50, skillDamage: 0.70, controlImmune: 0.30, speed: 60}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (["eventSelfActive", "eventSelfBasic"].includes(trigger[1])) {
+      return this.eventSelfActive();
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfActive() {
+    var result = "";
+    var targets = getLowestHPTargets(this, this._enemies, 1);
+    
+    result += this.getBuff(this, "Shadow Lure", 1, {dodge: 0.60});
+    
+    for (let i in targets) {
+      result += targets[i].getDebuff(this, "Armor Percent", 2, {armorPercent: 1});
+      result += targets[i].getDebuff(this, "Damage Reduce", 2, {damageReduce: 1});
+      result += targets[i].getDebuff(this, "All Damage Reduce", 2, {allDamageReduce: 1});
+      result += targets[i].getDebuff(this, "Block", 2, {block: 1});
+      result += targets[i].getDebuff(this, "Dodge", 2, {dodge: 1});
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var hpDamage = 0;
+    var hpDamageResult = {damageAmount: 0};
+    var targets = getLowestHPTargets(this, this._enemies, 1);
+    var targetLock;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.2, "basic", "normal");
+        result += targets[i].takeDamage(this, "Deadly Strike", damageResult);
+        
+        if ("Black Hole Mark" in targets[i]._debuffs) {
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            hpDamage = 0.20 * targets[i]._stats["totalHP"];
+            if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
+            hpDamageResult = this.calcDamage(targets[i], hpDamage, "basic", "true");
+            result += targets[i].takeDamage(this, "Deadly Strike - HP", hpDamageResult);
+          }
+        } else {
+          result += targets[i].getDebuff(this, "Black Hole Mark", 2, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
+        }
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var hpDamage = 0;
+    var hpDamageResult1 = {damageAmount: 0};
+    var hpDamageResult2 = {damageAmount: 0};
+    var targets = getRandomTargets(this, this._enemies, 2);
+    var targetLock;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "active", "normal");
+        result += targets[i].takeDamage(this, "Annihilating Meteor", damageResult);
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          hpDamage = 0.20 * targets[i]._stats["totalHP"];
+          if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
+          hpDamageResult1 = this.calcDamage(targets[i], hpDamage, "active", "true");
+          result += targets[i].takeDamage(this, "Annihilating Meteor - HP2", hpDamageResult1);
+        }
+        
+        if ("Black Hole Mark" in targets[i]._debuffs) {
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            hpDamageResult2 = this.calcDamage(targets[i], hpDamage, "active", "true");
+            result += targets[i].takeDamage(this, "Annihilating Meteor - HP2", hpDamageResult2);
+          }
+        } else {
+          result += targets[i].getDebuff(this, "Black Hole Mark", 2, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
+        }
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult1["damageAmount"] + hpDamageResult2["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+}
+
+
+// Russell
+class Russell extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["isCharging"] = false;
+  }
+  
+  passiveStats() {
+    // apply Baptism of Light passive
+    this.applyStatChange({attackPercent: 0.30, holyDamage: 0.60, critDamage: 0.40, controlImmune: 0.30, speed: 60}, "PassiveStats");
+  }
+  
+  
+  startOfBattle() {
+    var result = "";
+    var targets = getLowestHPTargets(this, this._enemies, 2);
+    
+    for (let i in targets)  {
+      result += targets[i].getDebuff(this, "Dazzle", 1);
+    }
+    
+    return result;
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    var healAmount = this.calcHeal(this, 4 * this._currentStats["totalAttack"]);
+    var targets = getLowestHPTargets(this, this._enemies, 2);
+    
+    
+    result += this.getHeal(this, healAmount);
+    result += this.getBuff(this, "Light Arrow", 4);
+    
+    for (let i in targets)  {
+      result += targets[i].getDebuff(this, "Dazzle", 1);
+    }
+    
+    return result;
+  }
+  
+  
+  getEnergy(source, amount) {
+    if (!(this._currentStats["isCharging"])) {
+      return super.getEnergy(source, amount);
+    } else {
+      return "";
+    }
+  }
+  
+  
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, unstackable=false) {
+    if (isControlEffect(debuffName) && this._currentStats["isCharging"]) {
+      return "";
+    } else {
+      return super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, unstackable);
+    }
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    
+    if (this._currentStats["isCharging"]) {
+      result = this.doActive();
+    } else {
+      result = super.doBasic();
+    
+      var damageResult;
+      var targets;
+      
+      if ("Light Arrow" in this._buffs) {
+        for (let i in Object.keys(this._buffs["Light Arrow"])) {
+          targets = getLowestHPTargets(this, this._enemies, 1);
+          
+          for (let i in targets) {
+            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "passive", "normal");
+            result += targets[i].takeDamage(this, "Light Arrow", damageResult);
+          }
+        }
+        
+        result += this.removeBuff("Light Arrow");
+      }
+      
+      result += this.getBuff(this, "Light Arrow", 4);
+      result += this.getBuff(this, "Light Arrow", 4);
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    
+    if (this._currentStats["isCharging"]) {
+      var damageResult = {};
+      var targets = getAllTargets(this, this._enemies);
+      var targetLock;
+      
+      this._currentStats["energySnapshot"] = this._currentStats["energy"];
+      this._currentStats["energy"] = 0;
+      
+      for (var i in targets) {
+        targetLock = targets[i].getTargetLock(this);
+        result += targetLock;
+        
+        if (targetLock == "") {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 15);
+          result += targets[i].takeDamage(this, "Radiant Arrow", damageResult);
+          activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+        }
+      }
+      
+      this._currentStats["isCharging"] = false;
+      
+    
+      if ("Light Arrow" in this._buffs) {
+        for (let i in Object.keys(this._buffs["Light Arrow"])) {
+          targets = getLowestHPTargets(this, this._enemies, 1);
+          
+          for (let i in targets) {
+            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "passive", "normal");
+            result += targets[i].takeDamage(this, "Light Arrow", damageResult);
+          }
+        }
+        
+        result += this.removeBuff("Light Arrow");
+      }
+      
+      result += this.getBuff(this, "Light Arrow", 4);
+      result += this.getBuff(this, "Light Arrow", 4);
+      result += this.getBuff(this, "Light Arrow", 4);
+      
+    } else {
+      result += "<div>" + this.heroDesc() + " starts charging Radiant Arrow.</div>";
+      result += this.getBuff(this, "Crit", 2, {crit: 0.50});
+      result += this.getBuff(this, "Damage Reduce", 2, {damageReduce: 0.40});
+      
+      this._currentStats["isCharging"] = true;
+    }
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -5382,6 +5666,11 @@ var artifacts = {
 
 var avatarFrames = {
   "None": {},
+  "Guild Wars T1": {hpPercent: 0.08, attackPercent: 0.03},
+  "Guild Wars T2": {hpPercent: 0.09, attackPercent: 0.04, controlImmune: 0.03},
+  "Guild Wars T3": {hpPercent: 0.10, attackPercent: 0.06, controlImmune: 0.04},
+  "Guild Wars T4": {hpPercent: 0.12, attackPercent: 0.07, controlImmune: 0.04},
+  "Guild Wars T5": {hpPercent: 0.14, attackPercent: 0.09, controlImmune: 0.06},
   "IDA Overseer": {hpPercent: 0.08, attackPercent: 0.03},
   "IDA Overseer +1": {hpPercent: 0.09, attackPercent: 0.03},
   "IDA Overseer +2": {hpPercent: 0.1, attackPercent: 0.03},
@@ -5996,8 +6285,8 @@ var skins = {
   },
   
   "Sherlock": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
+    "Royal Guard": {hpPercent: 0.05, attackPercent: 0.03, speed: 4},
+    "Legendary Royal Guard": {hpPercent: 0.08, attackPercent: 0.06, speed: 6}
   },
   
   "Tara": {
@@ -6010,6 +6299,16 @@ var skins = {
   "UniMax-3000": {
     "League MVP": {controlImmune: 0.05, hpPercent: 0.03, attackPercent: 0.03},
     "Legendary League MVP": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
+  },
+  
+  "Drake": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
+  },
+  
+  "Russell": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
   }
 };
 
@@ -6360,6 +6659,22 @@ var baseHeroStats = {
     }
   },
   
+  "Drake": {
+    className: Drake,
+    heroFaction: "Dark",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 10137,
+      baseAttack: 343,
+      baseArmor: 60,
+      baseSpeed: 235,
+      growHP: 1013.7,
+      growAttack: 34.3,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
   "Elyvia": {
     className: Elyvia,
     heroFaction: "Forest",
@@ -6568,6 +6883,22 @@ var baseHeroStats = {
     }
   },
   
+  "Russell": {
+    className: Russell,
+    heroFaction: "Light",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 9010,
+      baseAttack: 338,
+      baseArmor: 61,
+      baseSpeed: 226,
+      growHP: 901,
+      growAttack: 34,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
   "Sherlock": {
     className: Sherlock,
     heroFaction: "Fortress",
@@ -6688,7 +7019,7 @@ function isDispellable(strName) {
 
 
 function isControlEffect(strName, effects={}) {
-  if (["stun", "petrify", "freeze", "twine", "Silence", "Seal of Light", "Horrify", "Shapeshift", "Taunt"].includes(strName)) {
+  if (["stun", "petrify", "freeze", "twine", "Silence", "Seal of Light", "Horrify", "Shapeshift", "Taunt", "Dazzle"].includes(strName)) {
     return true;
   } else {
     return false;
@@ -6770,7 +7101,7 @@ function isAttribute(strName, effects={}) {
     "controlImmune", "skillDamage", "damageReduce", "allDamageReduce", "controlPrecision",
     "healEffect", "effectBeingHealed", "critDamageReduce", "dotReduce", "fixedAttack", 
     "fixedHP", "allDamageTaken", "allDamageDealt", "damageAgainstBurning", "damageAgainstBleeding",
-    "damageAgainstPoisoned", "damageAgainstFrozen",
+    "damageAgainstPoisoned", "damageAgainstFrozen", "dodge",
     "warriorReduce", "mageReduce", "rangerReduce", "assassinReduce", "priestReduce",
     "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune"
   ];
@@ -6863,7 +7194,14 @@ function getRandomTargets(source, arrTargets, num=6) {
   var copyTargets2 = [];
   var count = 0;
   
-  copyTargets = getTauntedTargets(source, arrTargets, num);
+  
+  if (!(isMonster(source))) {
+    if ("Dazzle" in source._debuffs) {
+      num = 1;
+    } else {
+      copyTargets = getTauntedTargets(source, arrTargets);
+    }
+  }
   if (copyTargets.length == 1) { return copyTargets; }
   
   for (var i in arrTargets) {
@@ -7009,14 +7347,18 @@ function getTauntedTargets(source, arrTargets, num=6) {
   var count = 0;
   
   if (!(isMonster(source)) && arrTargets.length > 0) {
-    if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
-      for (var i in arrTargets) {
-        if (arrTargets[i]._heroName == "UniMax-3000" && arrTargets[i]._currentStats["totalHP"] > 0) {
-          copyTargets.push(arrTargets[i]);
-          count++;
+    if (!(source._attOrDef == arrTargets[0]._attOrDef)) {
+      if ("Dazzle" in source._debuffs) {
+        return getRandomTargets(source, arrTargets, 1);
+      } else if ("Taunt" in source._debuffs) {
+        for (var i in arrTargets) {
+          if (arrTargets[i]._heroName == "UniMax-3000" && arrTargets[i]._currentStats["totalHP"] > 0) {
+            copyTargets.push(arrTargets[i]);
+            count++;
+          }
+          
+          if (count == num) { break; }
         }
-        
-        if (count == num) { break; }
       }
     }
   }
@@ -7138,8 +7480,10 @@ function runSim(attMonsterName, defMonsterName, numSims) {
             if (currentHero._currentStats["energy"] >= 100 && !("Silence" in currentHero._debuffs)) {
               
               // set hero energy to 0
-              currentHero._currentStats["energySnapshot"] = currentHero._currentStats["energy"];
-              currentHero._currentStats["energy"] = 0;
+              if (this._heroName != "Russell") {
+                currentHero._currentStats["energySnapshot"] = currentHero._currentStats["energy"];
+                currentHero._currentStats["energy"] = 0;
+              }
               
               // do active
               result = currentHero.doActive();
@@ -7296,32 +7640,15 @@ function runSim(attMonsterName, defMonsterName, numSims) {
         if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
           temp += attHeroes[h].tickEnable3();
         }
+          
+        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
+          temp += defHeroes[h].tickEnable3();
+        }
+        
         
         if (attHeroes[h]._currentStats["totalHP"] > 0) {
           temp += attHeroes[h].tickBuffs();
           temp += attHeroes[h].tickDebuffs();
-        }
-        
-        if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
-          temp += attHeroes[h].endOfRound(roundNum);
-        }
-        
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
-          temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
-          temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
-        }
-        
-        //if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      }
-      
-      
-      // handle defender end of round
-      //if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-      for (var h in defHeroes) {
-        temp = "";
-          
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
-          temp += defHeroes[h].tickEnable3();
         }
         
         if (defHeroes[h]._currentStats["totalHP"] > 0) {
@@ -7329,8 +7656,19 @@ function runSim(attMonsterName, defMonsterName, numSims) {
           temp += defHeroes[h].tickDebuffs();
         }
         
+        
+        if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
+          temp += attHeroes[h].endOfRound(roundNum);
+        }
+        
         if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
           temp += defHeroes[h].endOfRound(roundNum);
+        }
+        
+        
+        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
+          temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
+          temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
         }
         
         if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
