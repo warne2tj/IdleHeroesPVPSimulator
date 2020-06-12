@@ -586,7 +586,7 @@ class Carrie extends hero {
   
   passiveStats() {
     // apply Darkness Befall passive
-    this.applyStatChange({attackPercent: 0.25, controlImmune: 0.3, speed: 60}, "PassiveStats");
+    this.applyStatChange({attackPercent: 0.25, controlImmune: 0.3, speed: 60, dodge: 0.40}, "PassiveStats");
   }
   
   
@@ -678,15 +678,6 @@ class Carrie extends hero {
     }
     
     return result;
-  }
-  
-  
-  getTargetLock(source) {
-    if (Math.random() < 0.40) {
-      return "<div>" + source.heroDesc() + " attack against " + this.heroDesc() + " dodged by <span class='skill'>Darkness Befall</span>.</div>";
-    } else {
-      return "";
-    }
   }
   
   
@@ -2709,10 +2700,8 @@ class Penny extends hero {
         damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 4.5);
         result += targets[0].takeDamage(this, "Fatal Fireworks", damageResult);
         
-        if (!("CarrieDodge" in damageResult)) {
-          burnDamageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "burn", 1.5, 1, 6);
-          result += targets[0].getDebuff(this, "Burn", 6, {burn: Math.round(burnDamageResult["damageAmount"])}, false, "active");
-        }
+        burnDamageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "burn", 1.5, 1, 6);
+        result += targets[0].getDebuff(this, "Burn", 6, {burn: Math.round(burnDamageResult["damageAmount"])}, false, "active");
           
         activeQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
       }
@@ -3239,6 +3228,267 @@ class Asmodel extends hero {
     }
     
     result += this.getBuff(this, "Attack Percent", 3, {attackPercent: 0.40});
+    
+    return result;
+  }
+}
+
+
+// Drake
+class Drake extends hero {
+  passiveStats() {
+    // apply Power of Void passive
+    this.applyStatChange({attackPercent: 0.40, critDamage: 0.50, skillDamage: 0.70, controlImmune: 0.30, speed: 60}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (["eventSelfActive", "eventSelfBasic"].includes(trigger[1])) {
+      return this.eventSelfActive();
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfActive() {
+    var result = "";
+    var targets = getLowestHPTargets(this, this._enemies, 1);
+    
+    result += this.getBuff(this, "Shadow Lure", 1, {dodge: 0.60});
+    
+    for (let i in targets) {
+      result += targets[i].getDebuff(this, "Armor Percent", 2, {armorPercent: 1});
+      result += targets[i].getDebuff(this, "Damage Reduce", 2, {damageReduce: 1});
+      result += targets[i].getDebuff(this, "All Damage Reduce", 2, {allDamageReduce: 1});
+      result += targets[i].getDebuff(this, "Block", 2, {block: 1});
+      result += targets[i].getDebuff(this, "Dodge", 2, {dodge: 1});
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var hpDamage = 0;
+    var hpDamageResult = {damageAmount: 0};
+    var targets = getLowestHPTargets(this, this._enemies, 1);
+    var targetLock;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.2, "basic", "normal");
+        result += targets[i].takeDamage(this, "Deadly Strike", damageResult);
+        
+        if ("Black Hole Mark" in targets[i]._debuffs) {
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            hpDamage = 0.20 * targets[i]._stats["totalHP"];
+            if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
+            hpDamageResult = this.calcDamage(targets[i], hpDamage, "basic", "true");
+            result += targets[i].takeDamage(this, "Deadly Strike - HP", hpDamageResult);
+          }
+        } else {
+          result += targets[i].getDebuff(this, "Black Hole Mark", 2, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
+        }
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var hpDamage = 0;
+    var hpDamageResult1 = {damageAmount: 0};
+    var hpDamageResult2 = {damageAmount: 0};
+    var targets = getRandomTargets(this, this._enemies, 2);
+    var targetLock;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "active", "normal");
+        result += targets[i].takeDamage(this, "Annihilating Meteor", damageResult);
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          hpDamage = 0.20 * targets[i]._stats["totalHP"];
+          if (hpDamage > this._currentStats["totalAttack"] * 15) { hpDamage = this._currentStats["totalAttack"] * 15; }
+          hpDamageResult1 = this.calcDamage(targets[i], hpDamage, "active", "true");
+          result += targets[i].takeDamage(this, "Annihilating Meteor - HP2", hpDamageResult1);
+        }
+        
+        if ("Black Hole Mark" in targets[i]._debuffs) {
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            hpDamageResult2 = this.calcDamage(targets[i], hpDamage, "active", "true");
+            result += targets[i].takeDamage(this, "Annihilating Meteor - HP2", hpDamageResult2);
+          }
+        } else {
+          result += targets[i].getDebuff(this, "Black Hole Mark", 2, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
+        }
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult1["damageAmount"] + hpDamageResult2["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+}
+
+
+// Russell
+class Russell extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["isCharging"] = false;
+  }
+  
+  passiveStats() {
+    // apply Baptism of Light passive
+    this.applyStatChange({attackPercent: 0.30, holyDamage: 0.60, critDamage: 0.40, controlImmune: 0.30, speed: 60}, "PassiveStats");
+  }
+  
+  
+  startOfBattle() {
+    var result = "";
+    var targets = getLowestHPTargets(this, this._enemies, 2);
+    
+    for (let i in targets)  {
+      result += targets[i].getDebuff(this, "Dazzle", 1);
+    }
+    
+    return result;
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    var healAmount = this.calcHeal(this, 4 * this._currentStats["totalAttack"]);
+    var targets = getLowestHPTargets(this, this._enemies, 2);
+    
+    
+    result += this.getHeal(this, healAmount);
+    result += this.getBuff(this, "Light Arrow", 4);
+    
+    for (let i in targets)  {
+      result += targets[i].getDebuff(this, "Dazzle", 1);
+    }
+    
+    return result;
+  }
+  
+  
+  getEnergy(source, amount) {
+    if (!(this._currentStats["isCharging"])) {
+      return super.getEnergy(source, amount);
+    } else {
+      return "";
+    }
+  }
+  
+  
+  getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, unstackable=false) {
+    if (isControlEffect(debuffName) && this._currentStats["isCharging"]) {
+      return "";
+    } else {
+      return super.getDebuff(source, debuffName, duration, effects, bypassControlImmune, damageSource, ccChance, unstackable);
+    }
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    
+    if (this._currentStats["isCharging"]) {
+      result = this.doActive();
+    } else {
+      result = super.doBasic();
+    
+      var damageResult;
+      var targets;
+      
+      if ("Light Arrow" in this._buffs) {
+        for (let i in Object.keys(this._buffs["Light Arrow"])) {
+          targets = getLowestHPTargets(this, this._enemies, 1);
+          
+          for (let i in targets) {
+            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "passive", "normal");
+            result += targets[i].takeDamage(this, "Light Arrow", damageResult);
+          }
+        }
+        
+        result += this.removeBuff("Light Arrow");
+      }
+      
+      result += this.getBuff(this, "Light Arrow", 4);
+      result += this.getBuff(this, "Light Arrow", 4);
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    
+    if (this._currentStats["isCharging"]) {
+      var damageResult = {};
+      var targets = getAllTargets(this, this._enemies);
+      var targetLock;
+      
+      this._currentStats["energySnapshot"] = this._currentStats["energy"];
+      this._currentStats["energy"] = 0;
+      
+      for (var i in targets) {
+        targetLock = targets[i].getTargetLock(this);
+        result += targetLock;
+        
+        if (targetLock == "") {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 15);
+          result += targets[i].takeDamage(this, "Radiant Arrow", damageResult);
+          activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+        }
+      }
+      
+      this._currentStats["isCharging"] = false;
+      
+    
+      if ("Light Arrow" in this._buffs) {
+        for (let i in Object.keys(this._buffs["Light Arrow"])) {
+          targets = getLowestHPTargets(this, this._enemies, 1);
+          
+          for (let i in targets) {
+            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "passive", "normal");
+            result += targets[i].takeDamage(this, "Light Arrow", damageResult);
+          }
+        }
+        
+        result += this.removeBuff("Light Arrow");
+      }
+      
+      result += this.getBuff(this, "Light Arrow", 4);
+      result += this.getBuff(this, "Light Arrow", 4);
+      result += this.getBuff(this, "Light Arrow", 4);
+      
+    } else {
+      result += "<div>" + this.heroDesc() + " starts charging Radiant Arrow.</div>";
+      result += this.getBuff(this, "Crit", 2, {crit: 0.50});
+      result += this.getBuff(this, "Damage Reduce", 2, {damageReduce: 0.40});
+      
+      this._currentStats["isCharging"] = true;
+    }
     
     return result;
   }
