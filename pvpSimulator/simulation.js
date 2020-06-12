@@ -110,8 +110,10 @@ function runSim() {
             if (currentHero._currentStats["energy"] >= 100 && !("Silence" in currentHero._debuffs)) {
               
               // set hero energy to 0
-              currentHero._currentStats["energySnapshot"] = currentHero._currentStats["energy"];
-              currentHero._currentStats["energy"] = 0;
+              if (this._heroName != "Russell") {
+                currentHero._currentStats["energySnapshot"] = currentHero._currentStats["energy"];
+                currentHero._currentStats["energy"] = 0;
+              }
               
               // do active
               result = currentHero.doActive();
@@ -275,32 +277,15 @@ function runSim() {
         if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
           temp += attHeroes[h].tickEnable3();
         }
+          
+        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
+          temp += defHeroes[h].tickEnable3();
+        }
+        
         
         if (attHeroes[h]._currentStats["totalHP"] > 0) {
           temp += attHeroes[h].tickBuffs();
           temp += attHeroes[h].tickDebuffs();
-        }
-        
-        if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
-          temp += attHeroes[h].endOfRound(roundNum);
-        }
-        
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
-          temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
-          temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
-        }
-        
-        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
-        logColor = (logColor + 1) % 2;
-      }
-      
-      
-      // handle defender end of round
-      for (var h in defHeroes) {
-        temp = "";
-          
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
-          temp += defHeroes[h].tickEnable3();
         }
         
         if (defHeroes[h]._currentStats["totalHP"] > 0) {
@@ -308,14 +293,26 @@ function runSim() {
           temp += defHeroes[h].tickDebuffs();
         }
         
+        
+        if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
+          temp += attHeroes[h].endOfRound(roundNum);
+        }
+        
         if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
           temp += defHeroes[h].endOfRound(roundNum);
+        }
+        
+        
+        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
+          temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
+          temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
         }
         
         if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
           temp += "<div>" + defHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
           temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
         }
+        
         
         if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
         logColor = (logColor + 1) % 2;

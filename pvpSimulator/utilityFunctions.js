@@ -65,7 +65,7 @@ function isDispellable(strName) {
 
 
 function isControlEffect(strName, effects={}) {
-  if (["stun", "petrify", "freeze", "twine", "Silence", "Seal of Light", "Horrify", "Shapeshift", "Taunt"].includes(strName)) {
+  if (["stun", "petrify", "freeze", "twine", "Silence", "Seal of Light", "Horrify", "Shapeshift", "Taunt", "Dazzle"].includes(strName)) {
     return true;
   } else {
     return false;
@@ -147,7 +147,7 @@ function isAttribute(strName, effects={}) {
     "controlImmune", "skillDamage", "damageReduce", "allDamageReduce", "controlPrecision",
     "healEffect", "effectBeingHealed", "critDamageReduce", "dotReduce", "fixedAttack", 
     "fixedHP", "allDamageTaken", "allDamageDealt", "damageAgainstBurning", "damageAgainstBleeding",
-    "damageAgainstPoisoned", "damageAgainstFrozen",
+    "damageAgainstPoisoned", "damageAgainstFrozen", "dodge",
     "warriorReduce", "mageReduce", "rangerReduce", "assassinReduce", "priestReduce",
     "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune"
   ];
@@ -240,7 +240,14 @@ function getRandomTargets(source, arrTargets, num=6) {
   var copyTargets2 = [];
   var count = 0;
   
-  copyTargets = getTauntedTargets(source, arrTargets, num);
+  
+  if (!(isMonster(source))) {
+    if ("Dazzle" in source._debuffs) {
+      num = 1;
+    } else {
+      copyTargets = getTauntedTargets(source, arrTargets);
+    }
+  }
   if (copyTargets.length == 1) { return copyTargets; }
   
   for (var i in arrTargets) {
@@ -386,14 +393,18 @@ function getTauntedTargets(source, arrTargets, num=6) {
   var count = 0;
   
   if (!(isMonster(source)) && arrTargets.length > 0) {
-    if (!(source._attOrDef == arrTargets[0]._attOrDef) && "Taunt" in source._debuffs) {
-      for (var i in arrTargets) {
-        if (arrTargets[i]._heroName == "UniMax-3000" && arrTargets[i]._currentStats["totalHP"] > 0) {
-          copyTargets.push(arrTargets[i]);
-          count++;
+    if (!(source._attOrDef == arrTargets[0]._attOrDef)) {
+      if ("Dazzle" in source._debuffs) {
+        return getRandomTargets(source, arrTargets, 1);
+      } else if ("Taunt" in source._debuffs) {
+        for (var i in arrTargets) {
+          if (arrTargets[i]._heroName == "UniMax-3000" && arrTargets[i]._currentStats["totalHP"] > 0) {
+            copyTargets.push(arrTargets[i]);
+            count++;
+          }
+          
+          if (count == num) { break; }
         }
-        
-        if (count == num) { break; }
       }
     }
   }
@@ -467,5 +478,8 @@ var translate = {
   "heal": "Heal",
   "attackAmount": "Snapshot Attack Amount",
   "rounds": "Number of Rounds",
-  "stacks": "Number of Stacks"
+  "stacks": "Number of Stacks",
+  "dodge": "Dodge",
+  "isCharging": "Charging Attack",
+  "damageAmount": "Snapshot Damage Amount"
 };

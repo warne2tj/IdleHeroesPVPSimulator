@@ -1,5 +1,10 @@
 var avatarFrames = {
   "None": {},
+  "Guild Wars T1": {hpPercent: 0.08, attackPercent: 0.03},
+  "Guild Wars T2": {hpPercent: 0.09, attackPercent: 0.04, controlImmune: 0.03},
+  "Guild Wars T3": {hpPercent: 0.10, attackPercent: 0.06, controlImmune: 0.04},
+  "Guild Wars T4": {hpPercent: 0.12, attackPercent: 0.07, controlImmune: 0.04},
+  "Guild Wars T5": {hpPercent: 0.14, attackPercent: 0.09, controlImmune: 0.06},
   "IDA Overseer": {hpPercent: 0.08, attackPercent: 0.03},
   "IDA Overseer +1": {hpPercent: 0.09, attackPercent: 0.03},
   "IDA Overseer +2": {hpPercent: 0.1, attackPercent: 0.03},

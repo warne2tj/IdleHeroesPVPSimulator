@@ -117,6 +117,7 @@ class hero {
     this._stats["allDamageDealt"] = 0.0;
     this._stats["controlImmunePen"] = 0.0;
     this._stats["firstCC"] = "";
+    this._stats["dodge"] = 0.0;
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
@@ -426,7 +427,7 @@ class hero {
       "hp", "attack", "speed", "armor", 
       "totalHP", "totalAttack", "totalArmor", 
       "unbendingWillTriggered", "unbendingWillStacks",
-      "revive", "fixedAttack", "fixedHP", "energy"
+      "revive", "fixedAttack", "fixedHP", "energy", "isCharging"
     ];
     
     var arrStrStats = ["firstCC"];
@@ -590,6 +591,8 @@ class hero {
     if (precisionDamageIncrease > 1.45) { precisionDamageIncrease = 1.45; }
     if (armorBreak > 1) { armorBreak = 1; }
     if (damageReduce > 0.75) { damageReduce = 0.75; }
+    if (damageReduce < 0) { damageReduce = 0; }
+    if (allDamageReduce < 0) { allDamageReduce = 0; }
     
     var blockChance = canBlock * (target._currentStats["block"] - precision);
     if (blockChance < 0) { blockChance = 0; }
@@ -1007,7 +1010,7 @@ class hero {
               result += "<div>" + this.takeDamage(source, "Debuff " + debuffName, damageResult) + "</div>";
             }
             
-          } else if (["rounds", "stacks", "attackAmount"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
             //ignore, used to track other stuff
             
           } else {
@@ -1118,7 +1121,7 @@ class hero {
           } else if (strStatName == "armorPercent") {
             this._currentStats["totalArmor"] = this.calcCombatArmor();
             
-          } else if (["rounds", "stacks", "attackAmount"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
                 // do nothing, used to track other stuff
                 
           } else if (isDot(strStatName)) {
@@ -1229,6 +1232,26 @@ class hero {
               
               if (b == "Sow Seeds") {
                 result += this.getDebuff(this._debuffs[b][s]["source"], "twine", this._debuffs[b][s]["effects"]["rounds"]);
+                
+              } else if (b == "Black Hole Mark") {
+                if (this._currentStats["totalHP"] > 0) {
+                  let bhMark = this._debuffs["Black Hole Mark"][Object.keys(this._debuffs["Black Hole Mark"])[0]];
+                  let damageAmount = bhMark["effects"]["damageAmount"];
+                  
+                  if (damageAmount > bhMark["effects"]["attackAmount"]) {damageAmount = bhMark["effects"]["attackAmount"]; }
+                  
+                  damageResult = {
+                    damageAmount: damageAmount,
+                    damageSource: "mark",
+                    damageType: "true",
+                    critted: false,
+                    blocked: false,
+                    e5Description: ""
+                  };
+                  
+                  result += "<div>" + this.takeDamage(bhMark["source"], "Black Hole Mark", damageResult) + "</div>";
+                }
+                
               } else {
                 // remove the effects
                 for (var strStatName in this._debuffs[b][s]["effects"]) {
@@ -1238,7 +1261,7 @@ class hero {
                   } else if (strStatName == "armorPercent") {
                     this._currentStats["totalArmor"] = this.calcCombatArmor();
                     
-                  } else if (["rounds", "stacks", "attackAmount"].includes(strStatName)) {
+                  } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
                     // do nothing, used to track stuff
                     
                   }  else if (isDot(strStatName)) {
@@ -1390,22 +1413,22 @@ class hero {
         result += this.removeBuff("Guardian Shadow");
       }
     } else {
-      if (this._currentStats["totalHP"] <= damageResult["damageAmount"]) {
+      if (this._currentStats["unbendingWillStacks"] > 0 && damageResult["damageSource"] != "mark") {
+        this._currentStats["unbendingWillStacks"] -= 1;
+        this._currentStats["damageHealed"] += damageResult["damageAmount"];
+        result += "<div>" + formatNum(damageResult["damageAmount"]) + " damage prevented by <span class='skill'>Unbending Will</span>.</div>";
+        
+        if (this._currentStats["unbendingWillStacks"] == 0) {
+          result += "<div><span class='skill'>Unbending Will</span> ended.</div>";
+        }
+        
+      } else if (this._currentStats["totalHP"] <= damageResult["damageAmount"]) {
         // hero would die, check for unbending will
         if (this._enable5 == "UnbendingWill" && this._currentStats["unbendingWillTriggered"] == 0 && damageResult["damageSource"] != "mark") {
           this._currentStats["unbendingWillTriggered"] = 1;
           this._currentStats["unbendingWillStacks"] = 3;
           this._currentStats["damageHealed"] += damageResult["damageAmount"];
-          result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
-          
-        } else if (this._currentStats["unbendingWillStacks"] > 0 && damageResult["damageSource"] != "mark") {
-          this._currentStats["unbendingWillStacks"] -= 1;
-          this._currentStats["damageHealed"] += damageResult["damageAmount"];
-          result += "<div>Damage prevented by <span class='skill'>Unbending Will</span>.</div>";
-          
-          if (this._currentStats["unbendingWillStacks"] == 0) {
-            result += "<div><span class='skill'>Unbending Will</span> ended.</div>";
-          }
+          result += "<div>" + formatNum(damageResult["damageAmount"]) + " damage prevented by <span class='skill'>Unbending Will</span>.</div>";
           
         } else {
           // hero died
@@ -1493,6 +1516,12 @@ class hero {
       }
     }
     
+    
+    if ("Black Hole Mark" in this._debuffs && ["active", "basic"].includes(damageResult["damageSource"])) {
+      let key = Object.keys(this._debuffs["Black Hole Mark"])[0];
+      this._debuffs["Black Hole Mark"][key]["effects"]["damageAmount"] += damageResult["damageAmount"];
+    }
+    
     result += damageResult["e5Description"];
     return result;
   }
@@ -1541,6 +1570,10 @@ class hero {
   
   
   getTargetLock(source) {
-    return "";
+    if (Math.random() < this._currentStats["dodge"]) {
+      return "<div>" + source.heroDesc() + " attack against " + this.heroDesc() + " was dodged.</div>";
+    } else {
+      return "";
+    }
   }
 }

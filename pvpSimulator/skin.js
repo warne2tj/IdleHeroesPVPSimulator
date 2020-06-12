@@ -35,9 +35,7 @@ var skins = {
   
   "Carrie": {
     "Little Red Riding Hood": {hpPercent: 0.03, attackPercent: 0.03, damageReduce: 0.03},
-    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04},
-    "New": {},
-    "Legendary New": {}
+    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04}
   },
   
   "Cthuga": {
@@ -138,8 +136,8 @@ var skins = {
   },
   
   "Sherlock": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
+    "Royal Guard": {hpPercent: 0.05, attackPercent: 0.03, speed: 4},
+    "Legendary Royal Guard": {hpPercent: 0.08, attackPercent: 0.06, speed: 6}
   },
   
   "Tara": {
