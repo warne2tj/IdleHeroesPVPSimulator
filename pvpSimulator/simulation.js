@@ -106,8 +106,16 @@ function runSim() {
             if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + currentHero.heroDesc() + " is under control effect, turn skipped.</div>";}
           } else {
             
+            let isRussellCharging = false;
+            if (currentHero._heroName == "Russell") {
+              if (currentHero._currentStats["isCharging"]) {
+                isRussellCharging = true;
+              }
+            }
+            
+            
             // decide on action
-            if (currentHero._currentStats["energy"] >= 100 && !("Silence" in currentHero._debuffs)) {
+            if ((currentHero._currentStats["energy"] >= 100 && !("Silence" in currentHero._debuffs)) || isRussellCharging) {
               
               // set hero energy to 0
               if (this._heroName != "Russell") {

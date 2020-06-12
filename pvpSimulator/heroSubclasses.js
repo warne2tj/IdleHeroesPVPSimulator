@@ -3355,9 +3355,51 @@ class Russell extends hero {
     this._stats["isCharging"] = false;
   }
   
+  
   passiveStats() {
     // apply Baptism of Light passive
     this.applyStatChange({attackPercent: 0.30, holyDamage: 0.60, critDamage: 0.40, controlImmune: 0.30, speed: 60}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventSelfActive") {
+      return this.eventSelfActive();
+    } else if (trigger[1] == "eventSelfBasic") {
+      return this.eventSelfBasic();
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic() {
+    var result = this.eventSelfActive();
+    result += this.getBuff(this, "Light Arrow", 4);
+    result += this.getBuff(this, "Light Arrow", 4);
+    return result;
+  }
+  
+  
+  eventSelfActive() {
+    var result = "";
+    var damageResult;
+    var targets;
+    
+    if ("Light Arrow" in this._buffs && !(this._currentStats["isCharging"])) {
+      for (let i in Object.keys(this._buffs["Light Arrow"])) {
+        targets = getLowestHPTargets(this, this._enemies, 1);
+        
+        for (let i in targets) {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "passive", "normal");
+          result += targets[i].takeDamage(this, "Light Arrow", damageResult);
+        }
+      }
+    }
+    
+    return result;
   }
   
   
@@ -3415,25 +3457,6 @@ class Russell extends hero {
       result = this.doActive();
     } else {
       result = super.doBasic();
-    
-      var damageResult;
-      var targets;
-      
-      if ("Light Arrow" in this._buffs) {
-        for (let i in Object.keys(this._buffs["Light Arrow"])) {
-          targets = getLowestHPTargets(this, this._enemies, 1);
-          
-          for (let i in targets) {
-            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "passive", "normal");
-            result += targets[i].takeDamage(this, "Light Arrow", damageResult);
-          }
-        }
-        
-        result += this.removeBuff("Light Arrow");
-      }
-      
-      result += this.getBuff(this, "Light Arrow", 4);
-      result += this.getBuff(this, "Light Arrow", 4);
     }
     
     return result;
@@ -3463,20 +3486,6 @@ class Russell extends hero {
       }
       
       this._currentStats["isCharging"] = false;
-      
-    
-      if ("Light Arrow" in this._buffs) {
-        for (let i in Object.keys(this._buffs["Light Arrow"])) {
-          targets = getLowestHPTargets(this, this._enemies, 1);
-          
-          for (let i in targets) {
-            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "passive", "normal");
-            result += targets[i].takeDamage(this, "Light Arrow", damageResult);
-          }
-        }
-        
-        result += this.removeBuff("Light Arrow");
-      }
       
       result += this.getBuff(this, "Light Arrow", 4);
       result += this.getBuff(this, "Light Arrow", 4);
