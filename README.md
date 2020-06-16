@@ -48,3 +48,10 @@ Head to the wiki for more details.
   * Sphinx
   * Stone Golem
   * Wolf
+
+  
+### To Do
+  * Refactor buff/debuff into single object? Add buff/debuff type to object?
+  * RNG wrapper for testing purposes
+  * Implement Ormus
+  * Far future: Flame shrine

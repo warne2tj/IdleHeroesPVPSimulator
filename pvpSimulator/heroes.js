@@ -1533,14 +1533,14 @@ class hero {
     var targets = getAllTargets(this, this._enemies, 1);
     var targetLock;
     
-    if (targets.length > 0) {
-      targetLock = targets[0].getTargetLock(this);
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
       result += targetLock;
       
       if (targetLock == "") {
-        damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
-        result += targets[0].takeDamage(this, "Basic Attack", damageResult);
-        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal");
+        result += targets[i].takeDamage(this, "Basic Attack", damageResult);
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     

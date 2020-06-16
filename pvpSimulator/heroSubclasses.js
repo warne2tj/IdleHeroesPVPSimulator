@@ -1164,7 +1164,7 @@ class Elyvia extends hero {
       
       var targets = getRandomTargets(this, this._allies, 1);
       if (targets.length > 0) {
-        result += targets[0].getBuff(this, "Fairy's Guard", 2, {});
+        result += targets[0].getBuff(this, "Fairy's Guard", 2, {}, true);
       }
     }
     
@@ -1191,7 +1191,7 @@ class Elyvia extends hero {
     
     var targets = getRandomTargets(this, this._allies, 3);
     for (var i in targets) {
-      result += targets[i].getBuff(this, "Fairy's Guard", 2, {});
+      result += targets[i].getBuff(this, "Fairy's Guard", 2, {}, true);
     }
     
     return result;
@@ -2556,24 +2556,31 @@ class Penny extends hero {
   
   eventSelfBasic(e) {
     var result = "";
+    var didCrit = false;
+    var damageDone = 0;
     
     for (var i in e) {
       if (e[i][3] == true) {
-        var damageResult = {};
-        var targets = getAllTargets(this, this._enemies);
-        
-        result += "<div>" + this.heroDesc() + " <span class='skill'>Eerie Trickery</span> triggered on crit.</div>";
-        
-        for (var h in targets) {
-          if (targets[h]._currentStats["totalHP"] > 0) {
-            damageResult = this.calcDamage(targets[h], e[i][2], "passive", "true");
-            result += targets[h].takeDamage(this, "Eerie Trickery", damageResult);
-          }
-        }
-        
-        result += this.getBuff(this, "Dynamite Armor", 15, {});
-        result += this.getBuff(this, "Reflection Armor", 15, {});
+        didCrit = true;
+        damageDone += e[i][2];
       }
+    }
+    
+    if (didCrit && damageDone > 0) {
+      var damageResult = {};
+      var targets = getAllTargets(this, this._enemies);
+      
+      result += "<div>" + this.heroDesc() + " <span class='skill'>Eerie Trickery</span> triggered on crit.</div>";
+      
+      for (var h in targets) {
+        if (targets[h]._currentStats["totalHP"] > 0) {
+          damageResult = this.calcDamage(targets[h], damageDone, "passive", "true");
+          result += targets[h].takeDamage(this, "Eerie Trickery", damageResult);
+        }
+      }
+      
+      result += this.getBuff(this, "Dynamite Armor", 15, {});
+      result += this.getBuff(this, "Reflection Armor", 15, {});
     }
     
     return result;
@@ -3452,11 +3459,19 @@ class Russell extends hero {
   
   doBasic() {
     var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies, 1);
+    var targetLock;
     
-    if (this._currentStats["isCharging"]) {
-      result = this.doActive();
-    } else {
-      result = super.doBasic();
+    for (i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal");
+        result += targets[i].takeDamage(this, "Basic Attack", damageResult);
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
     }
     
     return result;
