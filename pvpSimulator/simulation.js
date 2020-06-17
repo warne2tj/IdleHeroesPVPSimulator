@@ -13,6 +13,8 @@ function runSim() {
   var result = {};
   var monsterResult = "";
   var someoneWon = "";
+  var endingRoundSum = 0;
+  var cntTimeouts = 0;
   var endRoundDesc = "";
   var numLiving = 0;
   var tempTrigger;
@@ -342,6 +344,13 @@ function runSim() {
       if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Defender wins!</p>";}
     }
     
+    if (roundNum == 16) {
+      roundNum = 15;
+      cntTimeouts++; 
+    }
+    endingRoundSum += roundNum;
+    
+    
     
     numOfHeroes = attHeroes.length;
     for (var i = 0; i < numOfHeroes; i++) {
@@ -369,6 +378,8 @@ function runSim() {
   }
   
   oCombatLog.innerHTML += "<p class='logSeg'>Attacker won " + winCount + " out of " + numSims + " (" + formatNum((winCount/numSims * 100).toFixed(2)) + "%).</p>";
+  oCombatLog.innerHTML += "<p class='logSeg'>Average Combat Length: " + formatNum((endingRoundSum/numSims).toFixed(2)) + " rounds.</p>";
+  oCombatLog.innerHTML += "<p class='logSeg'>Number of Combats Ending in Timeout: " + cntTimeouts + " out of " + numSims + " (" + formatNum((cntTimeouts/numSims * 100).toFixed(2)) + "%).</p>";
   
   // damage summary
   oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average damage summary.</div>";

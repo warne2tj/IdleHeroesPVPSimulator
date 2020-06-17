@@ -981,9 +981,12 @@ class Delacium extends hero {
       var validDebuffs = [];
       
       for (var d in targets[0]._debuffs) {
-        for (var s in targets[0]._debuffs[d]) {
-          if (isDot(d, targets[0]._debuffs[d][s]["effects"]) || isAttribute(d, targets[0]._debuffs[d][s]["effects"])) {
-            validDebuffs.push([d, targets[0]._debuffs[d][s], Math.random()]);
+        // Delacium does not copy Mihm's dot
+        if (d != "Dot") {
+          for (var s in targets[0]._debuffs[d]) {
+            if (isDot(d, targets[0]._debuffs[d][s]["effects"]) || isAttribute(d, targets[0]._debuffs[d][s]["effects"])) {
+              validDebuffs.push([d, targets[0]._debuffs[d][s], Math.random()]);
+            }
           }
         }
       }
