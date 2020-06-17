@@ -940,7 +940,7 @@ class hero {
     
     if (isControl) {
       controlImmune = this._currentStats["controlImmune"];
-      controlImmunePen = this._currentStats["controlImmune"];
+      controlImmunePen = this._currentStats["controlImmunePen"];
       controlImmune -= controlImmunePen;
       if (controlImmune < 0) { controlImmune = 0; }
       
