@@ -481,5 +481,10 @@ var translate = {
   "stacks": "Number of Stacks",
   "dodge": "Dodge",
   "isCharging": "Charging Attack",
-  "damageAmount": "Snapshot Damage Amount"
+  "damageAmount": "Snapshot Damage Amount",
+  "damageAgainstWarrior": "Damage Against Warrior",
+  "damageAgainstMage": "Damage Against Mage",
+  "damageAgainstRanger": "Damage Against Ranger",
+  "damageAgainstAssassin": "Damage Against Assassin",
+  "damageAgainstPriest": "Damage Against Priest"
 };

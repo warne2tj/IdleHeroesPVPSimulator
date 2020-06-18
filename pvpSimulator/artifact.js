@@ -251,5 +251,35 @@ var artifacts = {
     stats: {damageReduce: 0.3, hpPercent: 0.14},
     limit: "Light",
     limitStats: {holyDamage: 0.18}
+  },
+  
+  "Nail of Destiny": {
+    stats: {damageAgainstWarrior: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Azrael": {
+    stats: {damageAgainstRanger: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Ancient God's Whisper": {
+    stats: {damageAgainstMage: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Fiend's Touch": {
+    stats: {damageAgainstAssassin: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Eye of the Hell": {
+    stats: {damageAgainstPriest: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
   }
 };

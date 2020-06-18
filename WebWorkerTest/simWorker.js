@@ -424,6 +424,11 @@ class hero {
     this._stats["damageAgainstBleeding"] = 0.0;
     this._stats["damageAgainstPoisoned"] = 0.0;
     this._stats["damageAgainstFrozen"] = 0.0;
+    this._stats["damageAgainstWarrior"] = 0.0;
+    this._stats["damageAgainstMage"] = 0.0;
+    this._stats["damageAgainstRanger"] = 0.0;
+    this._stats["damageAgainstAssassin"] = 0.0;
+    this._stats["damageAgainstPriest"] = 0.0;
     this._stats["allDamageReduce"] = 0.0;
     this._stats["allDamageTaken"] = 0.0;
     this._stats["allDamageDealt"] = 0.0;
@@ -846,7 +851,7 @@ class hero {
   
   // can further extend this to account for new mechanics by adding parameters to the end
   // supply a default value so as to not break other calls to this function
-  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1, armorReduces=1) {
+    calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1, armorReduces=1) {
     
     // Get damage related stats
     var critChance = canCrit * this._currentStats["crit"];
@@ -859,6 +864,7 @@ class hero {
     var damageAgainstBleeding = 1;
     var damageAgainstPoisoned = 1;
     var damageAgainstFrozen = 1;
+    var damageAgainstClass = 1;
     var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
     var armorBreak = this._currentStats["armorBreak"];
     var allDamageTaken = 1 + target._currentStats["allDamageTaken"];
@@ -920,7 +926,7 @@ class hero {
     
     // status modifiers
     if (target.hasStatus("Burn")) {
-       damageAgainstBurning += this._currentStats["damageAgainstBurning"];
+      damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
     if (target.hasStatus("Bleed")) {
@@ -938,6 +944,8 @@ class hero {
     if (isDot(damageType)) {
       dotReduce = target._currentStats["dotReduce"];
     }
+    
+    damageAgainstClass += this._currentStats["damageAgainst" + target._heroClass];
     
     
     // damage source and damage type overrides
@@ -978,7 +986,7 @@ class hero {
     
     
     // calculate damage
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * allDamageDealt;
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstClass * allDamageDealt;
     attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1-classDamageReduce) * allDamageTaken;
     
     var blocked = false;
@@ -5787,6 +5795,36 @@ var artifacts = {
     stats: {damageReduce: 0.3, hpPercent: 0.14},
     limit: "Light",
     limitStats: {holyDamage: 0.18}
+  },
+  
+  "Nail of Destiny": {
+    stats: {damageAgainstWarrior: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Azrael": {
+    stats: {damageAgainstRanger: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Ancient God's Whisper": {
+    stats: {damageAgainstMage: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Fiend's Touch": {
+    stats: {damageAgainstAssassin: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
+  },
+  
+  "Eye of the Hell": {
+    stats: {damageAgainstPriest: 0.90, attack: 2700},
+    limit: "",
+    limitStats: {}
   }
 };
 

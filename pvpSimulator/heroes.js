@@ -112,6 +112,11 @@ class hero {
     this._stats["damageAgainstBleeding"] = 0.0;
     this._stats["damageAgainstPoisoned"] = 0.0;
     this._stats["damageAgainstFrozen"] = 0.0;
+    this._stats["damageAgainstWarrior"] = 0.0;
+    this._stats["damageAgainstMage"] = 0.0;
+    this._stats["damageAgainstRanger"] = 0.0;
+    this._stats["damageAgainstAssassin"] = 0.0;
+    this._stats["damageAgainstPriest"] = 0.0;
     this._stats["allDamageReduce"] = 0.0;
     this._stats["allDamageTaken"] = 0.0;
     this._stats["allDamageDealt"] = 0.0;
@@ -539,6 +544,7 @@ class hero {
     var damageAgainstBleeding = 1;
     var damageAgainstPoisoned = 1;
     var damageAgainstFrozen = 1;
+    var damageAgainstClass = 1;
     var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
     var armorBreak = this._currentStats["armorBreak"];
     var allDamageTaken = 1 + target._currentStats["allDamageTaken"];
@@ -600,7 +606,7 @@ class hero {
     
     // status modifiers
     if (target.hasStatus("Burn")) {
-       damageAgainstBurning += this._currentStats["damageAgainstBurning"];
+      damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
     if (target.hasStatus("Bleed")) {
@@ -618,6 +624,8 @@ class hero {
     if (isDot(damageType)) {
       dotReduce = target._currentStats["dotReduce"];
     }
+    
+    damageAgainstClass += this._currentStats["damageAgainst" + target._heroClass];
     
     
     // damage source and damage type overrides
@@ -658,7 +666,7 @@ class hero {
     
     
     // calculate damage
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * allDamageDealt;
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstClass * allDamageDealt;
     attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1-classDamageReduce) * allDamageTaken;
     
     var blocked = false;
