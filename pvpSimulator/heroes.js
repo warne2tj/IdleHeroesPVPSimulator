@@ -294,6 +294,26 @@ class hero {
     this.applyStatChange(avatarFrames[sAvatarFrame], "avatarFrame");
     
     
+    // monster
+    var monsterName = document.getElementById(this._attOrDef + "Monster").value;
+    this.applyStatChange(baseMonsterStats[monsterName]["stats"], "monster");
+    
+    
+    // celestial island statues
+    var statuePrefix = this._attOrDef;
+    if (["Light", "Forest", "Fortress"].includes(this._heroFaction)) {
+      statuePrefix += "Holy";
+    } else {
+      statuePrefix += "Evil";
+    }
+    
+    var statueStats = {};
+    statueStats["speed"] = 2 * document.getElementById(statuePrefix + "speed").value;
+    statueStats["hpPercent"] = 0.01 * document.getElementById(statuePrefix + "hpPercent").value;
+    statueStats["attackPercent"] = 0.005 * document.getElementById(statuePrefix + "attackPercent").value;
+    this.applyStatChange(statueStats, "statue");
+    
+    
     // aura
     var arrToUse;
     if (this._attOrDef == "att") {
@@ -346,26 +366,6 @@ class hero {
       }
       this.applyStatChange(addBonuses, "auraAdditionalBonuses");
     }
-    
-    
-    // monster
-    var monsterName = document.getElementById(this._attOrDef + "Monster").value;
-    this.applyStatChange(baseMonsterStats[monsterName]["stats"], "monster");
-    
-    
-    // celestial island statues
-    var statuePrefix = this._attOrDef;
-    if (["Light", "Forest", "Fortress"].includes(this._heroFaction)) {
-      statuePrefix += "Holy";
-    } else {
-      statuePrefix += "Evil";
-    }
-    
-    var statueStats = {};
-    statueStats["speed"] = 2 * document.getElementById(statuePrefix + "speed").value;
-    statueStats["hpPercent"] = 0.01 * document.getElementById(statuePrefix + "hpPercent").value;
-    statueStats["attackPercent"] = 0.005 * document.getElementById(statuePrefix + "attackPercent").value;
-    this.applyStatChange(statueStats, "statue");
     
     
     this._stats["totalHP"] = this.calcHP();
@@ -700,7 +700,7 @@ class hero {
     }
     
     return {
-      "damageAmount": attackDamage,
+      "damageAmount": Math.floor(attackDamage),
       "critted": critted, 
       "blocked": blocked, 
       "damageSource": damageSource, 
@@ -715,7 +715,7 @@ class hero {
     var effectBeingHealed = 1 + target._currentStats["effectBeingHealed"];
     if (effectBeingHealed < 0) { effectBeingHealed = 0; }
     
-    return Math.round(healAmount * effectBeingHealed * healEffect);
+    return Math.floor(healAmount * effectBeingHealed * healEffect);
   }
   
   
@@ -1326,7 +1326,7 @@ class hero {
     var result = "";
     
     if (this._enable3 == "Resilience") {
-      var healAmount = this.calcHeal(this, Math.round(0.15 * (this._stats["totalHP"] - this._currentStats["totalHP"])));
+      var healAmount = this.calcHeal(this, 0.15 * (this._stats["totalHP"] - this._currentStats["totalHP"]));
       
       if (healAmount > 0) {
         result += "<div>" + this.heroDesc() + " Resilience triggered.</div>" 
@@ -1398,7 +1398,7 @@ class hero {
     var result = "";
     var beforeHP = this._currentStats["totalHP"];
     
-    damageResult["damageAmount"] = Math.round(damageResult["damageAmount"]);
+    damageResult["damageAmount"] = Math.floor(damageResult["damageAmount"]);
     
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
@@ -1489,7 +1489,7 @@ class hero {
       // balanced strike enable heal
       if (["active", "basic"].includes(damageResult["damageSource"]) && source._enable5 == "BalancedStrike") {
         if (damageResult["critted"] == true) {
-          let healAmount = source.calcHeal(source, Math.round(0.15 * (damageResult["damageAmount"])));
+          let healAmount = source.calcHeal(source, 0.15 * (damageResult["damageAmount"]));
           result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>"
           result += source.getHeal(source, healAmount);
         }
@@ -1499,7 +1499,7 @@ class hero {
       // enhanced kiss of ghost artifact heal
       if (!(isMonster(source))) {
         if (source._artifact.includes(" The Kiss of Ghost") && ["active", "basic"].includes(damageResult["damageSource"]) && !(isDot(damageResult["damageType"]))) {
-          let healAmount = source.calcHeal(source, Math.round(artifacts[source._artifact]["enhance"] * (damageResult["damageAmount"])));
+          let healAmount = source.calcHeal(source, artifacts[source._artifact]["enhance"] * (damageResult["damageAmount"]));
           result += "<div><span class='skill'>" + source._artifact + "</span> triggered heal.</div>"
           result += source.getHeal(source, healAmount);
         }

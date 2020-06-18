@@ -36,7 +36,7 @@ class monster {
       dotReduce = target._currentStats["dotReduce"];
     }
     
-    damageAmount = Math.round(damageAmount * (1 - allDamageReduce) * (1 - dotReduce));
+    damageAmount = Math.floor(damageAmount * (1 - allDamageReduce) * (1 - dotReduce));
     
     return {
       "damageAmount": damageAmount,
@@ -53,7 +53,7 @@ class monster {
     var effectBeingHealed = 1 + target._currentStats["effectBeingHealed"];
     if (effectBeingHealed < 0) { effectBeingHealed = 0; }
     
-    return Math.round(healAmount * effectBeingHealed);
+    return Math.floor(healAmount * effectBeingHealed);
   }
   
   
