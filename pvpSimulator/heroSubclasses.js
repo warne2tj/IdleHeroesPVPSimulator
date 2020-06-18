@@ -3468,7 +3468,7 @@ class Russell extends hero {
     var targets = getRandomTargets(this, this._enemies, 1);
     var targetLock;
     
-    for (i in targets) {
+    for (var i in targets) {
       targetLock = targets[i].getTargetLock(this);
       result += targetLock;
       
