@@ -3042,11 +3042,11 @@ class UniMax3000 extends hero {
     var result = "";
     
     if (target._currentStats["totalHP"] > 0) {
-      var attackStolen = Math.floor(target._currentStats["attack"] * 0.2);
+      var attackStolen = Math.floor(target._currentStats["totalAttack"] * 0.2);
       
       result += "<div>" + this.heroDesc() + " <span class='skill'>Frenzied Taunt</span> triggered.</div>"
-      result += target.getDebuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
-      result += this.getBuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
+      result += target.getDebuff(this, "Fixed Attack", 2, {fixedAttack: attackStolen});
+      result += this.getBuff(this, "Fixed Attack", 2, {fixedAttack: attackStolen});
       result += target.getDebuff(this, "Taunt", 2, {}, false, "", 0.30);
     }
     
@@ -3515,6 +3515,107 @@ class Russell extends hero {
       result += this.getBuff(this, "Damage Reduce", 2, {damageReduce: 0.40});
       
       this._currentStats["isCharging"] = true;
+    }
+    
+    return result;
+  }
+}
+
+
+// Valkryie
+class Valkryie extends hero {
+  passiveStats() {
+    // apply Unparalleled Brave passive
+    this.applyStatChange({hpPercent: 0.35, attackPercent: 0.25, crit: 0.30}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventGotCC") {
+      return this.eventGotCC();
+    }
+    
+    return result;
+  }
+  
+  
+  eventGotCC() {
+    var result = "";
+    var targets = getRandomTargets(this, this._enemies, 3);
+    var damageResult;
+    var healAmount = Math.round(this.calcHeal(this, this._currentStats["totalAttack"] * 2));
+    
+    result += this.getBuff(this, "Heal", 3, {heal: healAmount});
+    
+    for (var i in targets) {
+      damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.03, "passive", "burnTrue", 1, 0, 1);
+      result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: Math.round(damageResult["damageAmount"])});
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var burnDamageResult = {damageAmount: 0};
+    var targets = getRandomTargets(this, this._enemies, 3);
+    var targetLock;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.95, "basic", "normal");
+        result += targets[i].takeDamage(this, "Fire of the Soul", damageResult);
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.06, "basic", "burnTrue", 1, 0, 1);
+          result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: Math.round(damageResult["damageAmount"])});
+        }
+        
+        result += targets[i].getDebuff(this, "Attack", 3, {attack: Math.round(targets[i]._stats["attack"] * 0.12)});
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"] + burnDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies, 3);
+    var targetLock;
+    var attackStolen = 0;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.62);
+        result += targets[i].takeDamage(this, "Fire of the Soul", damageResult);
+        
+        attackStolen = Math.round(targets[i]._currentStats["totalAttack"] * 0.15);
+        result += targets[i].getDebuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
+        result += this.getBuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+
+    targets = getHighestHPTargets(this, this._enemies, 1);
+    for (var i in targets) {
+      damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.18, "active", "burnTrue", 1, 0, 2);
+      result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: Math.round(damageResult["damageAmount"])});
+      activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
     }
     
     return result;

@@ -699,7 +699,7 @@ class hero {
     for (var strStatName in arrStats) {
       if (strStatName == "attackPercent" || strStatName == "attackPercent2") {
         this._attackMultipliers[strSource + ":" + strStatName] = 1 + arrStats[strStatName];
-      } else if (strStatName == "hpPercent") {
+      } else if (strStatName == "hpPercent" || strStatName == "hpPercent2") {
         this._hpMultipliers[strSource + ":" + strStatName] = 1 + arrStats[strStatName];
       } else if (strStatName == "armorPercent") {
         this._armorMultipliers[strSource + ":" + strStatName] = 1 + arrStats[strStatName];
@@ -947,7 +947,7 @@ class hero {
       } else if (!(["energy", "true"].includes(damageType))) {
         skillDamage += this._currentStats["skillDamage"] + ((this._currentStats["energySnapshot"] - 100) / 100);
       }
-    } else if (isDot(damageType)) {
+    } else if (isDot(damageType) && !(["burnTrue", "bleedTrue", "poisonTrue"].includes(damageType))) {
       skillDamage += this._currentStats["skillDamage"] / (dotRounds + 1);
     }
     
@@ -1141,13 +1141,13 @@ class hero {
       for (let s of Object.values(b)) {
         for (let [e, oe] of Object.entries(s["effects"])) {
           if (e == "attackPercent") {
-            att = Math.floor(att * (1 + oe));
+            att = Math.floor(att * (1 - oe));
           }
         }
       }
     }
     
-    att += this._stats["fixedAttack"];
+    att += this._currentStats["fixedAttack"];
     return att;
   }
   
@@ -1232,7 +1232,7 @@ class hero {
         } else {
           this._currentStats[strStatName] += effects[strStatName];
           
-          if (strStatName == "attack") {
+          if (strStatName == "attack" || strStatName == "fixedAttack") {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
           } else if (strStatName == "armor") {
             this._currentStats["totalArmor"] = this.calcCombatArmor();
@@ -1336,7 +1336,7 @@ class hero {
           } else {
             this._currentStats[strStatName] -= effects[strStatName];
             
-            if (strStatName == "attack") {
+            if (strStatName == "attack" || strStatName == "fixedAttack") {
               this._currentStats["totalAttack"] = this.calcCombatAttack();
             } else if (strStatName == "armor") {
               this._currentStats["totalArmor"] = this.calcCombatArmor();
@@ -1406,7 +1406,7 @@ class hero {
           } else {
             this._currentStats[strStatName] -= this._buffs[strBuffName][s]["effects"][strStatName];
             
-            if (strStatName == "attack") {
+            if (strStatName == "attack" || strStatName == "fixedAttack") {
               this._currentStats["totalAttack"] = this.calcCombatAttack();
             } else if (strStatName == "armor") {
               this._currentStats["totalArmor"] = this.calcCombatArmor();
@@ -1450,7 +1450,7 @@ class hero {
           } else {
             this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
             
-            if (strStatName == "attack") {
+            if (strStatName == "attack" || strStatName == "fixedAttack") {
               this._currentStats["totalAttack"] = this.calcCombatAttack();
             } else if (strStatName == "armor") {
               this._currentStats["totalArmor"] = this.calcCombatArmor();
@@ -1500,7 +1500,7 @@ class hero {
                 } else {
                   this._currentStats[strStatName] -= this._buffs[b][s]["effects"][strStatName];
                   
-                  if (strStatName == "attack") {
+                  if (strStatName == "attack" || strStatName == "fixedAttack") {
                     this._currentStats["totalAttack"] = this.calcCombatAttack();
                   } else if (strStatName == "armor") {
                     this._currentStats["totalArmor"] = this.calcCombatArmor();
@@ -1590,7 +1590,7 @@ class hero {
                   } else {
                     this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
                     
-                    if (strStatName == "attack") {
+                    if (strStatName == "attack" || strStatName == "fixedAttack") {
                       this._currentStats["totalAttack"] = this.calcCombatAttack();
                     } else if (strStatName == "armor") {
                       this._currentStats["totalArmor"] = this.calcCombatArmor();

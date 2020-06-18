@@ -464,5 +464,21 @@ var baseHeroStats = {
       growArmor: 8.5,
       growSpeed: 2
     }
+  },
+  
+  "Valkryie": {
+    className: Valkryie,
+    heroFaction: "Forest",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 7937,
+      baseAttack: 357,
+      baseArmor: 60,
+      baseSpeed: 219,
+      growHP: 793.7,
+      growAttack: 35.7,
+      growArmor: 6,
+      growSpeed: 2
+    }
   }
 };

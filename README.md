@@ -36,6 +36,7 @@ Head to the wiki for more details.
   * Sherlock
   * Tara
   * Unimax
+  * Valkryie
   
   
 ### Implemented Monsters
@@ -52,6 +53,7 @@ Head to the wiki for more details.
   
 ### To Do
   * Refactor buff/debuff into single object? Add buff/debuff type to object?
+  * Refactor trigger queue into individual queues?
   * RNG wrapper for testing purposes
   * Implement Ormus
   * Far future: Flame shrine

@@ -166,5 +166,15 @@ var skins = {
   "Russell": {
     "Skin Placeholder": {},
     "Legendary Skin Placeholder": {}
+  },
+  
+  "Valkryie": {
+    "Christmas Elf": {hpPercent: 0.05},
+    "Combat Symphony": {hpPercent: 0.05, hpPercent2: 0.03, damageReduce: 0.03},
+    "Legendary Combat Symphony": {hpPercent: 0.08, hpPercent2: 0.06, damageReduce: 0.04},
+    "Jungle Hunter": {hpPercent: 0.05, crit: 0.02},
+    "Legendary Jungle Hunter": {hpPercent: 0.08, crit: 0.03},
+    "Spear of Trial": {hpPercent: 0.05, damageReduce: 0.03, block: 0.04},
+    "Legendary Spear of Trial": {hpPercent: 0.08, damageReduce: 0.04, block: 0.06}
   }
 };
