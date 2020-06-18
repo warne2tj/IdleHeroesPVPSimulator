@@ -4947,11 +4947,11 @@ class UniMax3000 extends hero {
     var result = "";
     
     if (target._currentStats["totalHP"] > 0) {
-      var attackStolen = Math.floor(target._currentStats["attack"] * 0.2);
+      var attackStolen = Math.floor(target._currentStats["totalAttack"] * 0.2);
       
       result += "<div>" + this.heroDesc() + " <span class='skill'>Frenzied Taunt</span> triggered.</div>"
-      result += target.getDebuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
-      result += this.getBuff(this, "Frenzied Taunt", 2, {attack: attackStolen});
+      result += target.getDebuff(this, "Fixed Attack", 2, {fixedAttack: attackStolen});
+      result += this.getBuff(this, "Fixed Attack", 2, {fixedAttack: attackStolen});
       result += target.getDebuff(this, "Taunt", 2, {}, false, "", 0.30);
     }
     
@@ -5013,6 +5013,7 @@ class UniMax3000 extends hero {
   doActive() { 
     var result = "";
     var damageResult = {};
+    var damageResult2 = {damageAmount: 0, critted: false};
     var targets = getBackTargets(this, this._enemies);
     var targetLock;
     
@@ -5025,12 +5026,13 @@ class UniMax3000 extends hero {
         result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
         
         if (targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
+          damageResult2 = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 4.2);
+          result += targets[i].takeDamage(this, "Iron Whirlwind 2", damageResult2);
         }
         
         result += targets[i].getDebuff(this, "Taunt", 2, {}, false, "", 0.50);
         
-        activeQueue.push([this, targets[i], damageResult["damageAmount"] * 2, damageResult["critted"]]);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + damageResult2["damageAmount"], damageResult["critted"] || damageResult2["critted"]]);
       }
     }
     
@@ -5420,6 +5422,107 @@ class Russell extends hero {
       result += this.getBuff(this, "Damage Reduce", 2, {damageReduce: 0.40});
       
       this._currentStats["isCharging"] = true;
+    }
+    
+    return result;
+  }
+}
+
+
+// Valkryie
+class Valkryie extends hero {
+  passiveStats() {
+    // apply Unparalleled Brave passive
+    this.applyStatChange({hpPercent: 0.35, attackPercent: 0.25, crit: 0.30}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventGotCC") {
+      return this.eventGotCC();
+    }
+    
+    return result;
+  }
+  
+  
+  eventGotCC() {
+    var result = "";
+    var targets = getRandomTargets(this, this._enemies, 3);
+    var damageResult;
+    var healAmount = Math.round(this.calcHeal(this, this._currentStats["totalAttack"] * 2));
+    
+    result += this.getBuff(this, "Heal", 3, {heal: healAmount});
+    
+    for (var i in targets) {
+      damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.03, "passive", "burnTrue", 1, 0, 1);
+      result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: Math.round(damageResult["damageAmount"])});
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var burnDamageResult = {damageAmount: 0};
+    var targets = getRandomTargets(this, this._enemies, 3);
+    var targetLock;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 0.95, "basic", "normal");
+        result += targets[i].takeDamage(this, "Fire of the Soul", damageResult);
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.06, "basic", "burnTrue", 1, 0, 1);
+          result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: Math.round(damageResult["damageAmount"])});
+        }
+        
+        result += targets[i].getDebuff(this, "Attack", 3, {attack: Math.round(targets[i]._stats["attack"] * 0.12)});
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"] + burnDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies, 3);
+    var targetLock;
+    var attackStolen = 0;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.62);
+        result += targets[i].takeDamage(this, "Fire of the Soul", damageResult);
+        
+        attackStolen = Math.round(targets[i]._currentStats["totalAttack"] * 0.15);
+        result += targets[i].getDebuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
+        result += this.getBuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+
+    targets = getHighestHPTargets(this, this._enemies, 1);
+    for (var i in targets) {
+      damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.18, "active", "burnTrue", 1, 0, 2);
+      result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: Math.round(damageResult["damageAmount"])});
+      activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
     }
     
     return result;
@@ -6190,12 +6293,6 @@ var skins = {
     "Legendary Original Sin": {attackPercent: 0.06, crit: 0.03, critDamage: 0.075}
   },
   
-  "Asmodel": {
-    "King of War": {hpPercent: 0.03, attackPercent: 0.02},
-    "Frozen Heart": {attackPercent: 0.02, crit: 0.02, critDamage: 0.05},
-    "Legendary Frozen Heart": {attackPercent: 0.04, crit: 0.03, critDamage: 0.10}
-  },
-  
   "Aspen": {
     "Dragonic Warrior": {hpPercent: 0.05, attackPercent: 0.03, critDamage: 0.05},
     "Legendary Dragonic Warrior": {hpPercent: 0.08, attackPercent: 0.06, critDamage: 0.075},
@@ -6329,6 +6426,12 @@ var skins = {
     "Legendary League MVP": {controlImmune: 0.06, hpPercent: 0.06, attackPercent: 0.06},
   },
   
+  "Asmodel": {
+    "King of War": {hpPercent: 0.03, attackPercent: 0.02},
+    "Frozen Heart": {attackPercent: 0.02, crit: 0.02, critDamage: 0.05},
+    "Legendary Frozen Heart": {attackPercent: 0.04, crit: 0.03, critDamage: 0.10}
+  },
+  
   "Drake": {
     "Skin Placeholder": {},
     "Legendary Skin Placeholder": {}
@@ -6337,6 +6440,16 @@ var skins = {
   "Russell": {
     "Skin Placeholder": {},
     "Legendary Skin Placeholder": {}
+  },
+  
+  "Valkryie": {
+    "Christmas Elf": {hpPercent: 0.05},
+    "Combat Symphony": {hpPercent: 0.05, hpPercent2: 0.03, damageReduce: 0.03},
+    "Legendary Combat Symphony": {hpPercent: 0.08, hpPercent2: 0.06, damageReduce: 0.04},
+    "Jungle Hunter": {hpPercent: 0.05, crit: 0.02},
+    "Legendary Jungle Hunter": {hpPercent: 0.08, crit: 0.03},
+    "Spear of Trial": {hpPercent: 0.05, damageReduce: 0.03, block: 0.04},
+    "Legendary Spear of Trial": {hpPercent: 0.08, damageReduce: 0.04, block: 0.06}
   }
 };
 
@@ -6971,6 +7084,22 @@ var baseHeroStats = {
       growHP: 910,
       growAttack: 30.6,
       growArmor: 8.5,
+      growSpeed: 2
+    }
+  },
+  
+  "Valkryie": {
+    className: Valkryie,
+    heroFaction: "Forest",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 7937,
+      baseAttack: 357,
+      baseArmor: 60,
+      baseSpeed: 219,
+      growHP: 793.7,
+      growAttack: 35.7,
+      growArmor: 6,
       growSpeed: 2
     }
   }

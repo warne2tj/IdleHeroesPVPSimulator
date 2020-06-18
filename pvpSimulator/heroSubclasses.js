@@ -3108,6 +3108,7 @@ class UniMax3000 extends hero {
   doActive() { 
     var result = "";
     var damageResult = {};
+    var damageResult2 = {damageAmount: 0, critted: false};
     var targets = getBackTargets(this, this._enemies);
     var targetLock;
     
@@ -3120,12 +3121,13 @@ class UniMax3000 extends hero {
         result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
         
         if (targets[i]._currentStats["totalHP"] > 0) {
-          result += targets[i].takeDamage(this, "Iron Whirlwind", damageResult);
+          damageResult2 = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 4.2);
+          result += targets[i].takeDamage(this, "Iron Whirlwind 2", damageResult2);
         }
         
         result += targets[i].getDebuff(this, "Taunt", 2, {}, false, "", 0.50);
         
-        activeQueue.push([this, targets[i], damageResult["damageAmount"] * 2, damageResult["critted"]]);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + damageResult2["damageAmount"], damageResult["critted"] || damageResult2["critted"]]);
       }
     }
     
