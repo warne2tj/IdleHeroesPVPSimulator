@@ -44,6 +44,27 @@ var artifacts = {
     limitStats: {}
   },
   
+  "Glittery Demon Bell": {
+    stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
+    limit: "",
+    limitStats: {},
+    enhance: 0.30
+  },
+  
+  "Radiant Demon Bell": {
+    stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
+    limit: "",
+    limitStats: {},
+    enhance: 0.30
+  },
+  
+  "Splendid Demon Bell": {
+    stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
+    limit: "",
+    limitStats: {},
+    enhance: 1
+  },
+  
   "Golden Crown": {
     stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
     limit: "",
@@ -110,6 +131,27 @@ var artifacts = {
     stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
     limit: "",
     limitStats: {}
+  },
+  
+  "Glittery Staff Punisher of Immortal": {
+    stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
+    limit: "",
+    limitStats: {},
+    enhance: 0.06
+  },
+  
+  "Radiant Staff Punisher of Immortal": {
+    stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
+    limit: "",
+    limitStats: {},
+    enhance: 0.12
+  },
+  
+  "Splendid Staff Punisher of Immortal": {
+    stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
+    limit: "",
+    limitStats: {},
+    enhance: 0.18
   },
   
   "The Kiss of Ghost": {

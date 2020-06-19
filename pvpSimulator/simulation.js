@@ -503,10 +503,47 @@ function processQueue() {
           }
           
           var healAmount = copyQueue[i][0].calcHeal(copyQueue[i][0], artifacts[copyQueue[i][0]._artifact]["enhance"] * damageDone);
-          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered heal.</div>"
+          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered heal.</div>";
           temp += copyQueue[i][0].getHeal(copyQueue[i][0], healAmount);
           
           result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+        }
+      
+      
+        if (copyQueue[i][1] == "eventSelfActive" && copyQueue[i][0]._artifact.includes(" Demon Bell")) {
+          var targets = getAllTargets(copyQueue[i][0], copyQueue[i][0]._allies);
+          var energyGain = 10;
+          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered energy gain.</div>";
+          
+          if (Math.random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
+            energyGain += 10;
+          }
+          
+          for (let i in targets) {
+            temp += targets[i].getEnergy(copyQueue[i][0], energyGain);
+          }
+          
+          result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+        }
+      
+      
+        if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" Staff Punisher of Immortal")) {
+          var damageResult = "";
+          var didCrit = false;
+          temp = "";
+          
+          for (let e in copyQueue[i][2]) {
+            if (copyQueue[i][2][e][3] == true && copyQueue[i][2][e][1]._currentStats["totalHP"] > 0) {
+              didCrit = true;
+              damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], copyQueue[i][2][e][1]._stats["totalHP"] * 0.12, "passive", "true");
+              temp += copyQueue[i][2][e][1].takeDamage(copyQueue[i][0], copyQueue[i][0]._artifact, damageResult);
+            }
+          }
+          
+          if (didCrit) {
+            temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered on crit.</div>" + temp;
+            result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+          }
         }
       }
     }
