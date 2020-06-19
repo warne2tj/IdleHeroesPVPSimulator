@@ -1033,12 +1033,6 @@ class hero {
         }
         
         if (isControl) {
-          if (this._artifact.includes(" Lucky Candy Bar")) {
-            if (!("Hand of Destiny" in this._buffs)) {
-              result += this.getBuff(this, "Hand of Destiny", 1, {allDamageReduce: artifacts[this._artifact]["enhance"]});
-            }
-          }
-          
           triggerQueue.push([this, "eventGotCC", source, debuffName, keyAt]);
         }
         
@@ -1494,16 +1488,6 @@ class hero {
           result += source.getHeal(source, healAmount);
         }
       }
-      
-      
-      // enhanced kiss of ghost artifact heal
-      if (!(isMonster(source))) {
-        if (source._artifact.includes(" The Kiss of Ghost") && ["active", "basic"].includes(damageResult["damageSource"]) && !(isDot(damageResult["damageType"]))) {
-          let healAmount = source.calcHeal(source, artifacts[source._artifact]["enhance"] * (damageResult["damageAmount"]));
-          result += "<div><span class='skill'>" + source._artifact + "</span> triggered heal.</div>"
-          result += source.getHeal(source, healAmount);
-        }
-      }
     }
     
     
@@ -1583,5 +1567,16 @@ class hero {
     } else {
       return "";
     }
+  }
+  
+  
+  isUnderControl() {
+    for (var d in this._debuffs) {
+      if (isControlEffect(d)) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 }

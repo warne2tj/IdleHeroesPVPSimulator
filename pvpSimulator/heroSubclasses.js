@@ -3582,7 +3582,7 @@ class Valkryie extends hero {
         
         result += targets[i].getDebuff(this, "Attack", 3, {attack: Math.floor(targets[i]._stats["attack"] * 0.12)});
         
-        basicQueue.push([this, targets[i], damageResult["damageAmount"] + burnDamageResult["damageAmount"], damageResult["critted"]]);
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
@@ -3617,7 +3617,6 @@ class Valkryie extends hero {
     for (var i in targets) {
       damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.18, "active", "burnTrue", 1, 0, 2);
       result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
-      activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
     }
     
     return result;

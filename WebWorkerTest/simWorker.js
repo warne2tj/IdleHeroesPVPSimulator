@@ -1353,12 +1353,6 @@ class hero {
         }
         
         if (isControl) {
-          if (this._artifact.includes(" Lucky Candy Bar")) {
-            if (!("Hand of Destiny" in this._buffs)) {
-              result += this.getBuff(this, "Hand of Destiny", 1, {allDamageReduce: artifacts[this._artifact]["enhance"]});
-            }
-          }
-          
           triggerQueue.push([this, "eventGotCC", source, debuffName, keyAt]);
         }
         
@@ -1814,16 +1808,6 @@ class hero {
           result += source.getHeal(source, healAmount);
         }
       }
-      
-      
-      // enhanced kiss of ghost artifact heal
-      if (!(isMonster(source))) {
-        if (source._artifact.includes(" The Kiss of Ghost") && ["active", "basic"].includes(damageResult["damageSource"]) && !(isDot(damageResult["damageType"]))) {
-          let healAmount = source.calcHeal(source, Math.round(artifacts[source._artifact]["enhance"] * (damageResult["damageAmount"])));
-          result += "<div><span class='skill'>" + source._artifact + "</span> triggered heal.</div>"
-          result += source.getHeal(source, healAmount);
-        }
-      }
     }
     
     
@@ -1903,6 +1887,17 @@ class hero {
     } else {
       return "";
     }
+  }
+  
+  
+  isUnderControl() {
+    for (var d in this._debuffs) {
+      if (isControlEffect(d)) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 }
   
@@ -5531,7 +5526,6 @@ class Valkryie extends hero {
     for (var i in targets) {
       damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.18, "active", "burnTrue", 1, 0, 2);
       result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
-      activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
     }
     
     return result;
@@ -7838,37 +7832,41 @@ function runSim(attMonsterName, defMonsterName, numSims) {
       if (someoneWon != "") {break;}
       
       
-      // handle attacker end of round
-      //if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-      for (var h in attHeroes) {
-        temp = "";
-          
+      
+      // handle end of round abilities
+      temp = "";
+      
+      for (let h in attHeroes) {
         if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
           temp += attHeroes[h].tickEnable3();
         }
+      }
           
+      for (let h in defHeroes) {
         if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
           temp += defHeroes[h].tickEnable3();
         }
+      }
         
         
+      for (let h in attHeroes) {
         if (attHeroes[h]._currentStats["totalHP"] > 0) {
           temp += attHeroes[h].tickBuffs();
           temp += attHeroes[h].tickDebuffs();
         }
+      }
         
+      for (let h in defHeroes) {
         if (defHeroes[h]._currentStats["totalHP"] > 0) {
           temp += defHeroes[h].tickBuffs();
           temp += defHeroes[h].tickDebuffs();
         }
+      }
         
         
+      for (let h in attHeroes) {
         if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
           temp += attHeroes[h].endOfRound(roundNum);
-        }
-        
-        if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
-          temp += defHeroes[h].endOfRound(roundNum);
         }
         
         
@@ -7877,12 +7875,28 @@ function runSim(attMonsterName, defMonsterName, numSims) {
           temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
         }
         
+        
+        if (attHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(attHeroes[h]._artifact) && attHeroes[h].isUnderControl()) {
+          temp += "<div><span class='skill'>" + attHeroes[h]._artifact + "</span> triggered.</div>";
+          temp += attHeroes[h].getBuff(attHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[attHeroes[h]._artifact]["enhance"]}, true);
+        }
+      }
+        
+      for (let h in defHeroes) {
+        if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
+          temp += defHeroes[h].endOfRound(roundNum);
+        }
+        
         if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
           temp += "<div>" + defHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
           temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
         }
         
-        //if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        
+        if (defHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(defHeroes[h]._artifact) && defHeroes[h].isUnderControl()) {
+          temp += "<div><span class='skill'>" + defHeroes[h]._artifact + "</span> triggered.</div>";
+          temp += defHeroes[h].getBuff(defHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[defHeroes[h]._artifact]["enhance"]}, true);
+        }
       }
       
       temp = processQueue();
@@ -8012,6 +8026,26 @@ function processQueue() {
         || (copyQueue[i][0]._heroName == "Elyvia" && ["eventEnemyActive", "eventEnemyBasic"].includes(copyQueue[i][1]))
       ) {
         result += copyQueue[i][0].handleTrigger(copyQueue[i]);
+        
+        
+        if (copyQueue[i][1] == "eventGotCC" && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(copyQueue[i][0]._artifact)) {
+          temp = copyQueue[i][0].getBuff(copyQueue[i][0], "Hand of Fate", 1, {allDamageReduce: artifacts[copyQueue[i][0]._artifact]["enhance"]}, true);
+          result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+        }
+      
+      
+        if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" The Kiss of Ghost")) {
+          var damageDone = 0;
+          for (let e in copyQueue[i][2]) {
+            damageDone += copyQueue[i][2][e][2];
+          }
+          
+          var healAmount = copyQueue[i][0].calcHeal(copyQueue[i][0], artifacts[copyQueue[i][0]._artifact]["enhance"] * damageDone);
+          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered heal.</div>"
+          temp += copyQueue[i][0].getHeal(copyQueue[i][0], healAmount);
+          
+          result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+        }
       }
     }
   }
