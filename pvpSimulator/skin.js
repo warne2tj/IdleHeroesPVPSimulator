@@ -35,7 +35,9 @@ var skins = {
   
   "Carrie": {
     "Little Red Riding Hood": {hpPercent: 0.03, attackPercent: 0.03, damageReduce: 0.03},
-    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04}
+    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04},
+    "Princess Carrie": {hpPercent: 0.03, damageReduce: 0.03, speed: 4},
+    "Legendary Princess Carrie": {hpPercent: 0.06, damageReduce: 0.05, speed: 6}
   },
   
   "Cthuga": {

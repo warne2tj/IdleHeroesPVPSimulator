@@ -778,8 +778,9 @@ class hero {
       result += formatNum(this._currentStats["energy"]) + ".</div>"
       
       if ("Devouring Mark" in this._debuffs && this._currentStats["energy"] >= 100) {
-        var s = Object.keys(this._debuffs["Devouring Mark"])[0];
-        triggerQueue.push([this._debuffs["Devouring Mark"][s]["source"], "devouringMark", this, this._debuffs["Devouring Mark"][s]["effects"]["attackAmount"], this._currentStats["energy"]]);
+        for (var s in this._debuffs["Devouring Mark"]) {
+          triggerQueue.push([this._debuffs["Devouring Mark"][s]["source"], "devouringMark", this, this._debuffs["Devouring Mark"][s]["effects"]["attackAmount"], this._currentStats["energy"], s]);
+        }
       }
     }
     
@@ -1018,7 +1019,7 @@ class hero {
               result += "<div>" + this.takeDamage(source, "Debuff " + debuffName, damageResult) + "</div>";
             }
             
-          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
             //ignore, used to track other stuff
             
           } else {
@@ -1123,7 +1124,7 @@ class hero {
           } else if (strStatName == "armorPercent") {
             this._currentStats["totalArmor"] = this.calcCombatArmor();
             
-          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
                 // do nothing, used to track other stuff
                 
           } else if (isDot(strStatName)) {
@@ -1263,11 +1264,26 @@ class hero {
                   } else if (strStatName == "armorPercent") {
                     this._currentStats["totalArmor"] = this.calcCombatArmor();
                     
-                  } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
+                  } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
                     // do nothing, used to track stuff
                     
                   }  else if (isDot(strStatName)) {
                     // do nothing, full burn damage already done
+                    
+                    // unless it's the burn from valkryie's basic
+                    if (this._currentStats["totalHP"] > 0 && "valkryieBasic" in this._debuffs[b][s]["effects"]) {
+                      damageResult = {
+                        damageAmount: this._debuffs[b][s]["effects"][strStatName],
+                        damageSource: "passive",
+                        damageType: strStatName,
+                        critted: false,
+                        blocked: false,
+                        e5Description: ""
+                      };
+                      
+                      result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
+                      result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
+                    }
                     
                   } else {
                     this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];

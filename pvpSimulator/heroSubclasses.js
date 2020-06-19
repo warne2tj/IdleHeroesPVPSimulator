@@ -595,7 +595,9 @@ class Carrie extends hero {
       return this.eventAllyDied();
     } else if (trigger[1] == "devouringMark") {
       if (trigger[2]._currentStats["totalHP"] > 0 && "Devouring Mark" in trigger[2]._debuffs) {
-        return this.devouringMark(trigger[2], trigger[3], trigger[4]);
+        if (trigger[5] in trigger[2]._debuffs["Devouring Mark"]) {
+          return this.devouringMark(trigger[2], trigger[3], trigger[4], trigger[5]);
+        }
       }
     }
     
@@ -603,14 +605,14 @@ class Carrie extends hero {
   }
   
   
-  devouringMark(target, attackAmount, energyAmount) {
+  devouringMark(target, attackAmount, energyAmount, stackID) {
     var result = "";
     var damageResult = {};
     
     // attack % per energy damage seems to be true damage
     damageResult = this.calcDamage(target, attackAmount * 0.1 * energyAmount, "mark", "energy");
     result = target.takeDamage(this, "Devouring Mark", damageResult);
-    result += target.removeDebuff("Devouring Mark");
+    result += target.removeDebuff("Devouring Mark", stackID);
     
     if (target._currentStats["totalHP"] > 0) {
       result += "<div>Energy set to " + formatNum(0) + ".</div>";
@@ -1043,7 +1045,7 @@ class Delacium extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           additionalDamage = this._currentStats["totalAttack"] * 2.5 * (1 + Object.keys(targets[i]._debuffs).length);
-          additionalDamageResult = this.calcDamage(targets[i], additionalDamage, "basic", "normal");
+          additionalDamageResult = this.calcDamage(targets[i], additionalDamage, "basic", "normal", 1, 0);
           result += targets[i].takeDamage(this, "Durative Weakness", additionalDamageResult);
         }
         
@@ -1072,7 +1074,7 @@ class Delacium extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           additionalDamage = 4 * (1 + Object.keys(targets[i]._debuffs).length);
-          additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", additionalDamage);
+          additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", additionalDamage, 0);
           result += targets[i].takeDamage(this, "Ray of Delacium 2", additionalDamageResult);
         }
           
@@ -3577,7 +3579,7 @@ class Valkryie extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.06, "basic", "burnTrue", 1, 0, 1);
-          result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+          result += targets[i].getDebuff(this, "Burn", 1, {valkryieBasic: true, burnTrue: damageResult["damageAmount"]});
         }
         
         result += targets[i].getDebuff(this, "Attack", 3, {attack: Math.floor(targets[i]._stats["attack"] * 0.12)});
@@ -3603,7 +3605,7 @@ class Valkryie extends hero {
       
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.62);
-        result += targets[i].takeDamage(this, "Fire of the Soul", damageResult);
+        result += targets[i].takeDamage(this, "Flap Dance", damageResult);
         
         attackStolen = Math.floor(targets[i]._currentStats["totalAttack"] * 0.15);
         result += targets[i].getDebuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});

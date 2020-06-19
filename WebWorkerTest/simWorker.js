@@ -1098,8 +1098,9 @@ class hero {
       result += formatNum(this._currentStats["energy"]) + ".</div>"
       
       if ("Devouring Mark" in this._debuffs && this._currentStats["energy"] >= 100) {
-        var s = Object.keys(this._debuffs["Devouring Mark"])[0];
-        triggerQueue.push([this._debuffs["Devouring Mark"][s]["source"], "devouringMark", this, this._debuffs["Devouring Mark"][s]["effects"]["attackAmount"], this._currentStats["energy"]]);
+        for (var s in this._debuffs["Devouring Mark"]) {
+          triggerQueue.push([this._debuffs["Devouring Mark"][s]["source"], "devouringMark", this, this._debuffs["Devouring Mark"][s]["effects"]["attackAmount"], this._currentStats["energy"], s]);
+        }
       }
     }
     
@@ -1338,7 +1339,7 @@ class hero {
               result += "<div>" + this.takeDamage(source, "Debuff " + debuffName, damageResult) + "</div>";
             }
             
-          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
             //ignore, used to track other stuff
             
           } else {
@@ -1443,7 +1444,7 @@ class hero {
           } else if (strStatName == "armorPercent") {
             this._currentStats["totalArmor"] = this.calcCombatArmor();
             
-          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
                 // do nothing, used to track other stuff
                 
           } else if (isDot(strStatName)) {
@@ -1583,7 +1584,7 @@ class hero {
                   } else if (strStatName == "armorPercent") {
                     this._currentStats["totalArmor"] = this.calcCombatArmor();
                     
-                  } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
+                  } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
                     // do nothing, used to track stuff
                     
                   }  else if (isDot(strStatName)) {
@@ -2952,7 +2953,7 @@ class Delacium extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           additionalDamage = this._currentStats["totalAttack"] * 2.5 * (1 + Object.keys(targets[i]._debuffs).length);
-          additionalDamageResult = this.calcDamage(targets[i], additionalDamage, "basic", "normal");
+          additionalDamageResult = this.calcDamage(targets[i], additionalDamage, "basic", "normal", 1, 0);
           result += targets[i].takeDamage(this, "Durative Weakness", additionalDamageResult);
         }
         
@@ -2981,7 +2982,7 @@ class Delacium extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           additionalDamage = 4 * (1 + Object.keys(targets[i]._debuffs).length);
-          additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", additionalDamage);
+          additionalDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", additionalDamage, 0);
           result += targets[i].takeDamage(this, "Ray of Delacium 2", additionalDamageResult);
         }
           
@@ -5486,12 +5487,12 @@ class Valkryie extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.06, "basic", "burnTrue", 1, 0, 1);
-          result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+          result += targets[i].getDebuff(this, "Burn", 1, {valkryieBasic: true, burnTrue: damageResult["damageAmount"]});
         }
         
         result += targets[i].getDebuff(this, "Attack", 3, {attack: Math.floor(targets[i]._stats["attack"] * 0.12)});
         
-        basicQueue.push([this, targets[i], damageResult["damageAmount"] + burnDamageResult["damageAmount"], damageResult["critted"]]);
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
@@ -5512,7 +5513,7 @@ class Valkryie extends hero {
       
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.62);
-        result += targets[i].takeDamage(this, "Fire of the Soul", damageResult);
+        result += targets[i].takeDamage(this, "Flap Dance", damageResult);
         
         attackStolen = Math.floor(targets[i]._currentStats["totalAttack"] * 0.15);
         result += targets[i].getDebuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
@@ -6342,7 +6343,9 @@ var skins = {
   
   "Carrie": {
     "Little Red Riding Hood": {hpPercent: 0.03, attackPercent: 0.03, damageReduce: 0.03},
-    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04}
+    "Legendary Little Red Riding Hood": {hpPercent: 0.06, attackPercent: 0.06, damageReduce: 0.04},
+    "Princess Carrie": {hpPercent: 0.03, damageReduce: 0.03, speed: 4},
+    "Legendary Princess Carrie": {hpPercent: 0.06, damageReduce: 0.05, speed: 6}
   },
   
   "Cthuga": {

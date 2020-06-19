@@ -486,5 +486,6 @@ var translate = {
   "damageAgainstMage": "Damage Against Mage",
   "damageAgainstRanger": "Damage Against Ranger",
   "damageAgainstAssassin": "Damage Against Assassin",
-  "damageAgainstPriest": "Damage Against Priest"
+  "damageAgainstPriest": "Damage Against Priest",
+  "valkryieBasic": "Flag Burn from Valkryie Basic"
 };
