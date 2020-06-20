@@ -3032,24 +3032,30 @@ class UniMax3000 extends hero {
     
     if (trigger[1] == "eventSelfBasic") {
       return this.eventSelfBasic();
-    } else if (trigger[1] == "eventTookDamage") {
-      return this.eventTookDamage(trigger[2]);
+    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1])) {
+      return this.eventEnemyActive(trigger[2], trigger[3]);
     }
     
     return result;
   }
   
   
-  eventTookDamage(target) {
+  eventEnemyActive(target, e) {
     var result = "";
     
     if (target._currentStats["totalHP"] > 0) {
-      var attackStolen = Math.floor(target._currentStats["totalAttack"] * 0.2);
-      
-      result += "<div>" + this.heroDesc() + " <span class='skill'>Frenzied Taunt</span> triggered.</div>"
-      result += target.getDebuff(this, "Fixed Attack", 2, {fixedAttack: attackStolen});
-      result += this.getBuff(this, "Fixed Attack", 2, {fixedAttack: attackStolen});
-      result += target.getDebuff(this, "Taunt", 2, {}, false, "", 0.30);
+      for (let i in e) {
+        if (this.heroDesc() == e[i][1].heroDesc()) {
+          var attackStolen = Math.floor(target._currentStats["totalAttack"] * 0.2);
+          
+          result += "<div>" + this.heroDesc() + " <span class='skill'>Frenzied Taunt</span> triggered.</div>"
+          result += target.getDebuff(this, "Fixed Attack", 2, {fixedAttack: attackStolen});
+          result += this.getBuff(this, "Fixed Attack", 2, {fixedAttack: attackStolen});
+          result += target.getDebuff(this, "Taunt", 2, {}, false, "", 0.30);
+          
+          break;
+        }
+      }
     }
     
     return result;
@@ -3088,13 +3094,6 @@ class UniMax3000 extends hero {
       result = super.calcDamage(target, attackDamage, damageSource, damageType, skillDamage, canCrit, dotRounds, canBlock, armorReduces);
     }
     
-    return result;
-  }
-  
-  
-  takeDamage(source, strAttackDesc, damageResult) {
-    var result = super.takeDamage(source, strAttackDesc, damageResult);
-    triggerQueue.push([this, "eventTookDamage", source]);
     return result;
   }
   
