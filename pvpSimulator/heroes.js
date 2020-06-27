@@ -597,7 +597,6 @@ class hero {
     if (precisionDamageIncrease > 1.45) { precisionDamageIncrease = 1.45; }
     if (armorBreak > 1) { armorBreak = 1; }
     if (damageReduce > 0.75) { damageReduce = 0.75; }
-    if (damageReduce < 0) { damageReduce = 0; }
     if (allDamageReduce < 0) { allDamageReduce = 0; }
     
     var blockChance = canBlock * (target._currentStats["block"] - precision);
@@ -1418,7 +1417,7 @@ class hero {
       var keyDelete = Object.keys(this._buffs["Guardian Shadow"]);
       
       result += "<div>Damage prevented by <span class='skill'>Guardian Shadow</span>.</div>";
-      result += this.getHeal(this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]);
+      result += this.getHP(this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]);
       this._buffs["Guardian Shadow"][keyDelete[0]]["source"]._currentStats["damageHealed"] += 2 * damageResult["damageAmount"];
       
       damageResult["damageAmount"] = 0;
@@ -1430,6 +1429,15 @@ class hero {
       if (keyDelete.length <= 1) {
         result += this.removeBuff("Guardian Shadow");
       }
+      
+      
+      if (this._currentStats["unbendingWillStacks"] > 0 && damageResult["damageSource"] != "mark") {
+        this._currentStats["unbendingWillStacks"] -= 1;
+        if (this._currentStats["unbendingWillStacks"] == 0) {
+          result += "<div><span class='skill'>Unbending Will</span> ended.</div>";
+        }
+      }
+      
     } else {
       if (this._currentStats["unbendingWillStacks"] > 0 && damageResult["damageSource"] != "mark") {
         this._currentStats["unbendingWillStacks"] -= 1;
@@ -1527,7 +1535,7 @@ class hero {
     
     if ("Black Hole Mark" in this._debuffs && ["active", "basic"].includes(damageResult["damageSource"])) {
       let key = Object.keys(this._debuffs["Black Hole Mark"])[0];
-      this._debuffs["Black Hole Mark"][key]["effects"]["damageAmount"] += damageResult["damageAmount"];
+      this._debuffs["Black Hole Mark"][key]["effects"]["damageAmount"] += Math.floor(0.60 * damageResult["damageAmount"]);
     }
     
     result += damageResult["e5Description"];
@@ -1594,5 +1602,30 @@ class hero {
     }
     
     return false;
+  }
+  
+  
+  getHP(source, amountHealed) {
+    if (this._currentStats["totalHP"] <= 0) { return ""; }
+    
+    var result = "";
+    result = "<div>" + source.heroDesc() + " healed ";
+    
+    // prevent overheal 
+    if (this._currentStats["totalHP"] + amountHealed > this._stats["totalHP"]) {
+      this._currentStats["totalHP"] = this._stats["totalHP"];
+    } else {
+      this._currentStats["totalHP"] += amountHealed;
+    }
+    
+    source._currentStats["damageHealed"] += amountHealed;
+    
+    if (this.heroDesc() == source.heroDesc()) {
+      result += " themself for " + formatNum(amountHealed) + ".</div>";
+    } else {
+      result += this.heroDesc() + " for " + formatNum(amountHealed) + ".</div>";
+    }
+    
+    return result;
   }
 }

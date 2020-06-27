@@ -282,19 +282,6 @@ function runSim() {
       
       // handle end of round abilities
       temp = "";
-      
-      for (let h in attHeroes) {
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
-          temp += attHeroes[h].tickEnable3();
-        }
-      }
-          
-      for (let h in defHeroes) {
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
-          temp += defHeroes[h].tickEnable3();
-        }
-      }
-        
         
       for (let h in attHeroes) {
         if (attHeroes[h]._currentStats["totalHP"] > 0) {
@@ -316,6 +303,10 @@ function runSim() {
           temp += attHeroes[h].endOfRound(roundNum);
         }
         
+        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
+          temp += attHeroes[h].tickEnable3();
+        }
+        
         
         if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
           temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
@@ -332,6 +323,10 @@ function runSim() {
       for (let h in defHeroes) {
         if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
           temp += defHeroes[h].endOfRound(roundNum);
+        }
+        
+        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
+          temp += defHeroes[h].tickEnable3();
         }
         
         if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
@@ -530,12 +525,17 @@ function processQueue() {
         if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" Staff Punisher of Immortal")) {
           var damageResult = "";
           var didCrit = false;
+          var damageAmount = 0;
           temp = "";
           
           for (let e in copyQueue[i][2]) {
             if (copyQueue[i][2][e][3] == true && copyQueue[i][2][e][1]._currentStats["totalHP"] > 0) {
               didCrit = true;
-              damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], copyQueue[i][2][e][1]._stats["totalHP"] * 0.12, "passive", "true");
+              
+              damageAmount = copyQueue[i][2][e][1]._stats["totalHP"] * 0.12;
+              if (damageAmount > copyQueue[i][0]._currentStats["totalAttack"] * 15) { damageAmount = copyQueue[i][0]._currentStats["totalAttack"] * 15; }
+              
+              damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], damageAmount, "passive", "true");
               temp += copyQueue[i][2][e][1].takeDamage(copyQueue[i][0], copyQueue[i][0]._artifact, damageResult);
             }
           }

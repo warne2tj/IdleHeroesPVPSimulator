@@ -978,6 +978,7 @@ class Delacium extends hero {
     var targets = getRandomTargets(this, this._enemies, 3);
     var maxTargets = 3;
     var maxToCopy = 3;
+    var maxStacks = 3;
     
     if (targets.length > 0 && this._currentStats["totalHP"] > 0) {
       var validDebuffs = [];
@@ -985,10 +986,8 @@ class Delacium extends hero {
       for (var d in targets[0]._debuffs) {
         // Delacium does not copy Mihm's dot
         if (d != "Dot") {
-          for (var s in targets[0]._debuffs[d]) {
-            if (isDot(d, targets[0]._debuffs[d][s]["effects"]) || isAttribute(d, targets[0]._debuffs[d][s]["effects"])) {
-              validDebuffs.push([d, targets[0]._debuffs[d][s], Math.random()]);
-            }
+          if (isDot(d) || isAttribute(d)) {
+            validDebuffs.push([d, targets[0]._debuffs[d], Math.random()]);
           }
         }
       }
@@ -1007,14 +1006,14 @@ class Delacium extends hero {
       if (targets.length > 1 && maxToCopy > 0) {
         result += "<p><div>" + this.heroDesc() + " <span class='skill'>Transmissive Seed</span> triggered. Copying dots and attribute reduction debuffs.</div>";
         
-        for (var h = 1; h < maxTargets; h++) {
-          for (var d = 0; d < maxToCopy; d++) {
-            if (validDebuffs[0] in targets[h]._debuffs) {
-              if (Object.keys(targets[h]._debuffs[d]).length < 3) {
-                result += targets[h].getDebuff(validDebuffs[d][1]["source"], validDebuffs[d][0], validDebuffs[d][1]["duration"], validDebuffs[d][1]["effects"]);
-              }
-            } else {
-              result += targets[h].getDebuff(validDebuffs[d][1]["source"], validDebuffs[d][0], validDebuffs[d][1]["duration"], validDebuffs[d][1]["effects"]);
+        for (let h = 1; h < maxTargets; h++) {
+          for (let d = 0; d < maxToCopy; d++) {
+            let stackKeys = Object.keys(validDebuffs[d][1]);
+            maxStacks = 3;
+            if (stackKeys.length < maxStacks) { maxStacks = stackKeys.length; }
+            
+            for (let s = 0; s < maxStacks; s++) {
+              result += targets[h].getDebuff(validDebuffs[d][1][stackKeys[s]]["source"], validDebuffs[d][0], validDebuffs[d][1][stackKeys[s]]["duration"], validDebuffs[d][1][stackKeys[s]]["effects"]);
             }
           }
         }
@@ -3267,10 +3266,13 @@ class Drake extends hero {
   
   
   eventSelfActive() {
+    return this.getBuff(this, "Shadow Lure", 1, {dodge: 0.60});
+  }
+  
+  
+  startOfBattle() {
     var result = "";
     var targets = getLowestHPTargets(this, this._enemies, 1);
-    
-    result += this.getBuff(this, "Shadow Lure", 1, {dodge: 0.60});
     
     for (let i in targets) {
       result += targets[i].getDebuff(this, "Armor Percent", 2, {armorPercent: 1});
@@ -3281,6 +3283,11 @@ class Drake extends hero {
     }
     
     return result;
+  }
+  
+  
+  endOfRound(roundNum) {
+    return this.startOfBattle();
   }
   
   
@@ -3308,7 +3315,7 @@ class Drake extends hero {
             result += targets[i].takeDamage(this, "Deadly Strike - HP", hpDamageResult);
           }
         } else {
-          result += targets[i].getDebuff(this, "Black Hole Mark", 2, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
+          result += targets[i].getDebuff(this, "Black Hole Mark", 1, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
         }
         
         basicQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
@@ -3349,7 +3356,7 @@ class Drake extends hero {
             result += targets[i].takeDamage(this, "Annihilating Meteor - HP2", hpDamageResult2);
           }
         } else {
-          result += targets[i].getDebuff(this, "Black Hole Mark", 2, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
+          result += targets[i].getDebuff(this, "Black Hole Mark", 1, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
         }
         
         basicQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult1["damageAmount"] + hpDamageResult2["damageAmount"], damageResult["critted"]]);
@@ -3371,7 +3378,7 @@ class Russell extends hero {
   
   passiveStats() {
     // apply Baptism of Light passive
-    this.applyStatChange({attackPercent: 0.30, holyDamage: 0.60, critDamage: 0.40, controlImmune: 0.30, speed: 60}, "PassiveStats");
+    this.applyStatChange({attackPercent: 0.30, holyDamage: 0.80, critDamage: 0.40, controlImmune: 0.30, speed: 60}, "PassiveStats");
   }
   
   
@@ -3435,6 +3442,7 @@ class Russell extends hero {
     
     
     result += this.getHeal(this, healAmount);
+    result += this.getBuff(this, "Light Arrow", 4);
     result += this.getBuff(this, "Light Arrow", 4);
     
     for (let i in targets)  {
@@ -3500,7 +3508,7 @@ class Russell extends hero {
         result += targetLock;
         
         if (targetLock == "") {
-          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 15);
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 16);
           result += targets[i].takeDamage(this, "Radiant Arrow", damageResult);
           activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
         }
@@ -3508,6 +3516,7 @@ class Russell extends hero {
       
       this._currentStats["isCharging"] = false;
       
+      result += this.getBuff(this, "Light Arrow", 4);
       result += this.getBuff(this, "Light Arrow", 4);
       result += this.getBuff(this, "Light Arrow", 4);
       result += this.getBuff(this, "Light Arrow", 4);

@@ -93,7 +93,7 @@ var baseHeroStats = {
       baseSpeed: 235,
       growHP: 898.6,
       growAttack: 34,
-      growArmor: 6.1,
+      growArmor: 6.3,
       growSpeed: 2
     }
   },
@@ -413,7 +413,7 @@ var baseHeroStats = {
       baseSpeed: 226,
       growHP: 901,
       growAttack: 34,
-      growArmor: 6.1,
+      growArmor: 6.3,
       growSpeed: 2
     }
   },
@@ -445,7 +445,7 @@ var baseHeroStats = {
       baseSpeed: 235,
       growHP: 901,
       growAttack: 34,
-      growArmor: 6.1,
+      growArmor: 6.3,
       growSpeed: 2
     }
   },
