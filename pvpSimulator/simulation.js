@@ -480,6 +480,7 @@ function processQueue() {
         || copyQueue[i][1].includes("Mark")
         || copyQueue[i][1] == "eventSelfDied"
         || (copyQueue[i][0]._heroName == "Elyvia" && ["eventEnemyActive", "eventEnemyBasic"].includes(copyQueue[i][1]))
+        || (copyQueue[i][0]._currentStats["totalHP"] > 0 && ["addHurt", "getHP"].includes(copyQueue[i][1]))
       ) {
         temp = copyQueue[i][0].handleTrigger(copyQueue[i]);
         if (temp.length > 0) { result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>"; }

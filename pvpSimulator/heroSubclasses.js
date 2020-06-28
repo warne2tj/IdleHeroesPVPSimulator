@@ -14,6 +14,8 @@ class Aida extends hero {
       if (trigger[2]._currentStats["totalHP"] > 0) {
         return this.balanceMark(trigger[2], trigger[3]);
       }
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -138,6 +140,8 @@ class AmenRa extends hero {
     
     if (["eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
       result += this.eventAllyActive();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -242,6 +246,8 @@ class Amuvor extends hero {
     
     if (["eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
       result += this.eventAllyActive();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -349,6 +355,8 @@ class Aspen extends hero {
       result += this.eventSelfBasic();
     } else if (trigger[1] == "enemyHorrified") {
       result += this.enemyHorrified();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -502,6 +510,8 @@ class Belrain extends hero {
       return this.eventSelfBasic();
     } else if (trigger[1] == "eventSelfDied") {
       return this.eventSelfDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -599,6 +609,8 @@ class Carrie extends hero {
           return this.devouringMark(trigger[2], trigger[3], trigger[4], trigger[5]);
         }
       }
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return "";
@@ -790,6 +802,8 @@ class Cthuga extends hero {
         var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 0.6);
         result += this.getBuff(this, "Heal", 3, {heal: healAmount});
         
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -900,6 +914,8 @@ class DarkArthindol extends hero {
       result += this.getBuff(this, "Attack Percent", 6, {attackPercent: 0.03});
       result += this.getBuff(this, "Skill Damage", 6, {skillDamage: 0.05});
       result += this.getEnergy(this, 10);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -1112,6 +1128,8 @@ class Elyvia extends hero {
       return this.eventSelfBasic();
     } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1])) {
       return this.eventEnemyBasic(trigger[2], trigger[3]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -1227,6 +1245,8 @@ class Emily extends hero {
       for (var h in targets) {
         result += targets[h].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.29});
       }
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -1321,6 +1341,8 @@ class Garuda extends hero {
         return this.eventAllyBasic(trigger[2]);
     } else if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1])) {
       return this.eventAllyDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -1410,6 +1432,8 @@ class FaithBlade extends hero {
     
     if (trigger[1] == "eventEnemyDied") {
       return this.eventEnemyDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -1506,6 +1530,8 @@ class Gustin extends hero {
       return this.eventEnemyBasic(trigger[3]);
     } else if (trigger[1] == "eventTookDamage") {
       return this.eventTookDamage(trigger[2], trigger[3]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -1695,6 +1721,8 @@ class Horus extends hero {
       return this.eventEnemyActive();
     } else if (trigger[1] == "eventTookDamage") {
       return this.eventTookDamage();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -1842,6 +1870,8 @@ class Ithaqua extends hero {
       return this.eventSelfActive(trigger[2]);
     } else if (trigger[1] == "eventEnemyDied" && trigger[2].heroDesc() == this.heroDesc()) {
       return this.eventEnemyDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2009,6 +2039,8 @@ class Kroos extends hero {
       for (var h in targets) {
         result += targets[h].getDebuff(this, "stun", 2, {}, false, "", 0.75);
       }
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2109,6 +2141,8 @@ class Michelle extends hero {
       return this.eventAllyBasic(trigger[2], trigger[3]);
     } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && "Blaze of Seraph" in this._buffs) {
       return this.eventAllyBasic(this, trigger[2]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2226,6 +2260,8 @@ class Mihm extends hero {
     
     if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1])) {
       return this.eventEnemyDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2317,6 +2353,8 @@ class Nakia extends hero {
       return this.eventSelfActive(trigger[2]);
     } else if (trigger[1] == "eventSelfBasic") {
       return this.eventSelfBasic(trigger[2]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2437,6 +2475,8 @@ class Oberon extends hero {
       return this.eventSelfBasic();
     } else if (trigger[1] == "eventTwine") {
       return this.eventTwine();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2539,6 +2579,8 @@ class Penny extends hero {
       return this.eventSelfBasic(trigger[2]);
     } else if (trigger[1] == "eventTookDamage") {
       return this.eventTookDamage(trigger[2], trigger[3]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2747,6 +2789,8 @@ class Sherlock extends hero {
       return this.eventHPlte30();
     } else if (trigger[1] == "eventGotCC" && this._currentStats["wellCalculatedStacks"] > 0) {
       return this.eventGotCC(trigger[2], trigger[3], trigger[4]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2911,6 +2955,8 @@ class Tara extends hero {
     
     if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
       return this.eventSelfBasic();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3033,6 +3079,8 @@ class UniMax3000 extends hero {
       return this.eventSelfBasic();
     } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1])) {
       return this.eventEnemyActive(trigger[2], trigger[3]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3155,6 +3203,8 @@ class Asmodel extends hero {
       }
     } else if (trigger[1] == "eventTookDamage") {
       return this.eventTookDamage();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3259,6 +3309,8 @@ class Drake extends hero {
     
     if (["eventSelfActive", "eventSelfBasic"].includes(trigger[1])) {
       return this.eventSelfActive();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3389,6 +3441,8 @@ class Russell extends hero {
       return this.eventSelfActive();
     } else if (trigger[1] == "eventSelfBasic") {
       return this.eventSelfBasic();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3547,6 +3601,8 @@ class Valkryie extends hero {
     
     if (trigger[1] == "eventGotCC") {
       return this.eventGotCC();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
