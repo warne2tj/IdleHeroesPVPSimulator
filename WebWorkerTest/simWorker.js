@@ -851,7 +851,7 @@ class hero {
   
   // can further extend this to account for new mechanics by adding parameters to the end
   // supply a default value so as to not break other calls to this function
-    calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1, armorReduces=1) {
+  calcDamage(target, attackDamage, damageSource, damageType, skillDamage=1, canCrit=1, dotRounds=0, canBlock=1, armorReduces=1) {
     
     // Get damage related stats
     var critChance = canCrit * this._currentStats["crit"];
@@ -859,7 +859,6 @@ class hero {
     var precision = this._currentStats["precision"];
     var precisionDamageIncrease = 1;
     var holyDamageIncrease = this._currentStats["holyDamage"] * .7;
-    var lethalFightback = 1;
     var damageAgainstBurning = 1;
     var damageAgainstBleeding = 1;
     var damageAgainstPoisoned = 1;
@@ -881,7 +880,6 @@ class hero {
     // faction advantage
     var factionA = this._heroFaction;
     var factionB = target._heroFaction;
-    var e5Desc = "";
     
     if (
       (factionA == "Abyss" && factionB == "Forest") ||
@@ -897,18 +895,6 @@ class hero {
     precisionDamageIncrease = 1 + precision * 0.3;
     
     
-    if (
-      this._enable2 == "LethalFightback" && 
-      this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
-      damageType != "true" &&
-      !(isDot(damageType)) &&
-      (damageSource == "active" || damageSource == "basic")
-    ) {
-      lethalFightback = 1.12;
-      e5Desc = "<div><span class='skill'>Lethal Fightback</span> triggered additional damage.</div>";
-    }
-    
-    
     // caps and min
     if (critDamage > 4.5) { critDamage = 4.5; }
     if (critChance < 0) { critChance = 0; }
@@ -917,7 +903,6 @@ class hero {
     if (precisionDamageIncrease > 1.45) { precisionDamageIncrease = 1.45; }
     if (armorBreak > 1) { armorBreak = 1; }
     if (damageReduce > 0.75) { damageReduce = 0.75; }
-    if (damageReduce < 0) { damageReduce = 0; }
     if (allDamageReduce < 0) { allDamageReduce = 0; }
     
     var blockChance = canBlock * (target._currentStats["block"] - precision);
@@ -986,7 +971,7 @@ class hero {
     
     
     // calculate damage
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstClass * allDamageDealt;
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstClass * allDamageDealt;
     attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1-classDamageReduce) * allDamageTaken;
     
     var blocked = false;
@@ -1011,21 +996,34 @@ class hero {
       // normal
     }
     
+    
     // E5 Balanced strike
     if ((damageSource == "active" || damageSource == "basic") && this._enable5 == "BalancedStrike" && !(isDot(damageType)) && damageType != "true") {
       if (critted == false) {
-        attackDamage *= 1.3;
-        e5Desc = "<div><span class='skill'>Balanced Strike</span> triggered additional damage on non-crit.</div>";
+        triggerQueue.push([this, "addHurt", target, attackDamage * 0.30, "Balanced Strike"]);
       }
     }
+    
+    
+    // E2 Lethal Fightback
+    if (
+      this._enable2 == "LethalFightback" && 
+      this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
+      damageType != "true" &&
+      !(isDot(damageType)) &&
+      (damageSource == "active" || damageSource == "basic")
+    ) {
+      triggerQueue.push([this, "addHurt", target, attackDamage * 0.12, "Lethal Fightback"]);
+    }
+    
     
     return {
       "damageAmount": Math.floor(attackDamage),
       "critted": critted, 
       "blocked": blocked, 
       "damageSource": damageSource, 
-      "damageType": damageType, 
-      "e5Description": e5Desc
+      "damageType": damageType,
+      "e5Description": ""
     };
   }
   
@@ -1692,7 +1690,6 @@ class hero {
   // usually you'll want to check that the hero is still alive before triggering their effect
   
   passiveStats() { return {}; }
-  handleTrigger(e) { return ""; }
   eventSelfBasic(e) { return ""; }
   eventAllyBasic(e) { return ""; }
   eventEnemyBasic(e) { return ""; }
@@ -1705,6 +1702,26 @@ class hero {
   startOfBattle() { return ""; }
   endOfRound(roundNum) { return ""; }
   
+  
+  handleTrigger(trigger) { 
+    var result = "";
+    
+    if (trigger[1] == "addHurt") {
+      if (trigger[2]._currentStats["totalHP"] > 0) {
+        let damageResult = this.calcDamage(trigger[2], trigger[3], "passive", "true");
+        return trigger[2].takeDamage(this, trigger[4], damageResult);
+      }
+      
+    } else if (trigger[1] == "getHP") {
+      return this.getHP(trigger[2], Math.floor(trigger[3]));
+      
+    } else if (trigger[1] == "getHeal") {
+      return this.getHP(trigger[2], Math.floor(trigger[3]));
+      
+    }
+    
+    return ""; 
+  }
   
   
   takeDamage(source, strAttackDesc, damageResult) {
@@ -1723,8 +1740,8 @@ class hero {
       var keyDelete = Object.keys(this._buffs["Guardian Shadow"]);
       
       result += "<div>Damage prevented by <span class='skill'>Guardian Shadow</span>.</div>";
-      result += this.getHP(this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]);
-      this._buffs["Guardian Shadow"][keyDelete[0]]["source"]._currentStats["damageHealed"] += 2 * damageResult["damageAmount"];
+      this._buffs["Guardian Shadow"][keyDelete[0]]["source"]._currentStats["damageHealed"] += damageResult["damageAmount"];
+      triggerQueue.push([this, "getHP", this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]]);
       
       damageResult["damageAmount"] = 0;
       damageResult["critted"] = false;
@@ -1814,8 +1831,8 @@ class hero {
       if (["active", "basic"].includes(damageResult["damageSource"]) && source._enable5 == "BalancedStrike") {
         if (damageResult["critted"] == true) {
           let healAmount = source.calcHeal(source, 0.15 * (damageResult["damageAmount"]));
-          result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>"
-          result += source.getHeal(source, healAmount);
+          result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>";
+          triggerQueue.push([source, "getHeal", source, healAmount]);
         }
       }
     }
@@ -1941,8 +1958,6 @@ class hero {
 
 /* Start of heroSubclasses.js */
 
-
-
 // Aida
 class Aida extends hero {
   passiveStats() {
@@ -1958,6 +1973,8 @@ class Aida extends hero {
       if (trigger[2]._currentStats["totalHP"] > 0) {
         return this.balanceMark(trigger[2], trigger[3]);
       }
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2082,6 +2099,8 @@ class AmenRa extends hero {
     
     if (["eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
       result += this.eventAllyActive();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2186,6 +2205,8 @@ class Amuvor extends hero {
     
     if (["eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
       result += this.eventAllyActive();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2293,6 +2314,8 @@ class Aspen extends hero {
       result += this.eventSelfBasic();
     } else if (trigger[1] == "enemyHorrified") {
       result += this.enemyHorrified();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2446,6 +2469,8 @@ class Belrain extends hero {
       return this.eventSelfBasic();
     } else if (trigger[1] == "eventSelfDied") {
       return this.eventSelfDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2539,22 +2564,26 @@ class Carrie extends hero {
       return this.eventAllyDied();
     } else if (trigger[1] == "devouringMark") {
       if (trigger[2]._currentStats["totalHP"] > 0 && "Devouring Mark" in trigger[2]._debuffs) {
-        return this.devouringMark(trigger[2], trigger[3], trigger[4]);
+        if (trigger[5] in trigger[2]._debuffs["Devouring Mark"]) {
+          return this.devouringMark(trigger[2], trigger[3], trigger[4], trigger[5]);
+        }
       }
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return "";
   }
   
   
-  devouringMark(target, attackAmount, energyAmount) {
+  devouringMark(target, attackAmount, energyAmount, stackID) {
     var result = "";
     var damageResult = {};
     
     // attack % per energy damage seems to be true damage
     damageResult = this.calcDamage(target, attackAmount * 0.1 * energyAmount, "mark", "energy");
     result = target.takeDamage(this, "Devouring Mark", damageResult);
-    result += target.removeDebuff("Devouring Mark");
+    result += target.removeDebuff("Devouring Mark", stackID);
     
     if (target._currentStats["totalHP"] > 0) {
       result += "<div>Energy set to " + formatNum(0) + ".</div>";
@@ -2732,6 +2761,8 @@ class Cthuga extends hero {
         var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 0.6);
         result += this.getBuff(this, "Heal", 3, {heal: healAmount});
         
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2842,6 +2873,8 @@ class DarkArthindol extends hero {
       result += this.getBuff(this, "Attack Percent", 6, {attackPercent: 0.03});
       result += this.getBuff(this, "Skill Damage", 6, {skillDamage: 0.05});
       result += this.getEnergy(this, 10);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2920,6 +2953,7 @@ class Delacium extends hero {
     var targets = getRandomTargets(this, this._enemies, 3);
     var maxTargets = 3;
     var maxToCopy = 3;
+    var maxStacks = 3;
     
     if (targets.length > 0 && this._currentStats["totalHP"] > 0) {
       var validDebuffs = [];
@@ -2927,10 +2961,8 @@ class Delacium extends hero {
       for (var d in targets[0]._debuffs) {
         // Delacium does not copy Mihm's dot
         if (d != "Dot") {
-          for (var s in targets[0]._debuffs[d]) {
-            if (isDot(d, targets[0]._debuffs[d][s]["effects"]) || isAttribute(d, targets[0]._debuffs[d][s]["effects"])) {
-              validDebuffs.push([d, targets[0]._debuffs[d][s], Math.random()]);
-            }
+          if (isDot(d) || isAttribute(d)) {
+            validDebuffs.push([d, targets[0]._debuffs[d], Math.random()]);
           }
         }
       }
@@ -2949,14 +2981,14 @@ class Delacium extends hero {
       if (targets.length > 1 && maxToCopy > 0) {
         result += "<p><div>" + this.heroDesc() + " <span class='skill'>Transmissive Seed</span> triggered. Copying dots and attribute reduction debuffs.</div>";
         
-        for (var h = 1; h < maxTargets; h++) {
-          for (var d = 0; d < maxToCopy; d++) {
-            if (validDebuffs[0] in targets[h]._debuffs) {
-              if (Object.keys(targets[h]._debuffs[d]).length < 3) {
-                result += targets[h].getDebuff(validDebuffs[d][1]["source"], validDebuffs[d][0], validDebuffs[d][1]["duration"], validDebuffs[d][1]["effects"]);
-              }
-            } else {
-              result += targets[h].getDebuff(validDebuffs[d][1]["source"], validDebuffs[d][0], validDebuffs[d][1]["duration"], validDebuffs[d][1]["effects"]);
+        for (let h = 1; h < maxTargets; h++) {
+          for (let d = 0; d < maxToCopy; d++) {
+            let stackKeys = Object.keys(validDebuffs[d][1]);
+            maxStacks = 3;
+            if (stackKeys.length < maxStacks) { maxStacks = stackKeys.length; }
+            
+            for (let s = 0; s < maxStacks; s++) {
+              result += targets[h].getDebuff(validDebuffs[d][1][stackKeys[s]]["source"], validDebuffs[d][0], validDebuffs[d][1][stackKeys[s]]["duration"], validDebuffs[d][1][stackKeys[s]]["effects"]);
             }
           }
         }
@@ -3055,6 +3087,8 @@ class Elyvia extends hero {
       return this.eventSelfBasic();
     } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1])) {
       return this.eventEnemyBasic(trigger[2], trigger[3]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3170,6 +3204,8 @@ class Emily extends hero {
       for (var h in targets) {
         result += targets[h].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.29});
       }
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3264,6 +3300,8 @@ class Garuda extends hero {
         return this.eventAllyBasic(trigger[2]);
     } else if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1])) {
       return this.eventAllyDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3353,6 +3391,8 @@ class FaithBlade extends hero {
     
     if (trigger[1] == "eventEnemyDied") {
       return this.eventEnemyDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3449,6 +3489,8 @@ class Gustin extends hero {
       return this.eventEnemyBasic(trigger[3]);
     } else if (trigger[1] == "eventTookDamage") {
       return this.eventTookDamage(trigger[2], trigger[3]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3638,6 +3680,8 @@ class Horus extends hero {
       return this.eventEnemyActive();
     } else if (trigger[1] == "eventTookDamage") {
       return this.eventTookDamage();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3785,6 +3829,8 @@ class Ithaqua extends hero {
       return this.eventSelfActive(trigger[2]);
     } else if (trigger[1] == "eventEnemyDied" && trigger[2].heroDesc() == this.heroDesc()) {
       return this.eventEnemyDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3952,6 +3998,8 @@ class Kroos extends hero {
       for (var h in targets) {
         result += targets[h].getDebuff(this, "stun", 2, {}, false, "", 0.75);
       }
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4052,6 +4100,8 @@ class Michelle extends hero {
       return this.eventAllyBasic(trigger[2], trigger[3]);
     } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && "Blaze of Seraph" in this._buffs) {
       return this.eventAllyBasic(this, trigger[2]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4169,6 +4219,8 @@ class Mihm extends hero {
     
     if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1])) {
       return this.eventEnemyDied();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4260,6 +4312,8 @@ class Nakia extends hero {
       return this.eventSelfActive(trigger[2]);
     } else if (trigger[1] == "eventSelfBasic") {
       return this.eventSelfBasic(trigger[2]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4380,6 +4434,8 @@ class Oberon extends hero {
       return this.eventSelfBasic();
     } else if (trigger[1] == "eventTwine") {
       return this.eventTwine();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4482,6 +4538,8 @@ class Penny extends hero {
       return this.eventSelfBasic(trigger[2]);
     } else if (trigger[1] == "eventTookDamage") {
       return this.eventTookDamage(trigger[2], trigger[3]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4690,6 +4748,8 @@ class Sherlock extends hero {
       return this.eventHPlte30();
     } else if (trigger[1] == "eventGotCC" && this._currentStats["wellCalculatedStacks"] > 0) {
       return this.eventGotCC(trigger[2], trigger[3], trigger[4]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4854,6 +4914,8 @@ class Tara extends hero {
     
     if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
       return this.eventSelfBasic();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4976,6 +5038,8 @@ class UniMax3000 extends hero {
       return this.eventSelfBasic();
     } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1])) {
       return this.eventEnemyActive(trigger[2], trigger[3]);
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5098,6 +5162,8 @@ class Asmodel extends hero {
       }
     } else if (trigger[1] == "eventTookDamage") {
       return this.eventTookDamage();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5202,6 +5268,8 @@ class Drake extends hero {
     
     if (["eventSelfActive", "eventSelfBasic"].includes(trigger[1])) {
       return this.eventSelfActive();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5209,10 +5277,13 @@ class Drake extends hero {
   
   
   eventSelfActive() {
+    return this.getBuff(this, "Shadow Lure", 1, {dodge: 0.60});
+  }
+  
+  
+  startOfBattle() {
     var result = "";
     var targets = getLowestHPTargets(this, this._enemies, 1);
-    
-    result += this.getBuff(this, "Shadow Lure", 1, {dodge: 0.60});
     
     for (let i in targets) {
       result += targets[i].getDebuff(this, "Armor Percent", 2, {armorPercent: 1});
@@ -5223,6 +5294,11 @@ class Drake extends hero {
     }
     
     return result;
+  }
+  
+  
+  endOfRound(roundNum) {
+    return this.startOfBattle();
   }
   
   
@@ -5250,7 +5326,7 @@ class Drake extends hero {
             result += targets[i].takeDamage(this, "Deadly Strike - HP", hpDamageResult);
           }
         } else {
-          result += targets[i].getDebuff(this, "Black Hole Mark", 2, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
+          result += targets[i].getDebuff(this, "Black Hole Mark", 1, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
         }
         
         basicQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
@@ -5291,7 +5367,7 @@ class Drake extends hero {
             result += targets[i].takeDamage(this, "Annihilating Meteor - HP2", hpDamageResult2);
           }
         } else {
-          result += targets[i].getDebuff(this, "Black Hole Mark", 2, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
+          result += targets[i].getDebuff(this, "Black Hole Mark", 1, {attackAmount: this._currentStats["totalAttack"] * 40, damageAmount: 0});
         }
         
         basicQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult1["damageAmount"] + hpDamageResult2["damageAmount"], damageResult["critted"]]);
@@ -5313,7 +5389,7 @@ class Russell extends hero {
   
   passiveStats() {
     // apply Baptism of Light passive
-    this.applyStatChange({attackPercent: 0.30, holyDamage: 0.60, critDamage: 0.40, controlImmune: 0.30, speed: 60}, "PassiveStats");
+    this.applyStatChange({attackPercent: 0.30, holyDamage: 0.80, critDamage: 0.40, controlImmune: 0.30, speed: 60}, "PassiveStats");
   }
   
   
@@ -5324,6 +5400,8 @@ class Russell extends hero {
       return this.eventSelfActive();
     } else if (trigger[1] == "eventSelfBasic") {
       return this.eventSelfBasic();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5377,6 +5455,7 @@ class Russell extends hero {
     
     
     result += this.getHeal(this, healAmount);
+    result += this.getBuff(this, "Light Arrow", 4);
     result += this.getBuff(this, "Light Arrow", 4);
     
     for (let i in targets)  {
@@ -5442,7 +5521,7 @@ class Russell extends hero {
         result += targetLock;
         
         if (targetLock == "") {
-          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 15);
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 16);
           result += targets[i].takeDamage(this, "Radiant Arrow", damageResult);
           activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
         }
@@ -5450,6 +5529,7 @@ class Russell extends hero {
       
       this._currentStats["isCharging"] = false;
       
+      result += this.getBuff(this, "Light Arrow", 4);
       result += this.getBuff(this, "Light Arrow", 4);
       result += this.getBuff(this, "Light Arrow", 4);
       result += this.getBuff(this, "Light Arrow", 4);
@@ -5480,6 +5560,8 @@ class Valkryie extends hero {
     
     if (trigger[1] == "eventGotCC") {
       return this.eventGotCC();
+    } else {
+      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -8097,6 +8179,7 @@ function processQueue() {
         || copyQueue[i][1].includes("Mark")
         || copyQueue[i][1] == "eventSelfDied"
         || (copyQueue[i][0]._heroName == "Elyvia" && ["eventEnemyActive", "eventEnemyBasic"].includes(copyQueue[i][1]))
+        || (copyQueue[i][0]._currentStats["totalHP"] > 0 && ["addHurt", "getHP"].includes(copyQueue[i][1]))
       ) {
         result += copyQueue[i][0].handleTrigger(copyQueue[i]);
         

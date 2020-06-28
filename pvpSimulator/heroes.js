@@ -539,7 +539,6 @@ class hero {
     var precision = this._currentStats["precision"];
     var precisionDamageIncrease = 1;
     var holyDamageIncrease = this._currentStats["holyDamage"] * .7;
-    var lethalFightback = 1;
     var damageAgainstBurning = 1;
     var damageAgainstBleeding = 1;
     var damageAgainstPoisoned = 1;
@@ -561,7 +560,6 @@ class hero {
     // faction advantage
     var factionA = this._heroFaction;
     var factionB = target._heroFaction;
-    var e5Desc = "";
     
     if (
       (factionA == "Abyss" && factionB == "Forest") ||
@@ -575,18 +573,6 @@ class hero {
       precision += 0.15;
     }
     precisionDamageIncrease = 1 + precision * 0.3;
-    
-    
-    if (
-      this._enable2 == "LethalFightback" && 
-      this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
-      damageType != "true" &&
-      !(isDot(damageType)) &&
-      (damageSource == "active" || damageSource == "basic")
-    ) {
-      lethalFightback = 1.12;
-      e5Desc = "<div><span class='skill'>Lethal Fightback</span> triggered additional damage.</div>";
-    }
     
     
     // caps and min
@@ -665,7 +651,7 @@ class hero {
     
     
     // calculate damage
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * lethalFightback * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstClass * allDamageDealt;
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstClass * allDamageDealt;
     attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1-classDamageReduce) * allDamageTaken;
     
     var blocked = false;
@@ -690,21 +676,34 @@ class hero {
       // normal
     }
     
+    
     // E5 Balanced strike
     if ((damageSource == "active" || damageSource == "basic") && this._enable5 == "BalancedStrike" && !(isDot(damageType)) && damageType != "true") {
       if (critted == false) {
-        attackDamage *= 1.3;
-        e5Desc = "<div><span class='skill'>Balanced Strike</span> triggered additional damage on non-crit.</div>";
+        triggerQueue.push([this, "addHurt", target, attackDamage * 0.30, "Balanced Strike"]);
       }
     }
+    
+    
+    // E2 Lethal Fightback
+    if (
+      this._enable2 == "LethalFightback" && 
+      this._currentStats["totalHP"] < target._currentStats["totalHP"] &&
+      damageType != "true" &&
+      !(isDot(damageType)) &&
+      (damageSource == "active" || damageSource == "basic")
+    ) {
+      triggerQueue.push([this, "addHurt", target, attackDamage * 0.12, "Lethal Fightback"]);
+    }
+    
     
     return {
       "damageAmount": Math.floor(attackDamage),
       "critted": critted, 
       "blocked": blocked, 
       "damageSource": damageSource, 
-      "damageType": damageType, 
-      "e5Description": e5Desc
+      "damageType": damageType,
+      "e5Description": ""
     };
   }
   
@@ -1386,7 +1385,6 @@ class hero {
   // usually you'll want to check that the hero is still alive before triggering their effect
   
   passiveStats() { return {}; }
-  handleTrigger(e) { return ""; }
   eventSelfBasic(e) { return ""; }
   eventAllyBasic(e) { return ""; }
   eventEnemyBasic(e) { return ""; }
@@ -1399,6 +1397,26 @@ class hero {
   startOfBattle() { return ""; }
   endOfRound(roundNum) { return ""; }
   
+  
+  handleTrigger(trigger) { 
+    var result = "";
+    
+    if (trigger[1] == "addHurt") {
+      if (trigger[2]._currentStats["totalHP"] > 0) {
+        let damageResult = this.calcDamage(trigger[2], trigger[3], "passive", "true");
+        return trigger[2].takeDamage(this, trigger[4], damageResult);
+      }
+      
+    } else if (trigger[1] == "getHP") {
+      return this.getHP(trigger[2], Math.floor(trigger[3]));
+      
+    } else if (trigger[1] == "getHeal") {
+      return this.getHP(trigger[2], Math.floor(trigger[3]));
+      
+    }
+    
+    return ""; 
+  }
   
   
   takeDamage(source, strAttackDesc, damageResult) {
@@ -1417,8 +1435,8 @@ class hero {
       var keyDelete = Object.keys(this._buffs["Guardian Shadow"]);
       
       result += "<div>Damage prevented by <span class='skill'>Guardian Shadow</span>.</div>";
-      result += this.getHP(this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]);
-      this._buffs["Guardian Shadow"][keyDelete[0]]["source"]._currentStats["damageHealed"] += 2 * damageResult["damageAmount"];
+      this._buffs["Guardian Shadow"][keyDelete[0]]["source"]._currentStats["damageHealed"] += damageResult["damageAmount"];
+      triggerQueue.push([this, "getHP", this._buffs["Guardian Shadow"][keyDelete[0]]["source"], damageResult["damageAmount"]]);
       
       damageResult["damageAmount"] = 0;
       damageResult["critted"] = false;
@@ -1508,8 +1526,8 @@ class hero {
       if (["active", "basic"].includes(damageResult["damageSource"]) && source._enable5 == "BalancedStrike") {
         if (damageResult["critted"] == true) {
           let healAmount = source.calcHeal(source, 0.15 * (damageResult["damageAmount"]));
-          result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>"
-          result += source.getHeal(source, healAmount);
+          result += "<div><span class='skill'>Balanced Strike</span> triggered heal on crit.</div>";
+          triggerQueue.push([source, "getHeal", source, healAmount]);
         }
       }
     }
