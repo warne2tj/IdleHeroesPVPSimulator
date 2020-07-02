@@ -43,8 +43,7 @@ class monster {
       "critted": false, 
       "blocked": false, 
       "damageSource": damageSource, 
-      "damageType": damageType, 
-      "e5Description": ""
+      "damageType": damageType
     };
   }
   

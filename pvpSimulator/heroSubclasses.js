@@ -3318,7 +3318,7 @@ class Drake extends hero {
   
   
   eventSelfActive() {
-    return this.getBuff(this, "Shadow Lure", 1, {dodge: 0.60});
+    return this.getBuff(this, "Shadow Lure", 1, {dodge: 0.60}, true);
   }
   
   
@@ -3327,11 +3327,7 @@ class Drake extends hero {
     var targets = getLowestHPTargets(this, this._enemies, 1);
     
     for (let i in targets) {
-      result += targets[i].getDebuff(this, "Armor Percent", 2, {armorPercent: 1});
-      result += targets[i].getDebuff(this, "Damage Reduce", 2, {damageReduce: 1});
-      result += targets[i].getDebuff(this, "All Damage Reduce", 2, {allDamageReduce: 1});
-      result += targets[i].getDebuff(this, "Block", 2, {block: 1});
-      result += targets[i].getDebuff(this, "Dodge", 2, {dodge: 1});
+      result += targets[i].getDebuff(this, "Drake Break Defense", 2, {armorPercent: 1, dodge: 1, block: 1, allDamageReduce: 1, damageReduce: 1}, false, "passive", 1, true);
     }
     
     return result;
