@@ -689,10 +689,7 @@ class hero {
   
   calcHeal(target, healAmount) {
     var healEffect = this._currentStats["healEffect"] + 1;
-    var effectBeingHealed = 1 + target._currentStats["effectBeingHealed"];
-    if (effectBeingHealed < 0) { effectBeingHealed = 0; }
-    
-    return Math.floor(healAmount * effectBeingHealed * healEffect);
+    return Math.floor(healAmount * healEffect);
   }
   
   
@@ -700,6 +697,10 @@ class hero {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var result = "";
+    var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
+    if (effectBeingHealed < 0) { effectBeingHealed = 0; }
+    
+    amountHealed = Math.floor(amountHealed * effectBeingHealed);
     
     if (!(isMonster(source)) && "Healing Curse" in this._debuffs) {
       var debuffKeys = Object.keys(this._debuffs["Healing Curse"]);
@@ -1072,6 +1073,8 @@ class hero {
             }
           }
         }
+        
+        delete this._buffs[strBuffName][s];
       }
     }
     
@@ -1386,7 +1389,7 @@ class hero {
       return this.getHP(trigger[2], Math.floor(trigger[3]));
       
     } else if (trigger[1] == "getHeal") {
-      return this.getHP(trigger[2], Math.floor(trigger[3]));
+      return this.getHeal(trigger[2], Math.floor(trigger[3]));
       
     }
     
@@ -1536,6 +1539,21 @@ class hero {
       let key = Object.keys(this._debuffs["Black Hole Mark"])[0];
       this._debuffs["Black Hole Mark"][key]["effects"]["damageAmount"] += Math.floor(0.60 * damageResult["damageAmount"]);
     }
+    
+    
+    if (this._currentStats["totalHP"] > 0 && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50) {
+      triggerQueue.push([this, "eventHPlte50"]);
+    }
+    
+    
+    if ("Rescue Mark" in this._buffs && this._currentStats["totalHP"] > 0 && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.30) {
+      for (let s in this._buffs["Rescue Mark"]) {
+        triggerQueue.push([this, "getHeal", this._buffs["Rescue Mark"][s]["source"], this._buffs["Rescue Mark"][s]["effects"]["attackAmount"]]);
+      }
+      
+      result += this.removeBuff("Rescue Mark");
+    }
+    
     
     return result;
   }

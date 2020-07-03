@@ -40,7 +40,7 @@ var skins = {
     "Legendary Princess Carrie": {hpPercent: 0.06, damageReduce: 0.05, speed: 6}
   },
   
-  "Cthuga": {
+  "Cthugha": {
     "Devils Night": {hpPercent: 0.03, attackPercent: 0.03, controlImmune: 0.05},
     "Legendary Devils Night": {hpPercent: 0.06, attackPercent: 0.06, controlImmune: 0.06},
     "Domineering Boss": {attackPercent: 0.03, controlImmune: 0.05, damageReduce: 0.03},
@@ -178,5 +178,11 @@ var skins = {
     "Legendary Jungle Hunter": {hpPercent: 0.08, crit: 0.03},
     "Spear of Trial": {hpPercent: 0.05, damageReduce: 0.03, block: 0.04},
     "Legendary Spear of Trial": {hpPercent: 0.08, damageReduce: 0.04, block: 0.06}
+  },
+  
+  "Ormus": {
+    "Dr. Ormus": {hpPercent: 0.02, attackPercent: 0.03},
+    "Headmaster of Magic Academy": {controlImmune: 0.05, attackPercent: 0.03, healEffect: 0.05},
+    "Legendary Headmaster of Magic Academy": {controlImmune: 0.06, attackPercent: 0.06, healEffect: 0.08}
   }
 };

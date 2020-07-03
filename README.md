@@ -17,9 +17,10 @@ Head to the wiki for more details.
   * Aspen
   * Belrain
   * Carrie
-  * Cthuga
+  * Cthugha
   * Dark Arthindol
   * Delacium
+  * Drake
   * Elyvia
   * Emily
   * Faith Blade
@@ -32,7 +33,9 @@ Head to the wiki for more details.
   * Mihm
   * Nakia
   * Oberon
+  * Ormus
   * Penny
+  * Russell
   * Sherlock
   * Tara
   * Unimax
@@ -55,5 +58,5 @@ Head to the wiki for more details.
   * Refactor buff/debuff into single object? Add buff/debuff type to object?
   * Refactor trigger queue into individual queues?
   * RNG wrapper for testing purposes
-  * Implement Ormus
-  * Far future: Flame shrine
+  * Carrie dodge is on an attack by attack basis rather than skill? But only sometimes?
+  * Far future: Flame shrine, Seal Land

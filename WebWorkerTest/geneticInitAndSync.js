@@ -438,7 +438,7 @@ function evolve(teamKeys) {
   
   // breed
   while (t < numCreate) {
-    child = breed(teamKeys, 0, numCreate-1, mutationRate * (Math.floor(t / 10) + 1), swapRate * (Math.floor(t / 10) + 1));
+    child = breed(teamKeys, 0, i90p, mutationRate * (Math.floor(t / 10) + 1), swapRate * (Math.floor(t / 10) + 1));
   
     teamDNA = child[0];
     tempTeam = Object.assign({}, heroCount);
