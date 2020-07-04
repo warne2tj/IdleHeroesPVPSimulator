@@ -3673,8 +3673,6 @@ class Valkryie extends hero {
 }
 
 
-
-
 // Ormus
 class Ormus extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -3694,8 +3692,32 @@ class Ormus extends hero {
     
     if (trigger[1] == "eventHPlte50" && this._currentStats["heartOfOrmusTriggered"] == false) {
       return this.eventHPlte50();
+    } else if (trigger[1] == "eventSelfBasic") {
+      return this.eventSelfBasic(trigger[2]);
     } else {
       return super.handleTrigger(trigger);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic(e) {
+    var result = "";
+    var damageResult = {};
+    
+    for (let i in e) {
+      damageResult = this.calcDamage(e[i][1], this._currentStats["totalAttack"], "passive", "normal");
+      result += e[i][1].takeDamage(this, "Passive 1", damageResult);
+    }
+    
+    
+    var targets = getAllTargets(this, this._allies);
+    var healAmount = 0;
+    
+    for (let i in targets) {
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 1.5);
+      result += targets[i].getBuff(this, "Heal", 2, {heal: healAmount});
     }
     
     return result;
@@ -3712,6 +3734,44 @@ class Ormus extends hero {
       let healAmount = this.calcHeal(targets[i], 3 * this._currentStats["totalAttack"]);
       
       result += targets[i].getBuff(this, "Effect Being Healed", 3, {effectBeingHealed: 0.20});
+      result += targets[i].getBuff(this, "Rescue Mark", 15, {attackAmount: healAmount});
+      
+      if (targets[i]._currentStats["totalHP"] <= targets[i]._stats["totalHP"] * 0.3) {
+        result += targets[i].removeBuff("Rescue Mark");
+        triggerQueue.push([targets[i], "getHeal", this, healAmount]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getBackTargets(this, this._enemies);
+    var targetLock;
+    var healAmount = 0;
+    
+    targets = getRandomTargets(this, targets, 2);
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.42);
+        result += targets[i].takeDamage(this, "Blue Lightning Laser", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+
+    targets = getLowestHPTargets(this, this._allies, 1);
+    for (let i in targets) {
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 3);
+      result += targets[i].getHeal(this, healAmount);
+      
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 5);
       result += targets[i].getBuff(this, "Rescue Mark", 15, {attackAmount: healAmount});
       
       if (targets[i]._currentStats["totalHP"] <= targets[i]._stats["totalHP"] * 0.3) {
