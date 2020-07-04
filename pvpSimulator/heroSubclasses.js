@@ -769,8 +769,8 @@ class Carrie extends hero {
 
 
 
-// Cthuga
-class Cthuga extends hero {
+// Cthugha
+class Cthugha extends hero {
   passiveStats() {
     // apply Demon Bloodline passive
     this.applyStatChange({attackPercent: 0.25, hpPercent: 0.2, damageReduce: 0.2}, "PassiveStats");
@@ -1256,19 +1256,6 @@ class Emily extends hero {
   passiveStats() {
     // apply Spiritual Blessing passive
     this.applyStatChange({hpPercent: 0.40, speed: 50}, "PassiveStats");
-  }
-  
-  
-  takeDamage(source, strAttackDesc, damageResult) {
-    var result = "";
-    
-    result += super.takeDamage(source, strAttackDesc, damageResult);
-    
-    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50 && this._currentStats["courageousTriggered"] == 0) {
-      triggerQueue.push([this, "eventHPlte50"]);
-    }
-    
-    return result;
   }
   
   
@@ -3679,6 +3666,118 @@ class Valkryie extends hero {
     for (var i in targets) {
       damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.18, "active", "burnTrue", 1, 0, 2);
       result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+    }
+    
+    return result;
+  }
+}
+
+
+// Ormus
+class Ormus extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["heartOfOrmusTriggered"] = false;
+  }
+  
+  
+  passiveStats() {
+    // apply Power of Ormus passive
+    this.applyStatChange({hpPercent: 0.35, attackPercent: 0.25, healEffect: 0.50}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventHPlte50" && this._currentStats["heartOfOrmusTriggered"] == false) {
+      return this.eventHPlte50();
+    } else if (trigger[1] == "eventSelfBasic") {
+      return this.eventSelfBasic(trigger[2]);
+    } else {
+      return super.handleTrigger(trigger);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic(e) {
+    var result = "";
+    var damageResult = {};
+    
+    for (let i in e) {
+      damageResult = this.calcDamage(e[i][1], this._currentStats["totalAttack"], "passive", "normal");
+      result += e[i][1].takeDamage(this, "Passive 1", damageResult);
+    }
+    
+    
+    var targets = getAllTargets(this, this._allies);
+    var healAmount = 0;
+    
+    for (let i in targets) {
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 1.5);
+      result += targets[i].getBuff(this, "Heal", 2, {heal: healAmount});
+    }
+    
+    return result;
+  }
+  
+  
+  eventHPlte50() {
+    var result = "";
+    var targets = getAllTargets(this, this._allies);
+    
+    this._currentStats["heartOfOrmusTriggered"] = true;
+    
+    for (let i in targets) {
+      let healAmount = this.calcHeal(targets[i], 3 * this._currentStats["totalAttack"]);
+      
+      result += targets[i].getBuff(this, "Effect Being Healed", 3, {effectBeingHealed: 0.20});
+      result += targets[i].getBuff(this, "Rescue Mark", 15, {attackAmount: healAmount});
+      
+      if (targets[i]._currentStats["totalHP"] <= targets[i]._stats["totalHP"] * 0.3) {
+        result += targets[i].removeBuff("Rescue Mark");
+        triggerQueue.push([targets[i], "getHeal", this, healAmount]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getBackTargets(this, this._enemies);
+    var targetLock;
+    var healAmount = 0;
+    
+    targets = getRandomTargets(this, targets, 2);
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.42);
+        result += targets[i].takeDamage(this, "Blue Lightning Laser", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+
+    targets = getLowestHPTargets(this, this._allies, 1);
+    for (let i in targets) {
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 3);
+      result += targets[i].getHeal(this, healAmount);
+      
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 5);
+      result += targets[i].getBuff(this, "Rescue Mark", 15, {attackAmount: healAmount});
+      
+      if (targets[i]._currentStats["totalHP"] <= targets[i]._stats["totalHP"] * 0.3) {
+        result += targets[i].removeBuff("Rescue Mark");
+        triggerQueue.push([targets[i], "getHeal", this, healAmount]);
+      }
     }
     
     return result;

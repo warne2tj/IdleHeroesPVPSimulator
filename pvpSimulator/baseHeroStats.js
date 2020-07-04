@@ -130,8 +130,8 @@ var baseHeroStats = {
     }
   },
   
-  "Cthuga": {
-    className: Cthuga,
+  "Cthugha": {
+    className: Cthugha,
     heroFaction: "Abyss",
     heroClass: "Ranger",
     stats: {
@@ -382,6 +382,22 @@ var baseHeroStats = {
       growHP: 698,
       growAttack: 41,
       growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
+  "Ormus": {
+    className: Ormus,
+    heroFaction: "Fortress",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 6325,
+      baseAttack: 369,
+      baseArmor: 63,
+      baseSpeed: 195,
+      growHP: 632.5,
+      growAttack: 37,
+      growArmor: 6.3,
       growSpeed: 2
     }
   },

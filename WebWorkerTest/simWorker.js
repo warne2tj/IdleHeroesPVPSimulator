@@ -1008,10 +1008,7 @@ class hero {
   
   calcHeal(target, healAmount) {
     var healEffect = this._currentStats["healEffect"] + 1;
-    var effectBeingHealed = 1 + target._currentStats["effectBeingHealed"];
-    if (effectBeingHealed < 0) { effectBeingHealed = 0; }
-    
-    return Math.floor(healAmount * effectBeingHealed * healEffect);
+    return Math.floor(healAmount * healEffect);
   }
   
   
@@ -1019,6 +1016,10 @@ class hero {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var result = "";
+    var effectBeingHealed = 1 + this._currentStats["effectBeingHealed"];
+    if (effectBeingHealed < 0) { effectBeingHealed = 0; }
+    
+    amountHealed = Math.floor(amountHealed * effectBeingHealed);
     
     if (!(isMonster(source)) && "Healing Curse" in this._debuffs) {
       var debuffKeys = Object.keys(this._debuffs["Healing Curse"]);
@@ -1391,6 +1392,8 @@ class hero {
             }
           }
         }
+        
+        delete this._buffs[strBuffName][s];
       }
     }
     
@@ -1691,7 +1694,7 @@ class hero {
       return this.getHP(trigger[2], Math.floor(trigger[3]));
       
     } else if (trigger[1] == "getHeal") {
-      return this.getHP(trigger[2], Math.floor(trigger[3]));
+      return this.getHeal(trigger[2], Math.floor(trigger[3]));
       
     }
     
@@ -1840,6 +1843,20 @@ class hero {
     if ("Black Hole Mark" in this._debuffs && ["active", "basic"].includes(damageResult["damageSource"])) {
       let key = Object.keys(this._debuffs["Black Hole Mark"])[0];
       this._debuffs["Black Hole Mark"][key]["effects"]["damageAmount"] += Math.floor(0.60 * damageResult["damageAmount"]);
+    }
+    
+    
+    if (this._currentStats["totalHP"] > 0 && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50) {
+      triggerQueue.push([this, "eventHPlte50"]);
+    }
+    
+    
+    if ("Rescue Mark" in this._buffs && this._currentStats["totalHP"] > 0 && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.30) {
+      for (let s in this._buffs["Rescue Mark"]) {
+        triggerQueue.push([this, "getHeal", this._buffs["Rescue Mark"][s]["source"], this._buffs["Rescue Mark"][s]["effects"]["attackAmount"]]);
+      }
+      
+      result += this.removeBuff("Rescue Mark");
     }
     
     return result;
@@ -2708,8 +2725,8 @@ class Carrie extends hero {
 
 
 
-// Cthuga
-class Cthuga extends hero {
+// Cthugha
+class Cthugha extends hero {
   passiveStats() {
     // apply Demon Bloodline passive
     this.applyStatChange({attackPercent: 0.25, hpPercent: 0.2, damageReduce: 0.2}, "PassiveStats");
@@ -3195,19 +3212,6 @@ class Emily extends hero {
   passiveStats() {
     // apply Spiritual Blessing passive
     this.applyStatChange({hpPercent: 0.40, speed: 50}, "PassiveStats");
-  }
-  
-  
-  takeDamage(source, strAttackDesc, damageResult) {
-    var result = "";
-    
-    result += super.takeDamage(source, strAttackDesc, damageResult);
-    
-    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50 && this._currentStats["courageousTriggered"] == 0) {
-      triggerQueue.push([this, "eventHPlte50"]);
-    }
-    
-    return result;
   }
   
   
@@ -5624,6 +5628,118 @@ class Valkryie extends hero {
   }
 }
 
+
+// Ormus
+class Ormus extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["heartOfOrmusTriggered"] = false;
+  }
+  
+  
+  passiveStats() {
+    // apply Power of Ormus passive
+    this.applyStatChange({hpPercent: 0.35, attackPercent: 0.25, healEffect: 0.50}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = "";
+    
+    if (trigger[1] == "eventHPlte50" && this._currentStats["heartOfOrmusTriggered"] == false) {
+      return this.eventHPlte50();
+    } else if (trigger[1] == "eventSelfBasic") {
+      return this.eventSelfBasic(trigger[2]);
+    } else {
+      return super.handleTrigger(trigger);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic(e) {
+    var result = "";
+    var damageResult = {};
+    
+    for (let i in e) {
+      damageResult = this.calcDamage(e[i][1], this._currentStats["totalAttack"], "passive", "normal");
+      result += e[i][1].takeDamage(this, "Passive 1", damageResult);
+    }
+    
+    
+    var targets = getAllTargets(this, this._allies);
+    var healAmount = 0;
+    
+    for (let i in targets) {
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 1.5);
+      result += targets[i].getBuff(this, "Heal", 2, {heal: healAmount});
+    }
+    
+    return result;
+  }
+  
+  
+  eventHPlte50() {
+    var result = "";
+    var targets = getAllTargets(this, this._allies);
+    
+    this._currentStats["heartOfOrmusTriggered"] = true;
+    
+    for (let i in targets) {
+      let healAmount = this.calcHeal(targets[i], 3 * this._currentStats["totalAttack"]);
+      
+      result += targets[i].getBuff(this, "Effect Being Healed", 3, {effectBeingHealed: 0.20});
+      result += targets[i].getBuff(this, "Rescue Mark", 15, {attackAmount: healAmount});
+      
+      if (targets[i]._currentStats["totalHP"] <= targets[i]._stats["totalHP"] * 0.3) {
+        result += targets[i].removeBuff("Rescue Mark");
+        triggerQueue.push([targets[i], "getHeal", this, healAmount]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var targets = getBackTargets(this, this._enemies);
+    var targetLock;
+    var healAmount = 0;
+    
+    targets = getRandomTargets(this, targets, 2);
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.42);
+        result += targets[i].takeDamage(this, "Blue Lightning Laser", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+
+    targets = getLowestHPTargets(this, this._allies, 1);
+    for (let i in targets) {
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 3);
+      result += targets[i].getHeal(this, healAmount);
+      
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 5);
+      result += targets[i].getBuff(this, "Rescue Mark", 15, {attackAmount: healAmount});
+      
+      if (targets[i]._currentStats["totalHP"] <= targets[i]._stats["totalHP"] * 0.3) {
+        result += targets[i].removeBuff("Rescue Mark");
+        triggerQueue.push([targets[i], "getHeal", this, healAmount]);
+      }
+    }
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -6481,7 +6597,7 @@ var skins = {
     "Legendary Princess Carrie": {hpPercent: 0.06, damageReduce: 0.05, speed: 6}
   },
   
-  "Cthuga": {
+  "Cthugha": {
     "Devils Night": {hpPercent: 0.03, attackPercent: 0.03, controlImmune: 0.05},
     "Legendary Devils Night": {hpPercent: 0.06, attackPercent: 0.06, controlImmune: 0.06},
     "Domineering Boss": {attackPercent: 0.03, controlImmune: 0.05, damageReduce: 0.03},
@@ -6619,6 +6735,12 @@ var skins = {
     "Legendary Jungle Hunter": {hpPercent: 0.08, crit: 0.03},
     "Spear of Trial": {hpPercent: 0.05, damageReduce: 0.03, block: 0.04},
     "Legendary Spear of Trial": {hpPercent: 0.08, damageReduce: 0.04, block: 0.06}
+  },
+  
+  "Ormus": {
+    "Dr. Ormus": {hpPercent: 0.02, attackPercent: 0.03},
+    "Headmaster of Magic Academy": {controlImmune: 0.05, attackPercent: 0.03, healEffect: 0.05},
+    "Legendary Headmaster of Magic Academy": {controlImmune: 0.06, attackPercent: 0.06, healEffect: 0.08}
   }
 };
 
@@ -6921,8 +7043,8 @@ var baseHeroStats = {
     }
   },
   
-  "Cthuga": {
-    className: Cthuga,
+  "Cthugha": {
+    className: Cthugha,
     heroFaction: "Abyss",
     heroClass: "Ranger",
     stats: {
@@ -7173,6 +7295,22 @@ var baseHeroStats = {
       growHP: 698,
       growAttack: 41,
       growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
+  "Ormus": {
+    className: Ormus,
+    heroFaction: "Fortress",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 6325,
+      baseAttack: 369,
+      baseArmor: 63,
+      baseSpeed: 195,
+      growHP: 632.5,
+      growAttack: 37,
+      growArmor: 6.3,
       growSpeed: 2
     }
   },
