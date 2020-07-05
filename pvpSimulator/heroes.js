@@ -1045,90 +1045,100 @@ class hero {
 
   removeBuff(strBuffName, stack="") {   
     var result = "";
-    result += "<div>" + this.heroDesc() + " lost buff <span class='skill'>" + strBuffName + "</span>."
+    
+    if (strBuffName in this._buffs) {
+      result += "<div>" + this.heroDesc() + " lost buff <span class='skill'>" + strBuffName + "</span>."
 
-    // for each stack
-    for (var s in this._buffs[strBuffName]) {
-      // remove the effects
-      if (stack == "" || stack == s) {
-        for (var strStatName in this._buffs[strBuffName][s]["effects"]) {
-          result += " " + translate[strStatName] + ": " + formatNum(this._buffs[strBuffName][s]["effects"][strStatName]) + ".";
+      // for each stack
+      for (var s in this._buffs[strBuffName]) {
+        // remove the effects
+        if (stack == "" || stack == s) {
+          for (var strStatName in this._buffs[strBuffName][s]["effects"]) {
+            result += " " + translate[strStatName] + ": " + formatNum(this._buffs[strBuffName][s]["effects"][strStatName]) + ".";
 
-          if (strStatName == "attackPercent") {
-            this._currentStats["totalAttack"] = this.calcCombatAttack();
-            
-          } else if (strStatName == "armorPercent") {
-            this._currentStats["totalArmor"] = this.calcCombatArmor();
-            
-          } else if(["heal", "attackAmount"].includes(strStatName)) {
-            // do nothing
-            
-          } else {
-            this._currentStats[strStatName] -= this._buffs[strBuffName][s]["effects"][strStatName];
-            
-            if (strStatName == "attack" || strStatName == "fixedAttack") {
+            if (strStatName == "attackPercent") {
               this._currentStats["totalAttack"] = this.calcCombatAttack();
-            } else if (strStatName == "armor") {
+              
+            } else if (strStatName == "armorPercent") {
               this._currentStats["totalArmor"] = this.calcCombatArmor();
+              
+            } else if(["heal", "attackAmount"].includes(strStatName)) {
+              // do nothing
+              
+            } else {
+              this._currentStats[strStatName] -= this._buffs[strBuffName][s]["effects"][strStatName];
+              
+              if (strStatName == "attack" || strStatName == "fixedAttack") {
+                this._currentStats["totalAttack"] = this.calcCombatAttack();
+              } else if (strStatName == "armor") {
+                this._currentStats["totalArmor"] = this.calcCombatArmor();
+              }
             }
           }
+          
+          delete this._buffs[strBuffName][s];
         }
-        
-        delete this._buffs[strBuffName][s];
       }
-    }
-    
-    if (Object.keys(this._buffs[strBuffName]).length == 0) {
-      delete this._buffs[strBuffName];
+      
+      if (Object.keys(this._buffs[strBuffName]).length == 0) {
+        delete this._buffs[strBuffName];
+      }
+      
+      result += "</div>";
     }
 
-    return result + "</div>";
+    return result;
   }
 
 
   removeDebuff(strDebuffName, stack = "") {   
     var result = "";
-    result += "<div>" + this.heroDesc() + " lost debuff <span class='skill'>" + strDebuffName + "</span>."
+    
+    if (strDebuffName in this._debuffs) {
+      result += "<div>" + this.heroDesc() + " lost debuff <span class='skill'>" + strDebuffName + "</span>."
 
-    // for each stack
-    for (var s in this._debuffs[strDebuffName]) {
-      // remove the effects
-      if (stack == "" || stack == s) {
-        for (var strStatName in this._debuffs[strDebuffName][s]["effects"]) {
-          result += " " + translate[strStatName] + ": " + formatNum(this._debuffs[strDebuffName][s]["effects"][strStatName]) + ".";
+      // for each stack
+      for (var s in this._debuffs[strDebuffName]) {
+        // remove the effects
+        if (stack == "" || stack == s) {
+          for (var strStatName in this._debuffs[strDebuffName][s]["effects"]) {
+            result += " " + translate[strStatName] + ": " + formatNum(this._debuffs[strDebuffName][s]["effects"][strStatName]) + ".";
 
-          if (strStatName == "attackPercent") {
-            this._currentStats["totalAttack"] = this.calcCombatAttack();
-            
-          } else if (strStatName == "armorPercent") {
-            this._currentStats["totalArmor"] = this.calcCombatArmor();
-            
-          } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
-                // do nothing, used to track other stuff
-                
-          } else if (isDot(strStatName)) {
-            // do nothing
-            
-          } else {
-            this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
-            
-            if (strStatName == "attack" || strStatName == "fixedAttack") {
+            if (strStatName == "attackPercent") {
               this._currentStats["totalAttack"] = this.calcCombatAttack();
-            } else if (strStatName == "armor") {
+              
+            } else if (strStatName == "armorPercent") {
               this._currentStats["totalArmor"] = this.calcCombatArmor();
+              
+            } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
+                  // do nothing, used to track other stuff
+                  
+            } else if (isDot(strStatName)) {
+              // do nothing
+              
+            } else {
+              this._currentStats[strStatName] += this._debuffs[strDebuffName][s]["effects"][strStatName];
+              
+              if (strStatName == "attack" || strStatName == "fixedAttack") {
+                this._currentStats["totalAttack"] = this.calcCombatAttack();
+              } else if (strStatName == "armor") {
+                this._currentStats["totalArmor"] = this.calcCombatArmor();
+              }
             }
           }
+          
+          delete this._debuffs[strDebuffName][s];
         }
-        
-        delete this._debuffs[strDebuffName][s];
       }
+
+      if (Object.keys(this._debuffs[strDebuffName]).length == 0) {
+        delete this._debuffs[strDebuffName];
+      }
+      
+      result += "</div>";
     }
 
-    if (Object.keys(this._debuffs[strDebuffName]).length == 0) {
-      delete this._debuffs[strDebuffName];
-    }
-
-    return result + "</div>";
+    return result;
   }
   
   
@@ -1334,7 +1344,7 @@ class hero {
       var attBuff = numLiving * 0.012;
       if (numLiving > 0) {
         result += "<div>" + this.heroDesc() + " gained Shared Fate. Increased attack by " + formatNum(attBuff * 100) + "%.</div>";
-        this.getBuff("SharedFate", 1, {attackPercent: attBuff});
+        this.getBuff(this, "Attack Percent", 1, {attackPercent: attBuff});
       }
       
     } else if (this._enable3 == "Purify") {

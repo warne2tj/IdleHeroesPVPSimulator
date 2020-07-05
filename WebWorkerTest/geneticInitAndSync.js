@@ -318,7 +318,7 @@ function createRandomTeams() {
   
   var artifactNames = ["Antlers Cane", "Demon Bell", "Staff Punisher of Immortal", "Magic Stone Sword", "Augustus Magic Ball",
     "The Kiss of Ghost", "Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Ruyi Scepter"];
-  var equipments = ["Class Gear", "Split HP", "Split Attack"];
+  var equipments = ["Class Gear", "Split HP", "Split Attack", "No Armor"];
   var enables1 = ["Vitality", "Mightiness", "Growth"];
   var enables2 = ["Shelter", "LethalFightback", "Vitality2"];
   var enables3 = ["Resilience", "SharedFate", "Purify"];
@@ -509,7 +509,7 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   
   var artifactNames = ["Antlers Cane", "Demon Bell", "Staff Punisher of Immortal", "Magic Stone Sword", "Augustus Magic Ball",
     "The Kiss of Ghost", "Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Ruyi Scepter"];
-  var equipments = ["Class Gear", "Split HP", "Split Attack"];
+  var equipments = ["Class Gear", "Split HP", "Split Attack", "No Armor"];
   var enables1 = ["Vitality", "Mightiness", "Growth"];
   var enables2 = ["Shelter", "LethalFightback", "Vitality2"];
   var enables3 = ["Resilience", "SharedFate", "Purify"];
