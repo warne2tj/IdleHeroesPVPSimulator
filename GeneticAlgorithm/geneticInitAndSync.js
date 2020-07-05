@@ -352,7 +352,7 @@ function createRandomTeams() {
       
       oConfig.value += "\"" + equipments[Math.floor(Math.random() * equipments.length)] + "\", ";
       oConfig.value += "\"" + stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1] + "\", ";
-      oConfig.value += "\"" + artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1] + "\", ";
+      oConfig.value += "\"" + artifactNames[Math.floor(Math.random() * artifactNames.length)] + "\", ";
       oConfig.value += "\"" + enables1[Math.floor(Math.random() * enables1.length)] + "\", ";
       oConfig.value += "\"" + enables2[Math.floor(Math.random() * enables2.length)] + "\", ";
       oConfig.value += "\"" + enables3[Math.floor(Math.random() * enables3.length)] + "\", ";
@@ -585,7 +585,7 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
           break;
           
         case 4:
-          child1[g] = artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1];
+          child1[g] = artifactNames[Math.floor(Math.random() * artifactNames.length)];
           break;
           
         case 5:
