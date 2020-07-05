@@ -6058,10 +6058,88 @@ var artifacts = {
     limitStats: {}
   },
   
+  "Kharma's Eye": {
+    stats: {damageAgainstWarrior: 0.90, attack: 2700},
+    limit: "Shadow",
+    limitStats: {armorBreak: 0.30}
+  },
+  
+  "Murmur": {
+    stats: {damageAgainstWarrior: 0.90, attack: 2700},
+    limit: "Fortress",
+    limitStats: {hpPercent: 0.18}
+  },
+  
+  "Margaret's Legacy": {
+    stats: {damageAgainstWarrior: 0.90, attack: 2700},
+    limit: "Abyss",
+    limitStats: {hpPercent: 0.18}
+  },
+  
+  "Poisonous Rose": {
+    stats: {damageAgainstWarrior: 0.90, attack: 2700},
+    limit: "Forest",
+    limitStats: {hpPercent: 0.18}
+  },
+  
+  "Reaper's Scythe": {
+    stats: {damageAgainstWarrior: 0.90, skillDamage: 0.50},
+    limit: "Dark",
+    limitStats: {skillDamage: 0.40}
+  },
+  
+  "Guardian Angel": {
+    stats: {damageAgainstWarrior: 0.90, hpPercent: 0.14},
+    limit: "Light",
+    limitStats: {holyDamage: 0.18}
+  },
+  
   "Azrael": {
     stats: {damageAgainstRanger: 0.90, attack: 2700},
     limit: "",
     limitStats: {}
+  },
+  
+  "Aidan's Fury": {
+    stats: {damageAgainstRanger: 0.90, attack: 2700},
+    limit: "Shadow",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Rage of the Dragon": {
+    stats: {damageAgainstRanger: 0.90, attack: 2700},
+    limit: "Fortress",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "The Golden Key": {
+    stats: {damageAgainstRanger: 0.90, hpPercent: 0.15},
+    limit: "Fortress",
+    limitStats: {block: 0.14}
+  },
+  
+  "Engulf": {
+    stats: {damageAgainstRanger: 0.90, attack: 2700},
+    limit: "Abyss",
+    limitStats: {crit: 0.15}
+  },
+  
+  "Forest Reverberation": {
+    stats: {damageAgainstRanger: 0.90, attack: 2700},
+    limit: "Forest",
+    limitStats: {crit: 0.15}
+  },
+  
+  "Taboo Seal": {
+    stats: {damageAgainstRanger: 0.90, skillDamage: 0.50},
+    limit: "Dark",
+    limitStats: {skillDamage: 0.40}
+  },
+  
+  "Time Control": {
+    stats: {damageAgainstRanger: 0.90, hpPercent: 0.14},
+    limit: "Light",
+    limitStats: {holyDamage: 0.18}
   },
   
   "Ancient God's Whisper": {
@@ -6070,16 +6148,130 @@ var artifacts = {
     limitStats: {}
   },
   
+  "Necronomicon": {
+    stats: {damageAgainstMage: 0.90, attack: 2700},
+    limit: "Shadow",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Frost Sword": {
+    stats: {damageAgainstMage: 0.90, attack: 2700},
+    limit: "Fortress",
+    limitStats: {hpPercent: 0.18}
+  },
+  
+  "The Demon Whisper": {
+    stats: {damageAgainstMage: 0.90, attack: 2700},
+    limit: "Abyss",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Golden Bow": {
+    stats: {damageAgainstMage: 0.90, attack: 2700},
+    limit: "Forest",
+    limitStats: {critDamage: 0.40}
+  },
+  
+  "Evil Holy Grail": {
+    stats: {damageAgainstMage: 0.90, skillDamage: 0.50},
+    limit: "Dark",
+    limitStats: {skillDamage: 0.40}
+  },
+  
+  "Awakening of Divine Power": {
+    stats: {damageAgainstMage: 0.90, hpPercent: 0.14},
+    limit: "Light",
+    limitStats: {holyDamage: 0.18}
+  },
+  
   "Fiend's Touch": {
     stats: {damageAgainstAssassin: 0.90, attack: 2700},
     limit: "",
     limitStats: {}
   },
   
+  "Field's Compass": {
+    stats: {damageAgainstAssassin: 0.90, attack: 2700},
+    limit: "Shadow",
+    limitStats: {hpPercent: 0.18}
+  },
+  
+  "The Masked Lover": {
+    stats: {damageAgainstAssassin: 0.90, attack: 2700},
+    limit: "Fortress",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Queen's Blade": {
+    stats: {damageAgainstAssassin: 0.90, attack: 2700},
+    limit: "Abyss",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Flower Language": {
+    stats: {damageAgainstAssassin: 0.90, attack: 2700},
+    limit: "Forest",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Ghost Cloak": {
+    stats: {damageAgainstAssassin: 0.90, skillDamage: 0.50},
+    limit: "Dark",
+    limitStats: {skillDamage: 0.40}
+  },
+  
+  "The Sword of Archangel": {
+    stats: {damageAgainstAssassin: 0.90, hpPercent: 0.14},
+    limit: "Light",
+    limitStats: {holyDamage: 0.18}
+  },
+  
   "Eye of the Hell": {
     stats: {damageAgainstPriest: 0.90, attack: 2700},
     limit: "",
     limitStats: {}
+  },
+  
+  "Magical Sacrifice": {
+    stats: {damageAgainstPriest: 0.90, attack: 2700},
+    limit: "Shadow",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Energy Core": {
+    stats: {damageAgainstPriest: 0.90, attack: 2700},
+    limit: "Fortress",
+    limitStats: {skillDamage: 0.40}
+  },
+  
+  "Yubashiri": {
+    stats: {damageAgainstPriest: 0.90, attack: 2700},
+    limit: "Fortress",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Destruction Box": {
+    stats: {damageAgainstPriest: 0.90, attack: 2700},
+    limit: "Abyss",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Elf Tears": {
+    stats: {damageAgainstPriest: 0.90, attack: 2700},
+    limit: "Forest",
+    limitStats: {attackPercent: 0.14}
+  },
+  
+  "Curse of Medusa": {
+    stats: {damageAgainstPriest: 0.90, skillDamage: 0.50},
+    limit: "Dark",
+    limitStats: {skillDamage: 0.40}
+  },
+  
+  "Bright Holy Water": {
+    stats: {damageAgainstPriest: 0.90, hpPercent: 0.14},
+    limit: "Light",
+    limitStats: {holyDamage: 0.18}
   }
 };
 
