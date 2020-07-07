@@ -132,15 +132,15 @@ function runImpSim() {
         startMoveBackwards = true;
         break;
         
-      case "startDoubleStars":
+      case "DoubleStars":
         startDoubleStars = true;
         break;
         
-      case "startDoubleNextRoll":
+      case "DoubleNextRoll":
         startDoubleNextRoll = true;
         break;
         
-      case "startRollTwice":
+      case "RollTwice":
         startRollTwice = true;
         break;
     }
