@@ -1394,16 +1394,16 @@ class hero {
   handleTrigger(trigger) { 
     var result = "";
     
-    if (trigger[1] == "addHurt") {
+    if (trigger[1] == "addHurt" && this._currentStats["totalHP"] > 0) {
       if (trigger[2]._currentStats["totalHP"] > 0) {
         let damageResult = this.calcDamage(trigger[2], trigger[3], "passive", "true");
         return trigger[2].takeDamage(this, trigger[4], damageResult);
       }
       
-    } else if (trigger[1] == "getHP") {
+    } else if (trigger[1] == "getHP" && this._currentStats["totalHP"] > 0) {
       return this.getHP(trigger[2], Math.floor(trigger[3]));
       
-    } else if (trigger[1] == "getHeal") {
+    } else if (trigger[1] == "getHeal" && this._currentStats["totalHP"] > 0) {
       return this.getHeal(trigger[2], Math.floor(trigger[3]));
       
     } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && "Bloodthirsty" in this._buffs && this._currentStats["totalHP"] > 0) {

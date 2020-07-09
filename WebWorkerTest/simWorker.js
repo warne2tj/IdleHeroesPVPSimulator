@@ -1699,16 +1699,16 @@ class hero {
   handleTrigger(trigger) { 
     var result = "";
     
-    if (trigger[1] == "addHurt") {
+    if (trigger[1] == "addHurt" && this._currentStats["totalHP"] > 0) {
       if (trigger[2]._currentStats["totalHP"] > 0) {
         let damageResult = this.calcDamage(trigger[2], trigger[3], "passive", "true");
         return trigger[2].takeDamage(this, trigger[4], damageResult);
       }
       
-    } else if (trigger[1] == "getHP") {
+    } else if (trigger[1] == "getHP" && this._currentStats["totalHP"] > 0) {
       return this.getHP(trigger[2], Math.floor(trigger[3]));
       
-    } else if (trigger[1] == "getHeal") {
+    } else if (trigger[1] == "getHeal" && this._currentStats["totalHP"] > 0) {
       return this.getHeal(trigger[2], Math.floor(trigger[3]));
       
     } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && "Bloodthirsty" in this._buffs && this._currentStats["totalHP"] > 0) {
@@ -2005,14 +2005,12 @@ class Aida extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
     if (trigger[1] == "balanceMark") {
       if (trigger[2]._currentStats["totalHP"] > 0) {
         return this.balanceMark(trigger[2], trigger[3]);
       }
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2133,12 +2131,10 @@ class AmenRa extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
+    if (["eventAllyActive", "eventSelfActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       result += this.eventAllyActive();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2239,12 +2235,10 @@ class Amuvor extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
+    if (["eventAllyActive", "eventSelfActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       result += this.eventAllyActive();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2346,14 +2340,12 @@ class Aspen extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       result += this.eventSelfBasic();
-    } else if (trigger[1] == "enemyHorrified") {
+    } else if (trigger[1] == "enemyHorrified" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       result += this.enemyHorrified();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2501,14 +2493,12 @@ class Belrain extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventSelfBasic") {
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic();
     } else if (trigger[1] == "eventSelfDied") {
       return this.eventSelfDied();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2598,6 +2588,8 @@ class Carrie extends hero {
   
   
   handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
     if ((trigger[1] == "eventAllyDied" || trigger[1] == "eventEnemyDied") && this._currentStats["totalHP"] <= 0) {
       return this.eventAllyDied();
     } else if (trigger[1] == "devouringMark") {
@@ -2606,11 +2598,9 @@ class Carrie extends hero {
           return this.devouringMark(trigger[2], trigger[3], trigger[4], trigger[5]);
         }
       }
-    } else {
-      return super.handleTrigger(trigger);
     }
     
-    return "";
+    return result;
   }
   
   
@@ -2775,9 +2765,9 @@ class Cthugha extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventTookDamage") {
+    if (trigger[1] == "eventTookDamage" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       var burnDamageResult = {};
       var bleedDamageResult = {};
       var targets = getRandomTargets(this, this._enemies, 3);
@@ -2790,17 +2780,15 @@ class Cthugha extends hero {
         result += targets[i].getDebuff(this, "Bleed", 3, {bleed: bleedDamageResult["damageAmount"]}, false, "passive");
       }
       
-    } else if (trigger[1] == "eventTookDamageFromBurning") {
+    } else if (trigger[1] == "eventTookDamageFromBurning" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Soul Shackle</span> triggered.</div>";
         result += this.getBuff(this, "Attack Percent", 3, {attackPercent: 0.10});
         
-    } else if (trigger[1] == "eventTookDamageFromBleeding") {
+    } else if (trigger[1] == "eventTookDamageFromBleeding" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Soul Shackle</span> triggered.</div>";
         var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 0.6);
         result += this.getBuff(this, "Heal", 3, {heal: healAmount});
         
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -2901,18 +2889,16 @@ class DarkArthindol extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventSelfBasic" && trigger[2].length > 0) {
+    if (trigger[1] == "eventSelfBasic" && trigger[2].length > 0 && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       if (trigger[2][0][1]._currentStats["totalHP"] > 0) {
         return this.eventSelfBasic(trigger[2][0][1]);
       }
-    } else if (trigger[1] == "eventTookDamage") {
+    } else if (trigger[1] == "eventTookDamage" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       result += this.getBuff(this, "Attack Percent", 6, {attackPercent: 0.03});
       result += this.getBuff(this, "Skill Damage", 6, {skillDamage: 0.05});
       result += this.getEnergy(this, 10);
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3119,14 +3105,12 @@ class Elyvia extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventSelfBasic") {
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic();
     } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1])) {
       return this.eventEnemyBasic(trigger[2], trigger[3]);
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3227,9 +3211,9 @@ class Emily extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventHPlte50" && this._currentStats["courageousTriggered"] == 0) {
+    if (trigger[1] == "eventHPlte50" && this._currentStats["courageousTriggered"] == 0 && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       this._currentStats["courageousTriggered"] = 1;
       result += "<div>" + this.heroDesc() + " <span class='skill'>Courageous</span> triggered.</div>";
       
@@ -3242,8 +3226,6 @@ class Emily extends hero {
       for (var h in targets) {
         result += targets[h].getDebuff(this, "Armor Percent", 3, {armorPercent: 0.29});
       }
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3317,16 +3299,14 @@ class Garuda extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventAllyBasic", "eventAllyActive"].includes(trigger[1]) && !(this.isUnderStandardControl())) {
+    if (["eventAllyBasic", "eventAllyActive"].includes(trigger[1]) && !(this.isUnderStandardControl()) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
         return this.eventAllyBasic(trigger[3]);
-    } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+    } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && !(this.isUnderStandardControl()) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
         return this.eventAllyBasic(trigger[2]);
-    } else if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1])) {
+    } else if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventAllyDied();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3412,12 +3392,10 @@ class FaithBlade extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventEnemyDied") {
+    if (trigger[1] == "eventEnemyDied" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventEnemyDied();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3508,14 +3486,12 @@ class Gustin extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventEnemyBasic", "eventEnemyActive"].includes(trigger[1])) {
+    if (["eventEnemyBasic", "eventEnemyActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventEnemyBasic(trigger[3]);
-    } else if (trigger[1] == "eventTookDamage") {
+    } else if (trigger[1] == "eventTookDamage" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventTookDamage(trigger[2], trigger[3]);
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3699,14 +3675,12 @@ class Horus extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventEnemyActive", "eventAllyActive", "eventSelfActive"].includes(trigger[1])) {
+    if (["eventEnemyActive", "eventAllyActive", "eventSelfActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventEnemyActive();
-    } else if (trigger[1] == "eventTookDamage") {
+    } else if (trigger[1] == "eventTookDamage" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventTookDamage();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -3848,14 +3822,12 @@ class Ithaqua extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfActive(trigger[2]);
-    } else if (trigger[1] == "eventEnemyDied" && trigger[2].heroDesc() == this.heroDesc()) {
+    } else if (trigger[1] == "eventEnemyDied" && trigger[2].heroDesc() == this.heroDesc() && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventEnemyDied();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4013,9 +3985,9 @@ class Kroos extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventHPlte50" && this._currentStats["flameInvasionTriggered"] == 0) {
+    if (trigger[1] == "eventHPlte50" && this._currentStats["flameInvasionTriggered"] == 0 && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       this._currentStats["flameInvasionTriggered"] = 1;
       result += "<div>" + this.heroDesc() + " <span class='skill'>Flame Invasion</span> triggered.</div>";
       
@@ -4023,8 +3995,6 @@ class Kroos extends hero {
       for (var h in targets) {
         result += targets[h].getDebuff(this, "stun", 2, {}, false, "", 0.75);
       }
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4119,14 +4089,12 @@ class Michelle extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
     if (["eventAllyActive", "eventAllyBasic"].includes(trigger[1]) && "Blaze of Seraph" in trigger[2]._buffs) {
       return this.eventAllyBasic(trigger[2], trigger[3]);
     } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && "Blaze of Seraph" in this._buffs) {
       return this.eventAllyBasic(this, trigger[2]);
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4240,12 +4208,10 @@ class Mihm extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1])) {
+    if (["eventAllyDied", "eventEnemyDied"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventEnemyDied();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4331,14 +4297,12 @@ class Nakia extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventSelfActive") {
+    if (trigger[1] == "eventSelfActive" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfActive(trigger[2]);
-    } else if (trigger[1] == "eventSelfBasic") {
+    } else if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic(trigger[2]);
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4453,14 +4417,12 @@ class Oberon extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventSelfBasic") {
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic();
-    } else if (trigger[1] == "eventTwine") {
+    } else if (trigger[1] == "eventTwine" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventTwine();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4557,14 +4519,12 @@ class Penny extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic(trigger[2]);
-    } else if (trigger[1] == "eventTookDamage") {
+    } else if (trigger[1] == "eventTookDamage" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventTookDamage(trigger[2], trigger[3]);
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4767,14 +4727,12 @@ class Sherlock extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventHPlte30" && this._currentStats["wellCalculatedStacks"] > 1) {
+    if (trigger[1] == "eventHPlte30" && this._currentStats["wellCalculatedStacks"] > 1 && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventHPlte30();
-    } else if (trigger[1] == "eventGotCC" && this._currentStats["wellCalculatedStacks"] > 0) {
+    } else if (trigger[1] == "eventGotCC" && this._currentStats["wellCalculatedStacks"] > 0 && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventGotCC(trigger[2], trigger[3], trigger[4]);
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -4921,9 +4879,6 @@ class Sherlock extends hero {
     return result;
   }
 }
-  
-  
-
 
 
 // Tara
@@ -4935,12 +4890,10 @@ class Tara extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1])) {
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5057,14 +5010,12 @@ class UniMax3000 extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventSelfBasic") {
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic();
-    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1])) {
+    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventEnemyActive(trigger[2], trigger[3]);
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5179,16 +5130,14 @@ class Asmodel extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
     if (trigger[1] == "critMark") {
       if (trigger[2]._currentStats["totalHP"] > 0) {
         return this.critMark(trigger[2], trigger[3]);
       }
-    } else if (trigger[1] == "eventTookDamage") {
+    } else if (trigger[1] == "eventTookDamage" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventTookDamage();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5289,12 +5238,10 @@ class Drake extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (["eventSelfActive", "eventSelfBasic"].includes(trigger[1])) {
+    if (["eventSelfActive", "eventSelfBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfActive();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5415,14 +5362,12 @@ class Russell extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventSelfActive") {
+    if (trigger[1] == "eventSelfActive" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfActive();
-    } else if (trigger[1] == "eventSelfBasic") {
+    } else if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5577,12 +5522,10 @@ class Valkryie extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventGotCC") {
+    if (trigger[1] == "eventGotCC" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventGotCC();
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5685,14 +5628,12 @@ class Ormus extends hero {
   
   
   handleTrigger(trigger) {
-    var result = "";
+    var result = super.handleTrigger(trigger);
     
-    if (trigger[1] == "eventHPlte50" && this._currentStats["heartOfOrmusTriggered"] == false) {
+    if (trigger[1] == "eventHPlte50" && this._currentStats["heartOfOrmusTriggered"] == false && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventHPlte50();
-    } else if (trigger[1] == "eventSelfBasic") {
+    } else if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic(trigger[2]);
-    } else {
-      return super.handleTrigger(trigger);
     }
     
     return result;
@@ -5776,6 +5717,174 @@ class Ormus extends hero {
         triggerQueue.push([targets[i], "getHeal", this, healAmount]);
       }
     }
+    
+    return result;
+  }
+}
+
+
+// Rogan
+class Rogan extends hero {
+  passiveStats() {
+    // apply Wolfish Blood passive
+    this.applyStatChange({attackPercent:0.30, critDamage: 0.40, damageReduce: 0.30, speed: 60}, "PassiveStats");
+  }
+  
+  
+  startOfBattle() {
+    var result = "";
+    var targets = getAllTargets(this, this._allies);
+    
+    for (let i in targets) {
+      if (targets[i]._heroClass == "Assassin") {
+        result += targets[i].getBuff(this, "Speed", 2, {speed: 40});
+        result += targets[i].getBuff(this, "Crit Damage", 2, {critDamage: 0.40});
+      } else {
+        result += targets[i].getBuff(this, "Speed", 2, {speed: 20});
+        result += targets[i].getBuff(this, "Crit Damage", 2, {critDamage: 0.20});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    var targets = getAllTargets(this, this._allies);
+    
+    for (let i in targets) {
+      if (targets[i]._heroClass == "Assassin") {
+        result += targets[i].getBuff(this, "attackPercent", 2, {attackPercent: 0.40});
+        result += targets[i].getBuff(this, "Crit", 2, {crit: 0.20});
+      } else {
+        result += targets[i].getBuff(this, "attackPercent", 2, {attackPercent: 0.20});
+        result += targets[i].getBuff(this, "Crit", 2, {crit: 0.10});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() {
+    var result = "";
+    var damageResult = {};
+    var maxDamage = 0;
+    var hpDamage = 0;
+    var hpDamageResult = {damageAmount: 0};
+    var targets = getLowestHPTargets(this, this._enemies, 1);
+    var targetLock;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        let canCrit = 1;
+        if (targets[i]._currentStats["totalHP"] / targets[i]._stats["totalHP"] <= 0.50) {
+          canCrit = 2;
+        }
+        
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.6, "basic", "normal", 1, canCrit);
+        result += targets[i].takeDamage(this, "Savagery", damageResult);
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          hpDamage = 0.20 * (targets[i]._stats["totalHP"] - targets[i]._currentStats["totalHP"]);
+          maxDamage = 15 * this._currentStats["totalAttack"];
+          if (hpDamage > maxDamage) { hpDamage = maxDamage; }
+          
+          hpDamageResult = this.calcDamage(targets[i], hpDamage, "basic", "true");
+          result += targets[i].takeDamage(this, "Savagery HP", hpDamageResult);
+        }
+        
+        let healAmount = this.calcHeal(this, 0.30 * (damageResult["damageAmount"] + hpDamageResult["damageAmount"]));
+        result += this.getHeal(this, healAmount);
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() {
+    var result = "";
+    var damageResult = {};
+    var maxDamage = 0;
+    var hpDamage = 0;
+    var hpDamageResult = {damageAmount: 0};
+    var totalDamage = 0;
+    var didCrit = false;
+    var targets = getLowestHPTargets(this, this._enemies, 1);
+    var targetLock;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        let canCrit = 1;
+        didCrit = false;
+        totalDamage = 0;
+        
+        if (targets[i]._currentStats["totalHP"] / targets[i]._stats["totalHP"] <= 0.50) {
+          canCrit = 2;
+        } else {
+          canCrit = 1;
+        }
+        
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3, canCrit);
+        result += targets[i].takeDamage(this, "Bloodthirsty Predator 1", damageResult);
+        totalDamage += damageResult["damageAmount"];
+        didCrit = didCrit || damageResult["critted"];
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          if (targets[i]._currentStats["totalHP"] / targets[i]._stats["totalHP"] <= 0.50) {
+            canCrit = 2;
+          } else {
+            canCrit = 1;
+          }
+          
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3, canCrit);
+          result += targets[i].takeDamage(this, "Bloodthirsty Predator 2", damageResult);
+          totalDamage += damageResult["damageAmount"];
+          didCrit = didCrit || damageResult["critted"];
+        }
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          hpDamage = 0.20 * (targets[i]._stats["totalHP"] - targets[i]._currentStats["totalHP"]);
+          maxDamage = 15 * this._currentStats["totalAttack"];
+          if (hpDamage > maxDamage) { hpDamage = maxDamage; }
+          
+          hpDamageResult = this.calcDamage(targets[i], hpDamage, "active", "true");
+          result += targets[i].takeDamage(this, "Bloodthirsty Predator HP", hpDamageResult);
+          totalDamage += hpDamageResult["damageAmount"];
+        }
+        
+        let healAmount = this.calcHeal(this, 0.50 * totalDamage);
+        result += this.getHeal(this, healAmount);
+        
+        basicQueue.push([this, targets[i], totalDamage, didCrit]);
+      }
+    }
+    
+    
+    var numTargets = 0;
+    targets = getRandomTargets(this, this._allies, 3);
+    
+    for (let i in targets) {
+      if (this.heroDesc() != targets[i].heroDesc()) {
+        result += targets[i].getBuff(this, "Bloodthirsty", 3, {}, true);
+        numTargets++;
+      }
+      
+      if (numTargets == 2) {
+        break;
+      }
+    }
+    
     
     return result;
   }
@@ -8529,7 +8638,6 @@ function processQueue() {
   while (triggerQueue.length > 0) {
     copyQueue = triggerQueue.slice();
     triggerQueue = [];
-    // stopped here
     
     copyQueue.sort(function(a,b) {
       if (a[0]._attOrDef == "att" && b[0]._attOrDef == "def") {
@@ -8544,75 +8652,68 @@ function processQueue() {
     });
     
     for (var i in copyQueue) {
-      if ((copyQueue[i][0]._currentStats["totalHP"] > 0 && copyQueue[i][0].isNotSealed())
-        || copyQueue[i][0]._heroName == "Carrie"
-        || copyQueue[i][1].includes("Mark")
-        || copyQueue[i][1] == "eventSelfDied"
-        || (copyQueue[i][0]._heroName == "Elyvia" && ["eventEnemyActive", "eventEnemyBasic"].includes(copyQueue[i][1]))
-        || (copyQueue[i][0]._currentStats["totalHP"] > 0 && ["addHurt", "getHP"].includes(copyQueue[i][1]))
-      ) {
-        result += copyQueue[i][0].handleTrigger(copyQueue[i]);
+      temp = copyQueue[i][0].handleTrigger(copyQueue[i]);
+      if (temp.length > 0) { result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>"; }
+      
+      
+      if (copyQueue[i][1] == "eventGotCC" && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(copyQueue[i][0]._artifact)) {
+        temp = copyQueue[i][0].getBuff(copyQueue[i][0], "Hand of Fate", 1, {allDamageReduce: artifacts[copyQueue[i][0]._artifact]["enhance"]}, true);
+        result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+      }
+    
+    
+      if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" The Kiss of Ghost")) {
+        var damageDone = 0;
+        for (let e in copyQueue[i][2]) {
+          damageDone += copyQueue[i][2][e][2];
+        }
         
+        var healAmount = copyQueue[i][0].calcHeal(copyQueue[i][0], artifacts[copyQueue[i][0]._artifact]["enhance"] * damageDone);
+        temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered heal.</div>";
+        temp += copyQueue[i][0].getHeal(copyQueue[i][0], healAmount);
         
-        if (copyQueue[i][1] == "eventGotCC" && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(copyQueue[i][0]._artifact)) {
-          temp = copyQueue[i][0].getBuff(copyQueue[i][0], "Hand of Fate", 1, {allDamageReduce: artifacts[copyQueue[i][0]._artifact]["enhance"]}, true);
-          result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+        result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+      }
+    
+    
+      if (copyQueue[i][1] == "eventSelfActive" && copyQueue[i][0]._artifact.includes(" Demon Bell")) {
+        var targets = getAllTargets(copyQueue[i][0], copyQueue[i][0]._allies);
+        var energyGain = 10;
+        temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered energy gain.</div>";
+        
+        if (Math.random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
+          energyGain += 10;
         }
-      
-      
-        if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" The Kiss of Ghost")) {
-          var damageDone = 0;
-          for (let e in copyQueue[i][2]) {
-            damageDone += copyQueue[i][2][e][2];
-          }
-          
-          var healAmount = copyQueue[i][0].calcHeal(copyQueue[i][0], artifacts[copyQueue[i][0]._artifact]["enhance"] * damageDone);
-          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered heal.</div>";
-          temp += copyQueue[i][0].getHeal(copyQueue[i][0], healAmount);
-          
-          result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+        
+        for (let i in targets) {
+          temp += targets[i].getEnergy(copyQueue[i][0], energyGain);
         }
-      
-      
-        if (copyQueue[i][1] == "eventSelfActive" && copyQueue[i][0]._artifact.includes(" Demon Bell")) {
-          var targets = getAllTargets(copyQueue[i][0], copyQueue[i][0]._allies);
-          var energyGain = 10;
-          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered energy gain.</div>";
-          
-          if (Math.random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
-            energyGain += 10;
+        
+        result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+      }
+    
+    
+      if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" Staff Punisher of Immortal")) {
+        var damageResult = "";
+        var didCrit = false;
+        var damageAmount = 0;
+        temp = "";
+        
+        for (let e in copyQueue[i][2]) {
+          if (copyQueue[i][2][e][3] == true && copyQueue[i][2][e][1]._currentStats["totalHP"] > 0) {
+            didCrit = true;
+            
+            damageAmount = copyQueue[i][2][e][1]._stats["totalHP"] * 0.12;
+            if (damageAmount > copyQueue[i][0]._currentStats["totalAttack"] * 15) { damageAmount = copyQueue[i][0]._currentStats["totalAttack"] * 15; }
+            
+            damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], damageAmount, "passive", "true");
+            temp += copyQueue[i][2][e][1].takeDamage(copyQueue[i][0], copyQueue[i][0]._artifact, damageResult);
           }
-          
-          for (let i in targets) {
-            temp += targets[i].getEnergy(copyQueue[i][0], energyGain);
-          }
-          
-          result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
         }
-      
-      
-        if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" Staff Punisher of Immortal")) {
-          var damageResult = "";
-          var didCrit = false;
-          var damageAmount = 0;
-          temp = "";
-          
-          for (let e in copyQueue[i][2]) {
-            if (copyQueue[i][2][e][3] == true && copyQueue[i][2][e][1]._currentStats["totalHP"] > 0) {
-              didCrit = true;
-              
-              damageAmount = copyQueue[i][2][e][1]._stats["totalHP"] * 0.12;
-              if (damageAmount > copyQueue[i][0]._currentStats["totalAttack"] * 15) { damageAmount = copyQueue[i][0]._currentStats["totalAttack"] * 15; }
-              
-              damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], damageAmount, "passive", "true");
-              temp += copyQueue[i][2][e][1].takeDamage(copyQueue[i][0], copyQueue[i][0]._artifact, damageResult);
-            }
-          }
-          
-          if (didCrit) {
-            temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered on crit.</div>" + temp;
-            result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
-          }
+        
+        if (didCrit) {
+          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered on crit.</div>" + temp;
+          result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
         }
       }
     }
