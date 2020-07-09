@@ -677,6 +677,11 @@ class hero {
     }
     
     
+    if (roundNum > 15) {
+      attackDamage = attackDamage * (1 + (roundNum - 15) * 0.15);
+    }
+    
+    
     return {
       "damageAmount": Math.floor(attackDamage),
       "critted": critted, 

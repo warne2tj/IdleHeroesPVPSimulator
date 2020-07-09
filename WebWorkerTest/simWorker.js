@@ -996,6 +996,11 @@ class hero {
     }
     
     
+    if (roundNum > 15) {
+      attackDamage = attackDamage * (1 + (roundNum - 15) * 0.15);
+    }
+    
+    
     return {
       "damageAmount": Math.floor(attackDamage),
       "critted": critted, 
@@ -8040,11 +8045,11 @@ function getTauntedTargets(source, arrTargets, num=6) {
 var basicQueue = [];
 var activeQueue = [];
 var triggerQueue = [];
+var roundNum = 0;
 
 function runSim(attMonsterName, defMonsterName, numSims) {
   //var oCombatLog = document.getElementById("combatLog");
   //var numSims = document.getElementById("numSims").value;
-  var roundNum = 0;
   var winCount = 0;
   var orderOfAttack = [];
   var numOfHeroes = 0;
@@ -8117,7 +8122,8 @@ function runSim(attMonsterName, defMonsterName, numSims) {
       }
     }
     
-    for (roundNum = 1; roundNum <= 15; roundNum++) {
+    roundNum = 1;
+    while (true) {
       // @ start of round
       
       // Output detailed combat log only if running a single simulation
@@ -8377,6 +8383,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
       
       
       // @ end of round
+      roundNum++;
     }
     
     if (someoneWon == "att") {
