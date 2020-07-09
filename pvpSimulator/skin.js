@@ -184,5 +184,10 @@ var skins = {
     "Dr. Ormus": {hpPercent: 0.02, attackPercent: 0.03},
     "Headmaster of Magic Academy": {controlImmune: 0.05, attackPercent: 0.03, healEffect: 0.05},
     "Legendary Headmaster of Magic Academy": {controlImmune: 0.06, attackPercent: 0.06, healEffect: 0.08}
+  },
+  
+  "Rogan": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
   }
 };

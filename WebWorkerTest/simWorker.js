@@ -1711,6 +1711,9 @@ class hero {
     } else if (trigger[1] == "getHeal") {
       return this.getHeal(trigger[2], Math.floor(trigger[3]));
       
+    } else if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && "Bloodthirsty" in this._buffs && this._currentStats["totalHP"] > 0) {
+      return this.eventBloodthirsty(trigger[2]);
+      
     }
     
     return ""; 
@@ -1959,6 +1962,29 @@ class hero {
       result += " themself for " + formatNum(amountHealed) + ".</div>";
     } else {
       result += this.heroDesc() + " for " + formatNum(amountHealed) + ".</div>";
+    }
+    
+    return result;
+  }
+  
+  
+  eventBloodthirsty(targets) {
+    var result = "";
+    var damageResult = {};
+    var hpDamage = 0;
+    var healAmount = 0;
+    var maxDamage = 15 * this._currentStats["totalAttack"];
+    
+    for (let i in targets) {
+      hpDamage = 0.20 * (targets[i][1]._stats["totalHP"] - targets[i][1]._currentStats["totalHP"]);
+      maxDamage = 15 * this._currentStats["totalAttack"];
+      if (hpDamage > maxDamage) { hpDamage = maxDamage; }
+        
+      damageResult = this.calcDamage(targets[i][1], hpDamage, "passive", "true");
+      result += targets[i][1].takeDamage(this, "Bloodthirsty", damageResult);
+        
+      let healAmount = this.calcHeal(this, 0.30 * damageResult["damageAmount"]);
+      result += this.getHeal(this, healAmount);
     }
     
     return result;
@@ -6948,6 +6974,11 @@ var skins = {
     "Dr. Ormus": {hpPercent: 0.02, attackPercent: 0.03},
     "Headmaster of Magic Academy": {controlImmune: 0.05, attackPercent: 0.03, healEffect: 0.05},
     "Legendary Headmaster of Magic Academy": {controlImmune: 0.06, attackPercent: 0.06, healEffect: 0.08}
+  },
+  
+  "Rogan": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
   }
 };
 
@@ -7534,6 +7565,22 @@ var baseHeroStats = {
       growHP: 793.7,
       growAttack: 39.7,
       growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Rogan": {
+    className: Rogan,
+    heroFaction: "Forest",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 9436,
+      baseAttack: 478,
+      baseArmor: 62,
+      baseSpeed: 235,
+      growHP: 943.6,
+      growAttack: 47.8,
+      growArmor: 6.2,
       growSpeed: 2
     }
   },

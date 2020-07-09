@@ -418,6 +418,22 @@ var baseHeroStats = {
     }
   },
   
+  "Rogan": {
+    className: Rogan,
+    heroFaction: "Forest",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 9436,
+      baseAttack: 478,
+      baseArmor: 62,
+      baseSpeed: 235,
+      growHP: 943.6,
+      growAttack: 47.8,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
   "Russell": {
     className: Russell,
     heroFaction: "Light",
