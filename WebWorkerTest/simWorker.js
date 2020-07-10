@@ -8201,6 +8201,7 @@ function getTauntedTargets(source, arrTargets, num=6) {
 var basicQueue = [];
 var activeQueue = [];
 var triggerQueue = [];
+var logColor = 1;
 var roundNum = 0;
 
 function runSim(attMonsterName, defMonsterName, numSims) {
