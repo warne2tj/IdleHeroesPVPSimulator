@@ -12,10 +12,10 @@ var guildTech = {
     antiRanger: {rangerReduce: 0.01},
     antiAssassin: {assassinReduce: 0.01},
     antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   },
   "Mage": {
     hpPercent: {hpPercent: 0.005},
@@ -30,10 +30,10 @@ var guildTech = {
     antiRanger: {rangerReduce: 0.01},
     antiAssassin: {assassinReduce: 0.01},
     antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   },
   "Ranger": {
     hpPercent: {hpPercent: 0.005},
@@ -48,10 +48,10 @@ var guildTech = {
     antiMage: {mageReduce: 0.01},
     antiAssassin: {assassinReduce: 0.01},
     antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   },
   "Assassin": {
     hpPercent: {hpPercent: 0.005},
@@ -66,10 +66,10 @@ var guildTech = {
     antiMage: {mageReduce: 0.01},
     antiRanger: {rangerReduce: 0.01},
     antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   },
   "Priest": {
     hpPercent: {hpPercent: 0.005},
@@ -84,9 +84,9 @@ var guildTech = {
     antiMage: {mageReduce: 0.01},
     antiRanger: {rangerReduce: 0.01},
     antiAssassin: {assassinReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   }
 };

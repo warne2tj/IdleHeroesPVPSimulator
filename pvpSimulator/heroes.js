@@ -123,6 +123,12 @@ class hero {
     this._stats["controlImmunePen"] = 0.0;
     this._stats["firstCC"] = "";
     this._stats["dodge"] = 0.0;
+    this._stats["Seal of LightImmune"] = 0.0;
+    this._stats["ShapeshiftImmune"] = 0.0;
+    this._stats["TauntImmune"] = 0.0;
+    this._stats["DazzleImmune"] = 0.0;
+    this._stats["HorrifyImmune"] = 0.0;
+    this._stats["SilenceImmune"] = 0.0;
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};

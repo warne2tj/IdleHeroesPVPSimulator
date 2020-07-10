@@ -383,7 +383,9 @@ function loadConfig() {
   var jsonConfig = JSON.parse(oConfig.value);
   
   for (var x in jsonConfig) {
-    document.getElementById(x).value = jsonConfig[x];
+    if (document.getElementById(x) !== null) {
+      document.getElementById(x).value = jsonConfig[x];
+    }
     
     if (x.substring(x.length - 4, x.length) == "Name") {
       changeHero(x.substring(7, 8), x.substring(0, 3), true);

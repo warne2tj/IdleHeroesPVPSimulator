@@ -487,5 +487,11 @@ var translate = {
   "damageAgainstRanger": "Damage Against Ranger",
   "damageAgainstAssassin": "Damage Against Assassin",
   "damageAgainstPriest": "Damage Against Priest",
-  "valkryieBasic": "Flag Burn from Valkryie Basic"
+  "valkryieBasic": "Flag Burn from Valkryie Basic",
+  "Seal of LightImmune": "Chance to Resist Seal of Light",
+  "ShapeshiftImmune": "Chance to Resist Shapeshift",
+  "TauntImmune": "Chance to Resist Taunt",
+  "DazzleImmune": "Chance to Resist Dazzle",
+  "HorrifyImmune": "Chance to Resist Horrify",
+  "SilenceImmune": "Chance to Resist Silence"
 };

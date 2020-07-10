@@ -434,6 +434,12 @@ class hero {
     this._stats["controlImmunePen"] = 0.0;
     this._stats["firstCC"] = "";
     this._stats["dodge"] = 0.0;
+    this._stats["Seal of LightImmune"] = 0.0;
+    this._stats["ShapeshiftImmune"] = 0.0;
+    this._stats["TauntImmune"] = 0.0;
+    this._stats["DazzleImmune"] = 0.0;
+    this._stats["HorrifyImmune"] = 0.0;
+    this._stats["SilenceImmune"] = 0.0;
     
     this._attackMultipliers = {};
     this._hpMultipliers = {};
@@ -6813,10 +6819,10 @@ var guildTech = {
     antiRanger: {rangerReduce: 0.01},
     antiAssassin: {assassinReduce: 0.01},
     antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   },
   "Mage": {
     hpPercent: {hpPercent: 0.005},
@@ -6831,10 +6837,10 @@ var guildTech = {
     antiRanger: {rangerReduce: 0.01},
     antiAssassin: {assassinReduce: 0.01},
     antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   },
   "Ranger": {
     hpPercent: {hpPercent: 0.005},
@@ -6849,10 +6855,10 @@ var guildTech = {
     antiMage: {mageReduce: 0.01},
     antiAssassin: {assassinReduce: 0.01},
     antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   },
   "Assassin": {
     hpPercent: {hpPercent: 0.005},
@@ -6867,10 +6873,10 @@ var guildTech = {
     antiMage: {mageReduce: 0.01},
     antiRanger: {rangerReduce: 0.01},
     antiPriest: {priestReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   },
   "Priest": {
     hpPercent: {hpPercent: 0.005},
@@ -6885,10 +6891,10 @@ var guildTech = {
     antiMage: {mageReduce: 0.01},
     antiRanger: {rangerReduce: 0.01},
     antiAssassin: {assassinReduce: 0.01},
-    stunImmune: {stunImmune: 0.01},
-    freezeImmune: {freezeImmune: 0.01},
-    petrifyImmune: {petrifyImmune: 0.01},
-    twineImmune: {twineImmune: 0.01}
+    heartOfCrystal: {"Seal of LightImmune": 0.01, ShapeshiftImmune: 0.01},
+    immortalRoar: {TauntImmune: 0.01, DazzleImmune: 0.01},
+    spellOfAgility: {petrifyImmune: 0.01, twineImmune: 0.01, HorrifyImmune: 0.01},
+    blessingOfPurification: {stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01}
   }
 };
 
@@ -8268,7 +8274,13 @@ var translate = {
   "damageAgainstRanger": "Damage Against Ranger",
   "damageAgainstAssassin": "Damage Against Assassin",
   "damageAgainstPriest": "Damage Against Priest",
-  "valkryieBasic": "Flag Burn from Valkryie Basic"
+  "valkryieBasic": "Flag Burn from Valkryie Basic",
+  "Seal of LightImmune": "Chance to Resist Seal of Light",
+  "ShapeshiftImmune": "Chance to Resist Shapeshift",
+  "TauntImmune": "Chance to Resist Taunt",
+  "DazzleImmune": "Chance to Resist Dazzle",
+  "HorrifyImmune": "Chance to Resist Horrify",
+  "SilenceImmune": "Chance to Resist Silence"
 };
 
 /* End of utilityFunctions.js */
