@@ -3730,7 +3730,7 @@ class Ormus extends hero {
 class Rogan extends hero {
   passiveStats() {
     // apply Wolfish Blood passive
-    this.applyStatChange({attackPercent:0.30, critDamage: 0.40, damageReduce: 0.30, speed: 60}, "PassiveStats");
+    this.applyStatChange({attackPercent:0.30, hpPercent: 0.25, critDamage: 0.40, damageReduce: 0.30, speed: 60}, "PassiveStats");
   }
   
   

@@ -423,13 +423,13 @@ var baseHeroStats = {
     heroFaction: "Forest",
     heroClass: "Assassin",
     stats: {
-      baseHP: 9436,
-      baseAttack: 478,
-      baseArmor: 62,
+      baseHP: 7057,
+      baseAttack: 354,
+      baseArmor: 60,
       baseSpeed: 235,
-      growHP: 943.6,
-      growAttack: 47.8,
-      growArmor: 6.2,
+      growHP: 705.7,
+      growAttack: 35.4,
+      growArmor: 6,
       growSpeed: 2
     }
   },
