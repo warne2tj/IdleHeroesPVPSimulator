@@ -235,20 +235,15 @@ function getAllTargets(source, arrTargets, num=6) {
 }
 
 
-function getRandomTargets(source, arrTargets, num=6) {
+function getRandomTargets(source, arrTargets, num=6, dazzleBypass=false) {
   var copyTargets = [];
   var copyTargets2 = [];
   var count = 0;
   
-  
-  if (!(isMonster(source))) {
-    if ("Dazzle" in source._debuffs) {
-      num = 1;
-    } else {
-      copyTargets = getTauntedTargets(source, arrTargets);
-    }
+  if (!(dazzleBypass)) {
+    copyTargets = getTauntedTargets(source, arrTargets, num);
   }
-  if (copyTargets.length == 1) { return copyTargets; }
+  if (copyTargets.length > 0) { return copyTargets; }
   
   for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
@@ -390,20 +385,16 @@ function getHighestHPTargets(source, arrTargets, num=6) {
 
 function getTauntedTargets(source, arrTargets, num=6) {
   var copyTargets = [];
-  var count = 0;
   
   if (!(isMonster(source)) && arrTargets.length > 0) {
     if (!(source._attOrDef == arrTargets[0]._attOrDef)) {
       if ("Dazzle" in source._debuffs) {
-        return getRandomTargets(source, arrTargets, 1);
+        return getRandomTargets(source, source._enemies, 1, true);
       } else if ("Taunt" in source._debuffs) {
-        for (var i in arrTargets) {
-          if (arrTargets[i]._heroName == "UniMax-3000" && arrTargets[i]._currentStats["totalHP"] > 0) {
-            copyTargets.push(arrTargets[i]);
-            count++;
+        for (var i in source._enemies) {
+          if (source._enemies[i]._heroName == "UniMax-3000" && source._enemies[i]._currentStats["totalHP"] > 0) {
+            copyTargets.push(source._enemies[i]);
           }
-          
-          if (count == num) { break; }
         }
       }
     }

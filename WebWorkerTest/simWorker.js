@@ -1198,7 +1198,7 @@ class hero {
       
       
     if (unstackable && buffName in this._buffs) {
-      let stackObj = Object.values(this._buffs[buffName]);
+      let stackObj = Object.values(this._buffs[buffName])[0];
       stackObj["duration"] = duration;
       
     } else {
@@ -1293,6 +1293,10 @@ class hero {
       if (unstackable && debuffName in this._debuffs) {
         let stackObj = Object.values(this._debuffs[debuffName]);
         stackObj["duration"] = duration;
+        
+        if (debuffName == "Shapeshift") {
+          stackObj["effects"]["stacks"] = effects["stacks"];
+        }
         
       } else {
         var keyAt = uuid();
@@ -1700,6 +1704,8 @@ class hero {
   eventGotCC(source, ccName, ccStackID) { return ""; }
   startOfBattle() { return ""; }
   endOfRound(roundNum) { return ""; }
+  eventHPlte50() { return ""; }
+  eventHPlte30() { return ""; }
   
   
   handleTrigger(trigger) { 
@@ -1849,8 +1855,8 @@ class hero {
     if (damageResult["critted"] && "Crit Mark" in this._debuffs) {
       for (var s in this._debuffs["Crit Mark"]) {
         triggerQueue.push([this._debuffs["Crit Mark"][s]["source"], "critMark", this, this._debuffs["Crit Mark"][s]["effects"]["attackAmount"]]);
-        this.removeDebuff("Crit Mark");
       }
+      this.removeDebuff("Crit Mark");
     }
     
     
@@ -1870,18 +1876,25 @@ class hero {
     }
     
     
-    if (this._currentStats["totalHP"] > 0 && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50) {
+    var beforePercent = beforeHP / this._stats["totalHP"];
+    var afterPercent = this._currentStats["totalHP"] / this._stats["totalHP"];
+    
+    if (this._currentStats["totalHP"] > 0 && beforePercent > 0.50 && afterPercent <= 0.50) {
       triggerQueue.push([this, "eventHPlte50"]);
     }
     
-    
-    if ("Rescue Mark" in this._buffs && this._currentStats["totalHP"] > 0 && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.30) {
-      for (let s in this._buffs["Rescue Mark"]) {
-        triggerQueue.push([this, "getHeal", this._buffs["Rescue Mark"][s]["source"], this._buffs["Rescue Mark"][s]["effects"]["attackAmount"]]);
-      }
+    if (this._currentStats["totalHP"] > 0 && beforePercent > 0.30 && afterPercent <= 0.30) {
+      triggerQueue.push([this, "eventHPlte30"]);
       
-      result += this.removeBuff("Rescue Mark");
+      if ("Rescue Mark" in this._buffs) {
+        for (let s in this._buffs["Rescue Mark"]) {
+          triggerQueue.push([this, "getHeal", this._buffs["Rescue Mark"][s]["source"], this._buffs["Rescue Mark"][s]["effects"]["attackAmount"]]);
+        }
+        
+        result += this.removeBuff("Rescue Mark");
+      }
     }
+    
     
     return result;
   }
@@ -3371,14 +3384,15 @@ class Garuda extends hero {
     }
     
     // Use up all Feather Blades
+    var featherTarget;
     if ("Feather Blade" in this._buffs) {
       var numBlades = Object.keys(this._buffs["Feather Blade"]);
       for (var i in numBlades) {
-        targets = getRandomTargets(this, this._enemies, 1);
+        featherTarget = getRandomTargets(this, targets, 1);
         
-        if (targets.length > 0) {
-          damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 3.2);
-          result += targets[0].takeDamage(this, "Feather Blade", damageResult);
+        if (featherTarget.length > 0) {
+          damageResult = this.calcDamage(featherTarget[0], this._currentStats["totalAttack"], "active", "normal", 3.2);
+          result += featherTarget[0].takeDamage(this, "Feather Blade", damageResult);
         }
       }
       result += this.removeBuff("Feather Blade");
@@ -4004,19 +4018,6 @@ class Kroos extends hero {
     }
     
     return result;
-  }
-  
-  
-  takeDamage(source, strAttackDesc, damageResult) {
-    var result = "";
-    
-    result += super.takeDamage(source, strAttackDesc, damageResult);
-    
-    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50 && this._currentStats["flameInvasionTriggered"] == 0) {
-      triggerQueue.push([this, "eventHPlte50"]);
-    }
-    
-    return result
   }
   
   
@@ -4786,18 +4787,6 @@ class Sherlock extends hero {
         
         result += "<div>" + this.heroDesc() + " <span class='skill'>Deceiving Tricks</span> swapped " + formatNum(swapAmount) + " HP with " + targets[0].heroDesc() + ".</div>";
       }
-    }
-    
-    return result;
-  }
-  
-  
-  takeDamage(source, strAttackDesc, damageResult) {
-    var result = "";
-    result += super.takeDamage(source, strAttackDesc, damageResult);
-    
-    if (this._currentStats["totalHP"]/this._stats["totalHP"] <= 0.30 && this._currentStats["wellCalculatedStacks"] > 1) {
-      triggerQueue.push([this, "eventHPlte30"]);
     }
     
     return result;
@@ -8022,20 +8011,15 @@ function getAllTargets(source, arrTargets, num=6) {
 }
 
 
-function getRandomTargets(source, arrTargets, num=6) {
+function getRandomTargets(source, arrTargets, num=6, dazzleBypass=false) {
   var copyTargets = [];
   var copyTargets2 = [];
   var count = 0;
   
-  
-  if (!(isMonster(source))) {
-    if ("Dazzle" in source._debuffs) {
-      num = 1;
-    } else {
-      copyTargets = getTauntedTargets(source, arrTargets);
-    }
+  if (!(dazzleBypass)) {
+    copyTargets = getTauntedTargets(source, arrTargets, num);
   }
-  if (copyTargets.length == 1) { return copyTargets; }
+  if (copyTargets.length > 0) { return copyTargets; }
   
   for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
@@ -8177,20 +8161,16 @@ function getHighestHPTargets(source, arrTargets, num=6) {
 
 function getTauntedTargets(source, arrTargets, num=6) {
   var copyTargets = [];
-  var count = 0;
   
   if (!(isMonster(source)) && arrTargets.length > 0) {
     if (!(source._attOrDef == arrTargets[0]._attOrDef)) {
       if ("Dazzle" in source._debuffs) {
-        return getRandomTargets(source, arrTargets, 1);
+        return getRandomTargets(source, source._enemies, 1, true);
       } else if ("Taunt" in source._debuffs) {
-        for (var i in arrTargets) {
-          if (arrTargets[i]._heroName == "UniMax-3000" && arrTargets[i]._currentStats["totalHP"] > 0) {
-            copyTargets.push(arrTargets[i]);
-            count++;
+        for (var i in source._enemies) {
+          if (source._enemies[i]._heroName == "UniMax-3000" && source._enemies[i]._currentStats["totalHP"] > 0) {
+            copyTargets.push(source._enemies[i]);
           }
-          
-          if (count == num) { break; }
         }
       }
     }
@@ -8563,70 +8543,74 @@ function runSim(attMonsterName, defMonsterName, numSims) {
       
       
       // handle end of round abilities
-      temp = "";
-        
-      for (let h in attHeroes) {
-        if (attHeroes[h]._currentStats["totalHP"] > 0) {
-          temp += attHeroes[h].tickBuffs();
-          temp += attHeroes[h].tickDebuffs();
+      if (roundNum < 127) {
+        temp = "";
+          
+        for (let h in attHeroes) {
+          if (attHeroes[h]._currentStats["totalHP"] > 0) {
+            temp += attHeroes[h].tickBuffs();
+            temp += attHeroes[h].tickDebuffs();
+          }
         }
+          
+        for (let h in defHeroes) {
+          if (defHeroes[h]._currentStats["totalHP"] > 0) {
+            temp += defHeroes[h].tickBuffs();
+            temp += defHeroes[h].tickDebuffs();
+          }
+        }
+          
+          
+        for (let h in attHeroes) {
+          if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
+            temp += attHeroes[h].endOfRound(roundNum);
+          }
+          
+          if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
+            temp += attHeroes[h].tickEnable3();
+          }
+          
+          
+          if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
+            temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
+            temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
+          }
+          
+          
+          if (attHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(attHeroes[h]._artifact) && attHeroes[h].isUnderControl()) {
+            temp += "<div><span class='skill'>" + attHeroes[h]._artifact + "</span> triggered.</div>";
+            temp += attHeroes[h].getBuff(attHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[attHeroes[h]._artifact]["enhance"]}, true);
+          }
+        }
+          
+        for (let h in defHeroes) {
+          if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
+            temp += defHeroes[h].endOfRound(roundNum);
+          }
+          
+          if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
+            temp += defHeroes[h].tickEnable3();
+          }
+          
+          if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
+            temp += "<div>" + defHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
+            temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
+          }
+          
+          
+          if (defHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(defHeroes[h]._artifact) && defHeroes[h].isUnderControl()) {
+            temp += "<div><span class='skill'>" + defHeroes[h]._artifact + "</span> triggered.</div>";
+            temp += defHeroes[h].getBuff(defHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[defHeroes[h]._artifact]["enhance"]}, true);
+          }
+        }
+        
+        temp = processQueue();
+        //if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        someoneWon = checkForWin();
+        if (someoneWon != "") {break;}
+      } else {
+        break;
       }
-        
-      for (let h in defHeroes) {
-        if (defHeroes[h]._currentStats["totalHP"] > 0) {
-          temp += defHeroes[h].tickBuffs();
-          temp += defHeroes[h].tickDebuffs();
-        }
-      }
-        
-        
-      for (let h in attHeroes) {
-        if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
-          temp += attHeroes[h].endOfRound(roundNum);
-        }
-        
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
-          temp += attHeroes[h].tickEnable3();
-        }
-        
-        
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
-          temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
-          temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
-        }
-        
-        
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(attHeroes[h]._artifact) && attHeroes[h].isUnderControl()) {
-          temp += "<div><span class='skill'>" + attHeroes[h]._artifact + "</span> triggered.</div>";
-          temp += attHeroes[h].getBuff(attHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[attHeroes[h]._artifact]["enhance"]}, true);
-        }
-      }
-        
-      for (let h in defHeroes) {
-        if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
-          temp += defHeroes[h].endOfRound(roundNum);
-        }
-        
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
-          temp += defHeroes[h].tickEnable3();
-        }
-        
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
-          temp += "<div>" + defHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
-          temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
-        }
-        
-        
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(defHeroes[h]._artifact) && defHeroes[h].isUnderControl()) {
-          temp += "<div><span class='skill'>" + defHeroes[h]._artifact + "</span> triggered.</div>";
-          temp += defHeroes[h].getBuff(defHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[defHeroes[h]._artifact]["enhance"]}, true);
-        }
-      }
-      
-      temp = processQueue();
-      //if(numSims == 1) {oCombatLog.innerHTML += temp;}
-      someoneWon = checkForWin();
-      if (someoneWon != "") {break;}
       
       
       // @ end of round

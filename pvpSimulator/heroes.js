@@ -972,8 +972,12 @@ class hero {
       
       
       if (unstackable && debuffName in this._debuffs) {
-        let stackObj = Object.values(this._debuffs[debuffName]);
+        let stackObj = Object.values(this._debuffs[debuffName])[0];
         stackObj["duration"] = duration;
+        
+        if (debuffName == "Shapeshift") {
+          stackObj["effects"]["stacks"] = effects["stacks"];
+        }
         
       } else {
         var keyAt = uuid();
@@ -1395,6 +1399,8 @@ class hero {
   eventGotCC(source, ccName, ccStackID) { return ""; }
   startOfBattle() { return ""; }
   endOfRound(roundNum) { return ""; }
+  eventHPlte50() { return ""; }
+  eventHPlte30() { return ""; }
   
   
   handleTrigger(trigger) { 
@@ -1544,8 +1550,8 @@ class hero {
     if (damageResult["critted"] && "Crit Mark" in this._debuffs) {
       for (var s in this._debuffs["Crit Mark"]) {
         triggerQueue.push([this._debuffs["Crit Mark"][s]["source"], "critMark", this, this._debuffs["Crit Mark"][s]["effects"]["attackAmount"]]);
-        this.removeDebuff("Crit Mark");
       }
+      this.removeDebuff("Crit Mark");
     }
     
     
@@ -1565,17 +1571,23 @@ class hero {
     }
     
     
-    if (this._currentStats["totalHP"] > 0 && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50) {
+    var beforePercent = beforeHP / this._stats["totalHP"];
+    var afterPercent = this._currentStats["totalHP"] / this._stats["totalHP"];
+    
+    if (this._currentStats["totalHP"] > 0 && beforePercent > 0.50 && afterPercent <= 0.50) {
       triggerQueue.push([this, "eventHPlte50"]);
     }
     
-    
-    if ("Rescue Mark" in this._buffs && this._currentStats["totalHP"] > 0 && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.30) {
-      for (let s in this._buffs["Rescue Mark"]) {
-        triggerQueue.push([this, "getHeal", this._buffs["Rescue Mark"][s]["source"], this._buffs["Rescue Mark"][s]["effects"]["attackAmount"]]);
-      }
+    if (this._currentStats["totalHP"] > 0 && beforePercent > 0.30 && afterPercent <= 0.30) {
+      triggerQueue.push([this, "eventHPlte30"]);
       
-      result += this.removeBuff("Rescue Mark");
+      if ("Rescue Mark" in this._buffs) {
+        for (let s in this._buffs["Rescue Mark"]) {
+          triggerQueue.push([this, "getHeal", this._buffs["Rescue Mark"][s]["source"], this._buffs["Rescue Mark"][s]["effects"]["attackAmount"]]);
+        }
+        
+        result += this.removeBuff("Rescue Mark");
+      }
     }
     
     

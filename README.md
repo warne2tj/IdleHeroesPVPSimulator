@@ -35,6 +35,7 @@ Head to the wiki for more details.
   * Oberon
   * Ormus
   * Penny
+  * Rogan
   * Russell
   * Sherlock
   * Tara

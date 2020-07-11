@@ -281,75 +281,79 @@ function runSim() {
       
       
       // handle end of round abilities
-      temp = "";
-        
-      for (let h in attHeroes) {
-        if (attHeroes[h]._currentStats["totalHP"] > 0) {
-          temp += attHeroes[h].tickBuffs();
-          temp += attHeroes[h].tickDebuffs();
+      if (roundNum < 127) {
+        temp = "";
+          
+        for (let h in attHeroes) {
+          if (attHeroes[h]._currentStats["totalHP"] > 0) {
+            temp += attHeroes[h].tickBuffs();
+            temp += attHeroes[h].tickDebuffs();
+          }
         }
+          
+        for (let h in defHeroes) {
+          if (defHeroes[h]._currentStats["totalHP"] > 0) {
+            temp += defHeroes[h].tickBuffs();
+            temp += defHeroes[h].tickDebuffs();
+          }
+        }
+          
+          
+        for (let h in attHeroes) {
+          if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
+            temp += attHeroes[h].endOfRound(roundNum);
+          }
+          
+          if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
+            temp += attHeroes[h].tickEnable3();
+          }
+          
+          
+          if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
+            temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
+            temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
+          }
+          
+          
+          if (attHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(attHeroes[h]._artifact) && attHeroes[h].isUnderControl()) {
+            temp += "<div><span class='skill'>" + attHeroes[h]._artifact + "</span> triggered.</div>";
+            temp += attHeroes[h].getBuff(attHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[attHeroes[h]._artifact]["enhance"]}, true);
+          }
+        }
+          
+        for (let h in defHeroes) {
+          if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
+            temp += defHeroes[h].endOfRound(roundNum);
+          }
+          
+          if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
+            temp += defHeroes[h].tickEnable3();
+          }
+          
+          if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
+            temp += "<div>" + defHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
+            temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
+          }
+          
+          
+          if (defHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(defHeroes[h]._artifact) && defHeroes[h].isUnderControl()) {
+            temp += "<div><span class='skill'>" + defHeroes[h]._artifact + "</span> triggered.</div>";
+            temp += defHeroes[h].getBuff(defHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[defHeroes[h]._artifact]["enhance"]}, true);
+          }
+        }
+          
+          
+        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
+        
+        
+        temp = processQueue();
+        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'>" + temp + "</div>";}
+        someoneWon = checkForWin();
+        if (someoneWon != "") {break;}
+      } else {
+        break;
       }
-        
-      for (let h in defHeroes) {
-        if (defHeroes[h]._currentStats["totalHP"] > 0) {
-          temp += defHeroes[h].tickBuffs();
-          temp += defHeroes[h].tickDebuffs();
-        }
-      }
-        
-        
-      for (let h in attHeroes) {
-        if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
-          temp += attHeroes[h].endOfRound(roundNum);
-        }
-        
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
-          temp += attHeroes[h].tickEnable3();
-        }
-        
-        
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
-          temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
-          temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
-        }
-        
-        
-        if (attHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(attHeroes[h]._artifact) && attHeroes[h].isUnderControl()) {
-          temp += "<div><span class='skill'>" + attHeroes[h]._artifact + "</span> triggered.</div>";
-          temp += attHeroes[h].getBuff(attHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[attHeroes[h]._artifact]["enhance"]}, true);
-        }
-      }
-        
-      for (let h in defHeroes) {
-        if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
-          temp += defHeroes[h].endOfRound(roundNum);
-        }
-        
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
-          temp += defHeroes[h].tickEnable3();
-        }
-        
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
-          temp += "<div>" + defHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
-          temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
-        }
-        
-        
-        if (defHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(defHeroes[h]._artifact) && defHeroes[h].isUnderControl()) {
-          temp += "<div><span class='skill'>" + defHeroes[h]._artifact + "</span> triggered.</div>";
-          temp += defHeroes[h].getBuff(defHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[defHeroes[h]._artifact]["enhance"]}, true);
-        }
-      }
-        
-        
-      if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
-      logColor = (logColor + 1) % 2;
-      
-      
-      temp = processQueue();
-      if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'>" + temp + "</div>";}
-      someoneWon = checkForWin();
-      if (someoneWon != "") {break;}
       
       
       // @ end of round

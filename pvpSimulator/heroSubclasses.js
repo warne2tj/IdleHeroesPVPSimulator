@@ -1368,14 +1368,15 @@ class Garuda extends hero {
     }
     
     // Use up all Feather Blades
+    var featherTarget;
     if ("Feather Blade" in this._buffs) {
       var numBlades = Object.keys(this._buffs["Feather Blade"]);
       for (var i in numBlades) {
-        targets = getRandomTargets(this, this._enemies, 1);
+        featherTarget = getRandomTargets(this, targets, 1);
         
-        if (targets.length > 0) {
-          damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 3.2);
-          result += targets[0].takeDamage(this, "Feather Blade", damageResult);
+        if (featherTarget.length > 0) {
+          damageResult = this.calcDamage(featherTarget[0], this._currentStats["totalAttack"], "active", "normal", 3.2);
+          result += featherTarget[0].takeDamage(this, "Feather Blade", damageResult);
         }
       }
       result += this.removeBuff("Feather Blade");
@@ -2001,19 +2002,6 @@ class Kroos extends hero {
     }
     
     return result;
-  }
-  
-  
-  takeDamage(source, strAttackDesc, damageResult) {
-    var result = "";
-    
-    result += super.takeDamage(source, strAttackDesc, damageResult);
-    
-    if (this._currentStats["totalHP"] > 0  && this._currentStats["totalHP"] / this._stats["totalHP"] <= 0.50 && this._currentStats["flameInvasionTriggered"] == 0) {
-      triggerQueue.push([this, "eventHPlte50"]);
-    }
-    
-    return result
   }
   
   
@@ -2783,18 +2771,6 @@ class Sherlock extends hero {
         
         result += "<div>" + this.heroDesc() + " <span class='skill'>Deceiving Tricks</span> swapped " + formatNum(swapAmount) + " HP with " + targets[0].heroDesc() + ".</div>";
       }
-    }
-    
-    return result;
-  }
-  
-  
-  takeDamage(source, strAttackDesc, damageResult) {
-    var result = "";
-    result += super.takeDamage(source, strAttackDesc, damageResult);
-    
-    if (this._currentStats["totalHP"]/this._stats["totalHP"] <= 0.30 && this._currentStats["wellCalculatedStacks"] > 1) {
-      triggerQueue.push([this, "eventHPlte30"]);
     }
     
     return result;
