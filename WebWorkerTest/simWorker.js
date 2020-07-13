@@ -1291,7 +1291,7 @@ class hero {
       
       
       if (unstackable && debuffName in this._debuffs) {
-        let stackObj = Object.values(this._debuffs[debuffName]);
+        let stackObj = Object.values(this._debuffs[debuffName])[0];
         stackObj["duration"] = duration;
         
         if (debuffName == "Shapeshift") {
