@@ -409,8 +409,8 @@ function evolve(teamKeys) {
   
   oConfig.value = "{\n";
   
-  // clone top 20%
-  for (t=0; t<i20p; t++) {
+  // clone top 10%
+  for (t=0; t<i10p; t++) {
     dna1 = allTeams[teamKeys[t]]["dna"];
     dnaString1 = "\"" + t + "\": [\n";
     

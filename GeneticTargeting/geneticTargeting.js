@@ -160,6 +160,13 @@ function runMassLoop() {
         tHero._armor = "6* Flame Armor";
         tHero._shoe = "6* Flame Boots";
         tHero._accessory = "6* Flame Necklace";
+        
+      } else if (benchmarkDNA[p+2] == "No Armor") { 
+        tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
+        tHero._armor = "None";
+        tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
+        tHero._accessory = classGearMapping[tHero._heroClass]["accessory"];
+        
       }
       
       defHeroes.push(tHero);
@@ -212,6 +219,13 @@ function runMassLoop() {
           tHero._armor = "6* Flame Armor";
           tHero._shoe = "6* Flame Boots";
           tHero._accessory = "6* Flame Necklace";
+          
+        } else if (jsonConfig[t][p+2] == "No Armor") { 
+          tHero._weapon = classGearMapping[tHero._heroClass]["weapon"];
+          tHero._armor = "None";
+          tHero._shoe = classGearMapping[tHero._heroClass]["shoe"];
+          tHero._accessory = classGearMapping[tHero._heroClass]["accessory"];
+          
         }
         
         team.push(tHero);
@@ -390,7 +404,7 @@ function createRandomTeams() {
   
   var artifactNames = ["Antlers Cane", "Demon Bell", "Staff Punisher of Immortal", "Magic Stone Sword", "Augustus Magic Ball",
     "The Kiss of Ghost", "Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Ruyi Scepter"];
-  var equipments = ["Class Gear", "Split HP", "Split Attack"];
+  var equipments = ["Class Gear", "Split HP", "Split Attack", "No Armor"];
   var enables1 = ["Vitality", "Mightiness", "Growth"];
   var enables2 = ["Shelter", "LethalFightback", "Vitality2"];
   var enables3 = ["Resilience", "SharedFate", "Purify"];
@@ -441,7 +455,7 @@ function createRandomTeams() {
       
       oConfig.value += "\"" + equipments[Math.floor(Math.random() * equipments.length)] + "\", ";
       oConfig.value += "\"" + stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1] + "\", ";
-      oConfig.value += "\"" + artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1] + "\", ";
+      oConfig.value += "\"" + artifactNames[Math.floor(Math.random() * artifactNames.length)] + "\", ";
       oConfig.value += "\"" + enables1[Math.floor(Math.random() * enables1.length)] + "\", ";
       oConfig.value += "\"" + enables2[Math.floor(Math.random() * enables2.length)] + "\", ";
       oConfig.value += "\"" + enables3[Math.floor(Math.random() * enables3.length)] + "\", ";
@@ -503,8 +517,8 @@ function evolve(teamKeys) {
   
   oConfig.value = "{\n";
   
-  // clone top 20%
-  for (t=0; t<i20p; t++) {
+  // clone top 10%
+  for (t=0; t<i10p; t++) {
     dna1 = allTeams[teamKeys[t]]["dna"];
     dnaString1 = "\"" + t + "\": [\n";
     
@@ -533,7 +547,7 @@ function evolve(teamKeys) {
   
   // breed
   while (t < numCreate) {
-    child = breed(teamKeys, 0, numCreate-1, mutationRate * (Math.floor(t / 10) + 1), swapRate * (Math.floor(t / 10) + 1));
+    child = breed(teamKeys, 0, i90p, mutationRate * (Math.floor(t / 10) + 1), swapRate * (Math.floor(t / 10) + 1));
   
     teamDNA = child[0];
     tempTeam = Object.assign({}, heroCount);
@@ -602,7 +616,7 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   
   var artifactNames = ["Antlers Cane", "Demon Bell", "Staff Punisher of Immortal", "Magic Stone Sword", "Augustus Magic Ball",
     "The Kiss of Ghost", "Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Ruyi Scepter"];
-  var equipments = ["Class Gear", "Split HP", "Split Attack"];
+  var equipments = ["Class Gear", "Split HP", "Split Attack", "No Armor"];
   var enables1 = ["Vitality", "Mightiness", "Growth"];
   var enables2 = ["Shelter", "LethalFightback", "Vitality2"];
   var enables3 = ["Resilience", "SharedFate", "Purify"];
@@ -679,7 +693,7 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
           break;
           
         case 4:
-          child1[g] = artifactNames[Math.floor(Math.random() * (artifactNames.length - 1)) + 1];
+          child1[g] = artifactNames[Math.floor(Math.random() * artifactNames.length)];
           break;
           
         case 5:
