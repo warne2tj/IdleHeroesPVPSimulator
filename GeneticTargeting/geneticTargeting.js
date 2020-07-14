@@ -64,7 +64,6 @@ function initialize() {
       document.getElementById("numSims").value = localStorage.getItem(lsPrefix + "numSims");
       document.getElementById("genCount").value = localStorage.getItem(lsPrefix + "genCount");
       document.getElementById("numCreate").value = localStorage.getItem(lsPrefix + "numCreate");
-      document.getElementById("benchmark").value = localStorage.getItem(lsPrefix + "benchmark");
       document.getElementById("configText").value = localStorage.getItem(lsPrefix + "configText");
       
       var arrInputs = document.getElementsByTagName("INPUT");
@@ -81,7 +80,6 @@ function initialize() {
       localStorage.setItem(lsPrefix + "numSims", document.getElementById("numSims").value);
       localStorage.setItem(lsPrefix + "genCount", document.getElementById("genCount").value);
       localStorage.setItem(lsPrefix + "numCreate", document.getElementById("numCreate").value);
-      localStorage.setItem(lsPrefix + "benchmark", document.getElementById("benchmark").value);
       localStorage.setItem(lsPrefix + "configText", document.getElementById("configText").value);
       
       var arrInputs = document.getElementsByTagName("INPUT");
