@@ -48,7 +48,7 @@ var seededHeroes = {
     allowedStones: ["S3 Attack, Attack, Holy", "S3 HP, HP", "S3 HP, Attack, Holy", "S3 Speed, HP", "S3 Speed, Attack"]
   },
   "Sherlock": {
-    allowedArtifacts: ["Demon Bell", "Golden Crown"],
+    allowedArtifacts: ["Augustus Magic Ball", "Demon Bell", "Golden Crown", "Ruyi Scepter"],
     allowedEquipments: ["Class Gear", "Split HP"],
     allowedStones: ["S3 Attack, Attack", "S3 HP, HP", "S3 Speed, HP", "S3 Speed, Attack"]
   },
