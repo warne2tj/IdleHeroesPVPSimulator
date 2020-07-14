@@ -578,7 +578,7 @@ class hero {
     
     // get and apply guild tech
     var tech = guildTech[this._heroClass];
-    var techLevels = [60, 50, 40, 30, 20, 20, 20, 20, 30, 30, 30, 30, 0, 20, 20, 20];
+    var techLevels = [60, 50, 40, 30, 20, 20, 20, 20, 30, 30, 30, 30, 20, 20, 20, 20];
     var techLevel = 0;
     var tl = 0;
     

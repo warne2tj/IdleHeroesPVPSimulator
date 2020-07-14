@@ -938,7 +938,7 @@ class hero {
     
     if (isControl) {
       controlImmune = this._currentStats["controlImmune"];
-      controlImmunePen = this._currentStats["controlImmunePen"];
+      controlImmunePen = source._currentStats["controlImmunePen"];
       controlImmune -= controlImmunePen;
       if (controlImmune < 0) { controlImmune = 0; }
       
@@ -946,7 +946,7 @@ class hero {
         controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
       }
       
-      ccChance = 1 - (1 - ccChance * (1 + source._currentStats["controlPrecision"]))
+      ccChance = ccChance * (1 + source._currentStats["controlPrecision"]);
       rollCCHit = Math.random();
       rollCCPen = Math.random();
     }
@@ -957,7 +957,7 @@ class hero {
       result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
     } else if (
       isControl && 
-      (rollCCPen >= controlImmune || !(bypassControlImmune)) 
+      (rollCCPen >= controlImmune || bypassControlImmune) 
       && this._artifact.includes(" Lucky Candy Bar") &&
       (this._currentStats["firstCC"] == "" || this._currentStats["firstCC"] == debuffName)
     ) {

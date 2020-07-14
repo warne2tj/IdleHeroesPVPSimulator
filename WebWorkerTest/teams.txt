@@ -1,0 +1,902 @@
+{
+"0": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Attack, Attack", "The Kiss of Ghost", "Growth", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 Crit, Crit, Attack", "Demon Bell", "Growth", "Vitality2", "SharedFate", "Vitality", "BalancedStrike",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"1": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"2": [
+  "Asmodel", "Legendary Frozen Heart", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Mightiness", "BalancedStrike",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 HP, Block", "Magic Stone Sword", "Mightiness", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 HP, Block", "Demon Bell", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split HP", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Sphinx"
+],
+"3": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Split Attack", "S3 Speed, Crit", "Golden Crown", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 HP, Attack", "Magic Stone Sword", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Mihm", "Legendary Frost Eye", "Split HP", "S3 Speed, Attack", "Lucky Candy Bar", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Wolf"
+],
+"4": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Speed, HP", "Augustus Magic Ball", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split Attack", "S3 Attack, Attack, Precision", "Antlers Cane", "Growth", "Shelter", "Resilience", "Mightiness", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Attack, Attack, Skill", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"5": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Attack, Holy", "Wildfire Torch", "Mightiness", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Magic Stone Sword", "Growth", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Mihm", "Legendary Frost Eye", "Split Attack", "S3 Skill, Holy", "Antlers Cane", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"6": [
+  "Aida", "Legendary Dark Eclipse", "Class Gear", "S3 Speed, HP", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Mightiness", "BalancedStrike",
+  "Asmodel", "Legendary Frozen Heart", "Split Attack", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Super Harvest", "Split Attack", "S3 Attack, Block", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"7": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split Attack", "S3 Attack, Attack, Armor Break", "Magic Stone Sword", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Amen-Ra", "Legendary Dread Puppet", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Mightiness", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, Block", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"8": [
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 HP, Heal, Attack", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, Crit", "Golden Crown", "Vitality", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 HP, HP", "Demon Bell", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "UniMax-3000", "Legendary League MVP", "Class Gear", "S3 Skill, Holy", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"9": [
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Skill, Holy", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Cthugha", "Legendary Domineering Boss", "Class Gear", "S3 HP, HP", "The Kiss of Ghost", "Mightiness", "Vitality2", "Resilience", "Growth", "BalancedStrike",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Vitality", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Vitality", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"10": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Attack, Attack", "The Kiss of Ghost", "Growth", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 Crit, Crit, Attack", "Demon Bell", "Growth", "Vitality2", "SharedFate", "Vitality", "BalancedStrike",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"11": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Super Harvest", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Wolf"
+],
+"12": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Attack, Attack, Holy", "Augustus Magic Ball", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Ruyi Scepter", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"13": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"14": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Split Attack", "S3 Attack, Block", "Demon Bell", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Wolf"
+],
+"15": [
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Crit", "Demon Bell", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Augustus Magic Ball", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Attack", "Golden Crown", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"16": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Wolf"
+],
+"17": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Wolf"
+],
+"18": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Wolf"
+],
+"19": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Growth", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 Crit, Crit, Attack", "Demon Bell", "Vitality", "Vitality2", "SharedFate", "Mightiness", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"20": [
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Attack, Attack", "The Kiss of Ghost", "Growth", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Vitality", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Cthugha", "Legendary Devils Night", "Class Gear", "S3 HP, Block", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Demon Bell", "Vitality", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Phoenix"
+],
+"21": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Attack, Attack", "The Kiss of Ghost", "Growth", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Ithaqua", "Legendary Football Babe", "Split HP", "S3 Speed, Attack", "Lucky Candy Bar", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Amuvor", "Legendary Original Sin", "Class Gear", "S3 Speed, Precision", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"22": [
+  "Sherlock", "Legendary Royal Guard", "Split HP", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Horus", "Legendary Bloody War God", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Purify", "Mightiness", "BalancedStrike",
+  "Asmodel", "Legendary Frozen Heart", "Split Attack", "S3 HP, Attack, Holy", "Magic Stone Sword", "Vitality", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Super Harvest", "Split HP", "S3 Skill, Precision", "Wildfire Torch", "Vitality", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 HP, Attack, Holy", "Magic Stone Sword", "Growth", "Vitality2", "SharedFate", "Vitality", "BalancedStrike",
+  "Amen-Ra", "Legendary Dread Puppet", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"23": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Crit", "Wildfire Torch", "Mightiness", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Penny", "Legendary Infinite Joy", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Wildfire Torch", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Amuvor", "Legendary Original Sin", "Class Gear", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "BalancedStrike",
+  "Mihm", "Legendary Ace Quarterback", "Split HP", "S3 Speed, Crit", "Ruyi Scepter", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"24": [
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Skill, Holy", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Cthugha", "Legendary Devils Night", "Class Gear", "S3 HP, HP", "The Kiss of Ghost", "Mightiness", "Vitality2", "Resilience", "Growth", "BalancedStrike",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Vitality", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Split HP", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Amuvor", "Legendary Original Sin", "Class Gear", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Vitality", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"25": [
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "Vitality2", "SharedFate", "Vitality", "BalancedStrike",
+  "Horus", "Legendary Steam Fantasy", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Mightiness", "BalancedStrike",
+  "Asmodel", "Legendary Frozen Heart", "Split Attack", "S3 HP, Attack, Holy", "Antlers Cane", "Growth", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Super Harvest", "Split Attack", "S3 Attack, Attack", "Demon Bell", "Growth", "LethalFightback", "Resilience", "Mightiness", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 Attack, Attack, Precision", "Demon Bell", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"26": [
+  "Aida", "Legendary Dark Eclipse", "Class Gear", "S3 Speed, HP", "Ruyi Scepter", "Growth", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Delacium", "Legendary Jellybane", "Split Attack", "S3 HP, Precision", "The Kiss of Ghost", "Mightiness", "Vitality2", "Resilience", "Growth", "BalancedStrike",
+  "Valkryie", "Legendary Jungle Hunter", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Vitality", "Shelter", "Purify", "Vitality", "BalancedStrike",
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Emily", "Legendary Fractured Rose", "Split HP", "S3 Crit, Crit, Attack", "Demon Bell", "Growth", "Vitality2", "SharedFate", "Vitality", "BalancedStrike",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"27": [
+  "Ithaqua", "Legendary Football Babe", "Split Attack", "S3 Skill, Holy", "Wildfire Torch", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Nakia", "Legendary Crescent Emissary", "Class Gear", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Attack, Attack, Skill", "Wildfire Torch", "Vitality", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Cthugha", "Legendary Devils Night", "Class Gear", "S3 HP, Block", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Fox"
+],
+"28": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Mightiness", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Delacium", "Legendary Jellybane", "Split Attack", "S3 Attack, Attack, Armor Break", "Magic Stone Sword", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Amen-Ra", "Legendary Dread Puppet", "Class Gear", "S3 Attack, Attack", "Antlers Cane", "Vitality", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, Block", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Attack, Attack, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"29": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Growth", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 Crit, Crit, Attack", "Demon Bell", "Vitality", "Vitality2", "SharedFate", "Mightiness", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 HP, Attack", "Ruyi Scepter", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"30": [
+  "Asmodel", "Legendary Frozen Heart", "Split Attack", "S3 Attack, Attack, Holy", "Golden Crown", "Mightiness", "Vitality2", "SharedFate", "Mightiness", "BalancedStrike",
+  "Aspen", "Legendary Santa", "Split Attack", "S3 Speed, Precision", "Magic Stone Sword", "Vitality", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 HP, HP", "Demon Bell", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Dark Arthindol", "Legendary Gone Like a Dream", "Split Attack", "S3 Attack, Block", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, Heal, Attack", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"31": [
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Speed, HP", "Augustus Magic Ball", "Growth", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Nakia", "Legendary Crescent Emissary", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Vitality", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Cthugha", "Legendary Devils Night", "Class Gear", "S3 HP, Block", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Demon Bell", "Vitality", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Phoenix"
+],
+"32": [
+  "UniMax-3000", "Legendary League MVP", "Split Attack", "S3 Attack, Attack, Holy", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"33": [
+  "Asmodel", "Legendary Frozen Heart", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Mightiness", "BalancedStrike",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 HP, Block", "Magic Stone Sword", "Mightiness", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Emily", "Legendary Fractured Rose", "Split HP", "S3 Crit, Crit, Attack", "Staff Punisher of Immortal", "Vitality", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Sphinx"
+],
+"34": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 Crit, Crit, Attack", "Demon Bell", "Vitality", "Vitality2", "SharedFate", "Mightiness", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "Shelter", "SharedFate", "Growth", "UnbendingWill",
+  "Stone Golem"
+],
+"35": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Crit", "Wildfire Torch", "Mightiness", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Valkryie", "Legendary Combat Symphony", "Class Gear", "S3 Speed, Crit", "Lucky Candy Bar", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Augustus Magic Ball", "Growth", "Shelter", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Speed, HP", "Magic Stone Sword", "Growth", "Shelter", "SharedFate", "Mightiness", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Attack, Attack, Skill", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Garuda", "Legendary Super Harvest", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"36": [
+  "Sherlock", "Legendary Royal Guard", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Vitality", "BalancedStrike",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "SharedFate", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 Attack, Attack", "Golden Crown", "Vitality", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 HP, Crit", "Demon Bell", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "UniMax-3000", "Legendary League MVP", "Class Gear", "S3 Skill, Holy", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"37": [
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Skill, Holy", "Augustus Magic Ball", "Growth", "Shelter", "SharedFate", "Vitality", "UnbendingWill",
+  "Cthugha", "Legendary Domineering Boss", "Split HP", "S3 HP, HP", "The Kiss of Ghost", "Mightiness", "Vitality2", "Resilience", "Vitality", "BalancedStrike",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Vitality", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Class Gear", "S3 Crit, Crit, Attack", "Lucky Candy Bar", "Vitality", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 HP, Attack", "Ruyi Scepter", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"38": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Attack, Holy", "Wildfire Torch", "Mightiness", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Demon Bell", "Growth", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Mihm", "Legendary Frost Eye", "Split Attack", "S3 Skill, Holy", "Antlers Cane", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Phoenix"
+],
+"39": [
+  "Aida", "Legendary Dark Eclipse", "Split Attack", "S3 Speed, HP", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Mightiness", "BalancedStrike",
+  "Asmodel", "Legendary Frozen Heart", "Split Attack", "S3 HP, Attack, Holy", "Magic Stone Sword", "Vitality", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Super Harvest", "Split Attack", "S3 Attack, Block", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Precision", "Ruyi Scepter", "Growth", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"40": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 Attack, Attack, Holy", "Wildfire Torch", "Mightiness", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split Attack", "S3 Speed, Heal", "Golden Crown", "Mightiness", "Shelter", "Resilience", "Mightiness", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Augustus Magic Ball", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Rogan", "Legendary Skin Placeholder", "Split Attack", "S3 Speed, Attack", "Golden Crown", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Precision", "Ruyi Scepter", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"41": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Crit", "Wildfire Torch", "Mightiness", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Penny", "Legendary Infinite Joy", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Class Gear", "S3 Speed, Attack", "Demon Bell", "Mightiness", "Vitality2", "Purify", "Vitality", "BalancedStrike",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Class Gear", "S3 Attack, Attack, Precision", "Magic Stone Sword", "Growth", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"42": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Growth", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Super Harvest", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Amuvor", "Legendary Original Sin", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Wolf"
+],
+"43": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 Attack, Attack, Armor Break", "Wildfire Torch", "Mightiness", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Valkryie", "Legendary Combat Symphony", "Class Gear", "S3 Attack, Attack, Precision", "Golden Crown", "Mightiness", "Vitality2", "SharedFate", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 HP, Crit", "Magic Stone Sword", "Vitality", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Dark Arthindol", "Legendary Gone Like a Dream", "Split Attack", "S3 HP, HP", "Demon Bell", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Attack, Attack, Skill", "Augustus Magic Ball", "Mightiness", "Vitality2", "Purify", "Mightiness", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Split HP", "S3 Speed, Heal", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Sphinx"
+],
+"44": [
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Attack, Attack", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Amuvor", "Legendary Original Sin", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, Crit", "Golden Crown", "Vitality", "LethalFightback", "Resilience", "Mightiness", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 HP, HP", "Demon Bell", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "UniMax-3000", "Legendary League MVP", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"45": [
+  "Asmodel", "Legendary Frozen Heart", "Split HP", "S3 Speed, Heal", "The Kiss of Ghost", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "SharedFate", "Growth", "BalancedStrike",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Vitality", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Aspen", "Legendary Dragonic Warrior", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Emily", "Legendary Fractured Rose", "Split HP", "S3 Crit, Crit, Attack", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Wolf"
+],
+"46": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 Speed, Precision", "Magic Stone Sword", "Mightiness", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Cthugha", "Legendary Domineering Boss", "Class Gear", "S3 HP, HP", "The Kiss of Ghost", "Mightiness", "Vitality2", "Resilience", "Growth", "BalancedStrike",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Vitality", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Split HP", "S3 Skill, Holy", "Antlers Cane", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Amuvor", "Legendary Original Sin", "Class Gear", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "BalancedStrike",
+  "Mihm", "Legendary Ace Quarterback", "Split Attack", "S3 Speed, Crit", "Ruyi Scepter", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Ice Golem"
+],
+"47": [
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Attack, Attack, Armor Break", "Wildfire Torch", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Ithaqua", "Legendary Football Babe", "Split Attack", "S3 HP, Attack, Holy", "Golden Crown", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Class Gear", "S3 HP, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split Attack", "S3 Attack, Attack, Precision", "Antlers Cane", "Growth", "Shelter", "Resilience", "Mightiness", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 HP, Heal", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Wolf"
+],
+"48": [
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Attack, Attack, Armor Break", "Wildfire Torch", "Mightiness", "Shelter", "SharedFate", "Vitality", "UnbendingWill",
+  "Valkryie", "Legendary Combat Symphony", "Class Gear", "S3 Speed, Crit", "Lucky Candy Bar", "Growth", "Vitality2", "SharedFate", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 HP, Crit", "Golden Crown", "Vitality", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Mihm", "Legendary Frost Eye", "Split Attack", "S3 Skill, Holy", "Magic Stone Sword", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Split HP", "S3 Speed, HP", "Golden Crown", "Growth", "Vitality2", "Purify", "Mightiness", "BalancedStrike",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 HP, Attack", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"49": [
+  "Cthugha", "Legendary Domineering Boss", "Split HP", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Golden Crown", "Mightiness", "Shelter", "Resilience", "Mightiness", "UnbendingWill",
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split Attack", "S3 Attack, Attack, Precision", "Ruyi Scepter", "Growth", "Shelter", "Resilience", "Mightiness", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Attack, Attack, Skill", "The Kiss of Ghost", "Mightiness", "LethalFightback", "SharedFate", "Mightiness", "BalancedStrike",
+  "Dark Arthindol", "Legendary Gone Like a Dream", "Class Gear", "S3 Speed, HP", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"50": [
+  "Mihm", "Legendary Frost Eye", "Split HP", "S3 Attack, Attack", "The Kiss of Ghost", "Growth", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Ruyi Scepter", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 Crit, Crit, Attack", "Demon Bell", "Growth", "Vitality2", "SharedFate", "Vitality", "BalancedStrike",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"51": [
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Crit", "Demon Bell", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Aida", "Legendary Dark Eclipse", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Split Attack", "S3 Crit, Armor Break", "Golden Crown", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 HP, Attack", "Magic Stone Sword", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Mihm", "Legendary Frost Eye", "Split HP", "S3 Speed, Attack", "Lucky Candy Bar", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"52": [
+  "Sherlock", "Legendary Royal Guard", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Growth", "Vitality2", "SharedFate", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Split Attack", "S3 Speed, HP", "Wildfire Torch", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "UniMax-3000", "Legendary League MVP", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Ithaqua", "Legendary Football Babe", "Split HP", "S3 Speed, Attack", "Lucky Candy Bar", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Resilience", "Mightiness", "UnbendingWill",
+  "Deer"
+],
+"53": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "Wildfire Torch", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split HP", "S3 Skill, Precision", "Antlers Cane", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Magic Stone Sword", "Growth", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Mihm", "Legendary Frost Eye", "Split HP", "S3 Skill, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Nakia", "Legendary Crescent Emissary", "Split HP", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Phoenix"
+],
+"54": [
+  "Michelle", "Legendary Seraph", "Split HP", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "Vitality2", "SharedFate", "Vitality", "BalancedStrike",
+  "Horus", "Legendary Steam Fantasy", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Mightiness", "BalancedStrike",
+  "Asmodel", "Legendary Frozen Heart", "Split Attack", "S3 HP, Attack, Holy", "Antlers Cane", "Vitality", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Super Harvest", "Split Attack", "S3 Attack, Attack", "Demon Bell", "Growth", "LethalFightback", "Resilience", "Mightiness", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split HP", "S3 Attack, Attack, Precision", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Stone Golem"
+],
+"55": [
+  "UniMax-3000", "Legendary League MVP", "Split Attack", "S3 Attack, Attack, Holy", "Golden Crown", "Mightiness", "Vitality2", "SharedFate", "Mightiness", "BalancedStrike",
+  "Aspen", "Legendary Santa", "Class Gear", "S3 Speed, Precision", "Magic Stone Sword", "Vitality", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Horus", "Legendary Bloody War God", "Class Gear", "S3 HP, HP", "Demon Bell", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Dark Arthindol", "Legendary Gone Like a Dream", "Split Attack", "S3 Attack, Block", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Split HP", "S3 Speed, Crit", "Staff Punisher of Immortal", "Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"56": [
+  "Sherlock", "Legendary Royal Guard", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "SharedFate", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 Attack, Attack, Holy", "Golden Crown", "Vitality", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Nakia", "Legendary Crescent Emissary", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Emily", "Legendary Fractured Rose", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"57": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Crit", "Wildfire Torch", "Mightiness", "Shelter", "SharedFate", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, Crit", "Golden Crown", "Vitality", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 HP, HP", "Demon Bell", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "UniMax-3000", "Legendary League MVP", "Class Gear", "S3 Skill, Holy", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"58": [
+  "UniMax-3000", "Legendary League MVP", "Split Attack", "S3 Attack, Attack, Holy", "Golden Crown", "Mightiness", "Vitality2", "SharedFate", "Mightiness", "BalancedStrike",
+  "Aspen", "Legendary Santa", "Split Attack", "S3 Speed, Precision", "Magic Stone Sword", "Vitality", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, HP", "Demon Bell", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "UniMax-3000", "Legendary League MVP", "Split Attack", "S3 Attack, Block", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Growth", "LethalFightback", "SharedFate", "Vitality", "BalancedStrike",
+  "Mihm", "Legendary Ace Quarterback", "Split HP", "S3 Speed, Crit", "Ruyi Scepter", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"59": [
+  "Ithaqua", "Legendary Football Babe", "Split HP", "S3 Skill, Holy", "Wildfire Torch", "Mightiness", "Vitality2", "SharedFate", "Growth", "BalancedStrike",
+  "Nakia", "Legendary Crescent Emissary", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Vitality", "Vitality2", "Purify", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Split Attack", "S3 Speed, Attack", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Attack, Attack, Skill", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Resilience", "Growth", "BalancedStrike",
+  "Fox"
+],
+"60": [
+  "Ormus", "Legendary Headmaster of Magic Academy", "Split Attack", "S3 Attack, Attack, Holy", "Lucky Candy Bar", "Vitality", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split Attack", "S3 HP, Precision", "The Kiss of Ghost", "Mightiness", "Shelter", "SharedFate", "Vitality", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Class Gear", "S3 HP, Precision", "Demon Bell", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Split Attack", "S3 Attack, Attack, Precision", "Magic Stone Sword", "Growth", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split Attack", "S3 Crit, Crit, Attack", "Demon Bell", "Vitality", "Shelter", "SharedFate", "Mightiness", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Vitality", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Phoenix"
+],
+"61": [
+  "Aida", "Legendary Dark Eclipse", "Split Attack", "S3 Speed, HP", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Mightiness", "BalancedStrike",
+  "Asmodel", "Legendary Frozen Heart", "Split Attack", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Super Harvest", "Split Attack", "S3 Attack, Block", "The Kiss of Ghost", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "BalancedStrike",
+  "Mihm", "Legendary Ace Quarterback", "Split HP", "S3 Speed, Crit", "Ruyi Scepter", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"62": [
+  "Aida", "Legendary Dark Eclipse", "Class Gear", "S3 HP, HP", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Mightiness", "BalancedStrike",
+  "Asmodel", "Legendary Frozen Heart", "Split Attack", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Vitality", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Super Harvest", "Class Gear", "S3 Attack, Block", "Magic Stone Sword", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 HP, Attack, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Garuda", "Legendary Super Harvest", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"63": [
+  "Oberon", "Legendary Blue Luan", "Split HP", "S3 Attack, Attack, Holy", "The Kiss of Ghost", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Amuvor", "Legendary Original Sin", "Split HP", "S3 Speed, Heal", "Antlers Cane", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Magic Stone Sword", "Growth", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Mihm", "Legendary Frost Eye", "Split Attack", "S3 Skill, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "LethalFightback", "Resilience", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Split HP", "S3 Attack, Attack, Precision", "Ruyi Scepter", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Sphinx"
+],
+"64": [
+  "Cthugha", "Legendary Domineering Boss", "Class Gear", "S3 HP, Heal, Attack", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, Crit", "Golden Crown", "Vitality", "LethalFightback", "Resilience", "Vitality", "BalancedStrike",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Delacium", "Legendary Jellybane", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"65": [
+  "Asmodel", "Legendary Frozen Heart", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "SharedFate", "Growth", "BalancedStrike",
+  "Amuvor", "Legendary Original Sin", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Vitality", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Aspen", "Legendary Dragonic Warrior", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Emily", "Legendary Fractured Rose", "Split HP", "S3 Crit, Crit, Attack", "Staff Punisher of Immortal", "Vitality", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Golden Crown", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Sphinx"
+],
+"66": [
+  "Asmodel", "Legendary Frozen Heart", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Mightiness", "BalancedStrike",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 HP, Block", "Magic Stone Sword", "Mightiness", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 HP, Block", "Demon Bell", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Dark Arthindol", "Legendary Gone Like a Dream", "Class Gear", "S3 HP, Attack, Holy", "Ruyi Scepter", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Sphinx"
+],
+"67": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split Attack", "S3 Attack, Attack, Armor Break", "Magic Stone Sword", "Growth", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Amen-Ra", "Legendary Dread Puppet", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Mightiness", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 HP, Block", "Staff Punisher of Immortal", "Vitality", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"68": [
+  "Aida", "Legendary Dark Eclipse", "Class Gear", "S3 Speed, HP", "Augustus Magic Ball", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Valkryie", "Legendary Combat Symphony", "Class Gear", "S3 Attack, Attack, Precision", "Golden Crown", "Mightiness", "Shelter", "SharedFate", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 HP, Crit", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Oberon", "Legendary Blue Luan", "Split Attack", "S3 HP, HP", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 HP, Block", "Staff Punisher of Immortal", "Mightiness", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"69": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Crit", "Wildfire Torch", "Mightiness", "Shelter", "SharedFate", "Growth", "BalancedStrike",
+  "Penny", "Legendary Infinite Joy", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Class Gear", "S3 Speed, Attack", "Demon Bell", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Class Gear", "S3 Attack, Attack, Precision", "Golden Crown", "Growth", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Block", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "BalancedStrike",
+  "Mihm", "Legendary Ace Quarterback", "Split HP", "S3 Speed, Crit", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"70": [
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Crit, Armor Break", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Aspen", "Legendary Dragonic Warrior", "Class Gear", "S3 Attack, Attack", "Lucky Candy Bar", "Growth", "Shelter", "SharedFate", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Dread Puppet", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Vitality", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Emily", "Legendary Fractured Rose", "Split Attack", "S3 Crit, Crit, Attack", "Staff Punisher of Immortal", "Vitality", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"71": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Nakia", "Legendary Crescent Emissary", "Class Gear", "S3 Speed, HP", "The Kiss of Ghost", "Growth", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Attack, Block", "The Kiss of Ghost", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split Attack", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Mightiness", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Wolf"
+],
+"72": [
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Attack, Attack, Armor Break", "Wildfire Torch", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Valkryie", "Legendary Combat Symphony", "Class Gear", "S3 Speed, Crit", "Lucky Candy Bar", "Vitality", "Vitality2", "Resilience", "Vitality", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Class Gear", "S3 HP, Precision", "Demon Bell", "Mightiness", "Vitality2", "Purify", "Mightiness", "UnbendingWill",
+  "Belrain", "Legendary Lead Singer of the Angel Band", "Split Attack", "S3 Attack, Attack, Precision", "Magic Stone Sword", "Growth", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Staff Punisher of Immortal", "Vitality", "Vitality2", "SharedFate", "Mightiness", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Vitality", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Stone Golem"
+],
+"73": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Crit", "Wildfire Torch", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Mightiness", "BalancedStrike",
+  "Mihm", "Legendary Ace Quarterback", "Class Gear", "S3 Attack, Block", "Demon Bell", "Vitality", "Shelter", "Resilience", "Vitality", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split HP", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Nakia", "Legendary Crescent Emissary", "Class Gear", "S3 Speed, HP", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"74": [
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Class Gear", "S3 Speed, Crit", "Wildfire Torch", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Valkryie", "Legendary Combat Symphony", "Class Gear", "S3 Attack, Attack, Precision", "The Kiss of Ghost", "Mightiness", "Shelter", "SharedFate", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Dread Puppet", "Class Gear", "S3 HP, Crit", "Magic Stone Sword", "Vitality", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Attack, Block", "The Kiss of Ghost", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Class Gear", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Mightiness", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"75": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Split Attack", "S3 Speed, Crit", "Golden Crown", "Mightiness", "Shelter", "SharedFate", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 HP, Attack", "Magic Stone Sword", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Mihm", "Legendary Frost Eye", "Split HP", "S3 Speed, Attack", "Lucky Candy Bar", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Penny", "Legendary Infinite Joy", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Wolf"
+],
+"76": [
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Attack, Attack, Armor Break", "Wildfire Torch", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Valkryie", "Legendary Spear of Trial", "Class Gear", "S3 Speed, Crit", "Lucky Candy Bar", "Growth", "Vitality2", "SharedFate", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 HP, Crit", "Golden Crown", "Vitality", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Mihm", "Legendary Frost Eye", "Split Attack", "S3 Skill, Holy", "Magic Stone Sword", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Attack, Attack, Skill", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Tara", "Legendary Spirit of Creation", "Class Gear", "S3 Speed, Crit", "Demon Bell", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"77": [
+  "Cthugha", "Legendary Domineering Boss", "Class Gear", "S3 HP, Heal, Attack", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split Attack", "S3 Attack, Attack", "Ruyi Scepter", "Growth", "Shelter", "Resilience", "Mightiness", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Attack, Attack, Skill", "The Kiss of Ghost", "Mightiness", "LethalFightback", "SharedFate", "Mightiness", "BalancedStrike",
+  "Dark Arthindol", "Legendary Gone Like a Dream", "Class Gear", "S3 Skill, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"78": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 Speed, Precision", "Magic Stone Sword", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "UniMax-3000", "Legendary League MVP", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Attack, Block", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "BalancedStrike",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Growth", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Mihm", "Legendary Ace Quarterback", "Split HP", "S3 Speed, Crit", "Ruyi Scepter", "Mightiness", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Ice Golem"
+],
+"79": [
+  "Sherlock", "Legendary Royal Guard", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Vitality2", "Resilience", "Mightiness", "BalancedStrike",
+  "Oberon", "Legendary Golden Memories", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Mightiness", "Vitality2", "Resilience", "Growth", "BalancedStrike",
+  "Russell", "Legendary Skin Placeholder", "Split HP", "S3 Crit, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 Speed, Heal", "Magic Stone Sword", "Mightiness", "LethalFightback", "Resilience", "Mightiness", "UnbendingWill",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "Shelter", "Purify", "Vitality", "BalancedStrike",
+  "Deer"
+],
+"80": [
+  "Michelle", "Legendary Seraph", "Split Attack", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split Attack", "S3 Attack, Attack, Armor Break", "Demon Bell", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Skill, Holy", "Lucky Candy Bar", "Mightiness", "Shelter", "SharedFate", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Split Attack", "S3 HP, Precision", "Golden Crown", "Growth", "Vitality2", "Resilience", "Vitality", "UnbendingWill",
+  "Ithaqua", "Legendary Football Babe", "Split HP", "S3 Speed, Attack", "Lucky Candy Bar", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Resilience", "Mightiness", "UnbendingWill",
+  "Phoenix"
+],
+"81": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 Crit, Crit, Attack", "Antlers Cane", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Speed, HP", "Augustus Magic Ball", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Attack", "Wildfire Torch", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split Attack", "S3 Attack, Attack, Precision", "Antlers Cane", "Growth", "Shelter", "Resilience", "Mightiness", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Attack, Attack, Skill", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"82": [
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 HP, Crit", "Wildfire Torch", "Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split Attack", "S3 Speed, Heal", "Golden Crown", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Speed, HP", "Magic Stone Sword", "Vitality", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Demon Bell", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Emily", "Legendary Fractured Rose", "Split HP", "S3 Crit, Crit, Attack", "Staff Punisher of Immortal", "Vitality", "Shelter", "Purify", "Mightiness", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Speed, Precision", "The Kiss of Ghost", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"83": [
+  "Emily", "Legendary Fractured Rose", "Split Attack", "S3 Skill, Holy", "Wildfire Torch", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Split Attack", "S3 HP, Attack, Holy", "Augustus Magic Ball", "Growth", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Split Attack", "S3 Speed, Attack", "Golden Crown", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 HP, Attack", "Magic Stone Sword", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Asmodel", "Legendary Frozen Heart", "Split HP", "S3 Speed, Attack", "Lucky Candy Bar", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Amuvor", "Legendary Original Sin", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Fox"
+],
+"84": [
+  "Asmodel", "Legendary Frozen Heart", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Mightiness", "Vitality2", "Resilience", "Vitality", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "SharedFate", "Growth", "BalancedStrike",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Antlers Cane", "Vitality", "Shelter", "Purify", "Growth", "BalancedStrike",
+  "Aspen", "Legendary Dragonic Warrior", "Class Gear", "S3 Speed, HP", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Cthugha", "Legendary Domineering Boss", "Class Gear", "S3 Speed, HP", "Golden Crown", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Sphinx"
+],
+"85": [
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Skill, Holy", "The Kiss of Ghost", "Vitality", "LethalFightback", "Resilience", "Vitality", "BalancedStrike",
+  "Ormus", "Legendary Headmaster of Magic Academy", "Class Gear", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Skill, Holy", "Lucky Candy Bar", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Split Attack", "S3 HP, Precision", "Magic Stone Sword", "Growth", "Vitality2", "Resilience", "Vitality", "UnbendingWill",
+  "Ithaqua", "Legendary Football Babe", "Split HP", "S3 Speed, Attack", "Lucky Candy Bar", "Mightiness", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split HP", "S3 Speed, Precision", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"86": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Wildfire Torch", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Nakia", "Legendary Crescent Emissary", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Attack, Block", "The Kiss of Ghost", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Class Gear", "S3 HP, Attack, Holy", "Staff Punisher of Immortal", "Mightiness", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Speed, Heal", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Wolf"
+],
+"87": [
+  "Ithaqua", "Legendary Football Babe", "Split Attack", "S3 Skill, Holy", "Wildfire Torch", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Nakia", "Legendary Crescent Emissary", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Vitality", "Shelter", "Purify", "Vitality", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 Skill, Holy", "Augustus Magic Ball", "Mightiness", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Horus", "Legendary Bloody War God", "Class Gear", "S3 Crit, Crit, Attack", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 Speed, Precision", "Magic Stone Sword", "Growth", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Fox"
+],
+"88": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Mightiness", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Delacium", "Legendary Jellybane", "Split Attack", "S3 Speed, HP", "Augustus Magic Ball", "Vitality", "Vitality2", "Resilience", "Vitality", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Attack, Attack, Precision", "Antlers Cane", "Mightiness", "Shelter", "Resilience", "Mightiness", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 Attack, Attack, Skill", "Wildfire Torch", "Mightiness", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "Vitality2", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"89": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Crit", "Wildfire Torch", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 Attack, Attack, Armor Break", "Magic Stone Sword", "Vitality", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 HP, Precision", "The Kiss of Ghost", "Growth", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Split HP", "S3 HP, Block", "Demon Bell", "Mightiness", "Vitality2", "SharedFate", "Mightiness", "UnbendingWill",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 Crit, Crit, Attack", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"90": [
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Speed, Heal", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Nakia", "Legendary Crescent Emissary", "Class Gear", "S3 HP, Crit", "Golden Crown", "Vitality", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 HP, HP", "Lucky Candy Bar", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Dread Puppet", "Class Gear", "S3 HP, Block", "Staff Punisher of Immortal", "Growth", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split HP", "S3 HP, Heal, Attack", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"91": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Speed, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "SharedFate", "Vitality", "BalancedStrike",
+  "Horus", "Legendary Steam Fantasy", "Class Gear", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Growth", "BalancedStrike",
+  "Asmodel", "Legendary Frozen Heart", "Split Attack", "S3 Skill, Precision", "Antlers Cane", "Vitality", "Vitality2", "Resilience", "Growth", "BalancedStrike",
+  "Garuda", "Legendary Super Harvest", "Split Attack", "S3 Skill, Precision", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Class Gear", "S3 HP, Attack, Holy", "Magic Stone Sword", "Growth", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, HP", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"92": [
+  "Ormus", "Legendary Headmaster of Magic Academy", "Class Gear", "S3 Attack, Attack, Holy", "Ruyi Scepter", "Growth", "Shelter", "Purify", "Vitality", "UnbendingWill",
+  "Rogan", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Crit, Attack", "Golden Crown", "Mightiness", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Dread Puppet", "Class Gear", "S3 HP, Crit", "Magic Stone Sword", "Vitality", "Shelter", "Resilience", "Vitality", "UnbendingWill",
+  "Emily", "Legendary Fractured Rose", "Split Attack", "S3 HP, HP", "Antlers Cane", "Mightiness", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Ormus", "Legendary Headmaster of Magic Academy", "Split HP", "S3 HP, Block", "Staff Punisher of Immortal", "Growth", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Phoenix"
+],
+"93": [
+  "Michelle", "Legendary Seraph", "Class Gear", "S3 HP, Attack, Holy", "Wildfire Torch", "Mightiness", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Valkryie", "Legendary Combat Symphony", "Class Gear", "S3 Speed, Crit", "Lucky Candy Bar", "Mightiness", "Shelter", "SharedFate", "Growth", "BalancedStrike",
+  "Amen-Ra", "Legendary Monstrous Tribunal", "Class Gear", "S3 HP, Crit", "Golden Crown", "Mightiness", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split Attack", "S3 Crit, Armor Break", "Demon Bell", "Vitality", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 Speed, Precision", "Golden Crown", "Growth", "LethalFightback", "Purify", "Vitality", "BalancedStrike",
+  "Mihm", "Legendary Frost Eye", "Class Gear", "S3 Speed, Precision", "The Kiss of Ghost", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"94": [
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 HP, Crit", "Demon Bell", "Mightiness", "LethalFightback", "SharedFate", "Vitality", "UnbendingWill",
+  "Horus", "Legendary Steam Fantasy", "Split Attack", "S3 Speed, Crit", "Lucky Candy Bar", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Mihm", "Legendary Ace Quarterback", "Class Gear", "S3 Speed, Attack", "Antlers Cane", "Growth", "Shelter", "SharedFate", "Growth", "UnbendingWill",
+  "Drake", "Legendary Skin Placeholder", "Split Attack", "S3 Attack, Attack, Precision", "Magic Stone Sword", "Growth", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Garuda", "Legendary Law of the West", "Split HP", "S3 Attack, Attack, Skill", "Demon Bell", "Mightiness", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Garuda", "Legendary Super Harvest", "Class Gear", "S3 HP, Block", "Demon Bell", "Mightiness", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Phoenix"
+],
+"95": [
+  "Cthugha", "Legendary Domineering Boss", "Class Gear", "S3 HP, Heal, Attack", "The Kiss of Ghost", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Belrain", "Legendary Christmas Tiny Reindeer", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "Vitality2", "Resilience", "Mightiness", "UnbendingWill",
+  "Elyvia", "Legendary Sweet Dance", "Split Attack", "S3 HP, Crit", "Golden Crown", "Vitality", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Split Attack", "S3 HP, HP", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "UniMax-3000", "Legendary League MVP", "Class Gear", "S3 Skill, Holy", "Lucky Candy Bar", "Vitality", "Shelter", "Purify", "Growth", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 HP, Attack", "Lucky Candy Bar", "Growth", "LethalFightback", "Purify", "Vitality", "UnbendingWill",
+  "Phoenix"
+],
+"96": [
+  "Sherlock", "Legendary Royal Guard", "Split HP", "S3 HP, Attack, Holy", "Demon Bell", "Vitality", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "Resilience", "Mightiness", "BalancedStrike",
+  "Oberon", "Legendary Golden Memories", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Mightiness", "Vitality2", "SharedFate", "Growth", "UnbendingWill",
+  "Amen-Ra", "Legendary Dread Puppet", "Split HP", "S3 Skill, Holy", "Demon Bell", "Mightiness", "LethalFightback", "Resilience", "Vitality", "UnbendingWill",
+  "Emily", "Legendary Fractured Rose", "Split HP", "S3 Attack, Attack, Holy", "Golden Crown", "Mightiness", "LethalFightback", "Purify", "Growth", "BalancedStrike",
+  "Carrie", "Legendary Princess Carrie", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Deer"
+],
+"97": [
+  "Sherlock", "Legendary Royal Guard", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Vitality", "Vitality2", "SharedFate", "Vitality", "UnbendingWill",
+  "Carrie", "Legendary Little Red Riding Hood", "Class Gear", "S3 Speed, Heal", "Augustus Magic Ball", "Vitality", "LethalFightback", "Resilience", "Mightiness", "BalancedStrike",
+  "Oberon", "Legendary Golden Memories", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Mightiness", "Vitality2", "Resilience", "Growth", "BalancedStrike",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Crit, Precision", "Antlers Cane", "Mightiness", "LethalFightback", "Resilience", "Growth", "BalancedStrike",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 Speed, Heal", "Magic Stone Sword", "Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 Speed, Precision", "Staff Punisher of Immortal", "Mightiness", "LethalFightback", "SharedFate", "Mightiness", "UnbendingWill",
+  "Deer"
+],
+"98": [
+  "Aida", "Legendary Dark Eclipse", "Split HP", "S3 HP, Attack, Holy", "The Kiss of Ghost", "Mightiness", "Vitality2", "Purify", "Vitality", "UnbendingWill",
+  "Gustin", "Legendary Grand Carnival", "Split Attack", "S3 Speed, Heal", "Augustus Magic Ball", "Growth", "LethalFightback", "Purify", "Mightiness", "BalancedStrike",
+  "Garuda", "Legendary Super Harvest", "Class Gear", "S3 Speed, HP", "Wildfire Torch", "Growth", "Vitality2", "Resilience", "Growth", "BalancedStrike",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Heal", "Antlers Cane", "Mightiness", "LethalFightback", "Purify", "Growth", "UnbendingWill",
+  "Faith Blade", "Legendary Apocalypse Armor", "Split Attack", "S3 Speed, Heal", "Magic Stone Sword", "Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill",
+  "Faith Blade", "Legendary Apocalypse Armor", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "SharedFate", "Growth", "UnbendingWill",
+  "Sphinx"
+],
+"99": [
+  "Kroos", "Legendary Mourners", "Class Gear", "S3 Skill, Holy", "Antlers Cane", "Vitality", "Vitality2", "SharedFate", "Vitality", "BalancedStrike",
+  "Valkryie", "Legendary Spear of Trial", "Class Gear", "S3 Speed, Heal", "Augustus Magic Ball", "Mightiness", "Vitality2", "Resilience", "Growth", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Class Gear", "S3 Skill, Holy", "Lucky Candy Bar", "Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill",
+  "Sherlock", "Legendary Royal Guard", "Split Attack", "S3 Attack, Attack, Precision", "Magic Stone Sword", "Growth", "Vitality2", "Resilience", "Vitality", "UnbendingWill",
+  "Ithaqua", "Legendary Football Babe", "Split HP", "S3 Speed, Attack", "Lucky Candy Bar", "Growth", "Shelter", "Resilience", "Growth", "UnbendingWill",
+  "Russell", "Legendary Skin Placeholder", "Class Gear", "S3 Speed, Precision", "Demon Bell", "Growth", "LethalFightback", "Resilience", "Growth", "UnbendingWill",
+  "Phoenix"
+]
+}
