@@ -636,6 +636,29 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   }
   
   
+  // check for seeded
+  if (isSeeded) {
+    for (let i = 0; i < 6; i++) {
+      let g = i * 10;
+      if (child1[g] in seededHeroes) {
+        let sHero = seededHeroes[child1[g]];
+        
+        if (sHero.allowedEquipments.indexOf(child1[g+2]) < 0) {
+          child1[g+2] = sHero.allowedEquipments[Math.floor(Math.random() * sHero.allowedEquipments.length)];
+        }
+        
+        if (sHero.allowedStones.indexOf(child1[g+3]) < 0) {
+          child1[g+3] = sHero.allowedStones[Math.floor(Math.random() * sHero.allowedStones.length)];
+        }
+        
+        if (sHero.allowedArtifacts.indexOf(child1[g+4]) < 0) {
+          child1[g+4] = sHero.allowedArtifacts[Math.floor(Math.random() * sHero.allowedArtifacts.length)];
+        }
+      }
+    }
+  }
+  
+  
   // output child genes
   dnaString1 = "";
   for (var h=0; h<6; h++) {
