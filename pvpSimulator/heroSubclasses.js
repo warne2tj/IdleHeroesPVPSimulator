@@ -3114,22 +3114,29 @@ class Asmodel extends hero {
       if (trigger[2]._currentStats["totalHP"] > 0) {
         return this.critMark(trigger[2], trigger[3]);
       }
-    } else if (trigger[1] == "eventTookDamage" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
-      return this.eventTookDamage();
+    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventEnemyActive(trigger[3]);
     }
     
     return result;
   }
   
   
-  eventTookDamage() {
+  eventEnemyActive(e) {
     var result = "";
-    var targets = getAllTargets(this, this._enemies);
-    var damageResult;
     
-    for (var i in targets) {
-      damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.8, "mark", "normal");
-      result += targets[i].getDebuff(this, "Crit Mark", 15, {attackAmount: damageResult});
+    for (let t in e) {
+      if (e[t][1].heroDesc() == this.heroDesc()) {
+        var targets = getAllTargets(this, this._enemies);
+        var damageResult;
+        
+        for (var i in targets) {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.8, "mark", "normal");
+          result += targets[i].getDebuff(this, "Crit Mark", 15, {attackAmount: damageResult});
+        }
+        
+        break;
+      }
     }
     
     result += this.getBuff(this, "Damage Reduce", 1, {damageReduce: 0.25});
@@ -3141,13 +3148,6 @@ class Asmodel extends hero {
   critMark(target, damageResult) {
     var result = "";
     result += target.takeDamage(this, "Crit Mark", damageResult);
-    return result;
-  }
-  
-  
-  takeDamage(source, strAttackDesc, damageResult) {
-    var result = super.takeDamage(source, strAttackDesc, damageResult);
-    triggerQueue.push([this, "eventTookDamage"]);
     return result;
   }
   
