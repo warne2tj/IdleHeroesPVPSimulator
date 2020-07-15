@@ -614,7 +614,6 @@ class Carrie extends hero {
     // attack % per energy damage seems to be true damage
     damageResult = this.calcDamage(target, attackAmount * 0.1 * energyAmount, "mark", "energy");
     result = target.takeDamage(this, "Devouring Mark", damageResult);
-    result += target.removeDebuff("Devouring Mark", stackID);
     
     if (target._currentStats["totalHP"] > 0) {
       result += "<div>Energy set to " + formatNum(0) + ".</div>";
@@ -3062,7 +3061,7 @@ class UniMax3000 extends hero {
   eventSelfBasic() {
     var result = "";
     var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.5);
-    result += this.getBuff(this, "Frenzied Taunt", 2, {heal: healAmount});
+    result += this.getBuff(this, "Heal", 2, {heal: healAmount});
     return result;
   }
   
@@ -3156,6 +3155,7 @@ class Asmodel extends hero {
   doBasic() {
     var result = "";
     var damageResult = {};
+    var markDamageResult = {};
     var targets = getFrontTargets(this, this._enemies);
     var targetLock;
     
@@ -3167,8 +3167,8 @@ class Asmodel extends hero {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.6, "basic", "normal");
         result += targets[i].takeDamage(this, "Basic Attack", damageResult);
         
-        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.5, "mark", "normal");
-        result += targets[i].getDebuff(this, "Crit Mark", 15, {attackAmount: damageResult});
+        markDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.5, "mark", "normal");
+        result += targets[i].getDebuff(this, "Crit Mark", 15, {attackAmount: markDamageResult});
         
         basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
@@ -3183,6 +3183,7 @@ class Asmodel extends hero {
   doActive() { 
     var result = "";
     var damageResult = {};
+    var markDamageResult = {};
     var targets = getRandomTargets(this, this._enemies, 4);
     var targetLock;
     
@@ -3194,8 +3195,8 @@ class Asmodel extends hero {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.25);
         result += targets[i].takeDamage(this, "Divine Burst", damageResult);
         
-        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "mark", "normal");
-        result += targets[i].getDebuff(this, "Crit Mark", 15, {attackAmount: damageResult});
+        markDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 3, "mark", "normal");
+        result += targets[i].getDebuff(this, "Crit Mark", 15, {attackAmount: markDamageResult});
         
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }

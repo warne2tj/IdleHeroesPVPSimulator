@@ -770,6 +770,8 @@ class hero {
         for (var s in this._debuffs["Devouring Mark"]) {
           triggerQueue.push([this._debuffs["Devouring Mark"][s]["source"], "devouringMark", this, this._debuffs["Devouring Mark"][s]["effects"]["attackAmount"], this._currentStats["energy"], s]);
         }
+        
+        result += this.removeDebuff("Devouring Mark");
       }
     }
     
@@ -1035,6 +1037,7 @@ class hero {
         // handle special debuffs
         if (debuffName == "Devouring Mark" && this._currentStats["energy"] >= 100) {
           triggerQueue.push([source, "devouringMark", this, effects["attackAmount"], this._currentStats["energy"]]);
+          result += this.removeDebuff("Devouring Mark");
           
         } else if (debuffName == "Power of Light" && Object.keys(this._debuffs[debuffName]).length >= 2) {
           result += this.removeDebuff("Power of Light");
@@ -1551,7 +1554,8 @@ class hero {
       for (var s in this._debuffs["Crit Mark"]) {
         triggerQueue.push([this._debuffs["Crit Mark"][s]["source"], "critMark", this, this._debuffs["Crit Mark"][s]["effects"]["attackAmount"]]);
       }
-      this.removeDebuff("Crit Mark");
+      
+      result += this.removeDebuff("Crit Mark");
     }
     
     
