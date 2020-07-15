@@ -357,8 +357,12 @@ function createRandomTeams(seeded) {
     oConfig.value += "\"" + i + "\": [\n";
 
     for (h=1; h<=6; h++) {
-      heroName = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
-
+      if (seeded) {
+        var seededHeroesNames = Object.keys(seededHeroes);
+        heroName = seededHeroesNames[Math.floor(Math.random() * seededHeroesNames.length)];
+      } else {
+        heroName = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
+      }
       skinNames = Object.keys(skins[heroName]);
       legendarySkins = [];
       for (var s in skinNames) {
