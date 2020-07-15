@@ -5,6 +5,7 @@ var simRunning = false;
 var stopLoop = false;
 var attIndex = 0;
 var defIndex = 1;
+var isSeeded = false;
 
 
 function initialize() {
@@ -348,6 +349,8 @@ function createRandomTeams(seeded) {
   var artifactNames = ["Antlers Cane", "Demon Bell", "Staff Punisher of Immortal", "Magic Stone Sword", "Augustus Magic Ball",
     "The Kiss of Ghost", "Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Ruyi Scepter"];
   var equipments = ["Class Gear", "Split HP", "Split Attack", "No Armor"];
+  
+  isSeeded = seeded;
 
   oConfig.value = "{\n";
   for(i=0; i<numCreate; i++) {
@@ -364,8 +367,8 @@ function createRandomTeams(seeded) {
         }
       }
 
-      if (seeded && heroName in seededHeroes) {
-        sHero = seededHeroes[heroName];
+      if (isSeeded && heroName in seededHeroes) {
+        let sHero = seededHeroes[heroName];
         oConfig.value += getHero(heroName, legendarySkins, sHero.allowedEquipments, sHero.allowedStones, sHero.allowedArtifacts);
       } else {
         oConfig.value += getHero(heroName, legendarySkins, equipments, stoneNames, artifactNames);
@@ -625,6 +628,29 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   // mutate child 1 pet
   if (Math.random() < mutationRate) {
     child1[60] = monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1];
+  }
+  
+  
+  // check for seeded
+  if (isSeeded) {
+    for (let i = 0; i < 6; i++) {
+      let g = i * 10;
+      if (child1[g] in seededHeroes) {
+        let sHero = seededHeroes[child1[g]];
+        
+        if (sHero.allowedEquipments.indexOf(child1[g+2]) < 0) {
+          child1[g+2] = sHero.allowedEquipments[Math.floor(Math.random() * sHero.allowedEquipments.length)];
+        }
+        
+        if (sHero.allowedStones.indexOf(child1[g+3]) < 0) {
+          child1[g+3] = sHero.allowedStones[Math.floor(Math.random() * sHero.allowedStones.length)];
+        }
+        
+        if (sHero.allowedArtifacts.indexOf(child1[g+4]) < 0) {
+          child1[g+4] = sHero.allowedArtifacts[Math.floor(Math.random() * sHero.allowedArtifacts.length)];
+        }
+      }
+    }
   }
 
 

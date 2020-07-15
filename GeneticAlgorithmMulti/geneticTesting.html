@@ -52,7 +52,8 @@
       <div>
         <label for="numCreate">Number of Random Teams to Create:</label>
         <input type="text" id="numCreate" size="3" value="100" onchange="storeLocal(this);" />
-        <input type="submit" value="Create Random Teams" onclick="createRandomTeams();"></input>
+        <input type="submit" value="Create Random Teams" onclick="createRandomTeams(false);"></input>
+        <input type="submit" value="Create Random Seeded Teams" onclick="createRandomTeams(true);"></input>
       </div>
       
       <div>Put data of teams into text area below or generate them randomly.</div>

@@ -5,6 +5,8 @@ var simRunning = false;
 var stopLoop = false;
 var attIndex = 0;
 var defIndex = 1;
+var isSeeded = false;
+
 
 var w0;
 var w1;
@@ -306,12 +308,36 @@ function processWorker(e) {
 }
 
 
-function createRandomTeams() {
+function getHero(heroName, skinsList, equipmentList, stoneList, artifactList) {
+  var enables1 = ["Vitality", "Mightiness", "Growth"];
+  var enables2 = ["Shelter", "LethalFightback", "Vitality2"];
+  var enables3 = ["Resilience", "SharedFate", "Purify"];
+  var enables4 = ["Vitality", "Mightiness", "Growth"];
+  var enables5 = ["BalancedStrike", "UnbendingWill"];
+
+  var value = "";
+  value += "  \"" + heroName + "\", ";
+  value += "\"" + skinsList[Math.floor(Math.random() * skinsList.length)] + "\", ";
+  value += "\"" + equipmentList[Math.floor(Math.random() * equipmentList.length)] + "\", ";
+  value += "\"" + stoneList[Math.floor(Math.random() * stoneList.length)] + "\", ";
+  value += "\"" + artifactList[Math.floor(Math.random() * artifactList.length)] + "\", ";
+
+  // Need to pass in allowed enables.
+  value += "\"" + enables1[Math.floor(Math.random() * enables1.length)] + "\", ";
+  value += "\"" + enables2[Math.floor(Math.random() * enables2.length)] + "\", ";
+  value += "\"" + enables3[Math.floor(Math.random() * enables3.length)] + "\", ";
+  value += "\"" + enables4[Math.floor(Math.random() * enables4.length)] + "\", ";
+  value += "\"" + enables5[Math.floor(Math.random() * enables5.length)] + "\",\n";
+  return value;
+}
+
+
+function createRandomTeams(seeded) {
   var heroNames = Object.keys(baseHeroStats);
   var heroName = "";
   var skinNames;
   var legendarySkins;
-  var stoneNames = Object.keys(stones);
+  var stoneNames = Object.keys(stones).slice(1);
   var monsterNames = Object.keys(baseMonsterStats);
   var oConfig = document.getElementById("configText");
   var numCreate = parseInt(document.getElementById("numCreate").value);
@@ -319,20 +345,15 @@ function createRandomTeams() {
   var artifactNames = ["Antlers Cane", "Demon Bell", "Staff Punisher of Immortal", "Magic Stone Sword", "Augustus Magic Ball",
     "The Kiss of Ghost", "Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Ruyi Scepter"];
   var equipments = ["Class Gear", "Split HP", "Split Attack", "No Armor"];
-  var enables1 = ["Vitality", "Mightiness", "Growth"];
-  var enables2 = ["Shelter", "LethalFightback", "Vitality2"];
-  var enables3 = ["Resilience", "SharedFate", "Purify"];
-  var enables4 = ["Vitality", "Mightiness", "Growth"];
-  var enables5 = ["BalancedStrike", "UnbendingWill"];
+  
+  isSeeded = seeded;
   
   oConfig.value = "{\n";
-  
   for(i=0; i<numCreate; i++) {
     oConfig.value += "\"" + i + "\": [\n";
     
     for (h=1; h<=6; h++) {
       heroName = heroNames[Math.floor(Math.random() * (heroNames.length - 1)) + 1];
-      oConfig.value += "  \"" + heroName + "\", ";
       
       skinNames = Object.keys(skins[heroName]);
       legendarySkins = [];
@@ -341,16 +362,13 @@ function createRandomTeams() {
           legendarySkins.push(skinNames[s]);
         }
       }
-      oConfig.value += "\"" + legendarySkins[Math.floor(Math.random() * legendarySkins.length)] + "\", ";
-      
-      oConfig.value += "\"" + equipments[Math.floor(Math.random() * equipments.length)] + "\", ";
-      oConfig.value += "\"" + stoneNames[Math.floor(Math.random() * (stoneNames.length - 1)) + 1] + "\", ";
-      oConfig.value += "\"" + artifactNames[Math.floor(Math.random() * artifactNames.length)] + "\", ";
-      oConfig.value += "\"" + enables1[Math.floor(Math.random() * enables1.length)] + "\", ";
-      oConfig.value += "\"" + enables2[Math.floor(Math.random() * enables2.length)] + "\", ";
-      oConfig.value += "\"" + enables3[Math.floor(Math.random() * enables3.length)] + "\", ";
-      oConfig.value += "\"" + enables4[Math.floor(Math.random() * enables4.length)] + "\", ";
-      oConfig.value += "\"" + enables5[Math.floor(Math.random() * enables5.length)] + "\",\n";
+
+      if (isSeeded && heroName in seededHeroes) {
+        let sHero = seededHeroes[heroName];
+        oConfig.value += getHero(heroName, legendarySkins, sHero.allowedEquipments, sHero.allowedStones, sHero.allowedArtifacts);
+      } else {
+        oConfig.value += getHero(heroName, legendarySkins, equipments, stoneNames, artifactNames);
+      }
     }
     
     oConfig.value += "  \"" + monsterNames[Math.floor(Math.random() * (monsterNames.length - 1)) + 1] + "\"\n";
