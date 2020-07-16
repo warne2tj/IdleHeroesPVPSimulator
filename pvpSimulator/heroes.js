@@ -768,7 +768,7 @@ class hero {
       
       if ("Devouring Mark" in this._debuffs && this._currentStats["energy"] >= 100) {
         for (var s in this._debuffs["Devouring Mark"]) {
-          triggerQueue.push([this._debuffs["Devouring Mark"][s]["source"], "devouringMark", this, this._debuffs["Devouring Mark"][s]["effects"]["attackAmount"], this._currentStats["energy"], s]);
+          triggerQueue.push([this._debuffs["Devouring Mark"][s]["source"], "devouringMark", this, this._debuffs["Devouring Mark"][s]["effects"]["attackAmount"], this._currentStats["energy"]]);
         }
         
         result += this.removeDebuff("Devouring Mark");

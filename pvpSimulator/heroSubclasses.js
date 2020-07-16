@@ -596,10 +596,8 @@ class Carrie extends hero {
     if ((trigger[1] == "eventAllyDied" || trigger[1] == "eventEnemyDied") && this._currentStats["totalHP"] <= 0) {
       return this.eventAllyDied();
     } else if (trigger[1] == "devouringMark") {
-      if (trigger[2]._currentStats["totalHP"] > 0 && "Devouring Mark" in trigger[2]._debuffs) {
-        if (trigger[5] in trigger[2]._debuffs["Devouring Mark"]) {
-          return this.devouringMark(trigger[2], trigger[3], trigger[4], trigger[5]);
-        }
+      if (trigger[2]._currentStats["totalHP"] > 0) {
+        return this.devouringMark(trigger[2], trigger[3], trigger[4]);
       }
     }
     
@@ -607,7 +605,7 @@ class Carrie extends hero {
   }
   
   
-  devouringMark(target, attackAmount, energyAmount, stackID) {
+  devouringMark(target, attackAmount, energyAmount) {
     var result = "";
     var damageResult = {};
     
