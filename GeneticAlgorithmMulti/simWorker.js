@@ -3358,7 +3358,7 @@ class Garuda extends hero {
     result += "<div>" + this.heroDesc() + " <span class='skill'>Unbeatable Force</span> passive triggered.</div>";
     
     var healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.3);
-    //result += this.getHeal(this, healAmount);
+    result += this.getHeal(this, healAmount);
     result += this.getBuff(this, "Feather Blade", 15, {damageReduce: 0.04});
     result += this.getBuff(this, "Feather Blade", 15, {damageReduce: 0.04});
     
