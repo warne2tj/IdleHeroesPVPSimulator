@@ -735,11 +735,9 @@ class Carrie extends hero {
         
         // attack % per energy damage seems to be true damage
         if (targets[i]._currentStats["totalHP"] > 0) {
-          if (targets[i]._currentStats["energy"] > 0) {
-            var additionalDamageAmount = this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"];
-            additionalDamageResult = this.calcDamage(targets[i], additionalDamageAmount, "active", "energy");
-            result += targets[i].takeDamage(this, "Energy Oscillation", additionalDamageResult);
-          }
+          var additionalDamageAmount = this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"];
+          additionalDamageResult = this.calcDamage(targets[i], additionalDamageAmount, "active", "energy");
+          result += targets[i].takeDamage(this, "Energy Oscillation", additionalDamageResult);
         }
         
         if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.7) {

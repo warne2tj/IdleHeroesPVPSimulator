@@ -1002,6 +1002,11 @@ class hero {
     }
     
     
+    if (attackDamage == 0 && this._currentStats["totalAttack"] == 0) {
+      attackDamage = 1;
+    }
+    
+    
     if (roundNum > 15) {
       attackDamage = attackDamage * (1 + (roundNum - 15) * 0.15);
     }
@@ -1033,18 +1038,14 @@ class hero {
     amountHealed = Math.floor(amountHealed * effectBeingHealed);
     
     if (!(isMonster(source)) && "Healing Curse" in this._debuffs) {
-      var debuffKeys = Object.keys(this._debuffs["Healing Curse"]);
-      var debuffStack = this._debuffs["Healing Curse"][debuffKeys[0]];
+      var debuffKey = Object.keys(this._debuffs["Healing Curse"])[0];
+      var debuffStack = this._debuffs["Healing Curse"][debuffKey];
       var damageResult = {};
       
       result += "<div>Heal from " + source.heroDesc() + " blocked by <span class='skill'>Healing Curse</span>.</div>";
+      result += this.removeDebuff("Healing Curse", debuffKey);
       
-      damageResult = debuffStack["source"].calcDamage(this, amountHealed, "passive", "true");
-      result += this.takeDamage(debuffStack["source"], "Healing Curse", damageResult);
-      
-      if (this._currentStats["totalHP"] > 0) {
-        result += this.removeDebuff("Healing Curse", debuffKeys[0]);
-      }
+      triggerQueue.push([debuffStack["source"], "addHurt", this, amountHealed, "Healing Curse"]);
       
     } else {
       
@@ -1748,7 +1749,7 @@ class hero {
     
     
     // amenra shields
-    if ("Guardian Shadow" in this._buffs && !(["passive", "mark"].includes(damageResult["damageSource"])) && !(isMonster(source))) {
+    if ("Guardian Shadow" in this._buffs && !(["passive", "mark"].includes(damageResult["damageSource"])) && !(isMonster(source)) && damageResult["damageAmount"] > 0) {
       var keyDelete = Object.keys(this._buffs["Guardian Shadow"]);
       
       result += "<div>Damage prevented by <span class='skill'>Guardian Shadow</span>.</div>";
@@ -2754,11 +2755,9 @@ class Carrie extends hero {
         
         // attack % per energy damage seems to be true damage
         if (targets[i]._currentStats["totalHP"] > 0) {
-          if (targets[i]._currentStats["energy"] > 0) {
-            var additionalDamageAmount = this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"];
-            additionalDamageResult = this.calcDamage(targets[i], additionalDamageAmount, "active", "energy");
-            result += targets[i].takeDamage(this, "Energy Oscillation", additionalDamageResult);
-          }
+          var additionalDamageAmount = this._currentStats["totalAttack"] * 0.06 * targets[i]._currentStats["energy"];
+          additionalDamageResult = this.calcDamage(targets[i], additionalDamageAmount, "active", "energy");
+          result += targets[i].takeDamage(this, "Energy Oscillation", additionalDamageResult);
         }
         
         if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
