@@ -959,8 +959,8 @@ class hero {
       result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
     } else if (
       isControl && 
-      (rollCCPen >= controlImmune || bypassControlImmune) 
-      && this._artifact.includes(" Lucky Candy Bar") &&
+      (rollCCPen >= controlImmune || bypassControlImmune) &&
+      this._artifact.includes(" Lucky Candy Bar") &&
       (this._currentStats["firstCC"] == "" || this._currentStats["firstCC"] == debuffName)
     ) {
       this._currentStats["firstCC"] = debuffName;

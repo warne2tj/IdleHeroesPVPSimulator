@@ -304,20 +304,21 @@ function runSim() {
             temp += attHeroes[h].endOfRound(roundNum);
           }
           
+          
           if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
             temp += attHeroes[h].tickEnable3();
-          }
+            
+            
+            if (attHeroes[h]._artifact.includes(" Antlers Cane")) {
+              temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
+              temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
+            }
           
           
-          if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h]._artifact.includes(" Antlers Cane")) {
-            temp += "<div>" + attHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
-            temp += attHeroes[h].getBuff(attHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[attHeroes[h]._artifact]["enhance"]});
-          }
-          
-          
-          if (attHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(attHeroes[h]._artifact) && attHeroes[h].isUnderControl()) {
-            temp += "<div><span class='skill'>" + attHeroes[h]._artifact + "</span> triggered.</div>";
-            temp += attHeroes[h].getBuff(attHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[attHeroes[h]._artifact]["enhance"]}, true);
+            if (["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(attHeroes[h]._artifact) && attHeroes[h].isUnderControl()) {
+              temp += "<div><span class='skill'>" + attHeroes[h]._artifact + "</span> triggered.</div>";
+              temp += attHeroes[h].getBuff(attHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[attHeroes[h]._artifact]["enhance"]}, true);
+            }
           }
         }
           
@@ -326,19 +327,21 @@ function runSim() {
             temp += defHeroes[h].endOfRound(roundNum);
           }
           
+          
           if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) {
             temp += defHeroes[h].tickEnable3();
-          }
+            
+            
+            if (defHeroes[h]._artifact.includes(" Antlers Cane")) {
+              temp += "<div>" + defHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + defHeroes[h]._artifact + "</span>.</div>";
+              temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
+            }
           
-          if (defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h]._artifact.includes(" Antlers Cane")) {
-            temp += "<div>" + defHeroes[h].heroDesc() + " gained increased damage from <span class='skill'>" + attHeroes[h]._artifact + "</span>.</div>";
-            temp += defHeroes[h].getBuff(defHeroes[h], "All Damage Dealt", 15, {allDamageDealt: artifacts[defHeroes[h]._artifact]["enhance"]});
-          }
           
-          
-          if (defHeroes[h]._currentStats["totalHP"] > 0 && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(defHeroes[h]._artifact) && defHeroes[h].isUnderControl()) {
-            temp += "<div><span class='skill'>" + defHeroes[h]._artifact + "</span> triggered.</div>";
-            temp += defHeroes[h].getBuff(defHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[defHeroes[h]._artifact]["enhance"]}, true);
+            if (["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(defHeroes[h]._artifact) && defHeroes[h].isUnderControl()) {
+              temp += "<div><span class='skill'>" + defHeroes[h]._artifact + "</span> triggered.</div>";
+              temp += defHeroes[h].getBuff(defHeroes[h], "Hand of Fate", 1, {allDamageReduce: artifacts[defHeroes[h]._artifact]["enhance"]}, true);
+            }
           }
         }
           
@@ -477,64 +480,67 @@ function processQueue() {
       if (temp.length > 0) { result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>"; }
       
       
-      if (copyQueue[i][1] == "eventGotCC" && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(copyQueue[i][0]._artifact)) {
-        temp = copyQueue[i][0].getBuff(copyQueue[i][0], "Hand of Fate", 1, {allDamageReduce: artifacts[copyQueue[i][0]._artifact]["enhance"]}, true);
-        result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
-      }
-    
-    
-      if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" The Kiss of Ghost")) {
-        var damageDone = 0;
-        for (let e in copyQueue[i][2]) {
-          damageDone += copyQueue[i][2][e][2];
-        }
-        
-        var healAmount = copyQueue[i][0].calcHeal(copyQueue[i][0], artifacts[copyQueue[i][0]._artifact]["enhance"] * damageDone);
-        temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered heal.</div>";
-        temp += copyQueue[i][0].getHeal(copyQueue[i][0], healAmount);
-        
-        result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
-      }
-    
-    
-      if (copyQueue[i][1] == "eventSelfActive" && copyQueue[i][0]._artifact.includes(" Demon Bell")) {
-        var targets = getAllTargets(copyQueue[i][0], copyQueue[i][0]._allies);
-        var energyGain = 10;
-        temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered energy gain.</div>";
-        
-        if (Math.random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
-          energyGain += 10;
-        }
-        
-        for (let i in targets) {
-          temp += targets[i].getEnergy(copyQueue[i][0], energyGain);
-        }
-        
-        result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
-      }
-    
-    
-      if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" Staff Punisher of Immortal")) {
-        var damageResult = "";
-        var didCrit = false;
-        var damageAmount = 0;
-        temp = "";
-        
-        for (let e in copyQueue[i][2]) {
-          if (copyQueue[i][2][e][3] == true && copyQueue[i][2][e][1]._currentStats["totalHP"] > 0) {
-            didCrit = true;
-            
-            damageAmount = copyQueue[i][2][e][1]._stats["totalHP"] * 0.12;
-            if (damageAmount > copyQueue[i][0]._currentStats["totalAttack"] * 15) { damageAmount = copyQueue[i][0]._currentStats["totalAttack"] * 15; }
-            
-            damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], damageAmount, "passive", "true");
-            temp += copyQueue[i][2][e][1].takeDamage(copyQueue[i][0], copyQueue[i][0]._artifact, damageResult);
-          }
-        }
-        
-        if (didCrit) {
-          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered on crit.</div>" + temp;
+      // enhanced artifact triggers
+      if (copyQueue[i][0].isNotSealed() && copyQueue[i][0]._currentStats["totalHP"] > 0) {
+        if (copyQueue[i][1] == "eventGotCC" && ["Radiant Lucky Candy Bar", "Splendid Lucky Candy Bar"].includes(copyQueue[i][0]._artifact)) {
+          temp = copyQueue[i][0].getBuff(copyQueue[i][0], "Hand of Fate", 1, {allDamageReduce: artifacts[copyQueue[i][0]._artifact]["enhance"]}, true);
           result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+        }
+      
+      
+        if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" The Kiss of Ghost")) {
+          var damageDone = 0;
+          for (let e in copyQueue[i][2]) {
+            damageDone += copyQueue[i][2][e][2];
+          }
+          
+          var healAmount = copyQueue[i][0].calcHeal(copyQueue[i][0], artifacts[copyQueue[i][0]._artifact]["enhance"] * damageDone);
+          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered heal.</div>";
+          temp += copyQueue[i][0].getHeal(copyQueue[i][0], healAmount);
+          
+          result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+        }
+      
+      
+        if (copyQueue[i][1] == "eventSelfActive" && copyQueue[i][0]._artifact.includes(" Demon Bell")) {
+          var targets = getAllTargets(copyQueue[i][0], copyQueue[i][0]._allies);
+          var energyGain = 10;
+          temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered energy gain.</div>";
+          
+          if (Math.random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
+            energyGain += 10;
+          }
+          
+          for (let i in targets) {
+            temp += targets[i].getEnergy(copyQueue[i][0], energyGain);
+          }
+          
+          result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+        }
+      
+      
+        if (["eventSelfBasic", "eventSelfActive"].includes(copyQueue[i][1]) && copyQueue[i][0]._artifact.includes(" Staff Punisher of Immortal")) {
+          var damageResult = "";
+          var didCrit = false;
+          var damageAmount = 0;
+          temp = "";
+          
+          for (let e in copyQueue[i][2]) {
+            if (copyQueue[i][2][e][3] == true && copyQueue[i][2][e][1]._currentStats["totalHP"] > 0) {
+              didCrit = true;
+              
+              damageAmount = copyQueue[i][2][e][1]._stats["totalHP"] * 0.12;
+              if (damageAmount > copyQueue[i][0]._currentStats["totalAttack"] * 15) { damageAmount = copyQueue[i][0]._currentStats["totalAttack"] * 15; }
+              
+              damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], damageAmount, "passive", "true");
+              temp += copyQueue[i][2][e][1].takeDamage(copyQueue[i][0], copyQueue[i][0]._artifact, damageResult);
+            }
+          }
+          
+          if (didCrit) {
+            temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered on crit.</div>" + temp;
+            result += "<div class='log" + logColor + "'><p></p>" + temp + "</div>";
+          }
         }
       }
     }
