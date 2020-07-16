@@ -2631,7 +2631,6 @@ class Carrie extends hero {
     // attack % per energy damage seems to be true damage
     damageResult = this.calcDamage(target, attackAmount * 0.1 * energyAmount, "mark", "energy");
     result = target.takeDamage(this, "Devouring Mark", damageResult);
-    result += target.removeDebuff("Devouring Mark", stackID);
     
     if (target._currentStats["totalHP"] > 0) {
       result += "<div>Energy set to " + formatNum(0) + ".</div>";
