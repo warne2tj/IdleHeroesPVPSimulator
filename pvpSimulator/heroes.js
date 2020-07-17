@@ -560,7 +560,7 @@ class hero {
     var damageReduce = target._currentStats["damageReduce"]
     var allDamageReduce = target._currentStats["allDamageReduce"];
     var dotReduce = 0;
-    var armorMitigation = armorReduces * ((1 - armorBreak) * target._currentStats["totalArmor"] / (180 + 20*(this._heroLevel)));
+    var armorMitigation = armorReduces * ((1 - armorBreak) * target._currentStats["totalArmor"] / (180 + 20*(target._heroLevel)));
     
     
     // faction advantage
@@ -683,13 +683,13 @@ class hero {
     }
     
     
-    if (attackDamage == 0 && this._currentStats["totalAttack"] == 0) {
-      attackDamage = 1;
+    if (roundNum > 15) {
+      attackDamage = attackDamage * (1 + (roundNum - 15) * 0.15);
     }
     
     
-    if (roundNum > 15) {
-      attackDamage = attackDamage * (1 + (roundNum - 15) * 0.15);
+    if (attackDamage == 0 && this._currentStats["totalAttack"] == 0) {
+      attackDamage = 1;
     }
     
     
@@ -1439,8 +1439,33 @@ class hero {
     
     damageResult["damageAmount"] = Math.floor(damageResult["damageAmount"]);
     
+    
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
+    
+    
+    if (this._artifact.includes(" Magic Stone Sword") && strAttackDesc != "Healing Curse" && !(isMonster(source))) {
+      let maxDamage = Math.floor(this._stats.totalHP * artifacts[this._artifact].enhance);
+      if (damageResult.damageAmount > maxDamage) {
+        result += "<div><span class='skill'>" + this._artifact + "</span> prevented some damage.</div>";
+        damageResult.damageAmount = maxDamage;
+      }
+    }
+    
+    
+    if (this._artifact.includes(" Augustus Magic Ball") && strAttackDesc != "Healing Curse" && !(isMonster(source))) {
+      let damMit = Math.floor(this._stats.totalAttack * artifacts[this._artifact].enhance);
+      
+      if (damageResult.damageAmount > 1) {
+        result += "<div><span class='skill'>" + this._artifact + "</span> prevented some damage.</div>";
+        
+        if (damageResult.damageAmount <= damMit) {
+          damageResult.damageAmount = 1;
+        } else {
+          damageResult.damageAmount -= damMit;
+        }
+      }
+    }
     
     
     // amenra shields

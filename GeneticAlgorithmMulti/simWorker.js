@@ -879,7 +879,7 @@ class hero {
     var damageReduce = target._currentStats["damageReduce"]
     var allDamageReduce = target._currentStats["allDamageReduce"];
     var dotReduce = 0;
-    var armorMitigation = armorReduces * ((1 - armorBreak) * target._currentStats["totalArmor"] / (180 + 20*(this._heroLevel)));
+    var armorMitigation = armorReduces * ((1 - armorBreak) * target._currentStats["totalArmor"] / (180 + 20*(target._heroLevel)));
     
     
     // faction advantage
@@ -1002,13 +1002,13 @@ class hero {
     }
     
     
-    if (attackDamage == 0 && this._currentStats["totalAttack"] == 0) {
-      attackDamage = 1;
+    if (roundNum > 15) {
+      attackDamage = attackDamage * (1 + (roundNum - 15) * 0.15);
     }
     
     
-    if (roundNum > 15) {
-      attackDamage = attackDamage * (1 + (roundNum - 15) * 0.15);
+    if (attackDamage == 0 && this._currentStats["totalAttack"] == 0) {
+      attackDamage = 1;
     }
     
     
@@ -1746,6 +1746,30 @@ class hero {
     
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
+    
+    
+    if (this._artifact.includes(" Magic Stone Sword") && strAttackDesc != "Healing Curse" && !(isMonster(source))) {
+      let maxDamage = Math.floor(this._stats.totalHP * artifacts[this._artifact].enhance);
+      if (damageResult.damageAmount > maxDamage) {
+        result += "<div><span class='skill'>" + this._artifact + "</span> prevented some damage.</div>";
+        damageResult.damageAmount = maxDamage;
+      }
+    }
+    
+    
+    if (this._artifact.includes(" Augustus Magic Ball") && strAttackDesc != "Healing Curse" && !(isMonster(source))) {
+      let damMit = Math.floor(this._stats.totalAttack * artifacts[this._artifact].enhance);
+      
+      if (damageResult.damageAmount > 1) {
+        result += "<div><span class='skill'>" + this._artifact + "</span> prevented some damage.</div>";
+        
+        if (damageResult.damageAmount <= damMit) {
+          damageResult.damageAmount = 1;
+        } else {
+          damageResult.damageAmount -= damMit;
+        }
+      }
+    }
     
     
     // amenra shields
@@ -5931,6 +5955,27 @@ var artifacts = {
     limitStats: {}
   },
   
+  "Glittery Augustus Magic Ball": {
+    stats: {attackPercent: 0.25, speed: 70, block: 0.5},
+    limit: "",
+    limitStats: {},
+    enhance: 1.2
+  },
+  
+  "Radiant Augustus Magic Ball": {
+    stats: {attackPercent: 0.25, speed: 70, block: 0.5},
+    limit: "",
+    limitStats: {},
+    enhance: 1.8
+  },
+  
+  "Spendid Augustus Magic Ball": {
+    stats: {attackPercent: 0.25, speed: 70, block: 0.5},
+    limit: "",
+    limitStats: {},
+    enhance: 2.5
+  },
+  
   "Demon Bell": {
     stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
     limit: "",
@@ -5994,6 +6039,27 @@ var artifacts = {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
     limitStats: {}
+  },
+  
+  "Glittery Magic Stone Sword": {
+    stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
+    limit: "",
+    limitStats: {},
+    enhance: 0.50
+  },
+  
+  "Radiant Magic Stone Sword": {
+    stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
+    limit: "",
+    limitStats: {},
+    enhance: 0.40
+  },
+  
+  "Splendid Magic Stone Sword": {
+    stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
+    limit: "",
+    limitStats: {},
+    enhance: 0.30
   },
   
   "Ruyi Scepter": {

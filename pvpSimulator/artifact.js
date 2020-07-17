@@ -38,6 +38,27 @@ var artifacts = {
     limitStats: {}
   },
   
+  "Glittery Augustus Magic Ball": {
+    stats: {attackPercent: 0.25, speed: 70, block: 0.5},
+    limit: "",
+    limitStats: {},
+    enhance: 1.2
+  },
+  
+  "Radiant Augustus Magic Ball": {
+    stats: {attackPercent: 0.25, speed: 70, block: 0.5},
+    limit: "",
+    limitStats: {},
+    enhance: 1.8
+  },
+  
+  "Spendid Augustus Magic Ball": {
+    stats: {attackPercent: 0.25, speed: 70, block: 0.5},
+    limit: "",
+    limitStats: {},
+    enhance: 2.5
+  },
+  
   "Demon Bell": {
     stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
     limit: "",
@@ -101,6 +122,27 @@ var artifacts = {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
     limitStats: {}
+  },
+  
+  "Glittery Magic Stone Sword": {
+    stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
+    limit: "",
+    limitStats: {},
+    enhance: 0.50
+  },
+  
+  "Radiant Magic Stone Sword": {
+    stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
+    limit: "",
+    limitStats: {},
+    enhance: 0.40
+  },
+  
+  "Splendid Magic Stone Sword": {
+    stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
+    limit: "",
+    limitStats: {},
+    enhance: 0.30
   },
   
   "Ruyi Scepter": {
