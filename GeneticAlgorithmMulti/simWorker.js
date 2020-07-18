@@ -8415,6 +8415,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
   //var defMonsterName = document.getElementById("defMonster").value;
   var defMonster = new baseMonsterStats[defMonsterName]["className"](defMonsterName, "def");
   
+  random = rng();
   //oCombatLog.innerHTML = "";
   
   for (var i = 0; i < attHeroes.length; i++) {

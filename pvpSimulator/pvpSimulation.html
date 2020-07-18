@@ -38,6 +38,9 @@
       <label for="numSims">Number of Simulations to Run:</label>
       <input type="text" id="numSims" size="3" value="1" onchange="storeLocal(this);" />
       <input type="submit" value="Run" onclick="runSim();"></input>
+      <label for="domSeed">Seed:</label>
+      <input type="text" id="domSeed" size="15" value="0" />
+      <input type="submit" value="Generate New Seed" onclick="genSeed();"></input>
       <div>Detailed combat log output only if running a single simulation.</div>
       <div>Multiple simulations output just summary data.</div>
       <div>Single run can take several seconds because of the amount of data written to the log.</div>

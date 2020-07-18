@@ -25,6 +25,14 @@ function runSim() {
   var defMonsterName = document.getElementById("defMonster").value;
   var defMonster = new baseMonsterStats[defMonsterName]["className"](defMonsterName, "def");
   
+  var domSeed = document.getElementById("domSeed");
+  if (domSeed !== null) {
+    random = rng(domSeed.value);
+  } else {
+    random = rng();
+  }
+  
+  logColor = 0;
   oCombatLog.innerHTML = "";
   
   for (var i = 0; i < attHeroes.length; i++) {

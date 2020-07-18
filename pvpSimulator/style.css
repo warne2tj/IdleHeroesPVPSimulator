@@ -185,7 +185,7 @@ input[type=submit]:hover {
   background-color: #3C9F40;
 }
 
-#numSims, #heroA, #heroB {
+#numSims, #domSeed, #heroA, #heroB {
   width: auto;
 }
 

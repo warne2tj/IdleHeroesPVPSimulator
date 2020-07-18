@@ -395,3 +395,9 @@ function loadConfig() {
   updateAttackers();
   updateDefenders();
 }
+
+
+function genSeed() {
+  var dt = new Date();
+  document.getElementById("domSeed").value = dt.valueOf().toString();
+}
