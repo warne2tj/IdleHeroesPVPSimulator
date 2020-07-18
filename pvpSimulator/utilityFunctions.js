@@ -3,6 +3,60 @@ function formatNum(num) {
 }
 
 
+// replacement seedable prng
+var random = rng();
+function rng(seed=0) {
+  if (seed == 0) {
+    let dt = new Date();
+    seed = dt.valueOf();
+  }
+  
+  var strSeed = seed.toString();
+  var a, b, c, d;
+  
+  for (var i = 0, h = 1779033703 ^ strSeed.length; i < strSeed.length; i++) {
+    h = Math.imul(h ^ strSeed.charCodeAt(i), 3432918353);
+    h = h << 13 | h >>> 19;
+  }
+  
+  h = Math.imul(h ^ h >>> 16, 2246822507);
+  h = Math.imul(h ^ h >>> 13, 3266489909);
+  h ^= h >>> 16
+  var a = h >>> 0;
+  
+  h = Math.imul(h ^ h >>> 16, 2246822507);
+  h = Math.imul(h ^ h >>> 13, 3266489909);
+  h ^= h >>> 16
+  var b = h >>> 0;
+  
+  h = Math.imul(h ^ h >>> 16, 2246822507);
+  h = Math.imul(h ^ h >>> 13, 3266489909);
+  h ^= h >>> 16
+  var c = h >>> 0;
+  
+  h = Math.imul(h ^ h >>> 16, 2246822507);
+  h = Math.imul(h ^ h >>> 13, 3266489909);
+  h ^= h >>> 16
+  var d = h >>> 0;
+  
+  
+  return function() {
+    var t = b << 9;
+    var r = a * 5;
+    
+    r = (r << 7 | r >>> 25) * 9;
+    c ^= a; 
+    d ^= b;
+    b ^= c; 
+    a ^= d; 
+    c ^= t;
+    d = d << 11 | d >>> 21;
+    
+    return (r >>> 0) / 4294967296;
+  }
+}
+
+
 // UUIDv4
 var uniqID;
 function uuid() {
@@ -247,7 +301,7 @@ function getRandomTargets(source, arrTargets, num=6, dazzleBypass=false) {
   
   for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      arrTargets[i]._rng = Math.random();
+      arrTargets[i]._rng = random();
       copyTargets.push(arrTargets[i]);
     }
   }

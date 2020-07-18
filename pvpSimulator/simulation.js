@@ -507,7 +507,7 @@ function processQueue() {
           var energyGain = 10;
           temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered energy gain.</div>";
           
-          if (Math.random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
+          if (random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
             energyGain += 10;
           }
           

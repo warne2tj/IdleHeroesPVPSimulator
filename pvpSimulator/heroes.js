@@ -47,7 +47,7 @@ class hero {
     
     this._damageDealt = 0;
     this._damageHealed = 0;
-    this._rng = Math.random();
+    this._rng = random();
   }
   
   
@@ -662,8 +662,8 @@ class hero {
     
     var blocked = false;
     var critted = false;
-    var blockRoll = Math.random();
-    var critRoll = Math.random();
+    var blockRoll = random();
+    var critRoll = random();
     
     if (critRoll < critChance && blockRoll < blockChance) {
       // blocked crit
@@ -950,8 +950,8 @@ class hero {
       }
       
       ccChance = ccChance * (1 + source._currentStats["controlPrecision"]);
-      rollCCHit = Math.random();
-      rollCCPen = Math.random();
+      rollCCHit = random();
+      rollCCPen = random();
     }
     
     if (isControl && rollCCHit >= ccChance) {
@@ -1376,7 +1376,7 @@ class hero {
         }
       }
       
-      rng = Math.floor(Math.random() * listDebuffs.length)
+      rng = Math.floor(random() * listDebuffs.length)
       
       if (listDebuffs.length > 0) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Purify</span> removed debuff.</div>";
@@ -1668,7 +1668,7 @@ class hero {
   
   
   getTargetLock(source) {
-    if (Math.random() < this._currentStats["dodge"]) {
+    if (random() < this._currentStats["dodge"]) {
       return "<div>" + source.heroDesc() + " attack against " + this.heroDesc() + " was dodged.</div>";
     } else {
       return "";

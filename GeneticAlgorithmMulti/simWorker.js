@@ -358,7 +358,7 @@ class hero {
     
     this._damageDealt = 0;
     this._damageHealed = 0;
-    this._rng = Math.random();
+    this._rng = random();
   }
   
   
@@ -981,8 +981,8 @@ class hero {
     
     var blocked = false;
     var critted = false;
-    var blockRoll = Math.random();
-    var critRoll = Math.random();
+    var blockRoll = random();
+    var critRoll = random();
     
     if (critRoll < critChance && blockRoll < blockChance) {
       // blocked crit
@@ -1269,8 +1269,8 @@ class hero {
       }
       
       ccChance = 1 - (1 - ccChance * (1 + source._currentStats["controlPrecision"]))
-      rollCCHit = Math.random();
-      rollCCPen = Math.random();
+      rollCCHit = random();
+      rollCCPen = random();
     }
     
     if (isControl && rollCCHit >= ccChance) {
@@ -1681,7 +1681,7 @@ class hero {
         }
       }
       
-      rng = Math.floor(Math.random() * listDebuffs.length)
+      rng = Math.floor(random() * listDebuffs.length)
       
       if (listDebuffs.length > 0) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Purify</span> removed debuff.</div>";
@@ -1971,7 +1971,7 @@ class hero {
   
   
   getTargetLock(source) {
-    if (Math.random() < this._currentStats["dodge"]) {
+    if (random() < this._currentStats["dodge"]) {
       return "<div>" + source.heroDesc() + " attack against " + this.heroDesc() + " was dodged.</div>";
     } else {
       return "";
@@ -2604,7 +2604,7 @@ class Belrain extends hero {
       result += targets[i].getBuff(this, "Speed", 3, {speed: 30});
       result += targets[i].getBuff(this, "Effect Being Healed", 3, {effectBeingHealed: 0.2});
       
-      if (Math.random() < 0.4) {
+      if (random() < 0.4) {
         for (var d in this._debuffs) {
           if (isControlEffect(d)) {
             result += this.removeDebuff(d);
@@ -2784,7 +2784,7 @@ class Carrie extends hero {
           result += targets[i].takeDamage(this, "Energy Oscillation", additionalDamageResult);
         }
         
-        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
+        if (targets[i]._currentStats["totalHP"] > 0 && random() < 0.7) {
           result += targets[i].getDebuff(this, "Devouring Mark", 15, {attackAmount: this._currentStats["totalAttack"]});
         }
         
@@ -2989,7 +2989,7 @@ class DarkArthindol extends hero {
         if (targets[0]._currentStats["totalHP"] > 0) {
           result += targets[i].getDebuff(this, "petrify", 2, {}, false, "", 0.30);
           
-          if (Math.random() < 0.3) {
+          if (random() < 0.3) {
             result += "<div><span class='skill'>Chaotic Shade</span> drained target's energy.</div>";
             result += targets[i].loseEnergy(this, 30);
           }
@@ -3028,7 +3028,7 @@ class Delacium extends hero {
         // Delacium does not copy Mihm's dot
         if (d != "Dot") {
           if (isDot(d) || isAttribute(d)) {
-            validDebuffs.push([d, targets[0]._debuffs[d], Math.random()]);
+            validDebuffs.push([d, targets[0]._debuffs[d], random()]);
           }
         }
       }
@@ -3118,7 +3118,7 @@ class Delacium extends hero {
           result += targets[i].takeDamage(this, "Ray of Delacium 2", additionalDamageResult);
         }
           
-        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.7) {
+        if (targets[i]._currentStats["totalHP"] > 0 && random() < 0.7) {
           for (var b in targets[i]._debuffs) {
             for (var s in targets[i]._debuffs[b]) {
               if (isDot(b, targets[i]._debuffs[b][s]["effects"]) || isAttribute(b, targets[i]._debuffs[b][s]["effects"]) || isControlEffect(b, targets[i]._debuffs[b][s]["effects"])) {
@@ -3574,7 +3574,7 @@ class Gustin extends hero {
     }
     
     
-    if (Math.random() < 0.5 && this._currentStats["totalHP"] > 0) {
+    if (random() < 0.5 && this._currentStats["totalHP"] > 0) {
       targets = getRandomTargets(this, this._enemies, 2);
       for (var i in targets) {
         result += "<div>" + this.heroDesc() + " <span class='skill'>Cloak of Fog</span> drained " + targets[i].heroDesc() + " energy.</div>";
@@ -3607,7 +3607,7 @@ class Gustin extends hero {
     
     if ("Demon Totem" in this._buffs) {
       for (var i in e) {
-        if (this._currentStats["demonTotemStacks"] > 0 && Math.random() < 0.6) {
+        if (this._currentStats["demonTotemStacks"] > 0 && random() < 0.6) {
           this._currentStats["demonTotemStacks"]--;
           result += "<div>" + this.heroDesc() + " <span class='skill'>Demon Totem</span> triggered dispell.</div>";
           
@@ -3617,7 +3617,7 @@ class Gustin extends hero {
           
           for (var d in allDebuffs) {
             if (isDispellable(allDebuffs[d])) {
-              listDebuffs.push([allDebuffs[d], Math.random()]);
+              listDebuffs.push([allDebuffs[d], random()]);
             }
           }
           
@@ -3674,7 +3674,7 @@ class Gustin extends hero {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2);
         result += targets[i].takeDamage(this, "Demon Totem", damageResult);
         
-        if (targets[i]._currentStats["totalHP"] > 0 && Math.random() < 0.60) {
+        if (targets[i]._currentStats["totalHP"] > 0 && random() < 0.60) {
           buffRemoved = false;
           
           for (var b in targets[i]._buffs) {
@@ -4653,8 +4653,8 @@ class Penny extends hero {
         }
       
         ccChance = 1 - (1 - ccChance * (1 + source._currentStats["controlPrecision"]))
-        rollCCHit = Math.random();
-        rollCCPen = Math.random();
+        rollCCHit = random();
+        rollCCPen = random();
     
     
         if (isControl && rollCCHit >= ccChance) {
@@ -4819,7 +4819,7 @@ class Sherlock extends hero {
   endOfRound(roundNum) {
     var result = "";
     
-    if(Math.random() < 0.5) {
+    if(random() < 0.5) {
       result = "<div>" + this.heroDesc() + " gained <span class='num'>2</span> stacks of <span class='skill'>Well-Calculated</span>.</div>";
       this._currentStats["wellCalculatedStacks"] += 2;
     } else {
@@ -4927,7 +4927,7 @@ class Tara extends hero {
       damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 4, "passive", "normal", 1, 1, 0, 1, 0);
       result += targets[i].takeDamage(this, "Fluctuation of Light", damageResult);
       
-      if (Math.random() < 0.3) {
+      if (random() < 0.3) {
         result += targets[i].getDebuff(this, "Power of Light", 15);
       }
     }
@@ -4984,14 +4984,14 @@ class Tara extends hero {
           damageDone += damageResult["damageAmount"];
         }
           
-        if (targets[0]._currentStats["totalHP"] > 0 && Math.random() < 0.5) {
+        if (targets[0]._currentStats["totalHP"] > 0 && random() < 0.5) {
           damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 3);
           didCrit = didCrit || damageResult["critted"];
           result += targets[0].takeDamage(this, "Seal of Light", damageResult);
           damageDone += damageResult["damageAmount"];
         }
           
-        if (targets[0]._currentStats["totalHP"] > 0 && Math.random() < 0.34) {
+        if (targets[0]._currentStats["totalHP"] > 0 && random() < 0.34) {
           damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "active", "normal", 3);
           didCrit = didCrit || damageResult["critted"];
           result += targets[0].takeDamage(this, "Seal of Light", damageResult);
@@ -5006,7 +5006,7 @@ class Tara extends hero {
         
     targets = getAllTargets(this, this._enemies);
     for (var h in targets) {
-      if ("Power of Light" in targets[h]._debuffs && Math.random() < 0.6) {
+      if ("Power of Light" in targets[h]._debuffs && random() < 0.6) {
         result += targets[h].getDebuff(this, "Power of Light", 15);
       }
     }
@@ -7846,6 +7846,60 @@ function formatNum(num) {
 }
 
 
+// replacement seedable prng
+var random = rng();
+function rng(seed=0) {
+  if (seed == 0) {
+    let dt = new Date();
+    seed = dt.valueOf();
+  }
+  
+  var strSeed = seed.toString();
+  var a, b, c, d;
+  
+  for (var i = 0, h = 1779033703 ^ strSeed.length; i < strSeed.length; i++) {
+    h = Math.imul(h ^ strSeed.charCodeAt(i), 3432918353);
+    h = h << 13 | h >>> 19;
+  }
+  
+  h = Math.imul(h ^ h >>> 16, 2246822507);
+  h = Math.imul(h ^ h >>> 13, 3266489909);
+  h ^= h >>> 16
+  var a = h >>> 0;
+  
+  h = Math.imul(h ^ h >>> 16, 2246822507);
+  h = Math.imul(h ^ h >>> 13, 3266489909);
+  h ^= h >>> 16
+  var b = h >>> 0;
+  
+  h = Math.imul(h ^ h >>> 16, 2246822507);
+  h = Math.imul(h ^ h >>> 13, 3266489909);
+  h ^= h >>> 16
+  var c = h >>> 0;
+  
+  h = Math.imul(h ^ h >>> 16, 2246822507);
+  h = Math.imul(h ^ h >>> 13, 3266489909);
+  h ^= h >>> 16
+  var d = h >>> 0;
+  
+  
+  return function() {
+    var t = b << 9;
+    var r = a * 5;
+    
+    r = (r << 7 | r >>> 25) * 9;
+    c ^= a; 
+    d ^= b;
+    b ^= c; 
+    a ^= d; 
+    c ^= t;
+    d = d << 11 | d >>> 21;
+    
+    return (r >>> 0) / 4294967296;
+  }
+}
+
+
 // UUIDv4
 var uniqID;
 function uuid() {
@@ -8090,7 +8144,7 @@ function getRandomTargets(source, arrTargets, num=6, dazzleBypass=false) {
   
   for (var i in arrTargets) {
     if (arrTargets[i]._currentStats["totalHP"] > 0) {
-      arrTargets[i]._rng = Math.random();
+      arrTargets[i]._rng = random();
       copyTargets.push(arrTargets[i]);
     }
   }
@@ -8833,7 +8887,7 @@ function processQueue() {
           var energyGain = 10;
           temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered energy gain.</div>";
           
-          if (Math.random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
+          if (random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
             energyGain += 10;
           }
           
