@@ -1024,6 +1024,10 @@ class hero {
               this._currentStats["totalAttack"] = this.calcCombatAttack();
             } else if (strStatName == "armor") {
               this._currentStats["totalArmor"] = this.calcCombatArmor();
+            } else if (["dodge", "crit", "block"].includes(strStatName)) {
+              if (this._currentStats[strStatName] < 0) {
+                this._currentStats[strStatName] = 0;
+              }
             }
           }
         }
@@ -1320,6 +1324,13 @@ class hero {
                     
                     result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
                     result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
+                  }
+                  
+                  if (this._debuffs[b][s]["duration"] == 1) {
+                    // last dot ticked
+                    delete this._debuffs[b][s];
+                    stacksLeft--;
+                    break;
                   }
                 }
               }

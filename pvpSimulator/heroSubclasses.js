@@ -71,6 +71,7 @@ class Aida extends hero {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.2, "basic", "normal");
         result = targets[i].takeDamage(this, "Basic Attack", damageResult);
         
+        
         if (targets[i]._currentStats["totalHP"] > 0) {
           additionalDamage = targets[i]._stats["totalHP"] * 0.2;
           if (additionalDamage > this._currentStats["totalAttack"] * 15) {
@@ -115,7 +116,12 @@ class Aida extends hero {
     
     targets = getAllTargets(this, this._enemies);
     for (var i in targets) {
-      result += targets[i].getDebuff(this, "Balance Mark", 3, {attackAmount: this._currentStats["totalAttack"]});
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        result += targets[i].getDebuff(this, "Balance Mark", 3, {attackAmount: this._currentStats["totalAttack"]});
+      }
     }
     
     return result;
@@ -1366,12 +1372,18 @@ class Garuda extends hero {
     var featherTarget;
     if ("Feather Blade" in this._buffs) {
       var numBlades = Object.keys(this._buffs["Feather Blade"]);
+      
       for (var i in numBlades) {
         featherTarget = getRandomTargets(this, targets, 1);
         
         if (featherTarget.length > 0) {
-          damageResult = this.calcDamage(featherTarget[0], this._currentStats["totalAttack"], "active", "normal", 3.2);
-          result += featherTarget[0].takeDamage(this, "Feather Blade", damageResult);
+          targetLock = targets[0].getTargetLock(this);
+          result += targetLock;
+          
+          if (targetLock == "") {
+            damageResult = this.calcDamage(featherTarget[0], this._currentStats["totalAttack"], "active", "normal", 3.2);
+            result += featherTarget[0].takeDamage(this, "Feather Blade", damageResult);
+          }
         }
       }
       result += this.removeBuff("Feather Blade");
@@ -1872,6 +1884,7 @@ class Ithaqua extends hero {
     var targets = getAllTargets(this, this._enemies);
     var healAmount = 0;
     var targetLock;
+    var alreadyTargeted = [];
     
     for (var i in targets) {
       targetLock = targets[i].getTargetLock(this);
@@ -1882,6 +1895,7 @@ class Ithaqua extends hero {
           damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
           result += targets[i].takeDamage(this, "GP - Basic Attack", damageResult);
           basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+          alreadyTargeted.push(targets[i]._heroPos);
           
           healAmount = this.calcHeal(this, damageResult["damageAmount"]);
           result += this.getHeal(this, healAmount);
@@ -1900,7 +1914,9 @@ class Ithaqua extends hero {
         result += targets[0].takeDamage(this, "Basic Attack", damageResult);
         result += targets[0].getDebuff(this, "Ghost Possessed", 3, {}, false, "", 1, true);
         
-        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+        if (alreadyTargeted.includes(targets[0]._heroPos)) {
+          basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+        }
       }
     }
     
@@ -1916,6 +1932,7 @@ class Ithaqua extends hero {
     var hpDamage = 0;
     var hpDamageResult = {damageAmount: 0};
     var targetLock;
+    var alreadyTargeted = [];
     
     for (var i in targets) {
       if ("Ghost Possessed" in targets[i]._debuffs) {
@@ -1937,6 +1954,7 @@ class Ithaqua extends hero {
           result += this.getHeal(this, healAmount);
         
           activeQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+          alreadyTargeted.push(targets[i]._heroPos);
         }
       }
     }
@@ -1960,7 +1978,9 @@ class Ithaqua extends hero {
           
         result += targets[0].getDebuff(this, "Ghost Possessed", 3, {}, false, "", 1, true);
         
-        activeQueue.push([this, targets[0], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+        if (alreadyTargeted.includes(targets[0]._heroPos)) {
+          activeQueue.push([this, targets[0], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+        }
       }
     }
     
@@ -2962,8 +2982,13 @@ class Tara extends hero {
         
     targets = getAllTargets(this, this._enemies);
     for (var h in targets) {
-      if ("Power of Light" in targets[h]._debuffs && random() < 0.6) {
-        result += targets[h].getDebuff(this, "Power of Light", 15);
+      targetLock = targets[h].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        if ("Power of Light" in targets[h]._debuffs && random() < 0.6) {
+          result += targets[h].getDebuff(this, "Power of Light", 15);
+        }
       }
     }
       
@@ -3562,7 +3587,7 @@ class Valkryie extends hero {
     var targetLock;
     var attackStolen = 0;
     
-    for (var i in targets) {
+    for (let i in targets) {
       targetLock = targets[i].getTargetLock(this);
       result += targetLock;
       
@@ -3579,9 +3604,14 @@ class Valkryie extends hero {
     }
 
     targets = getHighestHPTargets(this, this._enemies, 1);
-    for (var i in targets) {
-      damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.18, "active", "burnTrue", 1, 0, 2);
-      result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.18, "active", "burnTrue", 1, 0, 2);
+        result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+      }
     }
     
     return result;

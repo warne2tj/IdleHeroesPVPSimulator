@@ -243,7 +243,7 @@ class mPhoenix extends monster {
     for (var i in targets) {
       healAmount = this.calcHeal(targets[i], 500535);
       result += targets[i].getBuff(this, "Heal", 3, {heal: healAmount});
-      result += targets[i].getBuff(this, "Damage Against Burning", 3, {damageAgainstBurning: 0.8});
+      result += targets[i].getBuff(this, "Damage Against Burning", 15, {damageAgainstBurning: 0.8});
     }
     
     this._energy = 0;
