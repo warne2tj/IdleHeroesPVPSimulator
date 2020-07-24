@@ -7220,8 +7220,8 @@ var skins = {
   },
   
   "Russell": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
+    "The Light Enforcer": {attackPercent: 0.03, holyDamage: 0.06, speed: 4},
+    "Legendary The Light Enforcer": {attackPercent: 0.06, holyDamage: 0.10, speed: 6}
   },
   
   "Valkryie": {
