@@ -5921,6 +5921,88 @@ class Rogan extends hero {
   }
 }
 
+
+// Gerke
+class Gerke extends hero {
+  passiveStats() {
+    // apply Heavenly Order passive
+    this.applyStatChange({holyDamage: 0.60, attackPercent: 0.25, hpPercent: 0.20, crit: 0.20}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventSelfBasic();
+    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventEnemyActive(trigger[3]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic() {
+    var result = "";
+    var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 1.95);
+    
+    result = this.getHeal(this, healAmount);
+    result += this.getBuff(this, "Holy Damage", 4, {holyDamage: 0.20});
+    
+    return result;
+  }
+  
+  
+  eventEnemyActive(e) {
+    var result = "";
+    
+    for (let t in e) {
+      if (e[t][1].heroDesc() == this.heroDesc()) {
+        var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 0.40);
+        
+        result = this.getHeal(this, healAmount);
+        result += this.getBuff(this, "Holy Damage", 3, {holyDamage: 0.20});
+        
+        break;
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies, 4);
+    var targetLock;
+    var healAmount = 0;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.88);
+        result += targets[i].takeDamage(this, "Divine Light", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    
+    targets = getRandomTargets(this, this._allies, 3);
+    for (let i in targets) {
+      healAmount = this.calcHeal(targets[i], this._currentStats["totalAttack"] * 2.65);
+      result += targets[i].getHeal(this, healAmount);
+      result += targets[i].getBuff(this, "Holy Damage", 15, {holyDamage: 0.25});
+    }
+    
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -7161,6 +7243,11 @@ var skins = {
   "Rogan": {
     "Skin Placeholder": {},
     "Legendary Skin Placeholder": {}
+  },
+  
+  "Gerke": {
+    "Doomsday Angel": {hpPercent: 0.03, attackPercent: 0.02, holyDamage: 0.05},
+    "Legendary Doomsday Angel": {hpPercent: 0.06, attackPercent: 0.04, holyDamage: 0.08}
   }
 };
 
@@ -7587,6 +7674,22 @@ var baseHeroStats = {
       growHP: 820.2,
       growAttack: 35.3,
       growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
+  "Gerke": {
+    className: Gerke,
+    heroFaction: "Light",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 8592,
+      baseAttack: 329,
+      baseArmor: 60,
+      baseSpeed: 195,
+      growHP: 859.2,
+      growAttack: 33,
+      growArmor: 6,
       growSpeed: 2
     }
   },

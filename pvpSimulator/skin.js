@@ -189,5 +189,10 @@ var skins = {
   "Rogan": {
     "Skin Placeholder": {},
     "Legendary Skin Placeholder": {}
+  },
+  
+  "Gerke": {
+    "Doomsday Angel": {hpPercent: 0.03, attackPercent: 0.02, holyDamage: 0.05},
+    "Legendary Doomsday Angel": {hpPercent: 0.06, attackPercent: 0.04, holyDamage: 0.08}
   }
 };
