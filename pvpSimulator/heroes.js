@@ -882,7 +882,7 @@ class hero {
       
       
     if (unstackable && buffName in this._buffs) {
-      let stackObj = Object.values(this._buffs[buffName]);
+      let stackObj = Object.values(this._buffs[buffName])[0];
       stackObj["duration"] = duration;
       
     } else {

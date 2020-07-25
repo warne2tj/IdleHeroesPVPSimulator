@@ -388,6 +388,8 @@ class hero {
     this._stats["armor"] = Math.floor(baseStats["baseArmor"] + (this._heroLevel - 1) * baseStats["growArmor"]);
     this._stats["speed"] = Math.floor((baseStats["baseSpeed"] + (this._heroLevel - 1) * baseStats["growSpeed"]) * 1.6);
     
+    this._stats["fixedAttack"] = 0;
+    this._stats["fixedHP"] = 0;
     this._stats["totalHP"] = this._stats["hp"];
     this._stats["totalAttack"] = this._stats["attack"];
     this._stats["totalArmor"] = this._stats["armor"];
@@ -417,8 +419,6 @@ class hero {
     this._stats["healEffect"] = 0.0;
     this._stats["dotReduce"] = 0.0;
     this._stats["controlPrecision"] = 0.0;
-    this._stats["fixedAttack"] = 0;
-    this._stats["fixedHP"] = 0;
     this._stats["damageAgainstBurning"] = 0.0;
     this._stats["damageAgainstBleeding"] = 0.0;
     this._stats["damageAgainstPoisoned"] = 0.0;
@@ -758,20 +758,26 @@ class hero {
   getHeroSheet() {
     console.log("Get stats summary for " + this._heroName);
     var heroSheet = "";
+    
     var arrIntStats = [
       "hp", "attack", "speed", "armor", 
       "totalHP", "totalAttack", "totalArmor", 
-      "unbendingWillTriggered", "unbendingWillStacks"
+      "unbendingWillTriggered", "unbendingWillStacks",
+      "revive", "fixedAttack", "fixedHP", "energy", "isCharging"
     ];
+    
+    var arrStrStats = ["firstCC"];
     
     heroSheet += "Level " + this._heroLevel + " " + this._heroName + "<br/>";
     heroSheet += this._starLevel + "* " + this._heroFaction + " " + this._heroClass + "<br/>";
     
     for (var statName in this._stats) {
       if (arrIntStats.includes(statName)) {
-        heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed();
+        heroSheet += "<br/>" + translate[statName] + ": " + this._stats[statName].toString();
+      } else if (arrStrStats.includes(statName)) {
+        heroSheet += "<br/>" + translate[statName] + ": " + this._stats[statName];
       } else {
-        heroSheet += "<br/>" + statName + ": " + this._stats[statName].toFixed(2);
+        heroSheet += "<br/>" + translate[statName] + ": " + (this._stats[statName] * 100).toFixed() + "%";
       }
     }
     
@@ -783,7 +789,7 @@ class hero {
       return "";
     } else {
       var pos1 = parseInt(this._heroPos) + 1;
-      return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"] + " hp, " + this._currentStats["totalAttack"] + " attack, " + this._currentStats["energy"] + " energy)</span>";
+      return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toString() + " hp, " + this._currentStats["totalAttack"].toString() + " attack, " + this._currentStats["energy"].toString() + " energy)</span>";
     }
   }
   
@@ -1215,7 +1221,7 @@ class hero {
       
       
       for (var strStatName in effects) {
-        result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+        result += " " + translate[strStatName] + ": " + formatNum(effects[strStatName]) + ".";
         
         if (strStatName == "attackPercent") {
           this._currentStats["totalAttack"] = this.calcCombatAttack();
@@ -1242,7 +1248,7 @@ class hero {
     }
     
     return result + "</div>" + healResult;
-  }  
+  }
   
   
   getDebuff(source, debuffName, duration, effects={}, bypassControlImmune=false, damageSource="passive", ccChance=1, unstackable=false) {
@@ -1260,7 +1266,7 @@ class hero {
     
     if (isControl) {
       controlImmune = this._currentStats["controlImmune"];
-      controlImmunePen = this._currentStats["controlImmunePen"];
+      controlImmunePen = source._currentStats["controlImmunePen"];
       controlImmune -= controlImmunePen;
       if (controlImmune < 0) { controlImmune = 0; }
       
@@ -1268,7 +1274,7 @@ class hero {
         controlImmune = 1 - (1-controlImmune) * (1 - this._currentStats[debuffName + "Immune"]);
       }
       
-      ccChance = 1 - (1 - ccChance * (1 + source._currentStats["controlPrecision"]))
+      ccChance = ccChance * (1 + source._currentStats["controlPrecision"]);
       rollCCHit = random();
       rollCCPen = random();
     }
@@ -1279,7 +1285,7 @@ class hero {
       result += "<div>" + this.heroDesc() + " resisted debuff <span class='skill'>" + debuffName + "</span>.</div>";
     } else if (
       isControl && 
-      (rollCCPen >= controlImmune || !(bypassControlImmune)) &&
+      (rollCCPen >= controlImmune || bypassControlImmune) &&
       this._artifact.includes(" Lucky Candy Bar") &&
       (this._currentStats["firstCC"] == "" || this._currentStats["firstCC"] == debuffName)
     ) {
@@ -1313,7 +1319,7 @@ class hero {
         
         // process effects
         for (var strStatName in effects) {
-          result += " " + strStatName + " " + formatNum(effects[strStatName]) + ".";
+          result += " " + translate[strStatName] + ": " + formatNum(effects[strStatName]) + ".";
           
           if (strStatName == "attackPercent") {
             this._currentStats["totalAttack"] = this.calcCombatAttack();
@@ -1600,6 +1606,20 @@ class hero {
                   }  else if (isDot(strStatName)) {
                     // do nothing, full burn damage already done
                     
+                    // unless it's the burn from valkryie's basic
+                    if (this._currentStats["totalHP"] > 0 && "valkryieBasic" in this._debuffs[b][s]["effects"]) {
+                      damageResult = {
+                        damageAmount: this._debuffs[b][s]["effects"][strStatName],
+                        damageSource: "passive",
+                        damageType: strStatName,
+                        critted: false,
+                        blocked: false
+                      };
+                      
+                      result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
+                      result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
+                    }
+                    
                   } else {
                     this._currentStats[strStatName] += this._debuffs[b][s]["effects"][strStatName];
                     
@@ -1755,6 +1775,7 @@ class hero {
     
     damageResult["damageAmount"] = Math.floor(damageResult["damageAmount"]);
     
+    
     strAttackDesc = "<span class='skill'>" + strAttackDesc + "</span>";
     result = "<div>" + source.heroDesc() + " used " + strAttackDesc + " against " + this.heroDesc() + ".</div>";
     
@@ -1895,7 +1916,8 @@ class hero {
       for (var s in this._debuffs["Crit Mark"]) {
         triggerQueue.push([this._debuffs["Crit Mark"][s]["source"], "critMark", this, this._debuffs["Crit Mark"][s]["effects"]["attackAmount"]]);
       }
-      this.removeDebuff("Crit Mark");
+      
+      result += this.removeDebuff("Crit Mark");
     }
     
     
@@ -1945,14 +1967,14 @@ class hero {
     var targets = getAllTargets(this, this._enemies, 1);
     var targetLock;
     
-    if (targets.length > 0) {
-      targetLock = targets[0].getTargetLock(this);
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
       result += targetLock;
       
       if (targetLock == "") {
-        damageResult = this.calcDamage(targets[0], this._currentStats["totalAttack"], "basic", "normal");
-        result += targets[0].takeDamage(this, "Basic Attack", damageResult);
-        basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal");
+        result += targets[i].takeDamage(this, "Basic Attack", damageResult);
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
@@ -2048,7 +2070,7 @@ class hero {
     return result;
   }
 }
-  
+
 /* End of heroes.js */
 
 
@@ -8044,16 +8066,11 @@ function rng(seed=0) {
 }
 
 
-// UUIDv4
+// stack ids for buffs and debuffs
 var uniqID;
 function uuid() {
   uniqID++;
   return uniqID;
-  /*
-  return (`${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`).replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  );
-  */
 }
 
 
@@ -8536,7 +8553,7 @@ var translate = {
 var basicQueue = [];
 var activeQueue = [];
 var triggerQueue = [];
-var logColor = 1;
+var logColor = 0;
 var roundNum = 0;
 
 function runSim(attMonsterName, defMonsterName, numSims) {
@@ -8548,6 +8565,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
   var result = {};
   var monsterResult = "";
   var someoneWon = "";
+  var endingRoundSum = 0;
   var endRoundDesc = "";
   var numLiving = 0;
   var tempTrigger;
@@ -8559,7 +8577,10 @@ function runSim(attMonsterName, defMonsterName, numSims) {
   //var defMonsterName = document.getElementById("defMonster").value;
   var defMonster = new baseMonsterStats[defMonsterName]["className"](defMonsterName, "def");
   
-  random = rng();
+  //var domSeed = document.getElementById("domSeed");
+  random = Math.random;
+  
+  logColor = 0;
   //oCombatLog.innerHTML = "";
   
   for (var i = 0; i < attHeroes.length; i++) {
@@ -8576,8 +8597,8 @@ function runSim(attMonsterName, defMonsterName, numSims) {
     // @ start of single simulation
     
     //if(numSims == 1) {oCombatLog.innerHTML += "<p class ='logSeg'>Simulation #" + formatNum(simIterNum) +" Started.</p>"};
-    uniqID = 0;
     someoneWon = "";
+    uniqID = 0;
     attMonster._energy = 0;
     defMonster._energy = 0;
     
@@ -8604,14 +8625,16 @@ function runSim(attMonsterName, defMonsterName, numSims) {
     for (var h in attHeroes) {
       if ((attHeroes[h].isNotSealed() && attHeroes[h]._currentStats["totalHP"] > 0) || attHeroes[h]._currentStats["revive"] == 1) {
         temp = attHeroes[h].startOfBattle();
-        //if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
     }
     
     for (var h in defHeroes) {
       if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats["totalHP"] > 0) {
         temp = defHeroes[h].startOfBattle();
-        //if(numSims == 1) {oCombatLog.innerHTML += temp;}
+        //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
     }
     
@@ -8620,7 +8643,8 @@ function runSim(attMonsterName, defMonsterName, numSims) {
       // @ start of round
       
       // Output detailed combat log only if running a single simulation
-      //if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Round " + formatNum(roundNum) + " Start</p>";}
+      //if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg log" + logColor + "'>Round " + formatNum(roundNum) + " Start</p>";}
+      logColor = (logColor + 1) % 2;
       
       
       orderOfAttack = attHeroes.concat(defHeroes);
@@ -8637,11 +8661,8 @@ function runSim(attMonsterName, defMonsterName, numSims) {
         
         if (currentHero._currentStats["totalHP"] > 0) {
           if(currentHero.isUnderStandardControl()) {
-            //if(numSims == 1) {oCombatLog.innerHTML += "<p>" + currentHero.heroDesc() + " is under control effect, turn skipped.</p>";}
+            //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + currentHero.heroDesc() + " is under control effect, turn skipped.</div>";}
           } else {
-            //if(numSims == 1) {oCombatLog.innerHTML += "<p></p>";}
-            
-            // decide on action
             
             let isRussellCharging = false;
             if (currentHero._heroName == "Russell") {
@@ -8662,7 +8683,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
               
               // do active
               result = currentHero.doActive();
-              //if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}
+              //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + result + "</div>";}
               
               // monster gains energy from hero active
               if (currentHero._attOrDef == "att") {
@@ -8670,7 +8691,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
                   monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
                   attMonster._energy += 10;
                   monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
-                  //if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+                  //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + monsterResult + "</div>";}
                 }
                 
               } else {
@@ -8678,7 +8699,7 @@ function runSim(attMonsterName, defMonsterName, numSims) {
                   monsterResult = "<div>" + defMonster.heroDesc() + " gained " + formatNum(10) + " energy. ";
                   defMonster._energy += 10;
                   monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
-                  //if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+                  //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + monsterResult + "</div>";}
                 }
               }
               
@@ -8716,19 +8737,22 @@ function runSim(attMonsterName, defMonsterName, numSims) {
                   }
                 }
               }
-              //if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
               
             } else if ("Horrify" in currentHero._debuffs) {
-              //if(numSims == 1) {oCombatLog.innerHTML += "<p>" + currentHero.heroDesc() + " is Horrified, basic attack skipped.</p>";}
+              //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + currentHero.heroDesc() + " is Horrified, basic attack skipped.</div>";}
               
             } else {
               // do basic
               result = currentHero.doBasic();
-              //if(numSims == 1) {oCombatLog.innerHTML += "<div>" + result + "</div>";}  
+              /*if(numSims == 1) {
+                result = "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + result + "</div>";
+                oCombatLog.innerHTML += result;
+              }  */
               
               // hero gains 50 energy after doing basic
               temp = currentHero.getEnergy(currentHero, 50);
-              //if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
               
               
               triggerQueue.push([currentHero, "eventSelfBasic", basicQueue]);
@@ -8757,28 +8781,31 @@ function runSim(attMonsterName, defMonsterName, numSims) {
                   }
                 }
               }
-              //if(numSims == 1) {oCombatLog.innerHTML += temp;}
+              //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
             }
           }
               
               
           // process triggers and events    
           temp = processQueue();
-          //if(numSims == 1) {oCombatLog.innerHTML += temp;}
+          //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'>" + temp + "</div>";}
           someoneWon = checkForWin();
           if (someoneWon != "") {break;}
+        
+          logColor = (logColor + 1) % 2;
         }
       }
       
       if (someoneWon != "") {break;}
       
       // trigger end of round stuff
-      //if(numSims == 1) {oCombatLog.innerHTML += "<p></p><div class='logSeg'>End of round " + formatNum(roundNum) + ".</div>";}
+      //if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg log" + logColor + "'>End of round " + formatNum(roundNum) + ".</p>";}
+      logColor = (logColor + 1) % 2;
       
       
       // handle monster stuff
       if (attMonster._monsterName != "None") {
-        monsterResult = "<p></p><div>" + attMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
+        monsterResult = "<div>" + attMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
         attMonster._energy += 20;
         monsterResult += "Energy at " + formatNum(attMonster._energy) + ".</div>"
       
@@ -8786,11 +8813,12 @@ function runSim(attMonsterName, defMonsterName, numSims) {
           monsterResult += attMonster.doActive();
         }
         
-        //if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+        //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + monsterResult + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
       
       if (defMonster._monsterName != "None") {
-        monsterResult = "<p></p><div>" + defMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
+        monsterResult = "<div>" + defMonster.heroDesc() + " gained " + formatNum(20) + " energy. ";
         defMonster._energy += 20;
         monsterResult += "Energy at " + formatNum(defMonster._energy) + ".</div>"
       
@@ -8798,14 +8826,14 @@ function runSim(attMonsterName, defMonsterName, numSims) {
           monsterResult += defMonster.doActive();
         }
         
-        //if(numSims == 1) {oCombatLog.innerHTML += monsterResult;}
+        //if(numSims == 1) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + monsterResult + "</div>";}
+        logColor = (logColor + 1) % 2;
       }
       
       temp = processQueue();
-      //if(numSims == 1) {oCombatLog.innerHTML += temp;}
+      //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'>" + temp + "</div>";}
       someoneWon = checkForWin();
       if (someoneWon != "") {break;}
-      
       
       
       // handle end of round abilities
@@ -8874,12 +8902,12 @@ function runSim(attMonsterName, defMonsterName, numSims) {
         }
           
           
-        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
         logColor = (logColor + 1) % 2;
         
         
         temp = processQueue();
-        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'>" + temp + "</div>";}
+        //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'>" + temp + "</div>";}
         someoneWon = checkForWin();
         if (someoneWon != "") {break;}
       } else {
@@ -8897,6 +8925,8 @@ function runSim(attMonsterName, defMonsterName, numSims) {
     } else {
       //if(numSims == 1) {oCombatLog.innerHTML += "<p class='logSeg'>Defender wins!</p>";}
     }
+    
+    endingRoundSum += roundNum;
     
     
     numOfHeroes = attHeroes.length;
@@ -8925,7 +8955,8 @@ function runSim(attMonsterName, defMonsterName, numSims) {
   }
   /*
   oCombatLog.innerHTML += "<p class='logSeg'>Attacker won " + winCount + " out of " + numSims + " (" + formatNum((winCount/numSims * 100).toFixed(2)) + "%).</p>";
-  
+  oCombatLog.innerHTML += "<p class='logSeg'>Average Combat Length: " + formatNum((endingRoundSum/numSims).toFixed(2)) + " rounds.</p>";
+
   // damage summary
   oCombatLog.innerHTML += "<p><div class='logSeg'>Attacker average damage summary.</div>";
   for (var i = 0; i < attHeroes.length; i++) {
