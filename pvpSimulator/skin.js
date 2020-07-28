@@ -194,5 +194,10 @@ var skins = {
   "Gerke": {
     "Doomsday Angel": {hpPercent: 0.03, attackPercent: 0.02, holyDamage: 0.05},
     "Legendary Doomsday Angel": {hpPercent: 0.06, attackPercent: 0.04, holyDamage: 0.08}
+  },
+  
+  "Sleepless": {
+    "Shapeshifter": {hpPercent: 0.05},
+    "Legendary Skin Placeholder": {hpPercent: 0.05}
   }
 };

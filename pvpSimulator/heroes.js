@@ -1250,7 +1250,7 @@ class hero {
                 
               } else if (b == "Black Hole Mark") {
                 if (this._currentStats["totalHP"] > 0) {
-                  let bhMark = this._debuffs["Black Hole Mark"][Object.keys(this._debuffs["Black Hole Mark"])[0]];
+                  let bhMark = this._debuffs[b][s];
                   let damageAmount = bhMark["effects"]["damageAmount"];
                   
                   if (damageAmount > bhMark["effects"]["attackAmount"]) {damageAmount = bhMark["effects"]["attackAmount"]; }
@@ -1264,6 +1264,14 @@ class hero {
                   };
                   
                   result += "<div>" + this.takeDamage(bhMark["source"], "Black Hole Mark", damageResult) + "</div>";
+                }
+                
+              } else if (b == "Round Mark") {
+                if (this._currentStats["totalHP"] > 0) {
+                  let roundMark = this._debuffs[b][s];
+                  let damageResult = roundMark["effects"]["attackAmount"];
+                  
+                  result += "<div>" + this.takeDamage(roundMark["source"], "Round Mark", damageResult) + "</div>";
                 }
                 
               } else {

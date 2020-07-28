@@ -342,7 +342,7 @@ function getHero(heroName) {
   var value = "  \"" + heroName + "\", ";
   value += "\"" + legendarySkins[Math.floor(Math.random() * legendarySkins.length)] + "\", ";
   
-  if (isSeeded) {
+  if (isSeeded && heroName in seededHeroes) {
     value += "\"" + sHero.allowedEquipments[Math.floor(Math.random() * sHero.allowedEquipments.length)] + "\", ";
     value += "\"" + sHero.allowedStones[Math.floor(Math.random() * sHero.allowedStones.length)] + "\", ";
     value += "\"" + sHero.allowedArtifacts[Math.floor(Math.random() * sHero.allowedArtifacts.length)] + "\", ";
@@ -621,8 +621,23 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   }
 
   // mutate child 1 pet
-  if (Math.random() < mutationRate) {
+  if (Math.random() < posSwapRate) {
     child1[60] = monsterNames[Math.floor(Math.random() * monsterNames.length )];
+  }
+
+  // swap hero positions
+  if (Math.random() < posSwapRate) {
+    let swap1 = Math.floor(Math.random() * 6);
+    let swap2 = Math.floor(Math.random() * 6);
+    
+    let tempHero = child1[swap1 * 10];
+    let tempSkin = child1[swap1 * 10 + 1];
+    
+    child1[swap1 * 10] = child1[swap2 * 10];
+    child1[swap2 * 10] = tempHero;
+    
+    child1[swap1 * 10 + 1] = child1[swap2 * 10 + 1];
+    child1[swap2 * 10 + 1] = tempSkin;
   }
   
   
@@ -630,28 +645,31 @@ function breed(teamKeys, start, end, mutationRate, posSwapRate) {
   if (isSeeded) {
     for (let i = 0; i < 6; i++) {
       let g = i * 10;
-      let sHero = seededHeroes[child1[g]];
       
-      if (sHero.allowedEquipments.indexOf(child1[g+2]) < 0) {
-        child1[g+2] = sHero.allowedEquipments[Math.floor(Math.random() * sHero.allowedEquipments.length)];
-      }
-      
-      if (sHero.allowedStones.indexOf(child1[g+3]) < 0) {
-        child1[g+3] = sHero.allowedStones[Math.floor(Math.random() * sHero.allowedStones.length)];
-      }
-      
-      if (sHero.allowedArtifacts.indexOf(child1[g+4]) < 0) {
-        child1[g+4] = sHero.allowedArtifacts[Math.floor(Math.random() * sHero.allowedArtifacts.length)];
-      }
-      
-      let strEnables = "\"" + child1.slice(g+5, g+10).join("\", \"") + "\"";
-      if (sHero.allowedEnables.indexOf(strEnables) < 0) {
-        strEnables = sHero.allowedEnables[Math.floor(Math.random() * sHero.allowedEnables.length)];
-        strEnables = strEnables.replace(/"/g, "");
-        let arrEnables = strEnables.split(", ");
+      if (child1[g] in seededHeroes) {
+        let sHero = seededHeroes[child1[g]];
         
-        for (let j = 5; j < 10; j++) {
-          child1[g+j] = arrEnables[j-5];
+        if (sHero.allowedEquipments.indexOf(child1[g+2]) < 0) {
+          child1[g+2] = sHero.allowedEquipments[Math.floor(Math.random() * sHero.allowedEquipments.length)];
+        }
+        
+        if (sHero.allowedStones.indexOf(child1[g+3]) < 0) {
+          child1[g+3] = sHero.allowedStones[Math.floor(Math.random() * sHero.allowedStones.length)];
+        }
+        
+        if (sHero.allowedArtifacts.indexOf(child1[g+4]) < 0) {
+          child1[g+4] = sHero.allowedArtifacts[Math.floor(Math.random() * sHero.allowedArtifacts.length)];
+        }
+        
+        let strEnables = "\"" + child1.slice(g+5, g+10).join("\", \"") + "\"";
+        if (sHero.allowedEnables.indexOf(strEnables) < 0) {
+          strEnables = sHero.allowedEnables[Math.floor(Math.random() * sHero.allowedEnables.length)];
+          strEnables = strEnables.replace(/"/g, "");
+          let arrEnables = strEnables.split(", ");
+          
+          for (let j = 5; j < 10; j++) {
+            child1[g+j] = arrEnables[j-5];
+          }
         }
       }
     }

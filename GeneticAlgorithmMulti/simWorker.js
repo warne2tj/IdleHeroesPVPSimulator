@@ -1575,7 +1575,7 @@ class hero {
                 
               } else if (b == "Black Hole Mark") {
                 if (this._currentStats["totalHP"] > 0) {
-                  let bhMark = this._debuffs["Black Hole Mark"][Object.keys(this._debuffs["Black Hole Mark"])[0]];
+                  let bhMark = this._debuffs[b][s];
                   let damageAmount = bhMark["effects"]["damageAmount"];
                   
                   if (damageAmount > bhMark["effects"]["attackAmount"]) {damageAmount = bhMark["effects"]["attackAmount"]; }
@@ -1589,6 +1589,14 @@ class hero {
                   };
                   
                   result += "<div>" + this.takeDamage(bhMark["source"], "Black Hole Mark", damageResult) + "</div>";
+                }
+                
+              } else if (b == "Round Mark") {
+                if (this._currentStats["totalHP"] > 0) {
+                  let roundMark = this._debuffs[b][s];
+                  let damageResult = roundMark["effects"]["attackAmount"];
+                  
+                  result += "<div>" + this.takeDamage(roundMark["source"], "Round Mark", damageResult) + "</div>";
                 }
                 
               } else {
@@ -6055,6 +6063,133 @@ class Gerke extends hero {
   }
 }
 
+
+// Sleepless
+class Sleepless extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["revive"] = 1;
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventSelfBasic(trigger[2]);
+    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventEnemyActive(trigger[2], trigger[3]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic(e) {
+    var result = "";
+    var damageResult = {};
+    
+    for (let t in e) {
+      if (e[t][1]._currentStats["totalHP"] > 0) {
+        damageResult = this.calcDamage(e[t][1], this._currentStats["totalAttack"] * 1.90, "mark", "normal");
+        result += e[t][1].getDebuff(this, "Round Mark", 1, {attackAmount: damageResult});
+        result += e[t][1].getDebuff(this, "petrify", 2, {}, false, "", 0.45);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyActive(target, e) {
+    var result = "";
+    var damageResult = {};
+    
+    if (target._currentStats["totalHP"] > 0) {
+      for (let t in e) {
+        if (e[t][1].heroDesc() == this.heroDesc()) {
+          damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.85, "mark", "normal");
+          result += target.getDebuff(this, "Round Mark", 1, {attackAmount: damageResult});
+          
+          break;
+        }
+      }
+    }
+    
+    if (random() < 0.3) {
+      let healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.10);
+      result += this.getHeal(this, healAmount);
+    }
+    
+    return result;
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] <= 0 && this._currentStats["revive"] == 1) {          
+      for (var b in this._buffs) {
+        this.removeBuff(b);
+      }
+      
+      for (var d in this._debuffs) {
+        this.removeDebuff(d);
+      }
+          
+      this._currentStats["revive"] = 0;
+      this._currentStats["totalHP"] = this._stats["totalHP"];
+      this._currentStats["energy"] = 0;
+      result += "<div>" + this.heroDesc() + " has revived with full health.</div>";
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getAllTargets(this, this._enemies, 4);
+    var targetLock;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.24);
+        result += targets[i].takeDamage(this, "Sleepless Mark", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+      
+      
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.8, "mark", "normal");
+        result += targets[i].getDebuff(this, "Round Mark", 1, {attackAmount: damageResult});
+      }
+      
+      
+      if (random() < 0.45) {
+        targetLock = targets[i].getTargetLock(this);
+        result += targetLock;
+        
+        if (targetLock == "") {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.1, "mark", "normal");
+          result += targets[i].getDebuff(this, "Round Mark", 1, {attackAmount: damageResult});
+        }
+      }
+    }
+    
+    result += this.getBuff(this, "Damage Reduce", 3, {damageReduce: 0.15});
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -7300,6 +7435,11 @@ var skins = {
   "Gerke": {
     "Doomsday Angel": {hpPercent: 0.03, attackPercent: 0.02, holyDamage: 0.05},
     "Legendary Doomsday Angel": {hpPercent: 0.06, attackPercent: 0.04, holyDamage: 0.08}
+  },
+  
+  "Sleepless": {
+    "Shapeshifter": {hpPercent: 0.05},
+    "Legendary Skin Placeholder": {hpPercent: 0.05}
   }
 };
 
@@ -7954,6 +8094,22 @@ var baseHeroStats = {
     }
   },
   
+  "Sleepless": {
+    className: Sleepless,
+    heroFaction: "Dark",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 9980,
+      baseAttack: 338,
+      baseArmor: 61,
+      baseSpeed: 227,
+      growHP: 998,
+      growAttack: 34,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
   "Tara": {
     className: Tara,
     heroFaction: "Light",
@@ -8205,9 +8361,12 @@ function isAttribute(strName, effects={}) {
     "controlImmune", "skillDamage", "damageReduce", "allDamageReduce", "controlPrecision",
     "healEffect", "effectBeingHealed", "critDamageReduce", "dotReduce", "fixedAttack", 
     "fixedHP", "allDamageTaken", "allDamageDealt", "damageAgainstBurning", "damageAgainstBleeding",
-    "damageAgainstPoisoned", "damageAgainstFrozen", "dodge",
+    "damageAgainstPoisoned", "damageAgainstFrozen", "dodge", "controlImmunePen",
     "warriorReduce", "mageReduce", "rangerReduce", "assassinReduce", "priestReduce",
-    "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune"
+    "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune", "Seal of LightImmune",
+    "ShapeshiftImmune", "TauntImmune", "DazzleImmune", "HorrifyImmune", "SilenceImmune",
+    "damageAgainstWarrior", "damageAgainstMage", "damageAgainstRanger", "damageAgainstAssassin",
+    "damageAgainstPriest"
   ];
   
   if (arrAttributes.includes(strName)) {
@@ -8471,7 +8630,9 @@ var translate = {
   "totalArmor": "Total Armor",
   "speed": "Speed",
   "hpPercent": "HP Percent Multiplier",
+  "hpPercent2": "HP Percent Multiplier",
   "attackPercent": "Attack Percent Multiplier",
+  "attackPercent2": "Attack Percent Multiplier",
   "armorPercent": "Armor Percent Multiplier",
   "energy": "Energy",
   "skillDamage": "Skill Damage",
@@ -8542,7 +8703,12 @@ var translate = {
   "TauntImmune": "Chance to Resist Taunt",
   "DazzleImmune": "Chance to Resist Dazzle",
   "HorrifyImmune": "Chance to Resist Horrify",
-  "SilenceImmune": "Chance to Resist Silence"
+  "SilenceImmune": "Chance to Resist Silence",
+  "damageDealt": "Damage Dealt",
+  "damageHealed": "Damage Healed or Prevented",
+  "energySnapshot": "Amount of Energy on Active",
+  "demonTotemStacks": "Demon Totem Stacks",
+  "heartOfOrmusTriggered": "Heart of Ormus Triggered"
 };
 
 /* End of utilityFunctions.js */

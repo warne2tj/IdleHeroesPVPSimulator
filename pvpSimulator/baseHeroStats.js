@@ -482,6 +482,22 @@ var baseHeroStats = {
     }
   },
   
+  "Sleepless": {
+    className: Sleepless,
+    heroFaction: "Dark",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 9980,
+      baseAttack: 338,
+      baseArmor: 61,
+      baseSpeed: 227,
+      growHP: 998,
+      growAttack: 34,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
+  },
+  
   "Tara": {
     className: Tara,
     heroFaction: "Light",

@@ -196,9 +196,12 @@ function isAttribute(strName, effects={}) {
     "controlImmune", "skillDamage", "damageReduce", "allDamageReduce", "controlPrecision",
     "healEffect", "effectBeingHealed", "critDamageReduce", "dotReduce", "fixedAttack", 
     "fixedHP", "allDamageTaken", "allDamageDealt", "damageAgainstBurning", "damageAgainstBleeding",
-    "damageAgainstPoisoned", "damageAgainstFrozen", "dodge",
+    "damageAgainstPoisoned", "damageAgainstFrozen", "dodge", "controlImmunePen",
     "warriorReduce", "mageReduce", "rangerReduce", "assassinReduce", "priestReduce",
-    "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune"
+    "freezeImmune", "petrifyImmune", "stunImmune", "twineImmune", "Seal of LightImmune",
+    "ShapeshiftImmune", "TauntImmune", "DazzleImmune", "HorrifyImmune", "SilenceImmune",
+    "damageAgainstWarrior", "damageAgainstMage", "damageAgainstRanger", "damageAgainstAssassin",
+    "damageAgainstPriest"
   ];
   
   if (arrAttributes.includes(strName)) {
@@ -462,7 +465,9 @@ var translate = {
   "totalArmor": "Total Armor",
   "speed": "Speed",
   "hpPercent": "HP Percent Multiplier",
+  "hpPercent2": "HP Percent Multiplier",
   "attackPercent": "Attack Percent Multiplier",
+  "attackPercent2": "Attack Percent Multiplier",
   "armorPercent": "Armor Percent Multiplier",
   "energy": "Energy",
   "skillDamage": "Skill Damage",
@@ -533,5 +538,10 @@ var translate = {
   "TauntImmune": "Chance to Resist Taunt",
   "DazzleImmune": "Chance to Resist Dazzle",
   "HorrifyImmune": "Chance to Resist Horrify",
-  "SilenceImmune": "Chance to Resist Silence"
+  "SilenceImmune": "Chance to Resist Silence",
+  "damageDealt": "Damage Dealt",
+  "damageHealed": "Damage Healed or Prevented",
+  "energySnapshot": "Amount of Energy on Active",
+  "demonTotemStacks": "Demon Totem Stacks",
+  "heartOfOrmusTriggered": "Heart of Ormus Triggered"
 };

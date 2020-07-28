@@ -2079,7 +2079,6 @@ class Kroos extends hero {
 }
 
 
-
 // Michelle
 class Michelle extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -3973,6 +3972,133 @@ class Gerke extends hero {
       result += targets[i].getBuff(this, "Holy Damage", 15, {holyDamage: 0.25});
     }
     
+    
+    return result;
+  }
+}
+
+
+// Sleepless
+class Sleepless extends hero {
+  constructor(sHeroName, iHeroPos, attOrDef) {
+    super(sHeroName, iHeroPos, attOrDef);
+    this._stats["revive"] = 1;
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventSelfBasic(trigger[2]);
+    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventEnemyActive(trigger[2], trigger[3]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic(e) {
+    var result = "";
+    var damageResult = {};
+    
+    for (let t in e) {
+      if (e[t][1]._currentStats["totalHP"] > 0) {
+        damageResult = this.calcDamage(e[t][1], this._currentStats["totalAttack"] * 1.90, "mark", "normal");
+        result += e[t][1].getDebuff(this, "Round Mark", 1, {attackAmount: damageResult});
+        result += e[t][1].getDebuff(this, "petrify", 2, {}, false, "", 0.45);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyActive(target, e) {
+    var result = "";
+    var damageResult = {};
+    
+    if (target._currentStats["totalHP"] > 0) {
+      for (let t in e) {
+        if (e[t][1].heroDesc() == this.heroDesc()) {
+          damageResult = this.calcDamage(target, this._currentStats["totalAttack"] * 1.85, "mark", "normal");
+          result += target.getDebuff(this, "Round Mark", 1, {attackAmount: damageResult});
+          
+          break;
+        }
+      }
+    }
+    
+    if (random() < 0.3) {
+      let healAmount = this.calcHeal(this, this._stats["totalHP"] * 0.10);
+      result += this.getHeal(this, healAmount);
+    }
+    
+    return result;
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] <= 0 && this._currentStats["revive"] == 1) {          
+      for (var b in this._buffs) {
+        this.removeBuff(b);
+      }
+      
+      for (var d in this._debuffs) {
+        this.removeDebuff(d);
+      }
+          
+      this._currentStats["revive"] = 0;
+      this._currentStats["totalHP"] = this._stats["totalHP"];
+      this._currentStats["energy"] = 0;
+      result += "<div>" + this.heroDesc() + " has revived with full health.</div>";
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getAllTargets(this, this._enemies, 4);
+    var targetLock;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.24);
+        result += targets[i].takeDamage(this, "Sleepless Mark", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+      
+      
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.8, "mark", "normal");
+        result += targets[i].getDebuff(this, "Round Mark", 1, {attackAmount: damageResult});
+      }
+      
+      
+      if (random() < 0.45) {
+        targetLock = targets[i].getTargetLock(this);
+        result += targetLock;
+        
+        if (targetLock == "") {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.1, "mark", "normal");
+          result += targets[i].getDebuff(this, "Round Mark", 1, {attackAmount: damageResult});
+        }
+      }
+    }
+    
+    result += this.getBuff(this, "Damage Reduce", 3, {damageReduce: 0.15});
     
     return result;
   }

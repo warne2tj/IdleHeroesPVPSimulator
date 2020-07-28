@@ -25,6 +25,7 @@ Head to the wiki for more details.
   * Emily
   * Faith Blade
   * Garuda
+  * Gerke
   * Gustin
   * Horus
   * Ithaqua
@@ -38,6 +39,7 @@ Head to the wiki for more details.
   * Rogan
   * Russell
   * Sherlock
+  * Sleepless
   * Tara
   * Unimax
   * Valkryie
