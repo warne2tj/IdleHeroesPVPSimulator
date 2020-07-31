@@ -3063,18 +3063,43 @@ class Delacium extends hero {
   
   endOfRound(roundNum) {
     var result = "";
-    var targets = getRandomTargets(this, this._enemies, 3);
+    var targets = []; 
     var maxTargets = 3;
     var maxToCopy = 3;
     var maxStacks = 3;
+    var copyFrom = [];
+    var copyTo = [];
+    
+    
+    for (let i in this._enemies) {
+      if (Object.keys(this._enemies[i]._debuffs).length > 0) {
+        copyFrom.push(this._enemies[i]);
+      }
+    }
+    
+    copyFrom = getRandomTargets(this, copyFrom, 1);
+    if (copyFrom.length > 0) {
+      for (let i in this._enemies) {
+        if (this._enemies[i].heroDesc() != copyFrom[0].heroDesc()) {
+          copyTo.push(this._enemies[i]);
+        }
+      }
+      
+      copyTo = getRandomTargets(this, copyTo, 2);
+      targets = copyFrom.concat(copyTo);
+    }
+    
     
     if (targets.length > 0 && this._currentStats["totalHP"] > 0) {
       var validDebuffs = [];
+      var effects;
       
       for (var d in targets[0]._debuffs) {
         // Delacium does not copy Mihm's dot
         if (d != "Dot") {
-          if (isDot(d) || isAttribute(d)) {
+          effects = Object.values(targets[0]._debuffs[d])[0]["effects"];
+          
+          if (isDot(d, effects) || isAttribute(d, effects)) {
             validDebuffs.push([d, targets[0]._debuffs[d], random()]);
           }
         }
@@ -6190,6 +6215,28 @@ class Sleepless extends hero {
   }
 }
 
+
+// Das Moge
+class DasMoge extends hero {
+  passiveStats() {
+    // apply Dark Insight passive
+    this.applyStatChange({skillDamage: 0.625, attackPercent: 0.30, hpPercent: 0.40}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventSelfBasic(trigger[2]);
+    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventEnemyActive(trigger[2], trigger[3]);
+    }
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -7439,7 +7486,13 @@ var skins = {
   
   "Sleepless": {
     "Shapeshifter": {hpPercent: 0.05},
-    "Legendary Skin Placeholder": {hpPercent: 0.05}
+    "Legendary Shapeshifter Placeholder": {hpPercent: 0.05}
+  },
+  
+  "Das Moge": {
+    "Black Warrior": {hpPercent: 0.03,  skillDamage: 0.03},
+    "Radiation": {attackPercent: 0.02, damageReduce: 0.03, skillDamage: 0.10},
+    "Legendary Radiation": {attackPercent: 0.04, damageReduce: 0.04, skillDamage: 0.15}
   }
 };
 
@@ -7770,6 +7823,22 @@ var baseHeroStats = {
       growHP: 690,
       growAttack: 42.2,
       growArmor: 5.8,
+      growSpeed: 2
+    }
+  },
+  
+  "Das Moge": {
+    className: DasMoge,
+    heroFaction: "Dark",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 7395,
+      baseAttack: 343,
+      baseArmor: 60,
+      baseSpeed: 218,
+      growHP: 739.5,
+      growAttack: 34.3,
+      growArmor: 6,
       growSpeed: 2
     }
   },

@@ -162,6 +162,22 @@ var baseHeroStats = {
     }
   },
   
+  "Das Moge": {
+    className: DasMoge,
+    heroFaction: "Dark",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 7395,
+      baseAttack: 343,
+      baseArmor: 60,
+      baseSpeed: 218,
+      growHP: 739.5,
+      growAttack: 34.3,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
   "Delacium": {
     className: Delacium,
     heroFaction: "Abyss",

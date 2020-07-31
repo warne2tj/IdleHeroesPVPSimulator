@@ -198,6 +198,12 @@ var skins = {
   
   "Sleepless": {
     "Shapeshifter": {hpPercent: 0.05},
-    "Legendary Skin Placeholder": {hpPercent: 0.05}
+    "Legendary Shapeshifter Placeholder": {hpPercent: 0.05}
+  },
+  
+  "Das Moge": {
+    "Black Warrior": {hpPercent: 0.03,  skillDamage: 0.03},
+    "Radiation": {attackPercent: 0.02, damageReduce: 0.03, skillDamage: 0.10},
+    "Legendary Radiation": {attackPercent: 0.04, damageReduce: 0.04, skillDamage: 0.15}
   }
 };
