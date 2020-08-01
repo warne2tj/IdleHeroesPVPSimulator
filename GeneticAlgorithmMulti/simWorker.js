@@ -3885,7 +3885,6 @@ class Horus extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 1, 3);
-          bleedDamageResult["damageAmount"] = bleedDamageResult["damageAmount"];
           result += targets[i].getDebuff(this, "Bleed", 3, {bleed: bleedDamageResult["damageAmount"]}, false, "active");
         }
         
@@ -6175,7 +6174,7 @@ class Sleepless extends hero {
   doActive() { 
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies, 4);
+    var targets = getAllTargets(this, this._enemies, 6);
     var targetLock;
     
     for (let i in targets) {
@@ -6228,10 +6227,71 @@ class DasMoge extends hero {
     var result = super.handleTrigger(trigger);
     
     if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
-      return this.eventSelfBasic(trigger[2]);
-    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
-      return this.eventEnemyActive(trigger[2], trigger[3]);
+      return this.eventSelfBasic();
+    } else if (["eventSelfActive", "eventAllyActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventSelfActive();
     }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic() {
+    var result = "";
+    result += this.getBuff(this, "Attack Percent", 3, {attackPercent: 0.20});
+    result += this.getBuff(this, "Speed", 3, {attackPercent: 15});
+    return result;
+  }
+  
+  
+  eventSelfActive() {
+    var result = "";
+    result += this.getBuff(this, "Skill Damage", 15, {skillDamage: 0.20});
+    result += this.getEnergy(this, 30);
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var bleedDamageResult = {damageAmount: 0};
+    var rangerDamageResult = {damageAmount: 0};
+    var targets = getAllTargets(this, this._enemies);
+    var targetLock;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.15);
+        result += targets[i].takeDamage(this, "Death Reaper", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+      
+      
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 0.56, 3);
+        result += targets[i].getDebuff(this, "Bleed", 3, {bleed: bleedDamageResult["damageAmount"]}, false, "active");
+      }
+      
+      
+      if (targets[i]._heroClass == "Ranger") {
+        targetLock = targets[i].getTargetLock(this);
+        result += targetLock;
+        
+        if (targetLock == "") {
+          rangerDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 1.05, 3);
+          result += targets[i].getDebuff(this, "Bleed", 3, {bleed: rangerDamageResult["damageAmount"]}, false, "active");
+        }
+      }
+    }
+    
+    result += this.getBuff(this, "Skill Damage", 15, {skillDamage: 0.50});
     
     return result;
   }
@@ -6811,11 +6871,46 @@ var artifacts = {
 
 var avatarFrames = {
   "None": {},
-  "Guild Wars T1": {hpPercent: 0.08, attackPercent: 0.03},
-  "Guild Wars T2": {hpPercent: 0.09, attackPercent: 0.04, controlImmune: 0.03},
-  "Guild Wars T3": {hpPercent: 0.10, attackPercent: 0.06, controlImmune: 0.04},
-  "Guild Wars T4": {hpPercent: 0.12, attackPercent: 0.07, controlImmune: 0.04},
-  "Guild Wars T5": {hpPercent: 0.14, attackPercent: 0.09, controlImmune: 0.06},
+  "Golden Amber": {hpPercent: 0.03, attackPercent: 0.01},
+  "Golden Amber +1": {hpPercent: 0.04, attackPercent: 0.01},
+  "Golden Amber +2": {hpPercent: 0.05, attackPercent: 0.01},
+  "Golden Amber +3": {hpPercent: 0.06, attackPercent: 0.02},
+  "Golden Amber +4": {hpPercent: 0.07, attackPercent: 0.02},
+  "Golden Amber +5": {hpPercent: 0.08, attackPercent: 0.03},
+  "Shining Crystal": {hpPercent: 0.03, attackPercent: 0.02, controlImmune: 0.01},
+  "Shining Crystal +1": {hpPercent: 0.04, attackPercent: 0.02, controlImmune: 0.01},
+  "Shining Crystal +2": {hpPercent: 0.05, attackPercent: 0.02, controlImmune: 0.01},
+  "Shining Crystal +3": {hpPercent: 0.06, attackPercent: 0.03, controlImmune: 0.02},
+  "Shining Crystal +4": {hpPercent: 0.07, attackPercent: 0.03, controlImmune: 0.02},
+  "Shining Crystal +5": {hpPercent: 0.08, attackPercent: 0.04, controlImmune: 0.02},
+  "Shining Crystal +6": {hpPercent: 0.09, attackPercent: 0.04, controlImmune: 0.03},
+  "Starry Emerald": {hpPercent: 0.03, attackPercent: 0.03, controlImmune: 0.02},
+  "Starry Emerald +1": {hpPercent: 0.04, attackPercent: 0.03, controlImmune: 0.02},
+  "Starry Emerald +2": {hpPercent: 0.05, attackPercent: 0.03, controlImmune: 0.02},
+  "Starry Emerald +3": {hpPercent: 0.06, attackPercent: 0.04, controlImmune: 0.03},
+  "Starry Emerald +4": {hpPercent: 0.07, attackPercent: 0.04, controlImmune: 0.03},
+  "Starry Emerald +5": {hpPercent: 0.08, attackPercent: 0.05, controlImmune: 0.03},
+  "Starry Emerald +6": {hpPercent: 0.09, attackPercent: 0.05, controlImmune: 0.04},
+  "Starry Emerald +7": {hpPercent: 0.1, attackPercent: 0.06, controlImmune: 0.04},
+  "Azure Sapphire": {hpPercent: 0.04, attackPercent: 0.04, controlImmune: 0.02},
+  "Azure Sapphire +1": {hpPercent: 0.05, attackPercent: 0.04, controlImmune: 0.02},
+  "Azure Sapphire +2": {hpPercent: 0.06, attackPercent: 0.04, controlImmune: 0.02},
+  "Azure Sapphire +3": {hpPercent: 0.07, attackPercent: 0.05, controlImmune: 0.03},
+  "Azure Sapphire +4": {hpPercent: 0.08, attackPercent: 0.05, controlImmune: 0.03},
+  "Azure Sapphire +5": {hpPercent: 0.09, attackPercent: 0.06, controlImmune: 0.03},
+  "Azure Sapphire +6": {hpPercent: 0.1, attackPercent: 0.06, controlImmune: 0.04},
+  "Azure Sapphire +7": {hpPercent: 0.11, attackPercent: 0.07, controlImmune: 0.04},
+  "Azure Sapphire +8": {hpPercent: 0.12, attackPercent: 0.07, controlImmune: 0.04},
+  "Royal Amethyst": {hpPercent: 0.05, attackPercent: 0.05, controlImmune: 0.03},
+  "Royal Amethyst +1": {hpPercent: 0.06, attackPercent: 0.05, controlImmune: 0.03},
+  "Royal Amethyst +2": {hpPercent: 0.07, attackPercent: 0.05, controlImmune: 0.03},
+  "Royal Amethyst +3": {hpPercent: 0.08, attackPercent: 0.06, controlImmune: 0.04},
+  "Royal Amethyst +4": {hpPercent: 0.09, attackPercent: 0.06, controlImmune: 0.04},
+  "Royal Amethyst +5": {hpPercent: 0.1, attackPercent: 0.07, controlImmune: 0.04},
+  "Royal Amethyst +6": {hpPercent: 0.11, attackPercent: 0.07, controlImmune: 0.05},
+  "Royal Amethyst +7": {hpPercent: 0.12, attackPercent: 0.08, controlImmune: 0.05},
+  "Royal Amethyst +8": {hpPercent: 0.13, attackPercent: 0.08, controlImmune: 0.05},
+  "Royal Amethyst +9": {hpPercent: 0.14, attackPercent: 0.09, controlImmune: 0.06},
   "IDA Overseer": {hpPercent: 0.08, attackPercent: 0.03},
   "IDA Overseer +1": {hpPercent: 0.09, attackPercent: 0.03},
   "IDA Overseer +2": {hpPercent: 0.1, attackPercent: 0.03},

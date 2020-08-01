@@ -1800,7 +1800,6 @@ class Horus extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 1, 3);
-          bleedDamageResult["damageAmount"] = bleedDamageResult["damageAmount"];
           result += targets[i].getDebuff(this, "Bleed", 3, {bleed: bleedDamageResult["damageAmount"]}, false, "active");
         }
         
@@ -4089,7 +4088,7 @@ class Sleepless extends hero {
   doActive() { 
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies, 4);
+    var targets = getAllTargets(this, this._enemies, 6);
     var targetLock;
     
     for (let i in targets) {
@@ -4142,10 +4141,71 @@ class DasMoge extends hero {
     var result = super.handleTrigger(trigger);
     
     if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
-      return this.eventSelfBasic(trigger[2]);
-    } else if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
-      return this.eventEnemyActive(trigger[2], trigger[3]);
+      return this.eventSelfBasic();
+    } else if (["eventSelfActive", "eventAllyActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventSelfActive();
     }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic() {
+    var result = "";
+    result += this.getBuff(this, "Attack Percent", 3, {attackPercent: 0.20});
+    result += this.getBuff(this, "Speed", 3, {attackPercent: 15});
+    return result;
+  }
+  
+  
+  eventSelfActive() {
+    var result = "";
+    result += this.getBuff(this, "Skill Damage", 15, {skillDamage: 0.20});
+    result += this.getEnergy(this, 30);
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var bleedDamageResult = {damageAmount: 0};
+    var rangerDamageResult = {damageAmount: 0};
+    var targets = getAllTargets(this, this._enemies);
+    var targetLock;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.15);
+        result += targets[i].takeDamage(this, "Death Reaper", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+      
+      
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 0.56, 3);
+        result += targets[i].getDebuff(this, "Bleed", 3, {bleed: bleedDamageResult["damageAmount"]}, false, "active");
+      }
+      
+      
+      if (targets[i]._heroClass == "Ranger") {
+        targetLock = targets[i].getTargetLock(this);
+        result += targetLock;
+        
+        if (targetLock == "") {
+          rangerDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 1.05, 3);
+          result += targets[i].getDebuff(this, "Bleed", 3, {bleed: rangerDamageResult["damageAmount"]}, false, "active");
+        }
+      }
+    }
+    
+    result += this.getBuff(this, "Skill Damage", 15, {skillDamage: 0.50});
     
     return result;
   }
