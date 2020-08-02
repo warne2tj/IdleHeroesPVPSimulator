@@ -191,7 +191,7 @@ var seededHeroes = {
     allowedStones: ["Attack, Attack"],
     allowedEquipments: ["Class Gear"],
     allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"']
-  },"
+  },
   "Sleepless": {
     allowedArtifacts: ["Golden Crown","Magic Stone Sword"],
     allowedStones: ["Attack, Attack, Holy"],
