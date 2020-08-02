@@ -596,15 +596,15 @@ class hero {
     
     
     // status modifiers
-    if (target.hasStatus("Burn")) {
+    if (target.hasStatus("burn")) {
       damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
-    if (target.hasStatus("Bleed")) {
+    if (target.hasStatus("bleed")) {
       damageAgainstBleeding += this._currentStats["damageAgainstBleeding"];
     }
     
-    if (target.hasStatus("Poison")) {
+    if (target.hasStatus("poison")) {
       damageAgainstPoisoned += this._currentStats["damageAgainstPoisoned"];
     }
     

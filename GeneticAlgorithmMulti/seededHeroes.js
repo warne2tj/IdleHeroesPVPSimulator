@@ -185,5 +185,23 @@ var seededHeroes = {
     allowedStones: ["HP, HP"],
     allowedEquipments: ["Split HP"],
     allowedEnables: ['"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"']
+  },
+  "Gerke": {
+    allowedArtifacts: ["Golden Crown","Magic Stone Sword"],
+    allowedStones: ["Attack, Attack"],
+    allowedEquipments: ["Class Gear"],
+    allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"']
+  },"
+  "Sleepless": {
+    allowedArtifacts: ["Golden Crown","Magic Stone Sword"],
+    allowedStones: ["Attack, Attack, Holy"],
+    allowedEquipments: ["Class Gear"],
+    allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"']
+  },
+  "Das Moge": {
+    allowedArtifacts: ["Staff Punisher of Immortal"],
+    allowedStones: ["Crit, Crit, Attack"],
+    allowedEquipments: ["Class Gear"],
+    allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"']
   }
 };
