@@ -1513,6 +1513,7 @@ class Gustin extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
     super(sHeroName, iHeroPos, attOrDef);
     this._stats["linkCount"] = 0;
+    this._stats["reflectAmount"] = 0;
   }
   
   passiveStats() {
@@ -1527,7 +1528,7 @@ class Gustin extends hero {
     if (["eventEnemyBasic", "eventEnemyActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventEnemyBasic(trigger[3]);
     } else if (trigger[1] == "eventTookDamage" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
-      return this.eventTookDamage(trigger[2], trigger[3]);
+      return this.eventTookDamage();
     }
     
     return result;
@@ -1536,18 +1537,30 @@ class Gustin extends hero {
   
   startOfBattle() {
     var targets = getRandomTargets(this, this._enemies, 1);
-    var result = targets[0].getDebuff(this, "Link of Souls", 15);
+    var result = targets[0].getDebuff(this, "Link of Souls", 127);
     return result;
   }
   
   
-  eventTookDamage(source, damageAmount) {
+  eventTookDamage() {
     var result = "";
+    var targets = getAllTargets(this, this._enemies);
     
-    if (source._currentStats["totalHP"] > 0 && this._currentStats["linkCount"] < 5) {
-      var damageResult = this.calcDamage(source, damageAmount, "passive", "true");
-      result += source.takeDamage(this, "Link of Souls", damageResult);
-      this._currentStats["linkCount"]++;
+    if (this._currentStats["linkCount"] < 5) {
+      for (let i in targets) {
+        if ("Link of Souls" in targets[i]._debuffs) {
+          for (let s in targets[i]._debuffs["Link of Souls"]) {
+            if (targets[i]._debuffs["Link of Souls"][s]["source"].heroDesc() == this.heroDesc()) {
+              var damageResult = this.calcDamage(targets[i], this._currentStats["reflectAmount"], "passive", "true");
+              result += targets[i].takeDamage(this, "Link of Souls", damageResult);
+              
+              this._currentStats["linkCount"]++;
+              this._currentStats["reflectAmount"] = 0;
+              break;
+            }
+          }
+        }
+      }
     }
     
     return result;
@@ -1585,7 +1598,7 @@ class Gustin extends hero {
       }
       
       if (!(linked)) {
-        result += targets[0].getDebuff(this, "Link of Souls", 15);
+        result += targets[0].getDebuff(this, "Link of Souls", 127);
       }
     }
     
@@ -1644,8 +1657,9 @@ class Gustin extends hero {
     var postHP = this._currentStats["totalHP"];
     var damageAmount = 0.70 * (preHP - postHP);
     
-    if (damageAmount > 0) {
-      triggerQueue.push([this, "eventTookDamage", source, damageAmount]);
+    if (damageAmount > 0 && !(isMonster(source))) {
+      this._currentStats["reflectAmount"] += damageAmount;
+      triggerQueue.push([this, "eventTookDamage"]);
     }
     
     return result;
@@ -3590,7 +3604,7 @@ class Valkryie extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.06, "basic", "burnTrue", 1, 0, 1);
-          result += targets[i].getDebuff(this, "Burn", 1, {valkryieBasic: true, burnTrue: damageResult["damageAmount"]});
+          result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
         }
         
         result += targets[i].getDebuff(this, "Attack", 3, {attack: Math.floor(targets[i]._stats["attack"] * 0.12)});

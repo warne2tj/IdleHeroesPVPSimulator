@@ -684,7 +684,7 @@ class hero {
     
     
     if (roundNum > 15) {
-      attackDamage = attackDamage * (1 + (roundNum - 15) * 0.15);
+      attackDamage = attackDamage * (1.15 ^ (roundNum - 15));
     }
     
     
@@ -1014,7 +1014,7 @@ class hero {
               result += "<div>" + this.takeDamage(source, "Debuff " + debuffName, damageResult) + "</div>";
             }
             
-          } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
             //ignore, used to track other stuff
             
           } else {
@@ -1133,7 +1133,7 @@ class hero {
             } else if (strStatName == "armorPercent") {
               this._currentStats["totalArmor"] = this.calcCombatArmor();
               
-            } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
+            } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
                   // do nothing, used to track other stuff
                   
             } else if (isDot(strStatName)) {
@@ -1283,14 +1283,11 @@ class hero {
                   } else if (strStatName == "armorPercent") {
                     this._currentStats["totalArmor"] = this.calcCombatArmor();
                     
-                  } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
+                  } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
                     // do nothing, used to track stuff
                     
                   }  else if (isDot(strStatName)) {
-                    // do nothing, full burn damage already done
-                    
-                    // unless it's the burn from valkryie's basic
-                    if (this._currentStats["totalHP"] > 0 && "valkryieBasic" in this._debuffs[b][s]["effects"]) {
+                    if (this._currentStats["totalHP"] > 0) {
                       damageResult = {
                         damageAmount: this._debuffs[b][s]["effects"][strStatName],
                         damageSource: "passive",

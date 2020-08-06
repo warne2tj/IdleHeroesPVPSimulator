@@ -532,7 +532,6 @@ var translate = {
   "damageAgainstRanger": "Damage Against Ranger",
   "damageAgainstAssassin": "Damage Against Assassin",
   "damageAgainstPriest": "Damage Against Priest",
-  "valkryieBasic": "Flag Burn from Valkryie Basic",
   "Seal of LightImmune": "Chance to Resist Seal of Light",
   "ShapeshiftImmune": "Chance to Resist Shapeshift",
   "TauntImmune": "Chance to Resist Taunt",
@@ -543,5 +542,6 @@ var translate = {
   "damageHealed": "Damage Healed or Prevented",
   "energySnapshot": "Amount of Energy on Active",
   "demonTotemStacks": "Demon Totem Stacks",
-  "heartOfOrmusTriggered": "Heart of Ormus Triggered"
+  "heartOfOrmusTriggered": "Heart of Ormus Triggered",
+  "reflectAmount": "Link Damage Tracker"
 };

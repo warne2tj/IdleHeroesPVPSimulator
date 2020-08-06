@@ -1009,7 +1009,7 @@ class hero {
     
     
     if (roundNum > 15) {
-      attackDamage = attackDamage * (1 + (roundNum - 15) * 0.15);
+      attackDamage = attackDamage * (1.15 ^ (roundNum - 15));
     }
     
     
@@ -1339,7 +1339,7 @@ class hero {
               result += "<div>" + this.takeDamage(source, "Debuff " + debuffName, damageResult) + "</div>";
             }
             
-          } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
+          } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
             //ignore, used to track other stuff
             
           } else {
@@ -1458,7 +1458,7 @@ class hero {
             } else if (strStatName == "armorPercent") {
               this._currentStats["totalArmor"] = this.calcCombatArmor();
               
-            } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
+            } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
                   // do nothing, used to track other stuff
                   
             } else if (isDot(strStatName)) {
@@ -1608,14 +1608,11 @@ class hero {
                   } else if (strStatName == "armorPercent") {
                     this._currentStats["totalArmor"] = this.calcCombatArmor();
                     
-                  } else if (["rounds", "stacks", "attackAmount", "damageAmount", "valkryieBasic"].includes(strStatName)) {
+                  } else if (["rounds", "stacks", "attackAmount", "damageAmount"].includes(strStatName)) {
                     // do nothing, used to track stuff
                     
                   }  else if (isDot(strStatName)) {
-                    // do nothing, full burn damage already done
-                    
-                    // unless it's the burn from valkryie's basic
-                    if (this._currentStats["totalHP"] > 0 && "valkryieBasic" in this._debuffs[b][s]["effects"]) {
+                    if (this._currentStats["totalHP"] > 0) {
                       damageResult = {
                         damageAmount: this._debuffs[b][s]["effects"][strStatName],
                         damageSource: "passive",
@@ -3598,6 +3595,7 @@ class Gustin extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
     super(sHeroName, iHeroPos, attOrDef);
     this._stats["linkCount"] = 0;
+    this._stats["reflectAmount"] = 0;
   }
   
   passiveStats() {
@@ -3612,7 +3610,7 @@ class Gustin extends hero {
     if (["eventEnemyBasic", "eventEnemyActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventEnemyBasic(trigger[3]);
     } else if (trigger[1] == "eventTookDamage" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
-      return this.eventTookDamage(trigger[2], trigger[3]);
+      return this.eventTookDamage();
     }
     
     return result;
@@ -3621,18 +3619,30 @@ class Gustin extends hero {
   
   startOfBattle() {
     var targets = getRandomTargets(this, this._enemies, 1);
-    var result = targets[0].getDebuff(this, "Link of Souls", 15);
+    var result = targets[0].getDebuff(this, "Link of Souls", 127);
     return result;
   }
   
   
-  eventTookDamage(source, damageAmount) {
+  eventTookDamage() {
     var result = "";
+    var targets = getAllTargets(this, this._enemies);
     
-    if (source._currentStats["totalHP"] > 0 && this._currentStats["linkCount"] < 5) {
-      var damageResult = this.calcDamage(source, damageAmount, "passive", "true");
-      result += source.takeDamage(this, "Link of Souls", damageResult);
-      this._currentStats["linkCount"]++;
+    if (this._currentStats["linkCount"] < 5) {
+      for (let i in targets) {
+        if ("Link of Souls" in targets[i]._debuffs) {
+          for (let s in targets[i]._debuffs["Link of Souls"]) {
+            if (targets[i]._debuffs["Link of Souls"][s]["source"].heroDesc() == this.heroDesc()) {
+              var damageResult = this.calcDamage(targets[i], this._currentStats["reflectAmount"], "passive", "true");
+              result += targets[i].takeDamage(this, "Link of Souls", damageResult);
+              
+              this._currentStats["linkCount"]++;
+              this._currentStats["reflectAmount"] = 0;
+              break;
+            }
+          }
+        }
+      }
     }
     
     return result;
@@ -3670,7 +3680,7 @@ class Gustin extends hero {
       }
       
       if (!(linked)) {
-        result += targets[0].getDebuff(this, "Link of Souls", 15);
+        result += targets[0].getDebuff(this, "Link of Souls", 127);
       }
     }
     
@@ -3729,8 +3739,9 @@ class Gustin extends hero {
     var postHP = this._currentStats["totalHP"];
     var damageAmount = 0.70 * (preHP - postHP);
     
-    if (damageAmount > 0) {
-      triggerQueue.push([this, "eventTookDamage", source, damageAmount]);
+    if (damageAmount > 0 && !(isMonster(source))) {
+      this._currentStats["reflectAmount"] += damageAmount;
+      triggerQueue.push([this, "eventTookDamage"]);
     }
     
     return result;
@@ -5676,7 +5687,7 @@ class Valkryie extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.06, "basic", "burnTrue", 1, 0, 1);
-          result += targets[i].getDebuff(this, "Burn", 1, {valkryieBasic: true, burnTrue: damageResult["damageAmount"]});
+          result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
         }
         
         result += targets[i].getDebuff(this, "Attack", 3, {attack: Math.floor(targets[i]._stats["attack"] * 0.12)});
@@ -8861,7 +8872,6 @@ var translate = {
   "damageAgainstRanger": "Damage Against Ranger",
   "damageAgainstAssassin": "Damage Against Assassin",
   "damageAgainstPriest": "Damage Against Priest",
-  "valkryieBasic": "Flag Burn from Valkryie Basic",
   "Seal of LightImmune": "Chance to Resist Seal of Light",
   "ShapeshiftImmune": "Chance to Resist Shapeshift",
   "TauntImmune": "Chance to Resist Taunt",
@@ -8872,7 +8882,8 @@ var translate = {
   "damageHealed": "Damage Healed or Prevented",
   "energySnapshot": "Amount of Energy on Active",
   "demonTotemStacks": "Demon Totem Stacks",
-  "heartOfOrmusTriggered": "Heart of Ormus Triggered"
+  "heartOfOrmusTriggered": "Heart of Ormus Triggered",
+  "reflectAmount": "Link Damage Tracker"
 };
 
 /* End of utilityFunctions.js */
