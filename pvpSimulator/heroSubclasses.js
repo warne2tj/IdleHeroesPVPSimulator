@@ -4224,3 +4224,23 @@ class DasMoge extends hero {
     return result;
   }
 }
+
+
+// Ignis
+class Ignis extends hero {
+  passiveStats() {
+    // apply  passive
+    this.applyStatChange({}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventSelfBasic();
+    }
+    
+    return result;
+  }
+}

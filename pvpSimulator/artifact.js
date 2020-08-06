@@ -52,7 +52,7 @@ var artifacts = {
     enhance: 1.8
   },
   
-  "Spendid Augustus Magic Ball": {
+  "Splendid Augustus Magic Ball": {
     stats: {attackPercent: 0.25, speed: 70, block: 0.5},
     limit: "",
     limitStats: {},

@@ -11,8 +11,8 @@ var isSeeded = false;
 var heroNames = Object.keys(baseHeroStats).slice(1);
 var stoneNames = Object.keys(stones).slice(1);
 var monsterNames = Object.keys(baseMonsterStats).slice(1);
-var artifactNames = ["Antlers Cane", "Demon Bell", "Staff Punisher of Immortal", "Magic Stone Sword", "Augustus Magic Ball",
-  "The Kiss of Ghost", "Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Ruyi Scepter"];
+var artifactNames = ["Splendid Antlers Cane", "Splendid Demon Bell", "Splendid Staff Punisher of Immortal", "Splendid Magic Stone Sword", "Splendid Augustus Magic Ball",
+  "Splendid The Kiss of Ghost", "Splendid Lucky Candy Bar", "Wildfire Torch", "Golden Crown", "Splendid Ruyi Scepter"];
 var equipments = ["Class Gear", "Split HP", "Split Attack", "No Armor"];
 var enables1 = ["Vitality", "Mightiness", "Growth"];
 var enables2 = ["Shelter", "LethalFightback", "Vitality2"];
