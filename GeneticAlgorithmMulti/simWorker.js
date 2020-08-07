@@ -6399,6 +6399,7 @@ class Ignis extends hero {
     
     return result;
   }
+}
 
 /* End of heroSubclasses.js */
 
