@@ -8757,7 +8757,11 @@ function getNearestTargets(source, arrTargets, num=6) {
   }
   
   copyTargets.sort(function(a,b) {
-    if (a._rng > b._rng) {
+    if (a._rng == 0) {
+      return 1;
+    } else if (b._rng == 0) {
+      return -1;
+    } else if (a._rng > b._rng) {
       return 1;
     } else if (a._rng < b._rng) {
       return -1;
