@@ -205,5 +205,10 @@ var skins = {
     "Black Warrior": {hpPercent: 0.03,  skillDamage: 0.03},
     "Radiation": {attackPercent: 0.02, damageReduce: 0.03, skillDamage: 0.10},
     "Legendary Radiation": {attackPercent: 0.04, damageReduce: 0.04, skillDamage: 0.15}
+  },
+  
+  "Ignis": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
   }
 };

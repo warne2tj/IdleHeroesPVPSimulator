@@ -6308,6 +6308,98 @@ class DasMoge extends hero {
   }
 }
 
+
+// Ignis
+class Ignis extends hero {
+  passiveStats() {
+    // apply Blood of Dragons passive
+    this.applyStatChange({hpPercent: 0.40, damageReduce: 0.30, healEffect: 0.25, speed: 60}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      return this.eventSelfBasic();
+    } else if (trigger[1] == "eventSelfDied") {
+      return this.eventSelfDied();
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic() {
+    var result = "";
+    var lostAmount = Math.floor(this._currentStats["totalHP"] * 0.25);
+    var healAmount = 0;
+    
+    this._currentStats["totalHP"] -= lostAmount;
+    result += "<div>" + this.heroDesc() + " <span class='skill'>Life Breath</span> consumed " + formatNum(lostAmount) + " HP.</div>";
+    
+    
+    var targets = getLowestHPTargets(this, this._allies, 3);
+    
+    for (let i in targets) {
+      healAmount = this.calcHeal(targets[i], this._stats["totalHP"] * 0.25);
+      result += targets[i].getHeal(this, healAmount);
+      result += targets[i].getBuff(this, "Damage Reduce", 2, {damageReduce: 0.15});
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfDied() {
+    var result = "";
+    var targets = getNearestTargets(this, this._allies, 1);
+    
+    for (let i in targets) {
+      let healAmount = this.calcHeal(targets[i], targets[i]._stats["totalHP"]);
+      result += targets[i].getHeal(this, healAmount);
+      result += targets[i].getEnergy(this, 100);
+      result += targets[i].getBuff(this, "Control Immune", 15, {controlImmune: 1.0});
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getFrontTargets(this, this._enemies);
+    var targetLock;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.28);
+        result += targets[i].takeDamage(this, "Blessing of Dragonflame", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    
+    targets = getLowestHPTargets(this, this._allies, 1);
+    for (let i in targets) {
+      let healAmount = this.calcHeal(targets[i], this._currentStats["totalHP"] * 0.50);
+      result += targets[i].getHeal(this, healAmount);
+    }
+    
+    
+    targets = getNearestTargets(this, this._allies, 1);
+    for (let i in targets) {
+      result += targets[i].getBuff(this, "Damage Reduce", 3, {damageReduce: 0.40});
+      result += targets[i].getEnergy(this, 100);
+    }
+    
+    return result;
+  }
+
 /* End of heroSubclasses.js */
 
 
@@ -7599,6 +7691,11 @@ var skins = {
     "Black Warrior": {hpPercent: 0.03,  skillDamage: 0.03},
     "Radiation": {attackPercent: 0.02, damageReduce: 0.03, skillDamage: 0.10},
     "Legendary Radiation": {attackPercent: 0.04, damageReduce: 0.04, skillDamage: 0.15}
+  },
+  
+  "Ignis": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
   }
 };
 
@@ -8089,6 +8186,22 @@ var baseHeroStats = {
       growHP: 825.2,
       growAttack: 34.3,
       growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
+  "Ignis": {
+    className: Ignis,
+    heroFaction: "Abyss",
+    heroClass: "Priest",
+    stats: {
+      baseHP: 7587,
+      baseAttack: 433,
+      baseArmor: 63,
+      baseSpeed: 195,
+      growHP: 758.7,
+      growAttack: 43.3,
+      growArmor: 6.3,
       growSpeed: 2
     }
   },
@@ -8624,6 +8737,45 @@ function getAllTargets(source, arrTargets, num=6) {
   }
   
   return copyTargets;
+}
+
+
+function getNearestTargets(source, arrTargets, num=6) {
+  var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
+  
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
+  
+  for (var i in arrTargets) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      arrTargets[i]._rng = Math.abs(source._heroPos - arrTargets[i]._heroPos);
+      copyTargets.push(arrTargets[i]);
+    }
+  }
+  
+  copyTargets.sort(function(a,b) {
+    if (a._rng > b._rng) {
+      return 1;
+    } else if (a._rng < b._rng) {
+      return -1;
+    } else if (a._heroPos > b._heroPos) {
+      return 1;
+    } else if (a._heroPos < b._heroPos) {
+      return -1;
+    } else {
+      return 0;
+    }
+  });
+  
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
 }
 
 

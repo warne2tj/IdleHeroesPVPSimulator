@@ -203,5 +203,11 @@ var seededHeroes = {
     allowedStones: ["Crit, Crit, Attack"],
     allowedEquipments: ["Class Gear"],
     allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"']
-  }
+  },
+  "Ignis": {
+    allowedArtifacts: ["Splendid Augustus Magic Ball","Golden Crown","Splendid Demon Bell"],
+    allowedStones: ["Speed, HP"],
+    allowedEquipments: ["Class Gear","Split HP"],
+    allowedEnables: ['"Growth", "Vitality2", "Purify", "Growth", "UnbendingWill"']
+  } 
 };

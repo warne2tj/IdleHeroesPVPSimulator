@@ -4229,8 +4229,8 @@ class DasMoge extends hero {
 // Ignis
 class Ignis extends hero {
   passiveStats() {
-    // apply  passive
-    this.applyStatChange({}, "PassiveStats");
+    // apply Blood of Dragons passive
+    this.applyStatChange({hpPercent: 0.40, damageReduce: 0.30, healEffect: 0.25, speed: 60}, "PassiveStats");
   }
   
   
@@ -4239,6 +4239,79 @@ class Ignis extends hero {
     
     if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       return this.eventSelfBasic();
+    } else if (trigger[1] == "eventSelfDied") {
+      return this.eventSelfDied();
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic() {
+    var result = "";
+    var lostAmount = Math.floor(this._currentStats["totalHP"] * 0.25);
+    var healAmount = 0;
+    
+    this._currentStats["totalHP"] -= lostAmount;
+    result += "<div>" + this.heroDesc() + " <span class='skill'>Life Breath</span> consumed " + formatNum(lostAmount) + " HP.</div>";
+    
+    
+    var targets = getLowestHPTargets(this, this._allies, 3);
+    
+    for (let i in targets) {
+      healAmount = this.calcHeal(targets[i], this._stats["totalHP"] * 0.25);
+      result += targets[i].getHeal(this, healAmount);
+      result += targets[i].getBuff(this, "Damage Reduce", 2, {damageReduce: 0.15});
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfDied() {
+    var result = "";
+    var targets = getNearestTargets(this, this._allies, 1);
+    
+    for (let i in targets) {
+      let healAmount = this.calcHeal(targets[i], targets[i]._stats["totalHP"]);
+      result += targets[i].getHeal(this, healAmount);
+      result += targets[i].getEnergy(this, 100);
+      result += targets[i].getBuff(this, "Control Immune", 15, {controlImmune: 1.0});
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getFrontTargets(this, this._enemies);
+    var targetLock;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.28);
+        result += targets[i].takeDamage(this, "Blessing of Dragonflame", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    
+    targets = getLowestHPTargets(this, this._allies, 1);
+    for (let i in targets) {
+      let healAmount = this.calcHeal(targets[i], this._currentStats["totalHP"] * 0.50);
+      result += targets[i].getHeal(this, healAmount);
+    }
+    
+    
+    targets = getNearestTargets(this, this._allies, 1);
+    for (let i in targets) {
+      result += targets[i].getBuff(this, "Damage Reduce", 3, {damageReduce: 0.40});
+      result += targets[i].getEnergy(this, 100);
     }
     
     return result;

@@ -287,6 +287,45 @@ function getAllTargets(source, arrTargets, num=6) {
 }
 
 
+function getNearestTargets(source, arrTargets, num=6) {
+  var copyTargets = [];
+  var copyTargets2 = [];
+  var count = 0;
+  
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
+  
+  for (var i in arrTargets) {
+    if (arrTargets[i]._currentStats["totalHP"] > 0) {
+      arrTargets[i]._rng = Math.abs(source._heroPos - arrTargets[i]._heroPos);
+      copyTargets.push(arrTargets[i]);
+    }
+  }
+  
+  copyTargets.sort(function(a,b) {
+    if (a._rng > b._rng) {
+      return 1;
+    } else if (a._rng < b._rng) {
+      return -1;
+    } else if (a._heroPos > b._heroPos) {
+      return 1;
+    } else if (a._heroPos < b._heroPos) {
+      return -1;
+    } else {
+      return 0;
+    }
+  });
+  
+  for (var i in copyTargets) {
+    copyTargets2.push(copyTargets[i]);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
+}
+
+
 function getRandomTargets(source, arrTargets, num=6, dazzleBypass=false) {
   var copyTargets = [];
   var copyTargets2 = [];
