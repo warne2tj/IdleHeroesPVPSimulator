@@ -234,7 +234,7 @@ class mPhoenix extends monster {
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
       
       damageResult = this.calcDamage(targets[i], 363465, "monster", "burnTrue");
-      result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: damageResult["damageAmount"]}, false, "monster");
+      result += targets[i].getDebuff(this, "Burn True", 3, {burnTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
     

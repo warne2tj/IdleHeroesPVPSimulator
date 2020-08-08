@@ -802,7 +802,7 @@ class Cthugha extends hero {
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     
-    if (!(isMonster(source)) && ["burn", "bleed", "burnTrue", "bleedTrue"].includes(damageResult["damageType"])) {
+    if (!(isMonster(source)) && ["burn", "bleed"].includes(damageResult["damageType"])) {
       damageResult["damageAmount"] = 0;
     }
     
@@ -812,11 +812,11 @@ class Cthugha extends hero {
       triggerQueue.push([this, "eventTookDamage"]);
       
       if (!(isMonster(source))) {
-        if (source.hasStatus("burn") || source.hasStatus("burnTrue")) {
+        if (source.hasStatus("Burn")) {
           triggerQueue.push([this, "eventTookDamageFromBurning"]);
         }
         
-        if (source.hasStatus("bleed") || source.hasStatus("bleedTrue")) {
+        if (source.hasStatus("Bleed")) {
           triggerQueue.push([this, "eventTookDamageFromBleeding"]);
         }
       }
@@ -851,7 +851,7 @@ class Cthugha extends hero {
               isBleedOrBurn = false;
               
               for (var e in targets[i]._debuffs[d][s]["effects"]) {
-                if (["bleed", "burn", "burnTrue", "bleedTrue"].includes(e)) {
+                if (["bleed", "burn"].includes(e)) {
                   isBleedOrBurn = true;
                   detonateDamage += (targets[i]._debuffs[d][s]["duration"] - 1) * targets[i]._debuffs[d][s]["effects"][e];
                 }
@@ -1902,12 +1902,12 @@ class Ithaqua extends hero {
     
     for (var i in e) {
       if (e[i][1]._currentStats["totalHP"] > 0) {
-        damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poison");
-        result += e[i][1].getDebuff(this, "Poison", 2, {poison: damageResult["damageAmount"]}, false, "passive");
+        damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poisonTrue");
+        result += e[i][1].getDebuff(this, "Poison True", 2, {poisonTrue: damageResult["damageAmount"]}, false, "passive");
         
         if (e[i][1]._currentStats["totalHP"] > 0 && e[i][3] == true) {
-          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleed");
-          result += e[i][1].getDebuff(this, "Bleed", 2, {bleed: damageResult["damageAmount"]}, false, "passive");
+          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleedTrue");
+          result += e[i][1].getDebuff(this, "Bleed True", 2, {bleedTrue: damageResult["damageAmount"]}, false, "passive");
         }
       }
     }
@@ -2179,7 +2179,7 @@ class Michelle extends hero {
       }
       
       var damageResult = this.calcDamage(e[i][1], damageAmount, "passive", "true");
-      result += e[i][1].getDebuff(this, "Burn", 2, {burnTrue: damageResult["damageAmount"]}, false, "passive");
+      result += e[i][1].getDebuff(this, "Burn True", 2, {burnTrue: damageResult["damageAmount"]}, false, "passive");
     }
     
     return result;
@@ -3580,7 +3580,7 @@ class Valkryie extends hero {
     
     for (var i in targets) {
       damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.03, "passive", "burnTrue", 1, 0, 1);
-      result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+      result += targets[i].getDebuff(this, "Burn True", 1, {burnTrue: damageResult["damageAmount"]});
     }
     
     return result;
@@ -3604,7 +3604,7 @@ class Valkryie extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.06, "basic", "burnTrue", 1, 0, 1);
-          result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+          result += targets[i].getDebuff(this, "Burn True", 1, {burnTrue: damageResult["damageAmount"]});
         }
         
         result += targets[i].getDebuff(this, "Attack", 3, {attack: Math.floor(targets[i]._stats["attack"] * 0.12)});
@@ -3647,7 +3647,7 @@ class Valkryie extends hero {
       
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.18, "active", "burnTrue", 1, 0, 2);
-        result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+        result += targets[i].getDebuff(this, "Burn True", 1, {burnTrue: damageResult["damageAmount"]});
       }
     }
     

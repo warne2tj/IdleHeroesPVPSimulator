@@ -190,7 +190,7 @@ function processWorker(e) {
         oLog.innerHTML = "<p>Loop stopped by user.</p>" + oLog.innerHTML; 
       } else {
         var summary = "";
-        var totalFights = (teamKeys.length - 1) * numSims;
+        var totalFights = teamKeys.length * numSims;
         
         teamKeys.sort(function(a,b) {
           if (allTeams[a]["attWins"] > allTeams[b]["attWins"]) {

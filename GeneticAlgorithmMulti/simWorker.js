@@ -236,7 +236,7 @@ class mPhoenix extends monster {
       result += targets[i].takeDamage(this, "Blazing Spirit", damageResult);
       
       damageResult = this.calcDamage(targets[i], 363465, "monster", "burnTrue");
-      result += targets[i].getDebuff(this, "Burn", 3, {burnTrue: damageResult["damageAmount"]}, false, "monster");
+      result += targets[i].getDebuff(this, "Burn True", 3, {burnTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
     
@@ -807,6 +807,11 @@ class hero {
   hasStatus(strStatus) {
     if (this._currentStats["totalHP"] <= 0) { return false; }
     
+    if (strStatus in this._debuffs) { return true; }
+    if (strStatus in this._buffs) { return true; }
+    return false;
+    
+    /*
     var result = false;
     
     for (let [b, ob] of Object.entries(this._debuffs)) {
@@ -835,6 +840,7 @@ class hero {
     }
     
     return result;
+    */
   }
   
   
@@ -921,15 +927,15 @@ class hero {
     
     
     // status modifiers
-    if (target.hasStatus("burn")) {
+    if (target.hasStatus("Burn")) {
       damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
-    if (target.hasStatus("bleed")) {
+    if (target.hasStatus("Bleed")) {
       damageAgainstBleeding += this._currentStats["damageAgainstBleeding"];
     }
     
-    if (target.hasStatus("poison")) {
+    if (target.hasStatus("Poison")) {
       damageAgainstPoisoned += this._currentStats["damageAgainstPoisoned"];
     }
     
@@ -2884,7 +2890,7 @@ class Cthugha extends hero {
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     
-    if (!(isMonster(source)) && ["burn", "bleed", "burnTrue", "bleedTrue"].includes(damageResult["damageType"])) {
+    if (!(isMonster(source)) && ["burn", "bleed"].includes(damageResult["damageType"])) {
       damageResult["damageAmount"] = 0;
     }
     
@@ -2894,11 +2900,11 @@ class Cthugha extends hero {
       triggerQueue.push([this, "eventTookDamage"]);
       
       if (!(isMonster(source))) {
-        if (source.hasStatus("burn") || source.hasStatus("burnTrue")) {
+        if (source.hasStatus("Burn")) {
           triggerQueue.push([this, "eventTookDamageFromBurning"]);
         }
         
-        if (source.hasStatus("bleed") || source.hasStatus("bleedTrue")) {
+        if (source.hasStatus("Bleed")) {
           triggerQueue.push([this, "eventTookDamageFromBleeding"]);
         }
       }
@@ -2933,7 +2939,7 @@ class Cthugha extends hero {
               isBleedOrBurn = false;
               
               for (var e in targets[i]._debuffs[d][s]["effects"]) {
-                if (["bleed", "burn", "burnTrue", "bleedTrue"].includes(e)) {
+                if (["bleed", "burn"].includes(e)) {
                   isBleedOrBurn = true;
                   detonateDamage += (targets[i]._debuffs[d][s]["duration"] - 1) * targets[i]._debuffs[d][s]["effects"][e];
                 }
@@ -3984,12 +3990,12 @@ class Ithaqua extends hero {
     
     for (var i in e) {
       if (e[i][1]._currentStats["totalHP"] > 0) {
-        damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poison");
-        result += e[i][1].getDebuff(this, "Poison", 2, {poison: damageResult["damageAmount"]}, false, "passive");
+        damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poisonTrue");
+        result += e[i][1].getDebuff(this, "Poison True", 2, {poisonTrue: damageResult["damageAmount"]}, false, "passive");
         
         if (e[i][1]._currentStats["totalHP"] > 0 && e[i][3] == true) {
-          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleed");
-          result += e[i][1].getDebuff(this, "Bleed", 2, {bleed: damageResult["damageAmount"]}, false, "passive");
+          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleedTrue");
+          result += e[i][1].getDebuff(this, "Bleed True", 2, {bleedTrue: damageResult["damageAmount"]}, false, "passive");
         }
       }
     }
@@ -4199,7 +4205,6 @@ class Kroos extends hero {
 }
 
 
-
 // Michelle
 class Michelle extends hero {
   constructor(sHeroName, iHeroPos, attOrDef) {
@@ -4262,7 +4267,7 @@ class Michelle extends hero {
       }
       
       var damageResult = this.calcDamage(e[i][1], damageAmount, "passive", "true");
-      result += e[i][1].getDebuff(this, "Burn", 2, {burnTrue: damageResult["damageAmount"]}, false, "passive");
+      result += e[i][1].getDebuff(this, "Burn True", 2, {burnTrue: damageResult["damageAmount"]}, false, "passive");
     }
     
     return result;
@@ -5663,7 +5668,7 @@ class Valkryie extends hero {
     
     for (var i in targets) {
       damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.03, "passive", "burnTrue", 1, 0, 1);
-      result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+      result += targets[i].getDebuff(this, "Burn True", 1, {burnTrue: damageResult["damageAmount"]});
     }
     
     return result;
@@ -5687,7 +5692,7 @@ class Valkryie extends hero {
         
         if (targets[i]._currentStats["totalHP"] > 0) {
           damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.06, "basic", "burnTrue", 1, 0, 1);
-          result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+          result += targets[i].getDebuff(this, "Burn True", 1, {burnTrue: damageResult["damageAmount"]});
         }
         
         result += targets[i].getDebuff(this, "Attack", 3, {attack: Math.floor(targets[i]._stats["attack"] * 0.12)});
@@ -5730,7 +5735,7 @@ class Valkryie extends hero {
       
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[i], this._stats["totalHP"] * 0.18, "active", "burnTrue", 1, 0, 2);
-        result += targets[i].getDebuff(this, "Burn", 1, {burnTrue: damageResult["damageAmount"]});
+        result += targets[i].getDebuff(this, "Burn True", 1, {burnTrue: damageResult["damageAmount"]});
       }
     }
     
@@ -8559,7 +8564,7 @@ function isMonster(source) {
 
 
 function isDispellable(strName) {
-  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink", "Shield", "Feather Blade"].includes(strName)) {
+  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink", "Shield", "Feather Blade", "Drake Break Defense"].includes(strName)) {
     return false;
   } else {
     return true;
@@ -8577,11 +8582,11 @@ function isControlEffect(strName, effects={}) {
 
 
 function isDot(strName, effects={}) {
-  if (["Burn", "Bleed", "Poison", "Dot", "burn", "bleed", "poison", "dot", "burnTrue", "bleedTrue", "poisonTrue"].includes(strName)) {
+  if (["Burn", "Bleed", "Poison", "Dot", "burn", "bleed", "poison", "dot"].includes(strName)) {
     return true;
   } else {
     for (var e in effects) {
-      if (["burn", "bleed", "poison", "dot", "burnTrue", "bleedTrue", "poisonTrue"].includes(e)) {
+      if (["burn", "bleed", "poison", "dot"].includes(e)) {
         return true;
       }
     }

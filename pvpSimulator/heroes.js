@@ -464,7 +464,7 @@ class hero {
       return "";
     } else {
       var pos1 = parseInt(this._heroPos) + 1;
-      return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["totalAttack"].toLocaleString() + " attack, " + this._currentStats["energy"].toLocaleString() + " energy)</span>";
+      return "<span class='" + this._attOrDef + "'>" + this._heroName + "-" + pos1 + " (" + this._currentStats["totalHP"].toLocaleString() + " hp, " + this._currentStats["totalAttack"].toLocaleString() + " attack, " + this._currentStats["energy"] + " energy)</span>";
     }
   }
   
@@ -482,6 +482,11 @@ class hero {
   hasStatus(strStatus) {
     if (this._currentStats["totalHP"] <= 0) { return false; }
     
+    if (strStatus in this._debuffs) { return true; }
+    if (strStatus in this._buffs) { return true; }
+    return false;
+    
+    /*
     var result = false;
     
     for (let [b, ob] of Object.entries(this._debuffs)) {
@@ -510,6 +515,7 @@ class hero {
     }
     
     return result;
+    */
   }
   
   
@@ -596,15 +602,15 @@ class hero {
     
     
     // status modifiers
-    if (target.hasStatus("burn")) {
+    if (target.hasStatus("Burn")) {
       damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
-    if (target.hasStatus("bleed")) {
+    if (target.hasStatus("Bleed")) {
       damageAgainstBleeding += this._currentStats["damageAgainstBleeding"];
     }
     
-    if (target.hasStatus("poison")) {
+    if (target.hasStatus("Poison")) {
       damageAgainstPoisoned += this._currentStats["damageAgainstPoisoned"];
     }
     
