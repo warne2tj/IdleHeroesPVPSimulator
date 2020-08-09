@@ -8582,11 +8582,11 @@ function isControlEffect(strName, effects={}) {
 
 
 function isDot(strName, effects={}) {
-  if (["Burn", "Bleed", "Poison", "Dot", "burn", "bleed", "poison", "dot"].includes(strName)) {
+  if (["Burn", "Bleed", "Poison", "Dot", "burn", "bleed", "poison", "dot", "Burn True", "Bleed True", "Poison True"].includes(strName)) {
     return true;
   } else {
     for (var e in effects) {
-      if (["burn", "bleed", "poison", "dot"].includes(e)) {
+      if (["burn", "bleed", "poison", "dot", "burnTrue", "bleedTrue", "poisonTrue"].includes(e)) {
         return true;
       }
     }
@@ -9653,8 +9653,8 @@ function checkForWin() {
 
 var attMonsterName;
 var defMonsterName;
-var attFrame = "IDA Maverick +9";
-var defFrame = "IDA Maverick +9";
+var attFrame = "Royal Amethyst +9";
+var defFrame = "Royal Amethyst +9";
 var attHeroes = [];
 var defHeroes = [];
 var allAttTeams = {};
