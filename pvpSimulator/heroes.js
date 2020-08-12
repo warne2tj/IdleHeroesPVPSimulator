@@ -1260,15 +1260,7 @@ class hero {
                   let damageAmount = bhMark["effects"]["damageAmount"];
                   
                   if (damageAmount > bhMark["effects"]["attackAmount"]) {damageAmount = bhMark["effects"]["attackAmount"]; }
-                  
-                  damageResult = {
-                    damageAmount: damageAmount,
-                    damageSource: "mark",
-                    damageType: "true",
-                    critted: false,
-                    blocked: false
-                  };
-                  
+                  damageResult = bhMark["source"].calcDamage(this, damageAmount, "mark", "true");
                   result += "<div>" + this.takeDamage(bhMark["source"], "Black Hole Mark", damageResult) + "</div>";
                 }
                 

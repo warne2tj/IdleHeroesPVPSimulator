@@ -1919,24 +1919,25 @@ class Ithaqua extends hero {
   doBasic() {
     var result = "";
     var damageResult = {};
-    var targets = getAllTargets(this, this._enemies);
+    var targets = this._enemies;
     var healAmount = 0;
     var targetLock;
-    var alreadyTargeted = [];
+    var alreadyTargeted = {};
     
-    for (var i in targets) {
-      targetLock = targets[i].getTargetLock(this);
-      result += targetLock;
-      
-      if (targetLock == "") {
-        if ("Ghost Possessed" in this._enemies[i]._debuffs) {
-          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
-          result += targets[i].takeDamage(this, "GP - Basic Attack", damageResult);
-          basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
-          alreadyTargeted.push(targets[i]._heroPos);
-          
-          healAmount = this.calcHeal(this, damageResult["damageAmount"]);
-          result += this.getHeal(this, healAmount);
+    for (let i in targets) {
+      if (targets[i]._currentStats["totalHP"] > 0) {
+        targetLock = targets[i].getTargetLock(this);
+        result += targetLock;
+        
+        if (targetLock == "") {
+          if ("Ghost Possessed" in this._enemies[i]._debuffs) {
+            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.8, "basic", "normal");
+            result += targets[i].takeDamage(this, "GP - Basic Attack", damageResult);
+            alreadyTargeted[targets[i]._heroPos] = [this, targets[i], damageResult["damageAmount"], damageResult["critted"]];
+            
+            healAmount = this.calcHeal(this, damageResult["damageAmount"]);
+            result += this.getHeal(this, healAmount);
+          }
         }
       }
     }
@@ -1952,10 +1953,18 @@ class Ithaqua extends hero {
         result += targets[0].takeDamage(this, "Basic Attack", damageResult);
         result += targets[0].getDebuff(this, "Ghost Possessed", 3, {}, false, "", 1, true);
         
-        if (alreadyTargeted.includes(targets[0]._heroPos)) {
-          basicQueue.push([this, targets[0], damageResult["damageAmount"], damageResult["critted"]]);
+        if (targets[0]._heroPos in alreadyTargeted) {
+          alreadyTargeted[targets[0]._heroPos][2] += damageResult["damageAmount"];
+          alreadyTargeted[targets[0]._heroPos][3] = alreadyTargeted[targets[0]._heroPos][3] || damageResult["critted"];
+        } else {
+          alreadyTargeted[targets[0]._heroPos] = [this, targets[0], damageResult["damageAmount"], damageResult["critted"]];
         }
       }
+    }
+    
+    
+    for (let i in alreadyTargeted) {
+      basicQueue.push(alreadyTargeted[i]);
     }
     
     return result;
@@ -1970,9 +1979,9 @@ class Ithaqua extends hero {
     var hpDamage = 0;
     var hpDamageResult = {damageAmount: 0};
     var targetLock;
-    var alreadyTargeted = [];
+    var alreadyTargeted = {};
     
-    for (var i in targets) {
+    for (let i in targets) {
       if ("Ghost Possessed" in targets[i]._debuffs) {
         targetLock = targets[i].getTargetLock(this);
         result += targetLock;
@@ -1991,8 +2000,7 @@ class Ithaqua extends hero {
           healAmount = this.calcHeal(this, damageResult["damageAmount"] + hpDamageResult["damageAmount"]);
           result += this.getHeal(this, healAmount);
         
-          activeQueue.push([this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
-          alreadyTargeted.push(targets[i]._heroPos);
+          alreadyTargeted[targets[i]._heroPos] = [this, targets[i], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]];
         }
       }
     }
@@ -2016,10 +2024,19 @@ class Ithaqua extends hero {
           
         result += targets[0].getDebuff(this, "Ghost Possessed", 3, {}, false, "", 1, true);
         
-        if (alreadyTargeted.includes(targets[0]._heroPos)) {
-          activeQueue.push([this, targets[0], damageResult["damageAmount"] + hpDamageResult["damageAmount"], damageResult["critted"]]);
+        
+        if (targets[0]._heroPos in alreadyTargeted) {
+          alreadyTargeted[targets[0]._heroPos][2] += damageResult["damageAmount"] + hpDamageResult["damageAmount"];
+          alreadyTargeted[targets[0]._heroPos][3] = alreadyTargeted[targets[0]._heroPos][3] || damageResult["critted"];
+        } else {
+          alreadyTargeted[targets[0]._heroPos] = [this, targets[0], damageResult["damageAmount"], damageResult["critted"]];
         }
       }
+    }
+    
+    
+    for (let i in alreadyTargeted) {
+      activeQueue.push(alreadyTargeted[i]);
     }
     
     return result;
@@ -4167,7 +4184,7 @@ class DasMoge extends hero {
   eventSelfBasic() {
     var result = "";
     result += this.getBuff(this, "Attack Percent", 3, {attackPercent: 0.20});
-    result += this.getBuff(this, "Speed", 3, {attackPercent: 15});
+    result += this.getBuff(this, "Speed", 3, {speed: 15});
     return result;
   }
   
@@ -4195,27 +4212,16 @@ class DasMoge extends hero {
       if (targetLock == "") {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 1.15);
         result += targets[i].takeDamage(this, "Death Reaper", damageResult);
-        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
-      }
-      
-      
-      targetLock = targets[i].getTargetLock(this);
-      result += targetLock;
-      
-      if (targetLock == "") {
+        
         bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 0.56, 3);
         result += targets[i].getDebuff(this, "Bleed", 3, {bleed: bleedDamageResult["damageAmount"]}, false, "active");
-      }
-      
-      
-      if (targets[i]._heroClass == "Ranger") {
-        targetLock = targets[i].getTargetLock(this);
-        result += targetLock;
         
-        if (targetLock == "") {
+        if (targets[i]._heroClass == "Ranger") {
           rangerDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 1.05, 3);
           result += targets[i].getDebuff(this, "Bleed", 3, {bleed: rangerDamageResult["damageAmount"]}, false, "active");
         }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + bleedDamageResult["damageAmount"] + rangerDamageResult["damageAmount"], damageResult["critted"]]);
       }
     }
     
