@@ -21,6 +21,7 @@
   <script src="../pvpSimulator/skin.js"></script>
   <script src="../pvpSimulator/avatarFrame.js"></script>
   <script src="geneticInitAndSync.js"></script>
+  <script src="../GeneticAlgorithmMulti/gaBreed.js"></script>
   <script src="../GeneticAlgorithmMulti/seededHeroes.js"></script>
   <script src="../pvpSimulator/simulation.js"></script>
 </head>
@@ -43,14 +44,14 @@
 
     <div>
       <label for="numSims">Number of Simulations to Run per Team:</label>
-      <input type="text" id="numSims" size="3" value="50" />
+      <input type="text" id="numSims" size="3" value="50" onchange="storeLocal(this);" />
       <input type="submit" value="Run" onclick="runMassLoop();"></input>
       <input type="submit" value="Stop" onclick="stopLoop=true;"></input>
     </div>
 
     <div>
       <label for="genCount">Generation:</label>
-      <input type="text" id="genCount" size="3" value="0" />
+      <input type="text" id="genCount" size="3" value="0" onchange="storeLocal(this);" />
     </div>
   </div>
 
@@ -60,13 +61,13 @@
     <div>
       <div>
         <label for="numCreate">Number of Random Teams to Create:</label>
-        <input type="text" id="numCreate" size="3" value="100" />
+        <input type="text" id="numCreate" size="3" value="100" onchange="storeLocal(this);" />
         <input type="submit" value="Create Random Teams" onclick="createRandomTeams(false);"></input>
         <input type="submit" value="Create Random Seeded Teams" onclick="createRandomTeams(true);"></input>
       </div>
       <div>Put data of teams into text area below or generate them randomly.</div>
       <div>
-        <textarea id="configText" rows="20"></textarea>
+        <textarea id="configText" rows="20" onchange="storeLocal(this);"></textarea>
       </div>
     </div>
   </div>
