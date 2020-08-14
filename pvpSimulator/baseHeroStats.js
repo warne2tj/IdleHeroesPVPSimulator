@@ -306,6 +306,22 @@ var baseHeroStats = {
     }
   },
   
+  "Heart Watcher": {
+    className: HeartWatcher,
+    heroFaction: "Forest",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 7694,
+      baseAttack: 465,
+      baseArmor: 60,
+      baseSpeed: 233,
+      growHP: 769.4,
+      growAttack: 46.5,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
   "Horus": {
     className: Horus,
     heroFaction: "Shadow",

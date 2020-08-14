@@ -161,8 +161,8 @@ var skins = {
   },
   
   "Drake": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
+    "Inferno": {attackPercent: 0.03, critDamage: 0.05, speed: 4},
+    "Legendary Inferno": {attackPercent: 0.06, critDamage: 0.10, speed: 6}
   },
   
   "Russell": {
@@ -210,5 +210,12 @@ var skins = {
   "Ignis": {
     "Skin Placeholder": {},
     "Legendary Skin Placeholder": {}
+  },
+  
+  "Heart Watcher": {
+    "Dark Elf": {attackPercent: 0.02, crit: 0.02, critDamage: 0.05},
+    "Legendary Dark Elf": {attackPercent: 0.04, crit: 0.03, critDamage: 0.075},
+    "Hymn to Summer": {attackPercent: 0.02, crit: 0.02, damageReduce: 0.03},
+    "Legendary Hymn to Summer": {attackPercent: 0.04, crit: 0.03, damageReduce: 0.04}
   }
 };

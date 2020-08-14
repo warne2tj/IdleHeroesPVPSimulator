@@ -6404,6 +6404,112 @@ class Ignis extends hero {
   }
 }
 
+
+// Heart Watcher
+class HeartWatcher extends hero {
+  passiveStats() {
+    // apply Tough Heart passive
+    this.applyStatChange({attackPercent: 0.30, crit: 0.30, hpPercent: 0.20}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventSelfBasic(trigger[2]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic(e) {
+    var result = "";
+    
+    for (let i in e) {
+      if (e[i][3] == true) {
+        var healAmount = this.calcHeal(this, this._currentStats["totalAttack"] * 2.8);
+        result = this.getHeal(this, healAmount);
+        break;
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  getWatcherMarkAmount(target, wmAmount) {
+    var currAmount = 0;
+    
+    if ("Watcher Mark" in target._debuffs) {
+      for (let s of Object.values(target._debuffs["Watcher Mark"])) {
+        currAmount += s["effects"]["allDamageTaken"];
+      }
+    }
+    
+    if (currAmount + wmAmount > 3) {
+      wmAmount = 3 - currAmount;
+    }
+    
+    return wmAmount;
+  }
+  
+  
+  doBasic() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies, 2);
+    var targetLock;
+    var wmAmount = 0;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal", 1.1);
+        result += targets[i].takeDamage(this, "Weakness Strike", damageResult);
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+        
+        wmAmount = this.getWatcherMarkAmount(targets[i], 0.35);
+        result += targets[i].getDebuff(this, "Watcher Mark", 15, {allDamageTaken: wmAmount});
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies, 2);
+    var targetLock;
+    var reduceAttackAmount = 0;
+    var wmAmount = 0;
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 2.55);
+        result += targets[i].takeDamage(this, "Mind Torture", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+        
+        reduceAttackAmount = Math.floor(0.25 * targets[i]._stats["totalAttack"]);
+        result += targets[i].getDebuff(this, "Attack", 2, {attack: reduceAttackAmount});
+        
+        wmAmount = this.getWatcherMarkAmount(targets[i], 0.45);
+        result += targets[i].getDebuff(this, "Watcher Mark", 15, {allDamageTaken: wmAmount});
+      }
+    }
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -7693,8 +7799,8 @@ var skins = {
   },
   
   "Drake": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
+    "Inferno": {attackPercent: 0.03, critDamage: 0.05, speed: 4},
+    "Legendary Inferno": {attackPercent: 0.06, critDamage: 0.10, speed: 6}
   },
   
   "Russell": {
@@ -7742,6 +7848,13 @@ var skins = {
   "Ignis": {
     "Skin Placeholder": {},
     "Legendary Skin Placeholder": {}
+  },
+  
+  "Heart Watcher": {
+    "Dark Elf": {attackPercent: 0.02, crit: 0.02, critDamage: 0.05},
+    "Legendary Dark Elf": {attackPercent: 0.04, crit: 0.03, critDamage: 0.075},
+    "Hymn to Summer": {attackPercent: 0.02, crit: 0.02, damageReduce: 0.03},
+    "Legendary Hymn to Summer": {attackPercent: 0.04, crit: 0.03, damageReduce: 0.04}
   }
 };
 
@@ -8216,6 +8329,22 @@ var baseHeroStats = {
       growHP: 825.2,
       growAttack: 34.3,
       growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
+  "Heart Watcher": {
+    className: HeartWatcher,
+    heroFaction: "Forest",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 7694,
+      baseAttack: 465,
+      baseArmor: 60,
+      baseSpeed: 233,
+      growHP: 769.4,
+      growAttack: 46.5,
+      growArmor: 6,
       growSpeed: 2
     }
   },

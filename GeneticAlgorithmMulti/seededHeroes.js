@@ -209,5 +209,11 @@ var seededHeroes = {
     allowedStones: ["Speed, HP"],
     allowedEquipments: ["Class Gear","Split HP"],
     allowedEnables: ['"Growth", "Vitality2", "Purify", "Growth", "UnbendingWill"']
-  } 
+  },
+  "Heart Watcher": {
+    allowedArtifacts: ["Staff Punisher of Immortal","Golden Crown","Ruyi Scepter"],
+    allowedStones: ["Speed, HP","Speed, Crit"],
+    allowedEquipments: ["Class Gear","Split HP"],
+    allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"']
+  }
 };
