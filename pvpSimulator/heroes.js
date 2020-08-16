@@ -1186,7 +1186,7 @@ class hero {
             this._buffs[b][s]["duration"] -= 1;
             
             if (this._buffs[b][s]["duration"] == 0) {
-              result += "<div>" + this.heroDesc() + " buff (<span class='skill'>" + b + "</span>) ended.</div>";
+              result += "<div>" + this.heroDesc() + " stack of buff (<span class='skill'>" + b + "</span>) ended.</div>";
               
               // remove the effects
               for (var strStatName in this._buffs[b][s]["effects"]) {
@@ -1215,7 +1215,7 @@ class hero {
               
               for (var strStatName in this._buffs[b][s]["effects"]) {
                 if (strStatName == "heal") {
-                  result += "<div>" + this.heroDesc() + " layer of buff <span class='skill'>" + b + "</span> ticked.</div>";
+                  result += "<div>" + this.heroDesc() + " stack of buff <span class='skill'>" + b + "</span> ticked.</div>";
                   result += "<div>" + this.getHeal(this._buffs[b][s]["source"], this._buffs[b][s]["effects"][strStatName]) + "</div>";
                 }
               }
@@ -1249,7 +1249,7 @@ class hero {
             this._debuffs[b][s]["duration"] -= 1;
             
             if (this._debuffs[b][s]["duration"] == 0) {
-              result += "<div>" + this.heroDesc() + " debuff (<span class='skill'>" + b + "</span>) ended.</div>";
+              result += "<div>" + this.heroDesc() + " stack of debuff (<span class='skill'>" + b + "</span>) ended.</div>";
               
               if (b == "Sow Seeds") {
                 result += this.getDebuff(this._debuffs[b][s]["source"], "twine", this._debuffs[b][s]["effects"]["rounds"]);
@@ -1294,7 +1294,7 @@ class hero {
                         blocked: false
                       };
                       
-                      result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
+                      result += "<div>" + this.heroDesc() + " stack of debuff <span class='skill'>" + b + "</span> ticked.</div>";
                       result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
                     }
                     
@@ -1325,12 +1325,13 @@ class hero {
                       blocked: false
                     };
                     
-                    result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
+                    result += "<div>" + this.heroDesc() + " stack of debuff <span class='skill'>" + b + "</span> ticked.</div>";
                     result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
                   }
                   
                   if (this._debuffs[b][s]["duration"] == 1) {
                     // last dot ticked
+                    result += "<div>" + this.heroDesc() + " stack of debuff (<span class='skill'>" + b + "</span>) ended.</div>";
                     delete this._debuffs[b][s];
                     stacksLeft--;
                     break;
@@ -1449,6 +1450,7 @@ class hero {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var result = "";
+    var dotAmount = 0;
     var beforeHP = this._currentStats["totalHP"];
     
     damageResult["damageAmount"] = Math.floor(damageResult["damageAmount"]);
@@ -1479,6 +1481,13 @@ class hero {
           damageResult.damageAmount -= damMit;
         }
       }
+    }
+    
+    
+    if (this._artifact.includes(" Wildfire Torch") && ["basic", "active"].includes(damageResult["damageSource"]) && damageResult["damageAmount"] > 1) {
+      dotAmount = Math.floor(damageResult["damageAmount"] * artifacts[this._artifact].enhance * 0.20);
+      damageResult["damageAmount"] = Math.floor(damageResult["damageAmount"] * (1 - artifacts[this._artifact].enhance));
+      result += "<div><span class='skill'>" + this._artifact + "</span> converted damage to dot.</div>";
     }
     
     
@@ -1563,6 +1572,11 @@ class hero {
       }
       
       result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(this._currentStats["totalHP"]) + ".</div>";
+    }
+    
+    
+    if (dotAmount > 0) {
+      result += this.getDebuff(source, "Wildfire Torch Dot", 4, {dot: dotAmount});
     }
     
     

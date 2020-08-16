@@ -96,21 +96,21 @@ var artifacts = {
     stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.20
   },
   
   "Radiant Golden Crown": {
     stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.35
   },
   
   "Splendid Golden Crown": {
     stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.50
   },
   
   "Lucky Candy Bar": {
@@ -254,21 +254,21 @@ var artifacts = {
     stats: {precision: 0.6, hpPercent: 0.18, dotReduce: 0.7},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.40
   },
   
   "Radiant Wildfire Torch": {
     stats: {precision: 0.6, hpPercent: 0.18, dotReduce: 0.7},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.60
   },
   
   "Splendid Wildfire Torch": {
     stats: {precision: 0.6, hpPercent: 0.18, dotReduce: 0.7},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.80
   },
   
   "Magic Source": {

@@ -105,7 +105,7 @@ function isMonster(source) {
 
 
 function isDispellable(strName) {
-  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink", "Shield", "Feather Blade", "Drake Break Defense"].includes(strName)) {
+  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink", "Shield", "Feather Blade", "Drake Break Defense", "Wildfire Torch Dot"].includes(strName)) {
     return false;
   } else {
     return true;
@@ -123,7 +123,7 @@ function isControlEffect(strName, effects={}) {
 
 
 function isDot(strName, effects={}) {
-  if (["Burn", "Bleed", "Poison", "Dot", "burn", "bleed", "poison", "dot", "Burn True", "Bleed True", "Poison True"].includes(strName)) {
+  if (["Burn", "Bleed", "Poison", "Dot", "Burn True", "Bleed True", "Poison True", "burn", "bleed", "poison", "dot", "burnTrue", "bleedTrue", "poisonTrue"].includes(strName)) {
     return true;
   } else {
     for (var e in effects) {

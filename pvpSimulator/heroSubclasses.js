@@ -802,7 +802,7 @@ class Cthugha extends hero {
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     
-    if (!(isMonster(source)) && ["burn", "bleed"].includes(damageResult["damageType"])) {
+    if (!(isMonster(source)) && ["burn", "bleed", "burnTrue", "bleedTrue"].includes(damageResult["damageType"])) {
       damageResult["damageAmount"] = 0;
     }
     
@@ -812,11 +812,11 @@ class Cthugha extends hero {
       triggerQueue.push([this, "eventTookDamage"]);
       
       if (!(isMonster(source))) {
-        if (source.hasStatus("Burn")) {
+        if (source.hasStatus("Burn") || source.hasStatus("Burn True")) {
           triggerQueue.push([this, "eventTookDamageFromBurning"]);
         }
         
-        if (source.hasStatus("Bleed")) {
+        if (source.hasStatus("Bleed") || source.hasStatus("Bleed True")) {
           triggerQueue.push([this, "eventTookDamageFromBleeding"]);
         }
       }

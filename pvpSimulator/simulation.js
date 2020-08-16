@@ -80,11 +80,25 @@ function runSim() {
         if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
         logColor = (logColor + 1) % 2;
       }
+      
+      
+      if (attHeroes[h]._artifact.includes(" Golden Crown")) {
+        temp = attHeroes[h].getBuff(attHeroes[h], "Golden Crown", 5, {allDamageReduce: artifacts[attHeroes[h]._artifact].enhance});
+        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
+      }
     }
     
     for (var h in defHeroes) {
       if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats["totalHP"] > 0) {
         temp = defHeroes[h].startOfBattle();
+        if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
+      }
+      
+      
+      if (defHeroes[h]._artifact.includes(" Golden Crown")) {
+        temp = defHeroes[h].getBuff(defHeroes[h], "Golden Crown", 5, {allDamageReduce: artifacts[defHeroes[h]._artifact].enhance});
         if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
         logColor = (logColor + 1) % 2;
       }
@@ -311,6 +325,13 @@ function runSim() {
           if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
             temp += attHeroes[h].endOfRound(roundNum);
           }
+      
+      
+          if (attHeroes[h]._artifact.includes(" Golden Crown") && roundNum < 5) {
+            temp += attHeroes[h].removeBuff("Golden Crown");
+            let buffAmount = artifacts[attHeroes[h]._artifact].enhance * (5 - roundNum) * 0.2;
+            temp += attHeroes[h].getBuff(attHeroes[h], "Golden Crown", 5 - roundNum, {allDamageReduce: buffAmount});
+          }
           
           
           if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
@@ -333,6 +354,13 @@ function runSim() {
         for (let h in defHeroes) {
           if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
             temp += defHeroes[h].endOfRound(roundNum);
+          }
+      
+      
+          if (defHeroes[h]._artifact.includes(" Golden Crown") && roundNum < 5) {
+            temp += defHeroes[h].removeBuff("Golden Crown");
+            let buffAmount = artifacts[defHeroes[h]._artifact].enhance * (5 - roundNum) * 0.2;
+            temp += defHeroes[h].getBuff(defHeroes[h], "Golden Crown", 5 - roundNum, {allDamageReduce: buffAmount});
           }
           
           

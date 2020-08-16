@@ -1511,7 +1511,7 @@ class hero {
             this._buffs[b][s]["duration"] -= 1;
             
             if (this._buffs[b][s]["duration"] == 0) {
-              result += "<div>" + this.heroDesc() + " buff (<span class='skill'>" + b + "</span>) ended.</div>";
+              result += "<div>" + this.heroDesc() + " stack of buff (<span class='skill'>" + b + "</span>) ended.</div>";
               
               // remove the effects
               for (var strStatName in this._buffs[b][s]["effects"]) {
@@ -1540,7 +1540,7 @@ class hero {
               
               for (var strStatName in this._buffs[b][s]["effects"]) {
                 if (strStatName == "heal") {
-                  result += "<div>" + this.heroDesc() + " layer of buff <span class='skill'>" + b + "</span> ticked.</div>";
+                  result += "<div>" + this.heroDesc() + " stack of buff <span class='skill'>" + b + "</span> ticked.</div>";
                   result += "<div>" + this.getHeal(this._buffs[b][s]["source"], this._buffs[b][s]["effects"][strStatName]) + "</div>";
                 }
               }
@@ -1574,7 +1574,7 @@ class hero {
             this._debuffs[b][s]["duration"] -= 1;
             
             if (this._debuffs[b][s]["duration"] == 0) {
-              result += "<div>" + this.heroDesc() + " debuff (<span class='skill'>" + b + "</span>) ended.</div>";
+              result += "<div>" + this.heroDesc() + " stack of debuff (<span class='skill'>" + b + "</span>) ended.</div>";
               
               if (b == "Sow Seeds") {
                 result += this.getDebuff(this._debuffs[b][s]["source"], "twine", this._debuffs[b][s]["effects"]["rounds"]);
@@ -1619,7 +1619,7 @@ class hero {
                         blocked: false
                       };
                       
-                      result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
+                      result += "<div>" + this.heroDesc() + " stack of debuff <span class='skill'>" + b + "</span> ticked.</div>";
                       result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
                     }
                     
@@ -1650,12 +1650,13 @@ class hero {
                       blocked: false
                     };
                     
-                    result += "<div>" + this.heroDesc() + " layer of debuff <span class='skill'>" + b + "</span> ticked.</div>";
+                    result += "<div>" + this.heroDesc() + " stack of debuff <span class='skill'>" + b + "</span> ticked.</div>";
                     result += "<div>" + this.takeDamage(this._debuffs[b][s]["source"], "Debuff " + b, damageResult) + "</div>";
                   }
                   
                   if (this._debuffs[b][s]["duration"] == 1) {
                     // last dot ticked
+                    result += "<div>" + this.heroDesc() + " stack of debuff (<span class='skill'>" + b + "</span>) ended.</div>";
                     delete this._debuffs[b][s];
                     stacksLeft--;
                     break;
@@ -1774,6 +1775,7 @@ class hero {
     if (this._currentStats["totalHP"] <= 0) { return ""; }
     
     var result = "";
+    var dotAmount = 0;
     var beforeHP = this._currentStats["totalHP"];
     
     damageResult["damageAmount"] = Math.floor(damageResult["damageAmount"]);
@@ -1804,6 +1806,13 @@ class hero {
           damageResult.damageAmount -= damMit;
         }
       }
+    }
+    
+    
+    if (this._artifact.includes(" Wildfire Torch") && ["basic", "active"].includes(damageResult["damageSource"]) && damageResult["damageAmount"] > 1) {
+      dotAmount = Math.floor(damageResult["damageAmount"] * artifacts[this._artifact].enhance * 0.20);
+      damageResult["damageAmount"] = Math.floor(damageResult["damageAmount"] * (1 - artifacts[this._artifact].enhance));
+      result += "<div><span class='skill'>" + this._artifact + "</span> converted damage to dot.</div>";
     }
     
     
@@ -1888,6 +1897,11 @@ class hero {
       }
       
       result += "<div>Enemy health dropped from " + formatNum(beforeHP) + " to " + formatNum(this._currentStats["totalHP"]) + ".</div>";
+    }
+    
+    
+    if (dotAmount > 0) {
+      result += this.getDebuff(source, "Wildfire Torch Dot", 4, {dot: dotAmount});
     }
     
     
@@ -2882,7 +2896,7 @@ class Cthugha extends hero {
   takeDamage(source, strAttackDesc, damageResult) {
     var result = "";
     
-    if (!(isMonster(source)) && ["burn", "bleed"].includes(damageResult["damageType"])) {
+    if (!(isMonster(source)) && ["burn", "bleed", "burnTrue", "bleedTrue"].includes(damageResult["damageType"])) {
       damageResult["damageAmount"] = 0;
     }
     
@@ -2892,11 +2906,11 @@ class Cthugha extends hero {
       triggerQueue.push([this, "eventTookDamage"]);
       
       if (!(isMonster(source))) {
-        if (source.hasStatus("Burn")) {
+        if (source.hasStatus("Burn") || source.hasStatus("Burn True")) {
           triggerQueue.push([this, "eventTookDamageFromBurning"]);
         }
         
-        if (source.hasStatus("Bleed")) {
+        if (source.hasStatus("Bleed") || source.hasStatus("Bleed True")) {
           triggerQueue.push([this, "eventTookDamageFromBleeding"]);
         }
       }
@@ -6613,21 +6627,21 @@ var artifacts = {
     stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.20
   },
   
   "Radiant Golden Crown": {
     stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.35
   },
   
   "Splendid Golden Crown": {
     stats: {attackPercent: 0.18, hpPercent: 0.25, allDamageReduce: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.50
   },
   
   "Lucky Candy Bar": {
@@ -6771,21 +6785,21 @@ var artifacts = {
     stats: {precision: 0.6, hpPercent: 0.18, dotReduce: 0.7},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.40
   },
   
   "Radiant Wildfire Torch": {
     stats: {precision: 0.6, hpPercent: 0.18, dotReduce: 0.7},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.60
   },
   
   "Splendid Wildfire Torch": {
     stats: {precision: 0.6, hpPercent: 0.18, dotReduce: 0.7},
     limit: "",
     limitStats: {},
-    enhance: 0
+    enhance: 0.80
   },
   
   "Magic Source": {
@@ -8733,7 +8747,7 @@ function isMonster(source) {
 
 
 function isDispellable(strName) {
-  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink", "Shield", "Feather Blade", "Drake Break Defense"].includes(strName)) {
+  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink", "Shield", "Feather Blade", "Drake Break Defense", "Wildfire Torch Dot"].includes(strName)) {
     return false;
   } else {
     return true;
@@ -9300,11 +9314,25 @@ function runSim(attMonsterName, defMonsterName, numSims) {
         //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
         logColor = (logColor + 1) % 2;
       }
+      
+      
+      if (attHeroes[h]._artifact.includes(" Golden Crown")) {
+        temp = attHeroes[h].getBuff(attHeroes[h], "Golden Crown", 5, {allDamageReduce: artifacts[attHeroes[h]._artifact].enhance});
+        //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
+      }
     }
     
     for (var h in defHeroes) {
       if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats["totalHP"] > 0) {
         temp = defHeroes[h].startOfBattle();
+        //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
+        logColor = (logColor + 1) % 2;
+      }
+      
+      
+      if (defHeroes[h]._artifact.includes(" Golden Crown")) {
+        temp = defHeroes[h].getBuff(defHeroes[h], "Golden Crown", 5, {allDamageReduce: artifacts[defHeroes[h]._artifact].enhance});
         //if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += "<div class='log" + logColor + "'><p></p></div><div class='log" + logColor + "'>" + temp + "</div>";}
         logColor = (logColor + 1) % 2;
       }
@@ -9531,6 +9559,13 @@ function runSim(attMonsterName, defMonsterName, numSims) {
           if ((attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats["revive"] == 1) {
             temp += attHeroes[h].endOfRound(roundNum);
           }
+      
+      
+          if (attHeroes[h]._artifact.includes(" Golden Crown") && roundNum < 5) {
+            temp += attHeroes[h].removeBuff("Golden Crown");
+            let buffAmount = artifacts[attHeroes[h]._artifact].enhance * (5 - roundNum) * 0.2;
+            temp += attHeroes[h].getBuff(attHeroes[h], "Golden Crown", 5 - roundNum, {allDamageReduce: buffAmount});
+          }
           
           
           if (attHeroes[h]._currentStats["totalHP"] > 0 && attHeroes[h].isNotSealed()) {
@@ -9553,6 +9588,13 @@ function runSim(attMonsterName, defMonsterName, numSims) {
         for (let h in defHeroes) {
           if ((defHeroes[h]._currentStats["totalHP"] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats["revive"] == 1) {
             temp += defHeroes[h].endOfRound(roundNum);
+          }
+      
+      
+          if (defHeroes[h]._artifact.includes(" Golden Crown") && roundNum < 5) {
+            temp += defHeroes[h].removeBuff("Golden Crown");
+            let buffAmount = artifacts[defHeroes[h]._artifact].enhance * (5 - roundNum) * 0.2;
+            temp += defHeroes[h].getBuff(defHeroes[h], "Golden Crown", 5 - roundNum, {allDamageReduce: buffAmount});
           }
           
           
