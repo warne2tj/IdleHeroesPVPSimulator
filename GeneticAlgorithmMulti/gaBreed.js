@@ -1,5 +1,5 @@
-var artifactLevel = "Splendid ";
-var numEnhancedArtifacts = 6;
+var artifactLevel = "Glittery ";
+var numEnhancedArtifacts = 3;
 
 var heroNames = Object.keys(baseHeroStats).slice(1);
 var stoneNames = Object.keys(stones).slice(1);
