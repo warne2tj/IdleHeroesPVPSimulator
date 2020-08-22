@@ -110,7 +110,7 @@ class mFenlier extends monster {
       result += targets[i].takeDamage(this, "Violent Bite", damageResult);
       
       damageResult = this.calcDamage(targets[i], 559177, "monster", "bleedTrue");
-      result += targets[i].getDebuff(this, "Bleed", 3, {bleedTrue: damageResult["damageAmount"]}, false, "monster");
+      result += targets[i].getDebuff(this, "Bleed True", 3, {bleedTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
     
@@ -423,6 +423,7 @@ class hero {
     this._stats["damageAgainstBleeding"] = 0.0;
     this._stats["damageAgainstPoisoned"] = 0.0;
     this._stats["damageAgainstFrozen"] = 0.0;
+    this._stats["damageAgainstStun"] = 0.0;
     this._stats["damageAgainstWarrior"] = 0.0;
     this._stats["damageAgainstMage"] = 0.0;
     this._stats["damageAgainstRanger"] = 0.0;
@@ -880,6 +881,7 @@ class hero {
     var damageAgainstBleeding = 1;
     var damageAgainstPoisoned = 1;
     var damageAgainstFrozen = 1;
+    var damageAgainstStun = 1;
     var damageAgainstClass = 1;
     var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
     var armorBreak = this._currentStats["armorBreak"];
@@ -943,6 +945,10 @@ class hero {
       damageAgainstFrozen += this._currentStats["damageAgainstFrozen"];
     }
     
+    if (target.hasStatus("stun")) {
+      damageAgainstStun += this._currentStats["damageAgainstStun"];
+    }
+    
     if (isDot(damageType)) {
       dotReduce = target._currentStats["dotReduce"];
     }
@@ -972,6 +978,7 @@ class hero {
       damageAgainstBleeding = 1;
       damageAgainstPoisoned = 1;
       damageAgainstFrozen = 1;
+      damageAgainstStun = 1;
       allDamageDealt = 1;
       holyDamageIncrease = 0;
       armorMitigation = 0;
@@ -988,7 +995,7 @@ class hero {
     
     
     // calculate damage
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstClass * allDamageDealt;
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstStun * damageAgainstClass * allDamageDealt;
     attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1-classDamageReduce) * allDamageTaken;
     
     var blocked = false;
@@ -6524,6 +6531,107 @@ class HeartWatcher extends hero {
   }
 }
 
+
+// King Barton
+class KingBarton extends hero {
+  passiveStats() {
+    // apply King's Demeanor passive
+    this.applyStatChange({hpPercent: 0.40, attackPercent: 0.35, controlImmune: 0.35, damageAgainstStun: 1.0}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (["eventEnemyBasic", "eventEnemyActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventEnemyBasic(trigger[3]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyBasic(e) {
+    var result = "";
+    
+    for (var i in e) {
+      if (e[i][1].heroDesc() == this.heroDesc()) {
+        var targets = getAllTargets(this, this._enemies);
+        var damageResult;
+        
+        result += this.getBuff(this, "Attack Percent", 1, {attackPercent: 0.30});
+        
+        for (let h in targets) {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.5, "passive", "normal");
+          result += targets[i].takeDamage(this, "The Call of the King", damageResult);
+        }
+        
+        break;
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var targetLock;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal", 1.25);
+        result += targets[i].takeDamage(this, "Heroic Charge", damageResult);
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          result += targets[i].getDebuff(this, "stun", 2, {}, false, "", 0.25);
+        }
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getFrontTargets(this, this._enemies);
+    var targetLock;
+    
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3.15);
+        result += targets[i].takeDamage(this, "Hammer's Verdict", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    
+    result += this.getBuff(this, "Damage Reduce", 3, {damageReduce: 0.20});
+    result += this.getBuff(this, "Attack Percent", 3, {attackPercent: 0.40});
+    
+    
+    targets = getAllTargets(this, this._allies);
+    for (let i in targets) {
+      result += targets[i].getBuff(this, "King's Shelter", 3, {damageReduce: 0.10}, true);
+    }
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -7873,6 +7981,11 @@ var skins = {
     "Legendary Dark Elf": {attackPercent: 0.04, crit: 0.03, critDamage: 0.075},
     "Hymn to Summer": {attackPercent: 0.02, crit: 0.02, damageReduce: 0.03},
     "Legendary Hymn to Summer": {attackPercent: 0.04, crit: 0.03, damageReduce: 0.04}
+  },
+  
+  "King Barton": {
+    "Golden Age": {hpPercent: 0.03, attackPercent: 0.03, holyDamage: 0.05},
+    "Legendary Golden Age": {hpPercent: 0.06, attackPercent: 0.06, holyDamage: 0.08}
   }
 };
 
@@ -8410,6 +8523,22 @@ var baseHeroStats = {
       baseSpeed: 235,
       growHP: 943.6,
       growAttack: 47.8,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
+  "King Barton": {
+    className: KingBarton,
+    heroFaction: "Abyss",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 8596,
+      baseAttack: 312,
+      baseArmor: 62,
+      baseSpeed: 226,
+      growHP: 859.6,
+      growAttack: 31.2,
       growArmor: 6.2,
       growSpeed: 2
     }
@@ -9232,7 +9361,8 @@ var translate = {
   "energySnapshot": "Amount of Energy on Active",
   "demonTotemStacks": "Demon Totem Stacks",
   "heartOfOrmusTriggered": "Heart of Ormus Triggered",
-  "reflectAmount": "Link Damage Tracker"
+  "reflectAmount": "Link Damage Tracker",
+  "damageAgainstStun": "Damage Dealt to Stunned Targets"
 };
 
 /* End of utilityFunctions.js */

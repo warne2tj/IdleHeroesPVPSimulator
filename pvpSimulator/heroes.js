@@ -112,6 +112,7 @@ class hero {
     this._stats["damageAgainstBleeding"] = 0.0;
     this._stats["damageAgainstPoisoned"] = 0.0;
     this._stats["damageAgainstFrozen"] = 0.0;
+    this._stats["damageAgainstStun"] = 0.0;
     this._stats["damageAgainstWarrior"] = 0.0;
     this._stats["damageAgainstMage"] = 0.0;
     this._stats["damageAgainstRanger"] = 0.0;
@@ -555,6 +556,7 @@ class hero {
     var damageAgainstBleeding = 1;
     var damageAgainstPoisoned = 1;
     var damageAgainstFrozen = 1;
+    var damageAgainstStun = 1;
     var damageAgainstClass = 1;
     var allDamageDealt = 1 + this._currentStats["allDamageDealt"]
     var armorBreak = this._currentStats["armorBreak"];
@@ -618,6 +620,10 @@ class hero {
       damageAgainstFrozen += this._currentStats["damageAgainstFrozen"];
     }
     
+    if (target.hasStatus("stun")) {
+      damageAgainstStun += this._currentStats["damageAgainstStun"];
+    }
+    
     if (isDot(damageType)) {
       dotReduce = target._currentStats["dotReduce"];
     }
@@ -647,6 +653,7 @@ class hero {
       damageAgainstBleeding = 1;
       damageAgainstPoisoned = 1;
       damageAgainstFrozen = 1;
+      damageAgainstStun = 1;
       allDamageDealt = 1;
       holyDamageIncrease = 0;
       armorMitigation = 0;
@@ -663,7 +670,7 @@ class hero {
     
     
     // calculate damage
-    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstClass * allDamageDealt;
+    attackDamage = attackDamage * skillDamage * precisionDamageIncrease * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstStun * damageAgainstClass * allDamageDealt;
     attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1-classDamageReduce) * allDamageTaken;
     
     var blocked = false;

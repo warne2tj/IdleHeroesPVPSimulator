@@ -948,7 +948,7 @@ class DarkArthindol extends hero {
         damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 0.98);
         result += targets[i].takeDamage(this, "Chaotic Shade", damageResult);
         
-        if (targets[0]._currentStats["totalHP"] > 0) {
+        if (targets[i]._currentStats["totalHP"] > 0) {
           result += targets[i].getDebuff(this, "petrify", 2, {}, false, "", 0.30);
           
           if (random() < 0.3) {
@@ -4424,6 +4424,107 @@ class HeartWatcher extends hero {
         wmAmount = this.getWatcherMarkAmount(targets[i], 0.45);
         result += targets[i].getDebuff(this, "Watcher Mark", 15, {allDamageTaken: wmAmount});
       }
+    }
+    
+    return result;
+  }
+}
+
+
+// King Barton
+class KingBarton extends hero {
+  passiveStats() {
+    // apply King's Demeanor passive
+    this.applyStatChange({hpPercent: 0.40, attackPercent: 0.35, controlImmune: 0.35, damageAgainstStun: 1.0}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (["eventEnemyBasic", "eventEnemyActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventEnemyBasic(trigger[3]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyBasic(e) {
+    var result = "";
+    
+    for (var i in e) {
+      if (e[i][1].heroDesc() == this.heroDesc()) {
+        var targets = getAllTargets(this, this._enemies);
+        var damageResult;
+        
+        result += this.getBuff(this, "Attack Percent", 1, {attackPercent: 0.30});
+        
+        for (let h in targets) {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.5, "passive", "normal");
+          result += targets[i].takeDamage(this, "The Call of the King", damageResult);
+        }
+        
+        break;
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getRandomTargets(this, this._enemies);
+    var targetLock;
+    
+    for (var i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "basic", "normal", 1.25);
+        result += targets[i].takeDamage(this, "Heroic Charge", damageResult);
+        
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          result += targets[i].getDebuff(this, "stun", 2, {}, false, "", 0.25);
+        }
+        
+        basicQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var targets = getFrontTargets(this, this._enemies);
+    var targetLock;
+    
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3.15);
+        result += targets[i].takeDamage(this, "Hammer's Verdict", damageResult);
+        activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    
+    result += this.getBuff(this, "Damage Reduce", 3, {damageReduce: 0.20});
+    result += this.getBuff(this, "Attack Percent", 3, {attackPercent: 0.40});
+    
+    
+    targets = getAllTargets(this, this._allies);
+    for (let i in targets) {
+      result += targets[i].getBuff(this, "King's Shelter", 3, {damageReduce: 0.10}, true);
     }
     
     return result;

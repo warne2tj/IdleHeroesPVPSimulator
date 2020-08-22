@@ -108,7 +108,7 @@ class mFenlier extends monster {
       result += targets[i].takeDamage(this, "Violent Bite", damageResult);
       
       damageResult = this.calcDamage(targets[i], 559177, "monster", "bleedTrue");
-      result += targets[i].getDebuff(this, "Bleed", 3, {bleedTrue: damageResult["damageAmount"]}, false, "monster");
+      result += targets[i].getDebuff(this, "Bleed True", 3, {bleedTrue: damageResult["damageAmount"]}, false, "monster");
     }
     
     

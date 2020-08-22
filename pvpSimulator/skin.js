@@ -221,5 +221,10 @@ var skins = {
     "Legendary Dark Elf": {attackPercent: 0.04, crit: 0.03, critDamage: 0.075},
     "Hymn to Summer": {attackPercent: 0.02, crit: 0.02, damageReduce: 0.03},
     "Legendary Hymn to Summer": {attackPercent: 0.04, crit: 0.03, damageReduce: 0.04}
+  },
+  
+  "King Barton": {
+    "Golden Age": {hpPercent: 0.03, attackPercent: 0.03, holyDamage: 0.05},
+    "Legendary Golden Age": {hpPercent: 0.06, attackPercent: 0.06, holyDamage: 0.08}
   }
 };

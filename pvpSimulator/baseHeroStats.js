@@ -370,6 +370,22 @@ var baseHeroStats = {
     }
   },
   
+  "King Barton": {
+    className: KingBarton,
+    heroFaction: "Abyss",
+    heroClass: "Warrior",
+    stats: {
+      baseHP: 8596,
+      baseAttack: 312,
+      baseArmor: 62,
+      baseSpeed: 226,
+      growHP: 859.6,
+      growAttack: 31.2,
+      growArmor: 6.2,
+      growSpeed: 2
+    }
+  },
+  
   "Kroos": {
     className: Kroos,
     heroFaction: "Abyss",

@@ -215,5 +215,11 @@ var seededHeroes = {
     allowedStones: ["Speed, HP","Speed, Crit"],
     allowedEquipments: ["Class Gear","Split HP"],
     allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"']
+  },
+  "King Barton": {
+    allowedArtifacts: ["The Kiss of Ghost","Augustus Magic Ball","Golden Crown","Magic Stone Sword","Wildfire Torch"],
+    allowedStones: ["Attack, Attack, Holy","HP, Attack"],
+    allowedEquipments: ["Class Gear"],
+    allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"','"Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill"']
   }
 };

@@ -586,5 +586,6 @@ var translate = {
   "energySnapshot": "Amount of Energy on Active",
   "demonTotemStacks": "Demon Totem Stacks",
   "heartOfOrmusTriggered": "Heart of Ormus Triggered",
-  "reflectAmount": "Link Damage Tracker"
+  "reflectAmount": "Link Damage Tracker",
+  "damageAgainstStun": "Damage Dealt to Stunned Targets"
 };
