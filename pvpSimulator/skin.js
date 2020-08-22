@@ -62,6 +62,8 @@ var skins = {
   "Elyvia": {
     "Sweet Dance": {hpPercent: 0.03, controlImmune: 0.04, speed: 4},
     "Legendary Sweet Dance": {hpPercent: 0.06, controlImmune: 0.06, speed: 6},
+    "Lead Vocalist": {damageReduce: 0.04, controlImmune: 0.05, speed: 4},
+    "Legendary Lead Vocalist": {damageReduce: 0.05, controlImmune: 0.06, speed: 6}
   },
   
   "Emily": {
@@ -139,7 +141,9 @@ var skins = {
   
   "Sherlock": {
     "Royal Guard": {hpPercent: 0.05, attackPercent: 0.03, speed: 4},
-    "Legendary Royal Guard": {hpPercent: 0.08, attackPercent: 0.06, speed: 6}
+    "Legendary Royal Guard": {hpPercent: 0.08, attackPercent: 0.06, speed: 6},
+    "Bassist": {controlImmune: 0.05, hpPercent: 0.03, speed: 4},
+    "Legendary Bassist": {controlImmune: 0.06, hpPercent: 0.06, speed: 6}
   },
   
   "Tara": {
