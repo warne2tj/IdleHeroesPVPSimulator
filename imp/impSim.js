@@ -97,6 +97,8 @@ function init() {
   oBin8 = document.getElementById("bin8");
   oBin9 = document.getElementById("bin9");
   arrBins = [oBin1, oBin2, oBin3, oBin4, oBin5, oBin6, oBin7, oBin8, oBin9]; 
+  
+  updateStrat();
 }
 
 
@@ -164,6 +166,8 @@ function nextSimBlock() {
     var doubleStars;
     var rollTwice;
     var roll;
+    var decision;
+    
     
     var boardState = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     
@@ -187,87 +191,13 @@ function nextSimBlock() {
       
       // simulate
       while (ordDice > 0 || luckDice > 0) {
-        // decide which dice to use
-        if (luckDice > 1 && boardState[18] < 5 && pos < 18 && pos >= 12) {
-          luckDice--;
-          roll = 18 - pos;
-          
-        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] < 5 && pos < 11 && pos >= 5) {
-          luckDice--;
-          roll = 11 - pos;
-          
-        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] < 5 && pos < 4) {
-          luckDice--;
-          roll = 4 - pos;
-          
-        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] < 5 && pos >= 19) {
-          luckDice--;
-          roll = 20 - pos + 4;
-          
-        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] == 5 && pos < 5 ) {
-          luckDice--;
-          roll = 5 - pos;
-          
-        } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] == 5 && pos >= 19 ) {
-          luckDice--;
-          roll = 20 - pos + 5;
-          
-        } else if (luckDice > 0 && pos == 10 && doubleNextRoll) {
-          luckDice--;
-          roll = 5;
-          
-        } else if (luckDice > 0 && pos == 10 && rollTwice) {
-          rollTwice = false;
-          luckDice--;
-          roll = 10;
-          
-        } else if (luckDice > 0 && pos != 15 && pos < 19 && pos >= 14) {
-          luckDice--;
-          roll = 20 - pos;
-          
-        } else if (luckDice > 0 && ordDice <= 1 && pos == 19) {
-          luckDice--;
-          roll = 6;
-          
-        } else if (luckDice > 0 && ordDice <= 3 && pos == 20) {
-          luckDice--;
-          roll = 5;
-          
-        } else if (luckDice > 0 && ordDice <= 3 && pos == 0) {
-          luckDice--;
-          roll = 5;
-          
-        } else if (luckDice > 0 && ordDice <= 2 && pos == 1) {
-          luckDice--;
-          roll = 4;
-          
-        } else if (luckDice > 0 && ordDice <= 1 && pos == 2) {
-          luckDice--;
-          roll = 3;
-          
-        } else if (ordDice == 0) {
-          luckDice--;
-          if (pos == 15) {
-            roll = 4;
-          } else if (pos == 10 && moveBackwards) {
-            roll = 1;
-          } else if (pos == 20) {
-            roll = 5;
-          } else if (pos < 5) {
-            roll = 5 - pos;
-          } else {
-            roll = 6;
-          }
-          
-        } else {
-          ordDice--;
-          roll = Math.floor(Math.random() * 6 + 1);
-          
-          if (rollTwice) {
-            rollTwice = false;
-            roll += Math.floor(Math.random() * 6 + 1);
-          }
-        }
+        decision = getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState);
+        
+        if (decision[2] == 0) { break; }
+        rollTwice = false;
+        ordDice = decision[0];
+        luckDice = decision[1];
+        roll = decision[2];
         
         // double next roll tarot active
         if (doubleNextRoll) {
@@ -371,6 +301,9 @@ function nextSimBlock() {
         }
       }
       
+      // convert unused dice to stars
+      stars += (ordDice + luckDice) * 2;
+      
       
       // update results
       totalStars += stars;
@@ -450,5 +383,175 @@ function updateValues() {
       runningSum += expValue;
       document.getElementById("value" + i).innerHTML = expValue;
     }
+  }
+}
+
+
+function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState) {
+  var nextTier;
+  var roll = 0;
+  
+  // check stars needed for next tier
+  if (ordDice < 5) {
+    if ((stars % 300) < 80) {
+      nextTier = 80 - (stars % 300);
+    } else {
+      nextTier = 30 - (((stars % 300) - 80) % 30);
+    }
+    
+    if ((ordDice + luckDice) * 2 >= nextTier) {
+      return [ordDice, luckDice, roll];
+    }
+  }
+  
+  // decide which dice to use
+  if (luckDice > 1 && boardState[18] < 5 && pos < 18 && pos >= 12) {
+    // use lucky to upgrade mushroom 3
+    luckDice--;
+    roll = 18 - pos;
+    
+  } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] < 5 && pos < 11 && pos >= 5) {
+    // use lucky to upgrade mushroom 2 if mushroom 3 is maxed
+    luckDice--;
+    roll = 11 - pos;
+    
+  } else if (luckDice > 1 && boardState[18] == 5 && boardState[4] < 5 && pos < 4) {
+    // use lucky to upgrade mushroom 1 if mushroom 3 is maxed
+    luckDice--;
+    roll = 4 - pos;
+    
+  } else if (luckDice > 1 && boardState[18] == 5 && boardState[4] < 5 && pos >= 19) {
+    // use lucky to upgrade mushroom 1 if mushroom 3 is maxed
+    luckDice--;
+    roll = 20 - pos + 4;
+    
+  } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] == 5 && pos < 3 ) {
+    // get free ordinary
+    luckDice--;
+    roll = 5 - pos;
+    
+  } else if (luckDice > 1 && boardState[18] == 5 && boardState[11] == 5 && boardState[4] == 5 && pos >= 19 ) {
+    // get free ordinary
+    luckDice--;
+    roll = 20 - pos + 5;
+    
+  } else if (luckDice > 0 && pos == 10 && doubleNextRoll) {
+    // get free lucky
+    luckDice--;
+    roll = 5;
+    
+  } else if (luckDice > 0 && pos == 10 && rollTwice) {
+    // get free lucky
+    luckDice--;
+    roll = 10;
+    
+  } else if (luckDice > 0 && pos != 15 && pos < 19 && pos >= 14) {
+    // get free lucky
+    luckDice--;
+    roll = 20 - pos;
+    
+  } else if (luckDice > 0 && ordDice <= 1 && pos == 19) {
+    // get free ordinary
+    luckDice--;
+    roll = 6;
+    
+  } else if (luckDice > 0 && ordDice <= 3 && pos == 20) {
+    // get free ordinary
+    luckDice--;
+    roll = 5;
+    
+  } else if (luckDice > 0 && ordDice <= 3 && pos == 0) {
+    // get free ordinary
+    luckDice--;
+    roll = 5;
+    
+  } else if (luckDice > 0 && ordDice <= 2 && pos == 1) {
+    // get free ordinary
+    luckDice--;
+    roll = 4;
+    
+  } else if (luckDice > 0 && ordDice <= 1 && pos == 2) {
+    // get free ordinary
+    luckDice--;
+    roll = 3;
+    
+  } else if (ordDice == 0) {
+    // out of ordinary dice
+    if (pos == 10 && moveBackwards) {
+      if (luckDice > 1) {
+        // move backwards tarot active, minimize damage
+        roll = 1;
+      } else {
+        // no progress can be made, just save last dice
+        return [ordDice, luckDice, roll];
+      }
+    } else if (pos == 20) {
+      // get free ordinary
+      roll = 5;
+    } else if (pos < 5) {
+      // get free ordinary 
+      roll = 5 - pos;
+    } else {
+      if (luckDice > 1 || (pos != 4 && pos != 11)) {
+        // move as far as possible
+        roll = 6;
+      } else {
+        // no progress can be made, just save last dice
+        return [ordDice, luckDice, roll];
+      }
+    }
+    luckDice--;
+    
+  } else {
+    // roll an ordinary dice
+    ordDice--;
+    roll = Math.floor(Math.random() * 6 + 1);
+    
+    if (rollTwice) {
+      roll += Math.floor(Math.random() * 6 + 1);
+    }
+  }
+  
+  return [ordDice, luckDice, roll];
+}
+
+
+function updateStrat() {
+  // get starting conditions
+  var ordDice = parseInt(document.getElementById("ordinary").value);
+  var luckDice = parseInt(document.getElementById("lucky").value);
+  var stars = parseInt(document.getElementById("stars").value);
+  var pos = parseInt(document.getElementById("startPos").value);
+  var mushroom1 = parseInt(document.getElementById("mushroom1").value);
+  var mushroom2 = parseInt(document.getElementById("mushroom2").value);
+  var mushroom3 = parseInt(document.getElementById("mushroom3").value);
+  var moveBackwards = false;
+  var doubleNextRoll = false;
+  var rollTwice = false;
+  var boardState = [0, 0, 0, 0, 2 + mushroom1, 0, 0, 0, 0, 0, 0, 2 + mushroom2, 0, 0, 0, 0, 0, 0, 2 + mushroom3, 0, 0];
+  var decision;
+  
+  switch (document.getElementById("activeTarot").value) {
+    case "MoveBackwards":
+      moveBackwards = true;
+      break;
+      
+    case "DoubleNextRoll":
+      doubleNextRoll = true;
+      break;
+      
+    case "RollTwice":
+      rollTwice = true;
+      break;
+  }
+
+  decision = getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState);
+  
+  if (decision[2] == 0) {
+    document.getElementById("strategy").innerHTML = "Simulator's Next Move: Don't use any dice and let them convert to stars";
+  } else if (decision[1] == luckDice) {
+    document.getElementById("strategy").innerHTML = "Simulator's Next Move: Use ordinary dice";
+  } else {
+    document.getElementById("strategy").innerHTML = "Simulator's Next Move: Use lucky dice to roll " + decision[2].toString();
   }
 }

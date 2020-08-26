@@ -75,11 +75,11 @@
   <p>
     <div class="row">
       <div class="column">
-        <div class="row"><div class="column"><label for="ordinary">Ordinary Dice: </label></div><div class="column"><input type="text" onchange="storeLocal(this);" id="ordinary" size="2" value="78"></input></div></div>
-        <div class="row"><div class="column"><label for="lucky">Lucky Dice: </label></div><div class="column"><input type="text" onchange="storeLocal(this);"  id="lucky" size="2" value="0"></input></div></div>
-        <div class="row"><div class="column"><label for="stars">Starting Stars: </label></div><div class="column"><input type="text" onchange="updateValues(); storeLocal(this);" id="stars" size="3" value="0"></input></div></div>
+        <div class="row"><div class="column"><label for="ordinary">Ordinary Dice: </label></div><div class="column"><input type="text" onchange="storeLocal(this); updateStrat();" id="ordinary" size="2" value="78"></input></div></div>
+        <div class="row"><div class="column"><label for="lucky">Lucky Dice: </label></div><div class="column"><input type="text" onchange="storeLocal(this); updateStrat();"  id="lucky" size="2" value="0"></input></div></div>
+        <div class="row"><div class="column"><label for="stars">Starting Stars: </label></div><div class="column"><input type="text" onchange="updateValues(); storeLocal(this); updateStrat();" id="stars" size="3" value="0"></input></div></div>
         
-        <div class="row"><div class="column"><label for="startPos">Starting Position: </label></div><div class="column"><select id="startPos" onchange="storeLocal(this);" value="0">
+        <div class="row"><div class="column"><label for="startPos">Starting Position: </label></div><div class="column"><select id="startPos" onchange="storeLocal(this); updateStrat();" value="0">
           <option value="0">Start</option>
           <option value="1">Spirit Workshop 1</option>
           <option value="2">Promotion Stone Workshop 1</option>
@@ -105,25 +105,25 @@
       </div>
     
       <div class="column">
-        <div class="row"><div class="column"><label for="mushroom1">First Starry Mushroom Level: </label></div><div class="column"><select id="mushroom1" onchange="storeLocal(this);" value="1">
+        <div class="row"><div class="column"><label for="mushroom1">First Starry Mushroom Level: </label></div><div class="column"><select id="mushroom1" onchange="storeLocal(this); updateStrat();" value="1">
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
         </select></div></div>
         
-        <div class="row"><div class="column"><label for="mushroom2">Second Starry Mushroom Level: </label></div><div class="column"><select id="mushroom2" onchange="storeLocal(this);" value="1">
+        <div class="row"><div class="column"><label for="mushroom2">Second Starry Mushroom Level: </label></div><div class="column"><select id="mushroom2" onchange="storeLocal(this); updateStrat();" value="1">
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
         </select></div></div>
         
-        <div class="row"><div class="column"><label for="mushroom3">Third Starry Mushroom Level: </label></div><div class="column"><select id="mushroom3" onchange="storeLocal(this);" value="1">
+        <div class="row"><div class="column"><label for="mushroom3">Third Starry Mushroom Level: </label></div><div class="column"><select id="mushroom3" onchange="storeLocal(this); updateStrat();" value="1">
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
         </select></div></div>
         
-        <div class="row"><div class="column"><label for="">Active Tarot: </label></div><div class="column"><select id="activeTarot" onchange="storeLocal(this);" value="0">
+        <div class="row"><div class="column"><label for="">Active Tarot: </label></div><div class="column"><select id="activeTarot" onchange="storeLocal(this); updateStrat();" value="0">
           <option value="None">None</option>
           <option value="DoubleNextRoll">Double Next Roll</option>
           <option value="RollTwice">Roll Two Dice on Next Roll</option>
@@ -132,6 +132,8 @@
         </select></div></div>
       </div>
     </div>
+      
+    <div class="total" id="strategy">&nbsp;</div>
     
     <div><input type="submit" value="Run a Million Simulations" onclick="runImpSim();"></input></div>
   </p>
