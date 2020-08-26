@@ -6562,8 +6562,8 @@ class KingBarton extends hero {
         result += this.getBuff(this, "Attack Percent", 1, {attackPercent: 0.30});
         
         for (let h in targets) {
-          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.5, "passive", "normal");
-          result += targets[i].takeDamage(this, "The Call of the King", damageResult);
+          damageResult = this.calcDamage(targets[h], this._currentStats["totalAttack"] * 1.5, "passive", "normal");
+          result += targets[h].takeDamage(this, "The Call of the King", damageResult);
         }
         
         break;
