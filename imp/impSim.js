@@ -405,7 +405,7 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
   }
   
   // decide which dice to use
-  if (luckDice > 1 && boardState[18] < 5 && pos < 18 && pos >= 12) {
+  if (luckDice > 1 && boardState[18] < 5 && pos < 18 && pos >= 12 && pos != 15) {
     // use lucky to upgrade mushroom 3
     luckDice--;
     roll = 18 - pos;

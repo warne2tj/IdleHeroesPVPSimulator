@@ -145,10 +145,10 @@ var seededHeroes = {
     allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"','"Vitality", "Vitality2", "Resilience", "Vitality", "UnbendingWill"']
   },
   "Rogan": {
-    allowedArtifacts: ["Augustus Magic Ball","Golden Crown","Demon Bell","Wildfire Torch"],
-    allowedStones: ["Speed, HP","HP, HP"],
+    allowedArtifacts: ["Augustus Magic Ball","Golden Crown","Demon Bell","Ruyi Scepter","Wildfire Torch"],
+    allowedStones: ["Speed, HP","Speed, Attack","HP, HP"],
     allowedEquipments: ["Class Gear"],
-    allowedEnables: ['"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"','"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"']
+    allowedEnables: ['"Growth", "Vitality2", "Purify", "Growth", "UnbendingWill"','"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"']
   },
   "Russell": {
     allowedArtifacts: ["Augustus Magic Ball","Golden Crown","Demon Bell","Wildfire Torch"],
@@ -205,10 +205,10 @@ var seededHeroes = {
     allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"']
   },
   "Ignis": {
-    allowedArtifacts: ["Augustus Magic Ball","Golden Crown","Demon Bell","Wildfire Torch"],
-    allowedStones: ["Speed, HP"],
-    allowedEquipments: ["Class Gear","Split HP"],
-    allowedEnables: ['"Growth", "Vitality2", "Purify", "Growth", "UnbendingWill"']
+    allowedArtifacts: ["Augustus Magic Ball","Golden Crown","Ruyi Scepter","Wildfire Torch"],
+    allowedStones: ["Speed, HP","HP, HP"],
+    allowedEquipments: ["Split HP"],
+    allowedEnables: ['"Growth", "Vitality2", "Purify", "Growth", "UnbendingWill"','"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"']
   },
   "Heart Watcher": {
     allowedArtifacts: ["Augustus Magic Ball","Staff Punisher of Immortal","Golden Crown","Ruyi Scepter","Wildfire Torch"],
