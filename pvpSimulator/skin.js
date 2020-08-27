@@ -226,5 +226,12 @@ var skins = {
   "King Barton": {
     "Golden Age": {hpPercent: 0.03, attackPercent: 0.03, holyDamage: 0.05},
     "Legendary Golden Age": {hpPercent: 0.06, attackPercent: 0.06, holyDamage: 0.08}
+  },
+  
+  "Xia": {
+    "Mulan": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
+    "Legendary Mulan": {controlImmune: 0.06, critDamage: 0.10, hpPercent: 0.06},
+    "Sword of Storms": {damageReduce: 0.04, block: 0.04, holyDamage: 0.06},
+    "Legendary Sword of Storms": {damageReduce: 0.05, block: 0.06, holyDamage: 0.10}
   }
 };

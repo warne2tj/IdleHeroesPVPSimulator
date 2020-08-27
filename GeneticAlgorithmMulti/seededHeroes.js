@@ -221,5 +221,11 @@ var seededHeroes = {
     allowedStones: ["Attack, Attack, Holy","HP, Attack"],
     allowedEquipments: ["Class Gear"],
     allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"','"Mightiness", "Shelter", "Purify", "Mightiness", "UnbendingWill"']
-  }
+  },
+  "Xia": {
+    allowedArtifacts: ["Augustus Magic Ball","Golden Crown","Wildfire Torch"],
+    allowedStones: ["HP, HP"],
+    allowedEquipments: ["Split HP"],
+    allowedEnables: ['"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"']
+  }  
 };

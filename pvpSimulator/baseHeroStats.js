@@ -608,5 +608,21 @@ var baseHeroStats = {
       growArmor: 6,
       growSpeed: 2
     }
+  },
+  
+  "Xia": {
+    className: Xia,
+    heroFaction: "Fortress",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 8573,
+      baseAttack: 528,
+      baseArmor: 61,
+      baseSpeed: 245,
+      growHP: 857.3,
+      growAttack: 52.8,
+      growArmor: 6.1,
+      growSpeed: 2
+    }
   }
 };

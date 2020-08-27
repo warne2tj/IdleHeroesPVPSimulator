@@ -4530,3 +4530,107 @@ class KingBarton extends hero {
     return result;
   }
 }
+
+
+// Xia
+class Xia extends hero {
+  passiveStats() {
+    // apply Shadow Step passive
+    this.applyStatChange({attackPercent: 0.35, crit: 0.35, block: 0.70, controlImmune: 0.35, speed: 30}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (trigger[1] == "eventSelfActive" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventSelfActive();
+    } else if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventSelfBasic();
+    } else if (trigger[1] == "eventEnemyDied" && trigger[2].heroDesc() == this.heroDesc() && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventEnemyDied();
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic() {
+    var result = "";
+    result += this.getBuff(this, "Aggression", 4, {});
+    result += this.getBuff(this, "Aggression", 4, {});
+    return result;
+  }
+  
+  
+  eventSelfActive() {
+    var result = "";
+    var targets;
+    var damageResult;
+    
+    if ("Aggression" in this._buffs) {
+      for (let s of Object.values(this._buffs["Aggression"])) {
+        targets = getLowestHPTargets(this, this._enemies);
+        
+        for (let i in targets) {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.38, "passive", "normal");
+          result += targets[i].takeDamage(this, "Aggression", damageResult);
+      
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.76, "passive", "bleed", 1, 1, 2);
+            result += targets[i].getDebuff(this, "Bleed", 2, {bleed: damageResult["damageAmount"]}, false, "passive");
+          }
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyDied() {
+    var healAmount = this.calcHeal(this, this._stats["totalHP"]);
+    var result = this.getHeal(this, healAmount);
+    return result;
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = super.takeDamage(source, strAttackDesc, damageResult);
+    
+    if (damageResult["blocked"] == true) {
+      result += this.getBuff(this, "Aggression", 4, {});
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var bleedDamageResult = {damageAmount: 0};
+    var targets = getLowestHPTargets(this, this._enemies);
+    var targetLock;
+    
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3.96);
+        result += targets[i].takeDamage(this, "Whirlwind Sweep", damageResult);
+      
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 2.9, 1, 2);
+          result += targets[i].getDebuff(this, "Bleed", 2, {bleed: bleedDamageResult["damageAmount"]}, false, "active");
+        }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + bleedDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+}

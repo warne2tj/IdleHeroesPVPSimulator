@@ -6632,6 +6632,110 @@ class KingBarton extends hero {
   }
 }
 
+
+// Xia
+class Xia extends hero {
+  passiveStats() {
+    // apply Shadow Step passive
+    this.applyStatChange({attackPercent: 0.35, crit: 0.35, block: 0.70, controlImmune: 0.35, speed: 30}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (trigger[1] == "eventSelfActive" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventSelfActive();
+    } else if (trigger[1] == "eventSelfBasic" && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventSelfBasic();
+    } else if (trigger[1] == "eventEnemyDied" && trigger[2].heroDesc() == this.heroDesc() && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventEnemyDied();
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfBasic() {
+    var result = "";
+    result += this.getBuff(this, "Aggression", 4, {});
+    result += this.getBuff(this, "Aggression", 4, {});
+    return result;
+  }
+  
+  
+  eventSelfActive() {
+    var result = "";
+    var targets;
+    var damageResult;
+    
+    if ("Aggression" in this._buffs) {
+      for (let s of Object.values(this._buffs["Aggression"])) {
+        targets = getLowestHPTargets(this, this._enemies);
+        
+        for (let i in targets) {
+          damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.38, "passive", "normal");
+          result += targets[i].takeDamage(this, "Aggression", damageResult);
+      
+          if (targets[i]._currentStats["totalHP"] > 0) {
+            damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 1.76, "passive", "bleed", 1, 1, 2);
+            result += targets[i].getDebuff(this, "Bleed", 2, {bleed: damageResult["damageAmount"]}, false, "passive");
+          }
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyDied() {
+    var healAmount = this.calcHeal(this, this._stats["totalHP"]);
+    var result = this.getHeal(this, healAmount);
+    return result;
+  }
+  
+  
+  takeDamage(source, strAttackDesc, damageResult) {
+    var result = super.takeDamage(source, strAttackDesc, damageResult);
+    
+    if (damageResult["blocked"] == true) {
+      result += this.getBuff(this, "Aggression", 4, {});
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    var result = "";
+    var damageResult = {};
+    var bleedDamageResult = {damageAmount: 0};
+    var targets = getLowestHPTargets(this, this._enemies);
+    var targetLock;
+    
+    
+    for (let i in targets) {
+      targetLock = targets[i].getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "normal", 3.96);
+        result += targets[i].takeDamage(this, "Whirlwind Sweep", damageResult);
+      
+        if (targets[i]._currentStats["totalHP"] > 0) {
+          bleedDamageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"], "active", "bleed", 2.9, 1, 2);
+          result += targets[i].getDebuff(this, "Bleed", 2, {bleed: bleedDamageResult["damageAmount"]}, false, "active");
+        }
+        
+        activeQueue.push([this, targets[i], damageResult["damageAmount"] + bleedDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -7986,6 +8090,13 @@ var skins = {
   "King Barton": {
     "Golden Age": {hpPercent: 0.03, attackPercent: 0.03, holyDamage: 0.05},
     "Legendary Golden Age": {hpPercent: 0.06, attackPercent: 0.06, holyDamage: 0.08}
+  },
+  
+  "Xia": {
+    "Mulan": {controlImmune: 0.05, critDamage: 0.05, hpPercent: 0.03},
+    "Legendary Mulan": {controlImmune: 0.06, critDamage: 0.10, hpPercent: 0.06},
+    "Sword of Storms": {damageReduce: 0.04, block: 0.04, holyDamage: 0.06},
+    "Legendary Sword of Storms": {damageReduce: 0.05, block: 0.06, holyDamage: 0.10}
   }
 };
 
@@ -8764,6 +8875,22 @@ var baseHeroStats = {
       growHP: 793.7,
       growAttack: 35.7,
       growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Xia": {
+    className: Xia,
+    heroFaction: "Fortress",
+    heroClass: "Assassin",
+    stats: {
+      baseHP: 8573,
+      baseAttack: 528,
+      baseArmor: 61,
+      baseSpeed: 245,
+      growHP: 857.3,
+      growAttack: 52.8,
+      growArmor: 6.1,
       growSpeed: 2
     }
   }
