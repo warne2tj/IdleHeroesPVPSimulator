@@ -247,7 +247,7 @@ function nextSimBlock() {
             // tarot card
             tarot = Math.floor(Math.random() * 9 + 1);
             
-            if (tarot == 1) {
+            /*if (tarot == 1) {
               potentials = [];
               if (boardState[4] < 5) { potentials.push([4, Math.random()]); }
               if (boardState[11] < 5) { potentials.push([11, Math.random()]); }
@@ -283,7 +283,7 @@ function nextSimBlock() {
                 boardState[potentials[0][0]]--;
               }
               
-            } else if (tarot == 3) {
+            } else*/ if (tarot == 3) {
               moveBackwards = true;
             } else if (tarot == 5) {
               doubleStars = true;
