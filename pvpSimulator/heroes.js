@@ -1345,6 +1345,27 @@ class hero {
                   }
                 }
               }
+              
+              if (b == "Revenging Wraith") {
+                const debuffStack = this._debuffs[b][s];
+                let damageAmount = Math.floor(this._stats.totalHP * 0.30);
+                if (damageAmount > debuffStack.effects.attackAmount * 25) damageAmount = debuffStack.effects.attackAmount * 25;
+                
+                damageResult = debuffStack.source.calcDamage(this, damageAmount, "passive", "true");
+                result += this.takeDamage(debuffStack.source, "Revenging Wraith", damageResult);
+                
+                if (this._currentStats.totalHP <= 0) {
+                  const targets = getAllTargets(this, this._allies);
+                  
+                  for (const t of targets) {
+                    damageAmount = Math.floor(t._stats.totalHP * 0.30);
+                    if (damageAmount > debuffStack.effects.attackAmount * 25) damageAmount = debuffStack.effects.attackAmount * 25;
+                    
+                    damageResult = debuffStack.source.calcDamage(t, damageAmount, "passive", "true");
+                    result += t.takeDamage(debuffStack.source, "Revenging Wraith", damageResult);
+                  }
+                }
+              }
             }
           }
         }

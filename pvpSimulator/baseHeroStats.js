@@ -578,6 +578,22 @@ var baseHeroStats = {
     }
   },
   
+  "Tix": {
+    className: Tix,
+    heroFaction: "Shadow",
+    heroClass: "Mage",
+    stats: {
+      baseHP: 7587,
+      baseAttack: 433,
+      baseArmor: 63,
+      baseSpeed: 226,
+      growHP: 758.7,
+      growAttack: 43.3,
+      growArmor: 6.3,
+      growSpeed: 2
+    }
+  },
+  
   "UniMax-3000": {
     className: UniMax3000,
     heroFaction: "Fortress",

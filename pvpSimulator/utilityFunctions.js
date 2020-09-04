@@ -589,3 +589,40 @@ var translate = {
   "reflectAmount": "Link Damage Tracker",
   "damageAgainstStun": "Damage Dealt to Stunned Targets"
 };
+
+
+function getHighestAttackTargets(source, arrTargets, num=6) {
+  // get living target with highest current attack
+  let copyTargets = [];
+  let copyTargets2 = [];
+  let count = 0;
+  
+  copyTargets = getTauntedTargets(source, arrTargets, num);
+  if (copyTargets.length > 0) { return copyTargets; }
+  
+  for (const t of arrTargets) {
+    if (t._currentStats.totalHP > 0) {
+      copyTargets.push(t);
+    }
+  }
+  
+  copyTargets.sort(function(a,b) {
+    if (a._currentStats.totalAttack > b._currentStats.totalAttack) {
+      return -1;
+    } else if (a._currentStats.totalAttack < b._currentStats.totalAttack) {
+      return 1;
+    } else if (a._heroPos < b._heroPos) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+  
+  for (const t of copyTargets) {
+    copyTargets2.push(t);
+    count++;
+    if (count == num) { break; }
+  }
+  
+  return copyTargets2;
+}

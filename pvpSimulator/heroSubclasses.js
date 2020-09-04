@@ -1189,8 +1189,9 @@ class Elyvia extends hero {
           speedDiff = targets[i]._currentStats["speed"] - this._currentStats["speed"];
           result += this.getBuff(this, "Exchange, Not Steal!", 1, {speed: speedDiff});
           result += targets[i].getDebuff(this, "Exchange, Not Steal!", 1, {speed: speedDiff});
+          
+          break;
         }
-        break;
       }
       
       
@@ -4418,7 +4419,7 @@ class HeartWatcher extends hero {
         result += targets[i].takeDamage(this, "Mind Torture", damageResult);
         activeQueue.push([this, targets[i], damageResult["damageAmount"], damageResult["critted"]]);
         
-        reduceAttackAmount = Math.floor(0.25 * targets[i]._stats["totalAttack"]);
+        reduceAttackAmount = Math.floor(0.25 * targets[i]._stats["attack"]);
         result += targets[i].getDebuff(this, "Attack", 2, {attack: reduceAttackAmount});
         
         wmAmount = this.getWatcherMarkAmount(targets[i], 0.45);
@@ -4628,6 +4629,129 @@ class Xia extends hero {
         }
         
         activeQueue.push([this, targets[i], damageResult["damageAmount"] + bleedDamageResult["damageAmount"], damageResult["critted"]]);
+      }
+    }
+    
+    return result;
+  }
+}
+
+
+// Tix
+class Tix extends hero {
+  passiveStats() {
+    // apply Coffin of Nothingness passive
+    this.applyStatChange({hpPercent: 0.35, crit: 0.30, controlImmune: 0.30, speed: 60}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    var result = super.handleTrigger(trigger);
+    
+    if (trigger[1] == "eventSelfDied") {
+      if (!isMonster(trigger[2])) result += this.eventSelfDied(trigger[2]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventSelfDied(target) {
+    return target.getDebuff(this, "Revenging Wraith", 15, {attackAmount: this._currentStats["totalAttack"]});
+  }
+  
+  
+  endOfRound(roundNum) {
+    var result = "";
+    
+    if (this._currentStats["totalHP"] > 0) {
+      var targets = getRandomTargets(this, this._enemies);
+      var attDiff = 0;
+      const maxDiff = this._currentStats["totalAttack"] * 3;
+      
+      for (var i in targets) {
+        if (targets[i]._currentStats["totalAttack"] > this._currentStats["totalAttack"]) {
+          result += "<div>" + this.heroDesc() + " <span class='skill'>Nether Touch</span> swapped attack with " + targets[i].heroDesc() + ".</div>";
+          
+          attDiff = targets[i]._currentStats["totalAttack"] - this._currentStats["totalAttack"];
+          if (attDiff > maxDiff) attDiff = maxDiff;
+          
+          result += this.getBuff(this, "Nether Touch", 1, {fixedAttack: attDiff});
+          result += targets[i].getDebuff(this, "Nether Touch", 1, {fixedAttack: attDiff});
+          
+          break;
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doBasic() { 
+    let result = "";
+    let damageResult;
+    let damageResult2 = {damageAmount: 0, critted: false};
+    const targets = getHighestAttackTargets(this, this._enemies, 1);
+    
+    for (const t of targets) {
+      const targetLock = t.getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(t, this._currentStats.totalAttack * 1.8, "basic", "normal");
+        result += t.takeDamage(this, "Basic Attack", damageResult);
+        
+        if (t._currentStats.totalHP > 0) {
+          damageResult2 = this.calcDamage(t, t._currentStats.totalAttack * 6, "basic", "normal");
+          result += t.takeDamage(this, "Basic Attack 2", damageResult2);
+        }
+        
+        const reduceAttackAmount = Math.floor(0.40 * t._stats.attack);
+        result += t.getDebuff(this, "Attack", 2, {attack: reduceAttackAmount});
+        
+        basicQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount, damageResult.critted || damageResult2.critted]);
+      }
+    }
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    let result = "";
+    let damageResult;
+    let damageResult2 = {damageAmount: 0, critted: false};
+    const targets = getRandomTargets(this, this._enemies, 4);
+    
+    for (const t of targets) {
+      const targetLock = t.getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(t, this._currentStats.totalAttack, "active", "normal", 8);
+        result += t.takeDamage(this, "Soul Explosion", damageResult);
+        
+        if (t._currentStats.totalHP > 0) {
+          damageResult2 = this.calcDamage(t, t._currentStats.totalAttack, "active", "normal", 8);
+          result += t.takeDamage(this, "Soul Explosion 2", damageResult2);
+        }
+        
+        
+        const attackStolen = Math.floor(t._currentStats.totalAttack * 0.25);
+        result += t.getDebuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
+        result += this.getBuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
+        
+        
+        if (t._currentStats.energy >= 90) {
+          result += t.getDebuff(this, "Silence", 2, {}, false, "", 0.50);
+        }
+        
+        if (t._currentStats.energy < 90) {
+          result += t.getDebuff(this, "Horrify", 2, {}, false, "", 0.50);
+        }
+      
+        activeQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount, damageResult.critted || damageResult2.critted]);
       }
     }
     

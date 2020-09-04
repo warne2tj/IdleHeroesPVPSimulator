@@ -233,5 +233,10 @@ var skins = {
     "Legendary Mulan": {controlImmune: 0.06, critDamage: 0.10, hpPercent: 0.06},
     "Sword of Storms": {damageReduce: 0.04, block: 0.04, holyDamage: 0.06},
     "Legendary Sword of Storms": {damageReduce: 0.05, block: 0.06, holyDamage: 0.10}
+  },
+  
+  "Tix": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
   }
 };
