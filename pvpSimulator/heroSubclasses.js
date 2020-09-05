@@ -4571,7 +4571,7 @@ class Xia extends hero {
     
     if ("Aggression" in this._buffs) {
       for (let s of Object.values(this._buffs["Aggression"])) {
-        targets = getLowestHPTargets(this, this._enemies);
+        targets = getLowestHPTargets(this, this._enemies, 1);
         
         for (let i in targets) {
           damageResult = this.calcDamage(targets[i], this._currentStats["totalAttack"] * 2.38, "passive", "normal");
@@ -4599,7 +4599,7 @@ class Xia extends hero {
   takeDamage(source, strAttackDesc, damageResult) {
     var result = super.takeDamage(source, strAttackDesc, damageResult);
     
-    if (damageResult["blocked"] == true) {
+    if (damageResult["blocked"] == true && this.isNotSealed()) {
       result += this.getBuff(this, "Aggression", 4, {});
     }
     
@@ -4611,7 +4611,7 @@ class Xia extends hero {
     var result = "";
     var damageResult = {};
     var bleedDamageResult = {damageAmount: 0};
-    var targets = getLowestHPTargets(this, this._enemies);
+    var targets = getLowestHPTargets(this, this._enemies, 1);
     var targetLock;
     
     
@@ -4664,7 +4664,7 @@ class Tix extends hero {
   endOfRound(roundNum) {
     var result = "";
     
-    if (this._currentStats["totalHP"] > 0) {
+    if (this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
       var targets = getRandomTargets(this, this._enemies);
       var attDiff = 0;
       const maxDiff = this._currentStats["totalAttack"] * 3;
