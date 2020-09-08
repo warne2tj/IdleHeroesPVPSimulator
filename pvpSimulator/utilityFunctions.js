@@ -105,7 +105,9 @@ function isMonster(source) {
 
 
 function isDispellable(strName) {
-  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", "Demon Totem", "Shrink", "Shield", "Feather Blade", "Drake Break Defense", "Wildfire Torch Dot"].includes(strName)) {
+  if (["Seal of Light", "Power of Light", "Ghost Possessed", "Link of Souls", 
+    "Demon Totem", "Shrink", "Shield", "Feather Blade", "Drake Break Defense", 
+    "Wildfire Torch Dot", "Revenging Wraith"].includes(strName)) {
     return false;
   } else {
     return true;
