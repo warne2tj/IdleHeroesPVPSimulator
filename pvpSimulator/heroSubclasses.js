@@ -4703,12 +4703,14 @@ class Tix extends hero {
         result += t.takeDamage(this, "Basic Attack", damageResult);
         
         if (t._currentStats.totalHP > 0) {
-          damageResult2 = this.calcDamage(t, t._currentStats.totalAttack * 6, "basic", "normal");
+          damageResult2 = this.calcDamage(t, t._currentStats.totalAttack * 6, "basic", "true");
           result += t.takeDamage(this, "Basic Attack 2", damageResult2);
         }
         
-        const reduceAttackAmount = Math.floor(0.40 * t._stats.attack);
-        result += t.getDebuff(this, "Attack", 2, {attack: reduceAttackAmount});
+        if (t._currentStats.totalHP > 0) {
+          const reduceAttackAmount = Math.floor(0.40 * t._stats.attack);
+          result += t.getDebuff(this, "Attack", 2, {attack: reduceAttackAmount});
+        }
         
         basicQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount, damageResult.critted || damageResult2.critted]);
       }
@@ -4733,14 +4735,15 @@ class Tix extends hero {
         result += t.takeDamage(this, "Soul Explosion", damageResult);
         
         if (t._currentStats.totalHP > 0) {
-          damageResult2 = this.calcDamage(t, t._currentStats.totalAttack, "active", "normal", 8);
+          damageResult2 = this.calcDamage(t, t._currentStats.totalAttack, "active", "true", 8);
           result += t.takeDamage(this, "Soul Explosion 2", damageResult2);
         }
         
-        
-        const attackStolen = Math.floor(t._currentStats.totalAttack * 0.25);
-        result += t.getDebuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
-        result += this.getBuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
+        if (t._currentStats.totalHP > 0) {
+          const attackStolen = Math.floor(t._currentStats.totalAttack * 0.25);
+          result += t.getDebuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
+          result += this.getBuff(this, "Fixed Attack", 3, {fixedAttack: attackStolen});
+        }
         
         
         if (t._currentStats.energy >= 90) {
