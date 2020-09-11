@@ -191,8 +191,8 @@ var skins = {
   },
   
   "Rogan": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
+    "Legion Mech": {damageReduce: 0.04, hpPercent: 0.05, attackPercent: 0.03},
+    "Legendary Legion Mech": {damageReduce: 0.05, hpPercent: 0.08, attackPercent: 0.06}
   },
   
   "Gerke": {
