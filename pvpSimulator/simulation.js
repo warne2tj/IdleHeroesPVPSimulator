@@ -542,6 +542,8 @@ function processQueue() {
           var targets = getAllTargets(copyQueue[i][0], copyQueue[i][0]._allies);
           var energyGain = 10;
           temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered energy gain.</div>";
+					
+					if (copyQueue[i][0]._artifact == 'Splendid Demon Bell') energyGain += 10;
           
           if (random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
             energyGain += 10;
@@ -566,7 +568,7 @@ function processQueue() {
               didCrit = true;
               
               damageAmount = copyQueue[i][2][e][1]._stats["totalHP"] * 0.12;
-              if (damageAmount > copyQueue[i][0]._currentStats["totalAttack"] * 15) { damageAmount = copyQueue[i][0]._currentStats["totalAttack"] * 15; }
+              if (damageAmount > copyQueue[i][0]._currentStats["totalAttack"] * 25) { damageAmount = copyQueue[i][0]._currentStats["totalAttack"] * 25; }
               
               damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], damageAmount, "passive", "true");
               temp += copyQueue[i][2][e][1].takeDamage(copyQueue[i][0], copyQueue[i][0]._artifact, damageResult);

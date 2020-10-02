@@ -1903,11 +1903,11 @@ class Ithaqua extends hero {
     
     for (var i in e) {
       if (e[i][1]._currentStats["totalHP"] > 0) {
-        damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poisonTrue");
+        damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poisonTrue", 1, 1, 2);
         result += e[i][1].getDebuff(this, "Poison True", 2, {poisonTrue: damageResult["damageAmount"]}, false, "passive");
         
         if (e[i][1]._currentStats["totalHP"] > 0 && e[i][3] == true) {
-          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleedTrue");
+          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleedTrue", 1, 1, 2);
           result += e[i][1].getDebuff(this, "Bleed True", 2, {bleedTrue: damageResult["damageAmount"]}, false, "passive");
         }
       }
@@ -4756,6 +4756,115 @@ class Tix extends hero {
       
         activeQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount, damageResult.critted || damageResult2.critted]);
       }
+    }
+    
+    return result;
+  }
+}
+
+
+// Flora
+class Flora extends hero {
+  passiveStats() {
+    // apply Blessings of Nature passive
+    this.applyStatChange({hpPercent: 0.40, attackPercent: 0.25, crit: 0.30, speed: 60}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    let result = super.handleTrigger(trigger);
+    
+    if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventEnemyActive(trigger[2], trigger[3]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyActive(target, e) {
+    let result = "";
+    
+    if (target._currentStats["totalHP"] > 0) {
+      for (const hero of e) {
+        if (this.heroDesc() == hero[1].heroDesc()) {
+					let stackCount = 0;
+					
+					if ('All Damage Dealt' in target._debuffs) {
+						stackCount = Object.keys(target._debuffs['All Damage Dealt']).length;
+					}
+					
+					if (stackCount < 3) {
+						result += target.getDebuff(this, "All Damage Dealt", 4, {allDamageDealt: 0.10});
+					}
+					
+          break;
+        }
+      }
+    }
+		
+		result += this.getBuff(this, "Attack Percent", 4, {attackPercent: 0.15});
+    
+    return result;
+  }
+  
+  
+  doBasic() { 
+    let result = "";
+    let damageResult;
+    let damageResult2 = {damageAmount: 0, critted: false};
+    const targets = getRandomTargets(this, this._enemies, 2);
+		const maxPoison = this._currentStats.totalAttack * 15;
+    
+    for (const t of targets) {
+      const targetLock = t.getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(t, this._currentStats.totalAttack * 1.6, "basic", "normal");
+        result += t.takeDamage(this, "Basic Attack", damageResult);
+        
+        if (t._currentStats.totalHP > 0) {
+					let poisonAmount = t._stats.totalHP * 0.15;
+					if (poisonAmount > maxPoison) poisonAmount = maxPoison;
+					
+					damageResult2 = this.calcDamage(t, poisonAmount, "basic", "poisonTrue", 1, 1, 2);
+					result += t.getDebuff(this, "Poison True", 2, {poisonTrue: damageResult2["damageAmount"]}, false, "basic");
+        }
+        
+        basicQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount, damageResult.critted || damageResult2.critted]);
+      }
+    }
+		
+		
+		const healAmount = this.calcHeal(this, this._stats.totalHP * 0.15);
+		result += this.getBuff(this, "Heal", 2, {heal: healAmount});
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    let result = "";
+		let damageMult = 4;
+		let twineChance = 0.30;
+    let damageResult;
+    const targets = getRandomTargets(this, this._enemies, 6);
+    
+    for (const t of targets) {
+      const targetLock = t.getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(t, this._currentStats.totalAttack, "active", "normal", damageMult);
+        result += t.takeDamage(this, "Flora's Pixie", damageResult);
+				result += t.getDebuff(this, "twine", 2, {}, false, "", twineChance);
+      
+        activeQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
+      }
+			
+			damageMult += 1;
+			twineChance += 0.05;
     }
     
     return result;

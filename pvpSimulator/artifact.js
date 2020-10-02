@@ -22,14 +22,14 @@ var artifacts = {
     stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
     limit: "",
     limitStats: {},
-    enhance: 0.045
+    enhance: 0.06
   },
 
   "Splendid Antlers Cane": {
     stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
     limit: "",
     limitStats: {},
-    enhance: 0.06
+    enhance: 0.09
   },
   
   "Augustus Magic Ball": {
@@ -69,21 +69,21 @@ var artifacts = {
     stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
     limit: "",
     limitStats: {},
-    enhance: 0.30
+    enhance: 0.50
   },
   
   "Radiant Demon Bell": {
     stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
     limit: "",
     limitStats: {},
-    enhance: 0.30
+    enhance: 1
   },
   
   "Splendid Demon Bell": {
     stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
     limit: "",
     limitStats: {},
-    enhance: 1
+    enhance: 0.50
   },
   
   "Golden Crown": {
@@ -129,14 +129,14 @@ var artifacts = {
     stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
     limit: "",
     limitStats: {},
-    enhance: 0.10
+    enhance: 0.15
   },
   
   "Splendid Lucky Candy Bar": {
     stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
     limit: "",
     limitStats: {},
-    enhance: 0.20
+    enhance: 0.30
   },
   
   "Magic Stone Sword": {
@@ -149,21 +149,21 @@ var artifacts = {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0.50
+    enhance: 0.45
   },
   
   "Radiant Magic Stone Sword": {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0.40
+    enhance: 0.35
   },
   
   "Splendid Magic Stone Sword": {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0.30
+    enhance: 0.25
   },
   
   "Ruyi Scepter": {
@@ -200,21 +200,21 @@ var artifacts = {
     stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
     limit: "",
     limitStats: {},
-    enhance: 0.06
+    enhance: 0.10
   },
   
   "Radiant Staff Punisher of Immortal": {
     stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
     limit: "",
     limitStats: {},
-    enhance: 0.12
+    enhance: 0.175
   },
   
   "Splendid Staff Punisher of Immortal": {
     stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
     limit: "",
     limitStats: {},
-    enhance: 0.18
+    enhance: 0.25
   },
   
   "The Kiss of Ghost": {
@@ -227,21 +227,21 @@ var artifacts = {
     stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
     limit: "",
     limitStats: {},
-    enhance: 0.15
+    enhance: 0.30
   },
   
   "Radiant The Kiss of Ghost": {
     stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
     limit: "",
     limitStats: {},
-    enhance: 0.30
+    enhance: 0.60
   },
   
   "Splendid The Kiss of Ghost": {
     stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
     limit: "",
     limitStats: {},
-    enhance: 0.45
+    enhance: 0.90
   },
   
   "Wildfire Torch": {

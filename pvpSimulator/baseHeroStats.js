@@ -258,6 +258,22 @@ var baseHeroStats = {
     }
   },
   
+  "Flora": {
+    className: Flora,
+    heroFaction: "Forest",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 7057,
+      baseAttack: 354,
+      baseArmor: 60,
+      baseSpeed: 226,
+      growHP: 705.7,
+      growAttack: 35.4,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
   "Garuda": {
     className: Garuda,
     heroFaction: "Forest",

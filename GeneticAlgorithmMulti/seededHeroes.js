@@ -233,5 +233,11 @@ var seededHeroes = {
     allowedStones: ["Speed, HP","Crit, Crit, Attack","HP, HP"],
     allowedEquipments: ["Class Gear","Split HP"],
     allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"','"Growth", "Shelter", "Resilience", "Vitality", "UnbendingWill"']
-  }
+  },
+  "Flora": {
+    allowedArtifacts: ["Augustus Magic Ball","Golden Crown","Ruyi Scepter","Wildfire Torch"],
+    allowedStones: ["Speed, HP","Speed, Attack","HP, HP"],
+    allowedEquipments: ["Class Gear","Split HP"],
+    allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"','"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"']
+  },
 };

@@ -929,15 +929,15 @@ class hero {
     
     
     // status modifiers
-    if (target.hasStatus("Burn")) {
+    if (target.hasStatus("Burn") || target.hasStatus("Burn True")) {
       damageAgainstBurning += this._currentStats["damageAgainstBurning"];
     }
     
-    if (target.hasStatus("Bleed")) {
+    if (target.hasStatus("Bleed") || target.hasStatus("Bleed True")) {
       damageAgainstBleeding += this._currentStats["damageAgainstBleeding"];
     }
     
-    if (target.hasStatus("Poison")) {
+    if (target.hasStatus("Poison") || target.hasStatus("Poison True")) {
       damageAgainstPoisoned += this._currentStats["damageAgainstPoisoned"];
     }
     
@@ -3975,9 +3975,9 @@ class Ithaqua extends hero {
     var result = super.handleTrigger(trigger);
     
     if (["eventSelfBasic", "eventSelfActive"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
-      return this.eventSelfActive(trigger[2]);
+      result += this.eventSelfActive(trigger[2]);
     } else if (trigger[1] == "eventEnemyDied" && trigger[2].heroDesc() == this.heroDesc() && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
-      return this.eventEnemyDied();
+      result += this.eventEnemyDied();
     }
     
     return result;
@@ -4003,11 +4003,11 @@ class Ithaqua extends hero {
     
     for (var i in e) {
       if (e[i][1]._currentStats["totalHP"] > 0) {
-        damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poisonTrue");
+        damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "poisonTrue", 1, 1, 2);
         result += e[i][1].getDebuff(this, "Poison True", 2, {poisonTrue: damageResult["damageAmount"]}, false, "passive");
         
         if (e[i][1]._currentStats["totalHP"] > 0 && e[i][3] == true) {
-          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleedTrue");
+          damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, "passive", "bleedTrue", 1, 1, 2);
           result += e[i][1].getDebuff(this, "Bleed True", 2, {bleedTrue: damageResult["damageAmount"]}, false, "passive");
         }
       }
@@ -6862,6 +6862,115 @@ class Tix extends hero {
   }
 }
 
+
+// Flora
+class Flora extends hero {
+  passiveStats() {
+    // apply Blessings of Nature passive
+    this.applyStatChange({hpPercent: 0.40, attackPercent: 0.25, crit: 0.30, speed: 60}, "PassiveStats");
+  }
+  
+  
+  handleTrigger(trigger) {
+    let result = super.handleTrigger(trigger);
+    
+    if (["eventEnemyActive", "eventEnemyBasic"].includes(trigger[1]) && this._currentStats["totalHP"] > 0 && this.isNotSealed()) {
+      result += this.eventEnemyActive(trigger[2], trigger[3]);
+    }
+    
+    return result;
+  }
+  
+  
+  eventEnemyActive(target, e) {
+    let result = "";
+    
+    if (target._currentStats["totalHP"] > 0) {
+      for (const hero of e) {
+        if (this.heroDesc() == hero[1].heroDesc()) {
+					let stackCount = 0;
+					
+					if ('All Damage Dealt' in target._debuffs) {
+						stackCount = Object.keys(target._debuffs['All Damage Dealt']).length;
+					}
+					
+					if (stackCount < 3) {
+						result += target.getDebuff(this, "All Damage Dealt", 4, {allDamageDealt: 0.10});
+					}
+					
+          break;
+        }
+      }
+    }
+		
+		result += this.getBuff(this, "Attack Percent", 4, {attackPercent: 0.15});
+    
+    return result;
+  }
+  
+  
+  doBasic() { 
+    let result = "";
+    let damageResult;
+    let damageResult2 = {damageAmount: 0, critted: false};
+    const targets = getRandomTargets(this, this._enemies, 2);
+		const maxPoison = this._currentStats.totalAttack * 15;
+    
+    for (const t of targets) {
+      const targetLock = t.getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(t, this._currentStats.totalAttack * 1.6, "basic", "normal");
+        result += t.takeDamage(this, "Basic Attack", damageResult);
+        
+        if (t._currentStats.totalHP > 0) {
+					let poisonAmount = t._stats.totalHP * 0.15;
+					if (poisonAmount > maxPoison) poisonAmount = maxPoison;
+					
+					damageResult2 = this.calcDamage(t, poisonAmount, "basic", "poisonTrue", 1, 1, 2);
+					result += t.getDebuff(this, "Poison True", 2, {poisonTrue: damageResult2["damageAmount"]}, false, "basic");
+        }
+        
+        basicQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount, damageResult.critted || damageResult2.critted]);
+      }
+    }
+		
+		
+		const healAmount = this.calcHeal(this, this._stats.totalHP * 0.15);
+		result += this.getBuff(this, "Heal", 2, {heal: healAmount});
+    
+    return result;
+  }
+  
+  
+  doActive() { 
+    let result = "";
+		let damageMult = 4;
+		let twineChance = 0.30;
+    let damageResult;
+    const targets = getRandomTargets(this, this._enemies, 6);
+    
+    for (const t of targets) {
+      const targetLock = t.getTargetLock(this);
+      result += targetLock;
+      
+      if (targetLock == "") {
+        damageResult = this.calcDamage(t, this._currentStats.totalAttack, "active", "normal", damageMult);
+        result += t.takeDamage(this, "Flora's Pixie", damageResult);
+				result += t.getDebuff(this, "twine", 2, {}, false, "", twineChance);
+      
+        activeQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
+      }
+			
+			damageMult += 1;
+			twineChance += 0.05;
+    }
+    
+    return result;
+  }
+}
+
 /* End of heroSubclasses.js */
 
 
@@ -6891,14 +7000,14 @@ var artifacts = {
     stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
     limit: "",
     limitStats: {},
-    enhance: 0.045
+    enhance: 0.06
   },
 
   "Splendid Antlers Cane": {
     stats: {precision: .7, attackPercent: 0.25, skillDamage: 0.6},
     limit: "",
     limitStats: {},
-    enhance: 0.06
+    enhance: 0.09
   },
   
   "Augustus Magic Ball": {
@@ -6938,21 +7047,21 @@ var artifacts = {
     stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
     limit: "",
     limitStats: {},
-    enhance: 0.30
+    enhance: 0.50
   },
   
   "Radiant Demon Bell": {
     stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
     limit: "",
     limitStats: {},
-    enhance: 0.30
+    enhance: 1
   },
   
   "Splendid Demon Bell": {
     stats: {attackPercent: 0.18, hpPercent: 0.14, energy: 50},
     limit: "",
     limitStats: {},
-    enhance: 1
+    enhance: 0.50
   },
   
   "Golden Crown": {
@@ -6998,14 +7107,14 @@ var artifacts = {
     stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
     limit: "",
     limitStats: {},
-    enhance: 0.10
+    enhance: 0.15
   },
   
   "Splendid Lucky Candy Bar": {
     stats: {attackPercent: 0.22, hpPercent: 0.18, stunImmune: 1.0},
     limit: "",
     limitStats: {},
-    enhance: 0.20
+    enhance: 0.30
   },
   
   "Magic Stone Sword": {
@@ -7018,21 +7127,21 @@ var artifacts = {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0.50
+    enhance: 0.45
   },
   
   "Radiant Magic Stone Sword": {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0.40
+    enhance: 0.35
   },
   
   "Splendid Magic Stone Sword": {
     stats: {attackPercent: 0.21, damageReduce: 0.3, controlImmune: 0.25},
     limit: "",
     limitStats: {},
-    enhance: 0.30
+    enhance: 0.25
   },
   
   "Ruyi Scepter": {
@@ -7069,21 +7178,21 @@ var artifacts = {
     stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
     limit: "",
     limitStats: {},
-    enhance: 0.06
+    enhance: 0.10
   },
   
   "Radiant Staff Punisher of Immortal": {
     stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
     limit: "",
     limitStats: {},
-    enhance: 0.12
+    enhance: 0.175
   },
   
   "Splendid Staff Punisher of Immortal": {
     stats: {attackPercent: 0.21, crit: 0.15, critDamage: 0.5},
     limit: "",
     limitStats: {},
-    enhance: 0.18
+    enhance: 0.25
   },
   
   "The Kiss of Ghost": {
@@ -7096,21 +7205,21 @@ var artifacts = {
     stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
     limit: "",
     limitStats: {},
-    enhance: 0.15
+    enhance: 0.30
   },
   
   "Radiant The Kiss of Ghost": {
     stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
     limit: "",
     limitStats: {},
-    enhance: 0.30
+    enhance: 0.60
   },
   
   "Splendid The Kiss of Ghost": {
     stats: {attackPercent: 0.25, armorBreak: 1.0, hpPercent: 0.14},
     limit: "",
     limitStats: {},
-    enhance: 0.45
+    enhance: 0.90
   },
   
   "Wildfire Torch": {
@@ -8228,7 +8337,12 @@ var skins = {
   "Tix": {
     "Skin Placeholder": {},
     "Legendary Skin Placeholder": {}
-  }
+  },
+  
+  "Flora": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
+  },
 };
 
 /* End of skin.js */
@@ -8653,6 +8767,22 @@ var baseHeroStats = {
       baseSpeed: 235,
       growHP: 914.7,
       growAttack: 50.4,
+      growArmor: 6,
+      growSpeed: 2
+    }
+  },
+  
+  "Flora": {
+    className: Flora,
+    heroFaction: "Forest",
+    heroClass: "Ranger",
+    stats: {
+      baseHP: 7057,
+      baseAttack: 354,
+      baseArmor: 60,
+      baseSpeed: 226,
+      growHP: 705.7,
+      growAttack: 35.4,
       growArmor: 6,
       growSpeed: 2
     }
@@ -9174,11 +9304,11 @@ function isControlEffect(strName, effects={}) {
 
 
 function isDot(strName, effects={}) {
-  if (["Burn", "Bleed", "Poison", "Dot", "burn", "bleed", "poison", "dot"].includes(strName)) {
+  if (["Burn", "Bleed", "Poison", "Dot", "burn", "bleed", "poison", "dot", "Burn True", "Bleed True", "Poison True", "burnTrue", "bleedTrue", "poisonTrue"].includes(strName)) {
     return true;
   } else {
     for (var e in effects) {
-      if (["burn", "bleed", "poison", "dot"].includes(e)) {
+      if (["burn", "bleed", "poison", "dot", "burnTrue", "bleedTrue", "poisonTrue"].includes(e)) {
         return true;
       }
     }
@@ -10223,6 +10353,8 @@ function processQueue() {
           var targets = getAllTargets(copyQueue[i][0], copyQueue[i][0]._allies);
           var energyGain = 10;
           temp = "<div><span class='skill'>" + copyQueue[i][0]._artifact + "</span> triggered energy gain.</div>";
+					
+					if (copyQueue[i][0]._artifact == 'Splendid Demon Bell') energyGain += 10;
           
           if (random() < artifacts[copyQueue[i][0]._artifact]["enhance"]) {
             energyGain += 10;
@@ -10247,7 +10379,7 @@ function processQueue() {
               didCrit = true;
               
               damageAmount = copyQueue[i][2][e][1]._stats["totalHP"] * 0.12;
-              if (damageAmount > copyQueue[i][0]._currentStats["totalAttack"] * 15) { damageAmount = copyQueue[i][0]._currentStats["totalAttack"] * 15; }
+              if (damageAmount > copyQueue[i][0]._currentStats["totalAttack"] * 25) { damageAmount = copyQueue[i][0]._currentStats["totalAttack"] * 25; }
               
               damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], damageAmount, "passive", "true");
               temp += copyQueue[i][2][e][1].takeDamage(copyQueue[i][0], copyQueue[i][0]._artifact, damageResult);

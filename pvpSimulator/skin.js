@@ -212,8 +212,8 @@ var skins = {
   },
   
   "Ignis": {
-    "Skin Placeholder": {},
-    "Legendary Skin Placeholder": {}
+    "Dragon Maiden": {damageReduce: 0.05, hpPercent: 0.08, healEffect: 0.08},
+    "Legendary Dragon Maiden": {damageReduce: 0.07, hpPercent: 0.12, healEffect: 0.12},
   },
   
   "Heart Watcher": {
@@ -238,5 +238,10 @@ var skins = {
   "Tix": {
     "Skin Placeholder": {},
     "Legendary Skin Placeholder": {}
-  }
+  },
+  
+  "Flora": {
+    "Skin Placeholder": {},
+    "Legendary Skin Placeholder": {}
+  },
 };
