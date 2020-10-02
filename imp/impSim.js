@@ -169,7 +169,7 @@ function nextSimBlock() {
     var decision;
     
     
-    var boardState = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    var boardState = [0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0];
     
     // simulate
     for (var i = 0; i < 1000; i++) {
@@ -238,6 +238,10 @@ function nextSimBlock() {
           
           // resolve current location
           pos = ((pos + roll - 1) % 20) + 1;
+					
+					if ((pos % 5) != 0) {
+            if (boardState[pos] < 5) { boardState[pos]++; }
+          }
           
           if (pos == 5) {
             ordDice++;
@@ -247,11 +251,12 @@ function nextSimBlock() {
             // tarot card
             tarot = Math.floor(Math.random() * 9 + 1);
             
-            /*if (tarot == 1) {
+            if (tarot == 1) {
               potentials = [];
-              if (boardState[4] < 5) { potentials.push([4, Math.random()]); }
-              if (boardState[11] < 5) { potentials.push([11, Math.random()]); }
-              if (boardState[18] < 5) { potentials.push([18, Math.random()]); }
+							
+							for (p = 1; p <= 20; p++) {
+								if (boardState[p] < 5 && (p % 5) != 0) potentials.push([p, Math.random()]);
+							}
               
               if (potentials.length > 0) {
                 potentials.sort(function(a,b) {
@@ -267,9 +272,10 @@ function nextSimBlock() {
               
             } else if (tarot == 2) {
               potentials = [];
-              if (boardState[4] > 3) { potentials.push([4, Math.random()]); }
-              if (boardState[11] > 3) { potentials.push([11, Math.random()]); }
-              if (boardState[18] > 3) { potentials.push([18, Math.random()]); }
+							
+							for (p = 1; p <= 20; p++) {
+								if (boardState[p] > 3 && (p % 5) != 0) potentials.push([p, Math.random()]);
+							}
               
               if (potentials.length > 0) {
                 potentials.sort(function(a,b) {
@@ -283,7 +289,7 @@ function nextSimBlock() {
                 boardState[potentials[0][0]]--;
               }
               
-            } else*/ if (tarot == 3) {
+            } else if (tarot == 3) {
               moveBackwards = true;
             } else if (tarot == 5) {
               doubleStars = true;
@@ -295,8 +301,6 @@ function nextSimBlock() {
               rollTwice = true;
             }
             
-          } else if (pos == 4 || pos == 11 || pos == 18) {
-            if (boardState[pos] < 5) { boardState[pos]++; }
           }
         }
       }
@@ -392,16 +396,36 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
   var roll = 0;
   
   // check stars needed for next tier
-  if (ordDice < 5) {
-    if ((stars % 300) < 80) {
-      nextTier = 80 - (stars % 300);
-    } else {
-      nextTier = 30 - (((stars % 300) - 80) % 30);
+  if (ordDice + luckDice < 9) {
+		const starMod = stars % 300;
+		
+    if (starMod < 200) {
+      nextTier = 200 - starMod;
+    } else if (starMod < 230) {
+			nextTier = 230 - starMod;
+		} else if (starMod < 260) {
+			nextTier = 260 - starMod;
+		} else {
+      nextTier = 300 - starMod;
     }
     
     if ((ordDice + luckDice) * 2 >= nextTier) {
       return [ordDice, luckDice, roll];
-    }
+    } else if (luckDice > 0) {
+			if (pos < 4) {
+				if (((ordDice + luckDice) * 2 + boardState[4]) >= nextTier) {
+					return [ordDice, luckDice - 1, 5 - pos];
+				}
+			} else if (pos >= 5 && pos < 11 && pos != 10) {
+				if (((ordDice + luckDice - 1) * 2 + boardState[11]) >= nextTier) {
+					return [ordDice, luckDice - 1, 6];
+				}
+			} else if (pos >= 12 && pos < 18) {
+				if (((ordDice + luckDice - 1) * 2 + boardState[18]) >= nextTier) {
+					return [ordDice, luckDice - 1, 6];
+				}
+			}
+		}
   }
   
   // decide which dice to use
