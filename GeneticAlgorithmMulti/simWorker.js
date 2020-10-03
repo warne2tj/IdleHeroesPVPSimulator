@@ -6949,23 +6949,40 @@ class Flora extends hero {
 		let damageMult = 4;
 		let twineChance = 0.30;
     let damageResult;
-    const targets = getRandomTargets(this, this._enemies, 6);
-    
-    for (const t of targets) {
-      const targetLock = t.getTargetLock(this);
-      result += targetLock;
-      
-      if (targetLock == "") {
-        damageResult = this.calcDamage(t, this._currentStats.totalAttack, "active", "normal", damageMult);
-        result += t.takeDamage(this, "Flora's Pixie", damageResult);
-				result += t.getDebuff(this, "twine", 2, {}, false, "", twineChance);
-      
-        activeQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
-      }
+		let lastTarget = 0;
+		
+		for (let i = 1; i <= 6; i++) {
+			const targets = getRandomTargets(this, this._enemies, 2);
+			let target;
 			
+			if (targets.length == 0) {
+				break;
+			} else if (lastTarget == targets[0]._heroPos) {
+				if (targets.length == 1) {
+					break;
+				} else {
+					target = targets[1];
+				}
+			} else {
+				target = targets[0]
+			}
+			
+			
+			const targetLock = target.getTargetLock(this);
+			result += targetLock;
+			
+			if (targetLock == "") {
+				damageResult = this.calcDamage(target, this._currentStats.totalAttack, "active", "normal", damageMult);
+				result += target.takeDamage(this, "Flora's Pixie", damageResult);
+				result += target.getDebuff(this, "twine", 2, {}, false, "", twineChance);
+			
+				activeQueue.push([this, target, damageResult.damageAmount, damageResult.critted]);
+			}
+			
+			lastTarget = target._heroPos;
 			damageMult += 1;
 			twineChance += 0.05;
-    }
+		}
     
     return result;
   }
@@ -10487,7 +10504,7 @@ function handleCall(e) {
       for (var p = 0; p < 60; p += 10) {
         tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], Math.floor(p / 10), "att");
         
-        tHero._heroLevel = 330;
+        tHero._heroLevel = 350;
         tHero._skin = jsonConfig[t][p+1];
         tHero._stone = jsonConfig[t][p+3];
         tHero._artifact = jsonConfig[t][p+4];
@@ -10537,7 +10554,7 @@ function handleCall(e) {
       for (var p = 0; p < 60; p += 10) {
         tHero = new baseHeroStats[jsonConfig[t][p]]["className"](jsonConfig[t][p], Math.floor(p / 10), "def");
         
-        tHero._heroLevel = 330;
+        tHero._heroLevel = 350;
         tHero._skin = jsonConfig[t][p+1];
         tHero._stone = jsonConfig[t][p+3];
         tHero._artifact = jsonConfig[t][p+4];
