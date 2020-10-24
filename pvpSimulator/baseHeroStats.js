@@ -1,660 +1,661 @@
 // hero base stats dictionary
 // base stats before anything is applied, even passives
 
-var baseHeroStats = {
-  "None": {
-    className: hero,
-    heroFaction: "",
-    heroClass: "",
-    stats: {
-      baseHP: 0,
-      baseAttack: 0,
-      baseArmor: 0,
-      baseSpeed: 0,
-      growHP: 0,
-      growAttack: 0,
-      growArmor: 0,
-      growSpeed: 0
-    }
-  },
-  
-  "Aida": {
-    className: Aida,
-    heroFaction: "Light",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 7234,
-      baseAttack: 512,
-      baseArmor: 58,
-      baseSpeed: 226,
-      growHP: 723.4,
-      growAttack: 51.2,
-      growArmor: 5.8,
-      growSpeed: 2
-    }
-  },
-  
-  "Amen-Ra": {
-    className: AmenRa,
-    heroFaction: "Dark",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 8986,
-      baseAttack: 338,
-      baseArmor: 61,
-      baseSpeed: 235,
-      growHP: 898.6,
-      growAttack: 34,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  },
-  
-  "Amuvor": {
-    className: Amuvor,
-    heroFaction: "Dark",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 7363,
-      baseAttack: 484,
-      baseArmor: 60,
-      baseSpeed: 235,
-      growHP: 736.3,
-      growAttack: 48.4,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Asmodel": {
-    className: Asmodel,
-    heroFaction: "Light",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 9357,
-      baseAttack: 332,
-      baseArmor: 62,
-      baseSpeed: 235,
-      growHP: 935.7,
-      growAttack: 33,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "Aspen": {
-    className: Aspen,
-    heroFaction: "Dark",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 8986,
-      baseAttack: 338,
-      baseArmor: 61,
-      baseSpeed: 235,
-      growHP: 898.6,
-      growAttack: 34,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Belrain": {
-    className: Belrain,
-    heroFaction: "Light",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 7127,
-      baseAttack: 386,
-      baseArmor: 60,
-      baseSpeed: 210,
-      growHP: 712.7,
-      growAttack: 38.6,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Carrie": {
-    className: Carrie,
-    heroFaction: "Dark",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 9680,
-      baseAttack: 343,
-      baseArmor: 60,
-      baseSpeed: 226,
-      growHP: 968,
-      growAttack: 34.3,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Cthugha": {
-    className: Cthugha,
-    heroFaction: "Abyss",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 7486,
-      baseAttack: 447,
-      baseArmor: 63,
-      baseSpeed: 218,
-      growHP: 748.6,
-      growAttack: 44.7,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Dark Arthindol": {
-    className: DarkArthindol,
-    heroFaction: "Dark",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 6900,
-      baseAttack: 422,
-      baseArmor: 58,
-      baseSpeed: 207,
-      growHP: 690,
-      growAttack: 42.2,
-      growArmor: 5.8,
-      growSpeed: 2
-    }
-  },
-  
-  "Das Moge": {
-    className: DasMoge,
-    heroFaction: "Dark",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 7395,
-      baseAttack: 343,
-      baseArmor: 60,
-      baseSpeed: 218,
-      growHP: 739.5,
-      growAttack: 34.3,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Delacium": {
-    className: Delacium,
-    heroFaction: "Abyss",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 7587,
-      baseAttack: 433,
-      baseArmor: 63,
-      baseSpeed: 226,
-      growHP: 758.7,
-      growAttack: 43.3,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Drake": {
-    className: Drake,
-    heroFaction: "Dark",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 10137,
-      baseAttack: 343,
-      baseArmor: 60,
-      baseSpeed: 235,
-      growHP: 1013.7,
-      growAttack: 34.3,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Elyvia": {
-    className: Elyvia,
-    heroFaction: "Forest",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 7057,
-      baseAttack: 354,
-      baseArmor: 60,
-      baseSpeed: 228,
-      growHP: 705.7,
-      growAttack: 35.4,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Emily": {
-    className: Emily,
-    heroFaction: "Fortress",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 7005,
-      baseAttack: 356,
-      baseArmor: 63,
-      baseSpeed: 195,
-      growHP: 700.5,
-      growAttack: 36,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Faith Blade": {
-    className: FaithBlade,
-    heroFaction: "Light",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 9147,
-      baseAttack: 507,
-      baseArmor: 60,
-      baseSpeed: 235,
-      growHP: 914.7,
-      growAttack: 50.4,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Flora": {
-    className: Flora,
-    heroFaction: "Forest",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 7057,
-      baseAttack: 354,
-      baseArmor: 60,
-      baseSpeed: 226,
-      growHP: 705.7,
-      growAttack: 35.4,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Garuda": {
-    className: Garuda,
-    heroFaction: "Forest",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 8202,
-      baseAttack: 353,
-      baseArmor: 62,
-      baseSpeed: 235,
-      growHP: 820.2,
-      growAttack: 35.3,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "Gerke": {
-    className: Gerke,
-    heroFaction: "Light",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 8592,
-      baseAttack: 329,
-      baseArmor: 60,
-      baseSpeed: 195,
-      growHP: 859.2,
-      growAttack: 33,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Gustin": {
-    className: Gustin,
-    heroFaction: "Shadow",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 8252,
-      baseAttack: 343,
-      baseArmor: 62,
-      baseSpeed: 220,
-      growHP: 825.2,
-      growAttack: 34.3,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "Heart Watcher": {
-    className: HeartWatcher,
-    heroFaction: "Forest",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 7694,
-      baseAttack: 465,
-      baseArmor: 60,
-      baseSpeed: 233,
-      growHP: 769.4,
-      growAttack: 46.5,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Horus": {
-    className: Horus,
-    heroFaction: "Shadow",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 8252,
-      baseAttack: 343,
-      baseArmor: 62,
-      baseSpeed: 227,
-      growHP: 825.2,
-      growAttack: 34.3,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "Ignis": {
-    className: Ignis,
-    heroFaction: "Abyss",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 7587,
-      baseAttack: 433,
-      baseArmor: 63,
-      baseSpeed: 195,
-      growHP: 758.7,
-      growAttack: 43.3,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Ithaqua": {
-    className: Ithaqua,
-    heroFaction: "Shadow",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 9436,
-      baseAttack: 478,
-      baseArmor: 62,
-      baseSpeed: 235,
-      growHP: 943.6,
-      growAttack: 47.8,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "King Barton": {
-    className: KingBarton,
-    heroFaction: "Abyss",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 8596,
-      baseAttack: 312,
-      baseArmor: 62,
-      baseSpeed: 226,
-      growHP: 859.6,
-      growAttack: 31.2,
-      growArmor: 6.2,
-      growSpeed: 2
-    }
-  },
-  
-  "Kroos": {
-    className: Kroos,
-    heroFaction: "Abyss",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 7587,
-      baseAttack: 433,
-      baseArmor: 63,
-      baseSpeed: 195,
-      growHP: 758.7,
-      growAttack: 43.3,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Michelle": {
-    className: Michelle,
-    heroFaction: "Light",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 8287,
-      baseAttack: 343,
-      baseArmor: 60,
-      baseSpeed: 220,
-      growHP: 828.7,
-      growAttack: 34.3,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Mihm": {
-    className: Mihm,
-    heroFaction: "Dark",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 7134,
-      baseAttack: 402,
-      baseArmor: 58,
-      baseSpeed: 226,
-      growHP: 713.4,
-      growAttack: 40.2,
-      growArmor: 5.8,
-      growSpeed: 2
-    }
-  },
-  
-  "Nakia": {
-    className: Nakia,
-    heroFaction: "Abyss",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 8473,
-      baseAttack: 456,
-      baseArmor: 61,
-      baseSpeed: 245,
-      growHP: 847.3,
-      growAttack: 45.6,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  },
-  
-  "Oberon": {
-    className: Oberon,
-    heroFaction: "Forest",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 6980,
-      baseAttack: 410,
-      baseArmor: 61,
-      baseSpeed: 220,
-      growHP: 698,
-      growAttack: 41,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  },
-  
-  "Ormus": {
-    className: Ormus,
-    heroFaction: "Fortress",
-    heroClass: "Priest",
-    stats: {
-      baseHP: 6325,
-      baseAttack: 369,
-      baseArmor: 63,
-      baseSpeed: 195,
-      growHP: 632.5,
-      growAttack: 37,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Penny": {
-    className: Penny,
-    heroFaction: "Fortress",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 7937,
-      baseAttack: 397,
-      baseArmor: 60,
-      baseSpeed: 236,
-      growHP: 793.7,
-      growAttack: 39.7,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Rogan": {
-    className: Rogan,
-    heroFaction: "Forest",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 7057,
-      baseAttack: 354,
-      baseArmor: 60,
-      baseSpeed: 235,
-      growHP: 705.7,
-      growAttack: 35.4,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Russell": {
-    className: Russell,
-    heroFaction: "Light",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 9010,
-      baseAttack: 338,
-      baseArmor: 61,
-      baseSpeed: 226,
-      growHP: 901,
-      growAttack: 34,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Sherlock": {
-    className: Sherlock,
-    heroFaction: "Fortress",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 7980,
-      baseAttack: 425,
-      baseArmor: 60,
-      baseSpeed: 220,
-      growHP: 798,
-      growAttack: 42.5,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Sleepless": {
-    className: Sleepless,
-    heroFaction: "Dark",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 9980,
-      baseAttack: 338,
-      baseArmor: 61,
-      baseSpeed: 227,
-      growHP: 998,
-      growAttack: 34,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  },
-  
-  "Tara": {
-    className: Tara,
-    heroFaction: "Light",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 9010,
-      baseAttack: 338,
-      baseArmor: 61,
-      baseSpeed: 235,
-      growHP: 901,
-      growAttack: 34,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "Tix": {
-    className: Tix,
-    heroFaction: "Shadow",
-    heroClass: "Mage",
-    stats: {
-      baseHP: 7587,
-      baseAttack: 433,
-      baseArmor: 63,
-      baseSpeed: 226,
-      growHP: 758.7,
-      growAttack: 43.3,
-      growArmor: 6.3,
-      growSpeed: 2
-    }
-  },
-  
-  "UniMax-3000": {
-    className: UniMax3000,
-    heroFaction: "Fortress",
-    heroClass: "Warrior",
-    stats: {
-      baseHP: 9100,
-      baseAttack: 306,
-      baseArmor: 82,
-      baseSpeed: 248,
-      growHP: 910,
-      growAttack: 30.6,
-      growArmor: 8.5,
-      growSpeed: 2
-    }
-  },
-  
-  "Valkryie": {
-    className: Valkryie,
-    heroFaction: "Forest",
-    heroClass: "Ranger",
-    stats: {
-      baseHP: 7937,
-      baseAttack: 357,
-      baseArmor: 60,
-      baseSpeed: 219,
-      growHP: 793.7,
-      growAttack: 35.7,
-      growArmor: 6,
-      growSpeed: 2
-    }
-  },
-  
-  "Xia": {
-    className: Xia,
-    heroFaction: "Fortress",
-    heroClass: "Assassin",
-    stats: {
-      baseHP: 8573,
-      baseAttack: 528,
-      baseArmor: 61,
-      baseSpeed: 245,
-      growHP: 857.3,
-      growAttack: 52.8,
-      growArmor: 6.1,
-      growSpeed: 2
-    }
-  }
+// eslint-disable-next-line no-unused-vars
+const baseHeroStats = {
+	'None': {
+		className: hero,
+		heroFaction: '',
+		heroClass: '',
+		stats: {
+			baseHP: 0,
+			baseAttack: 0,
+			baseArmor: 0,
+			baseSpeed: 0,
+			growHP: 0,
+			growAttack: 0,
+			growArmor: 0,
+			growSpeed: 0,
+		},
+	},
+
+	'Aida': {
+		className: Aida,
+		heroFaction: 'Light',
+		heroClass: 'Mage',
+		stats: {
+			baseHP: 7234,
+			baseAttack: 512,
+			baseArmor: 58,
+			baseSpeed: 226,
+			growHP: 723.4,
+			growAttack: 51.2,
+			growArmor: 5.8,
+			growSpeed: 2,
+		},
+	},
+
+	'Amen-Ra': {
+		className: AmenRa,
+		heroFaction: 'Dark',
+		heroClass: 'Priest',
+		stats: {
+			baseHP: 8986,
+			baseAttack: 338,
+			baseArmor: 61,
+			baseSpeed: 235,
+			growHP: 898.6,
+			growAttack: 34,
+			growArmor: 6.1,
+			growSpeed: 2,
+		},
+	},
+
+	'Amuvor': {
+		className: Amuvor,
+		heroFaction: 'Dark',
+		heroClass: 'Assassin',
+		stats: {
+			baseHP: 7363,
+			baseAttack: 484,
+			baseArmor: 60,
+			baseSpeed: 235,
+			growHP: 736.3,
+			growAttack: 48.4,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Asmodel': {
+		className: Asmodel,
+		heroFaction: 'Light',
+		heroClass: 'Warrior',
+		stats: {
+			baseHP: 9357,
+			baseAttack: 332,
+			baseArmor: 62,
+			baseSpeed: 235,
+			growHP: 935.7,
+			growAttack: 33,
+			growArmor: 6.2,
+			growSpeed: 2,
+		},
+	},
+
+	'Aspen': {
+		className: Aspen,
+		heroFaction: 'Dark',
+		heroClass: 'Warrior',
+		stats: {
+			baseHP: 8986,
+			baseAttack: 338,
+			baseArmor: 61,
+			baseSpeed: 235,
+			growHP: 898.6,
+			growAttack: 34,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Belrain': {
+		className: Belrain,
+		heroFaction: 'Light',
+		heroClass: 'Priest',
+		stats: {
+			baseHP: 7127,
+			baseAttack: 386,
+			baseArmor: 60,
+			baseSpeed: 210,
+			growHP: 712.7,
+			growAttack: 38.6,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Carrie': {
+		className: Carrie,
+		heroFaction: 'Dark',
+		heroClass: 'Ranger',
+		stats: {
+			baseHP: 9680,
+			baseAttack: 343,
+			baseArmor: 60,
+			baseSpeed: 226,
+			growHP: 968,
+			growAttack: 34.3,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Cthugha': {
+		className: Cthugha,
+		heroFaction: 'Abyss',
+		heroClass: 'Ranger',
+		stats: {
+			baseHP: 7486,
+			baseAttack: 447,
+			baseArmor: 63,
+			baseSpeed: 218,
+			growHP: 748.6,
+			growAttack: 44.7,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Dark Arthindol': {
+		className: DarkArthindol,
+		heroFaction: 'Dark',
+		heroClass: 'Mage',
+		stats: {
+			baseHP: 6900,
+			baseAttack: 422,
+			baseArmor: 58,
+			baseSpeed: 207,
+			growHP: 690,
+			growAttack: 42.2,
+			growArmor: 5.8,
+			growSpeed: 2,
+		},
+	},
+
+	'Das Moge': {
+		className: DasMoge,
+		heroFaction: 'Dark',
+		heroClass: 'Ranger',
+		stats: {
+			baseHP: 7395,
+			baseAttack: 343,
+			baseArmor: 60,
+			baseSpeed: 218,
+			growHP: 739.5,
+			growAttack: 34.3,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Delacium': {
+		className: Delacium,
+		heroFaction: 'Abyss',
+		heroClass: 'Mage',
+		stats: {
+			baseHP: 7587,
+			baseAttack: 433,
+			baseArmor: 63,
+			baseSpeed: 226,
+			growHP: 758.7,
+			growAttack: 43.3,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Drake': {
+		className: Drake,
+		heroFaction: 'Dark',
+		heroClass: 'Assassin',
+		stats: {
+			baseHP: 10137,
+			baseAttack: 343,
+			baseArmor: 60,
+			baseSpeed: 235,
+			growHP: 1013.7,
+			growAttack: 34.3,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Elyvia': {
+		className: Elyvia,
+		heroFaction: 'Forest',
+		heroClass: 'Priest',
+		stats: {
+			baseHP: 7057,
+			baseAttack: 354,
+			baseArmor: 60,
+			baseSpeed: 228,
+			growHP: 705.7,
+			growAttack: 35.4,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Emily': {
+		className: Emily,
+		heroFaction: 'Fortress',
+		heroClass: 'Priest',
+		stats: {
+			baseHP: 7005,
+			baseAttack: 356,
+			baseArmor: 63,
+			baseSpeed: 195,
+			growHP: 700.5,
+			growAttack: 36,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Faith Blade': {
+		className: FaithBlade,
+		heroFaction: 'Light',
+		heroClass: 'Assassin',
+		stats: {
+			baseHP: 9147,
+			baseAttack: 507,
+			baseArmor: 60,
+			baseSpeed: 235,
+			growHP: 914.7,
+			growAttack: 50.4,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Flora': {
+		className: Flora,
+		heroFaction: 'Forest',
+		heroClass: 'Ranger',
+		stats: {
+			baseHP: 7057,
+			baseAttack: 354,
+			baseArmor: 60,
+			baseSpeed: 226,
+			growHP: 705.7,
+			growAttack: 35.4,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Garuda': {
+		className: Garuda,
+		heroFaction: 'Forest',
+		heroClass: 'Warrior',
+		stats: {
+			baseHP: 8202,
+			baseAttack: 353,
+			baseArmor: 62,
+			baseSpeed: 235,
+			growHP: 820.2,
+			growAttack: 35.3,
+			growArmor: 6.2,
+			growSpeed: 2,
+		},
+	},
+
+	'Gerke': {
+		className: Gerke,
+		heroFaction: 'Light',
+		heroClass: 'Priest',
+		stats: {
+			baseHP: 8592,
+			baseAttack: 329,
+			baseArmor: 60,
+			baseSpeed: 195,
+			growHP: 859.2,
+			growAttack: 33,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Gustin': {
+		className: Gustin,
+		heroFaction: 'Shadow',
+		heroClass: 'Priest',
+		stats: {
+			baseHP: 8252,
+			baseAttack: 343,
+			baseArmor: 62,
+			baseSpeed: 220,
+			growHP: 825.2,
+			growAttack: 34.3,
+			growArmor: 6.2,
+			growSpeed: 2,
+		},
+	},
+
+	'Heart Watcher': {
+		className: HeartWatcher,
+		heroFaction: 'Forest',
+		heroClass: 'Assassin',
+		stats: {
+			baseHP: 7694,
+			baseAttack: 465,
+			baseArmor: 60,
+			baseSpeed: 233,
+			growHP: 769.4,
+			growAttack: 46.5,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Horus': {
+		className: Horus,
+		heroFaction: 'Shadow',
+		heroClass: 'Warrior',
+		stats: {
+			baseHP: 8252,
+			baseAttack: 343,
+			baseArmor: 62,
+			baseSpeed: 227,
+			growHP: 825.2,
+			growAttack: 34.3,
+			growArmor: 6.2,
+			growSpeed: 2,
+		},
+	},
+
+	'Ignis': {
+		className: Ignis,
+		heroFaction: 'Abyss',
+		heroClass: 'Priest',
+		stats: {
+			baseHP: 7587,
+			baseAttack: 433,
+			baseArmor: 63,
+			baseSpeed: 195,
+			growHP: 758.7,
+			growAttack: 43.3,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Ithaqua': {
+		className: Ithaqua,
+		heroFaction: 'Shadow',
+		heroClass: 'Assassin',
+		stats: {
+			baseHP: 9436,
+			baseAttack: 478,
+			baseArmor: 62,
+			baseSpeed: 235,
+			growHP: 943.6,
+			growAttack: 47.8,
+			growArmor: 6.2,
+			growSpeed: 2,
+		},
+	},
+
+	'King Barton': {
+		className: KingBarton,
+		heroFaction: 'Abyss',
+		heroClass: 'Warrior',
+		stats: {
+			baseHP: 8596,
+			baseAttack: 312,
+			baseArmor: 62,
+			baseSpeed: 226,
+			growHP: 859.6,
+			growAttack: 31.2,
+			growArmor: 6.2,
+			growSpeed: 2,
+		},
+	},
+
+	'Kroos': {
+		className: Kroos,
+		heroFaction: 'Abyss',
+		heroClass: 'Priest',
+		stats: {
+			baseHP: 7587,
+			baseAttack: 433,
+			baseArmor: 63,
+			baseSpeed: 195,
+			growHP: 758.7,
+			growAttack: 43.3,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Michelle': {
+		className: Michelle,
+		heroFaction: 'Light',
+		heroClass: 'Ranger',
+		stats: {
+			baseHP: 8287,
+			baseAttack: 343,
+			baseArmor: 60,
+			baseSpeed: 220,
+			growHP: 828.7,
+			growAttack: 34.3,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Mihm': {
+		className: Mihm,
+		heroFaction: 'Dark',
+		heroClass: 'Mage',
+		stats: {
+			baseHP: 7134,
+			baseAttack: 402,
+			baseArmor: 58,
+			baseSpeed: 226,
+			growHP: 713.4,
+			growAttack: 40.2,
+			growArmor: 5.8,
+			growSpeed: 2,
+		},
+	},
+
+	'Nakia': {
+		className: Nakia,
+		heroFaction: 'Abyss',
+		heroClass: 'Assassin',
+		stats: {
+			baseHP: 8473,
+			baseAttack: 456,
+			baseArmor: 61,
+			baseSpeed: 245,
+			growHP: 847.3,
+			growAttack: 45.6,
+			growArmor: 6.1,
+			growSpeed: 2,
+		},
+	},
+
+	'Oberon': {
+		className: Oberon,
+		heroFaction: 'Forest',
+		heroClass: 'Mage',
+		stats: {
+			baseHP: 6980,
+			baseAttack: 410,
+			baseArmor: 61,
+			baseSpeed: 220,
+			growHP: 698,
+			growAttack: 41,
+			growArmor: 6.1,
+			growSpeed: 2,
+		},
+	},
+
+	'Ormus': {
+		className: Ormus,
+		heroFaction: 'Fortress',
+		heroClass: 'Priest',
+		stats: {
+			baseHP: 6325,
+			baseAttack: 369,
+			baseArmor: 63,
+			baseSpeed: 195,
+			growHP: 632.5,
+			growAttack: 37,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Penny': {
+		className: Penny,
+		heroFaction: 'Fortress',
+		heroClass: 'Ranger',
+		stats: {
+			baseHP: 7937,
+			baseAttack: 397,
+			baseArmor: 60,
+			baseSpeed: 236,
+			growHP: 793.7,
+			growAttack: 39.7,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Rogan': {
+		className: Rogan,
+		heroFaction: 'Forest',
+		heroClass: 'Assassin',
+		stats: {
+			baseHP: 7057,
+			baseAttack: 354,
+			baseArmor: 60,
+			baseSpeed: 235,
+			growHP: 705.7,
+			growAttack: 35.4,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Russell': {
+		className: Russell,
+		heroFaction: 'Light',
+		heroClass: 'Ranger',
+		stats: {
+			baseHP: 9010,
+			baseAttack: 338,
+			baseArmor: 61,
+			baseSpeed: 226,
+			growHP: 901,
+			growAttack: 34,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Sherlock': {
+		className: Sherlock,
+		heroFaction: 'Fortress',
+		heroClass: 'Mage',
+		stats: {
+			baseHP: 7980,
+			baseAttack: 425,
+			baseArmor: 60,
+			baseSpeed: 220,
+			growHP: 798,
+			growAttack: 42.5,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Sleepless': {
+		className: Sleepless,
+		heroFaction: 'Dark',
+		heroClass: 'Warrior',
+		stats: {
+			baseHP: 9980,
+			baseAttack: 338,
+			baseArmor: 61,
+			baseSpeed: 227,
+			growHP: 998,
+			growAttack: 34,
+			growArmor: 6.1,
+			growSpeed: 2,
+		},
+	},
+
+	'Tara': {
+		className: Tara,
+		heroFaction: 'Light',
+		heroClass: 'Warrior',
+		stats: {
+			baseHP: 9010,
+			baseAttack: 338,
+			baseArmor: 61,
+			baseSpeed: 235,
+			growHP: 901,
+			growAttack: 34,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Tix': {
+		className: Tix,
+		heroFaction: 'Shadow',
+		heroClass: 'Mage',
+		stats: {
+			baseHP: 7587,
+			baseAttack: 433,
+			baseArmor: 63,
+			baseSpeed: 226,
+			growHP: 758.7,
+			growAttack: 43.3,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'UniMax-3000': {
+		className: UniMax3000,
+		heroFaction: 'Fortress',
+		heroClass: 'Warrior',
+		stats: {
+			baseHP: 9100,
+			baseAttack: 306,
+			baseArmor: 82,
+			baseSpeed: 248,
+			growHP: 910,
+			growAttack: 30.6,
+			growArmor: 8.5,
+			growSpeed: 2,
+		},
+	},
+
+	'Valkryie': {
+		className: Valkryie,
+		heroFaction: 'Forest',
+		heroClass: 'Ranger',
+		stats: {
+			baseHP: 7937,
+			baseAttack: 357,
+			baseArmor: 60,
+			baseSpeed: 219,
+			growHP: 793.7,
+			growAttack: 35.7,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
+	'Xia': {
+		className: Xia,
+		heroFaction: 'Fortress',
+		heroClass: 'Assassin',
+		stats: {
+			baseHP: 8573,
+			baseAttack: 528,
+			baseArmor: 61,
+			baseSpeed: 245,
+			growHP: 857.3,
+			growAttack: 52.8,
+			growArmor: 6.1,
+			growSpeed: 2,
+		},
+	},
 };

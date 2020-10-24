@@ -671,7 +671,7 @@ class hero {
     
     // calculate damage
     attackDamage = attackDamage * skillDamage * precisionDamageIncrease * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstStun * damageAgainstClass * allDamageDealt;
-    attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1-classDamageReduce) * allDamageTaken;
+    attackDamage = attackDamage * (1-allDamageReduce) * (1-damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1 - classDamageReduce) * (1 - dotReduce) * allDamageTaken;
     
     var blocked = false;
     var critted = false;
