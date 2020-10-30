@@ -237,11 +237,16 @@ const skins = {
 	},
 
 	'Tix': {
+		'Prince Zombie': { hpPercent: 0.03, controlImmune: 0.05, speed: 4 },
+		'Legendary Prince Zombie': { hpPercent: 0.06, controlImmune: 0.06, speed: 6 },
+	},
+
+	'Flora': {
 		'Skin Placeholder': {},
 		'Legendary Skin Placeholder': {},
 	},
 
-	'Flora': {
+	'Inosuke': {
 		'Skin Placeholder': {},
 		'Legendary Skin Placeholder': {},
 	},

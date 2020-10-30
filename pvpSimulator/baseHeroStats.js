@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 // hero base stats dictionary
 // base stats before anything is applied, even passives
 
@@ -367,6 +369,22 @@ const baseHeroStats = {
 			growHP: 758.7,
 			growAttack: 43.3,
 			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
+	'Inosuke': {
+		className: Inosuke,
+		heroFaction: 'Fortress',
+		heroClass: 'Ranger',
+		stats: {
+			baseHP: 8352,
+			baseAttack: 386,
+			baseArmor: 60,
+			baseSpeed: 230,
+			growHP: 835.2,
+			growAttack: 38.6,
+			growArmor: 6,
 			growSpeed: 2,
 		},
 	},

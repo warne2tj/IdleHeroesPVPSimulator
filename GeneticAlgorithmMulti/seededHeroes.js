@@ -240,4 +240,10 @@ const seededHeroes = {
     allowedEquipments: ["Class Gear","Split HP"],
     allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"','"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"']
   },
+  "Inosuke": {
+    allowedArtifacts: ["The Kiss of Ghost","Augustus Magic Ball","Golden Crown","Magic Stone Sword","Wildfire Torch"],
+    allowedStones: ["S3 Speed, Attack","S3 Attack, Attack, Holy","S3 HP, Attack"],
+    allowedEquipments: ["Class Gear","Split Attack"],
+    allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"','"Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill"']
+  },
 };

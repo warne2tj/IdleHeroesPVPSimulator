@@ -1,10 +1,12 @@
+// eslint-disable-next-line no-unused-vars
 function formatNum(num) {
 	return '<span class =\'num\'>' + num.toLocaleString() + '</span>';
 }
 
 
 // replacement seedable prng
-var random = rng();
+// eslint-disable-next-line prefer-const
+let random = rng();
 function rng(seed = 0) {
 	if (seed == 0) {
 		const dt = new Date();
@@ -12,9 +14,9 @@ function rng(seed = 0) {
 	}
 
 	const strSeed = seed.toString();
-	var a, b, c, d;
+	let a, b, c, d, i, h;
 
-	for (var i = 0, h = 1779033703 ^ strSeed.length; i < strSeed.length; i++) {
+	for (i = 0, h = 1779033703 ^ strSeed.length; i < strSeed.length; i++) {
 		h = Math.imul(h ^ strSeed.charCodeAt(i), 3432918353);
 		h = h << 13 | h >>> 19;
 	}
@@ -22,22 +24,22 @@ function rng(seed = 0) {
 	h = Math.imul(h ^ h >>> 16, 2246822507);
 	h = Math.imul(h ^ h >>> 13, 3266489909);
 	h ^= h >>> 16;
-	var a = h >>> 0;
+	a = h >>> 0;
 
 	h = Math.imul(h ^ h >>> 16, 2246822507);
 	h = Math.imul(h ^ h >>> 13, 3266489909);
 	h ^= h >>> 16;
-	var b = h >>> 0;
+	b = h >>> 0;
 
 	h = Math.imul(h ^ h >>> 16, 2246822507);
 	h = Math.imul(h ^ h >>> 13, 3266489909);
 	h ^= h >>> 16;
-	var c = h >>> 0;
+	c = h >>> 0;
 
 	h = Math.imul(h ^ h >>> 16, 2246822507);
 	h = Math.imul(h ^ h >>> 13, 3266489909);
 	h ^= h >>> 16;
-	var d = h >>> 0;
+	d = h >>> 0;
 
 
 	return function() {
@@ -104,10 +106,11 @@ function isMonster(source) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function isDispellable(strName) {
 	if (['Seal of Light', 'Power of Light', 'Ghost Possessed', 'Link of Souls',
 		'Demon Totem', 'Shrink', 'Shield', 'Feather Blade', 'Drake Break Defense',
-		'Wildfire Torch Dot', 'Revenging Wraith'].includes(strName)) {
+		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield'].includes(strName)) {
 		return false;
 	} else {
 		return true;

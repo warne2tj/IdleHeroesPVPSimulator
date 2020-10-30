@@ -4870,3 +4870,173 @@ class Flora extends hero {
 		return result;
 	}
 }
+
+
+// Inosuke
+// eslint-disable-next-line no-undef, no-unused-vars
+class Inosuke extends hero {
+	passiveStats() {
+		// apply passive
+		this.applyStatChange({ hpPercent: 0.25, attackPercent: 0.35, controlImmune: 0.30, speed: 60, critDamageReduce: 0.25 }, 'PassiveStats');
+	}
+
+
+	endOfRound() {
+		let result = '';
+
+		if ('Swordwind Shield' in this._buffs) {
+			// eslint-disable-next-line no-undef
+			const targets = getRandomTargets(this, this._enemies, 1);
+			const maxDamage = this._currentStats.totalAttack * 15;
+
+			for (const t of targets) {
+				let damageAmount = t._currentStats.totalHP * 0.40;
+				if (damageAmount > maxDamage) damageAmount = maxDamage;
+
+				const damageResult = this.calcDamage(this, damageAmount, 'passive', 'normal');
+				result += t.takeDamage(this, 'Raid Wind', damageResult);
+			}
+		}
+
+		return result;
+	}
+
+
+	takeDamage(source, strAttackDesc, damageResult) {
+		let result = '';
+
+		if ('Swordwind Shield' in this._buffs) {
+			const buffStack = Object.values(this._buffs['Swordwind Shield'])[0];
+			let damagePrevented = 0;
+
+			if (damageResult.damageAmount > buffStack.effects.attackAmount) {
+				damagePrevented = buffStack.effects.attackAmount;
+				damageResult.damageAmount -= damagePrevented;
+				result += this.removeBuff('Swordwind Shield');
+			} else {
+				damagePrevented = Math.floor(damageResult.damageAmount);
+				damageResult.damageAmount = 0;
+			}
+
+			this._currentStats.damageHealed += damagePrevented;
+			// eslint-disable-next-line no-undef
+			result += `<div><span class='skill'>Swordwind Shield</span> prevented <span class='num'>${formatNum(damagePrevented)}</span> damage.</div>`;
+		}
+
+		result += super.takeDamage(source, strAttackDesc, damageResult);
+		return result;
+	}
+
+
+	doBasic() {
+		let result = '';
+		let damageResult;
+		// eslint-disable-next-line no-undef
+		const targets = getRandomTargets(this, this._enemies, 3);
+		const maxShield = this._currentStats.totalAttack * 50;
+		let damageDealt = 0;
+
+		for (const t of targets) {
+			const targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack * 3, 'basic', 'normal');
+				result += t.takeDamage(this, 'Basic Attack', damageResult);
+				damageDealt += damageResult.damageAmount;
+				// eslint-disable-next-line no-undef
+				basicQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+
+		let shieldAmount = Math.floor(damageDealt * 0.50);
+
+		if ('Swordwind Shield' in this._buffs) {
+			const buffStack = Object.values(this._buffs['Swordwind Shield'])[0];
+
+			if (shieldAmount + buffStack.effects.attackAmount > maxShield) {
+				buffStack.effects.attackAmount = maxShield;
+			} else {
+				buffStack.effects.attackAmount += shieldAmount;
+			}
+		} else {
+			if (shieldAmount > maxShield) shieldAmount = maxShield;
+
+			if (shieldAmount > 0) {
+				result += this.getBuff(this, 'Swordwind Shield', 15, { attackAmount: shieldAmount });
+			}
+		}
+
+		result += this.getBuff(this, 'Attack Percent', 4, { attackPercent: 0.30 });
+		result += this.getBuff(this, 'Crit Damage', 4, { critDamage: 0.20 });
+
+		return result;
+	}
+
+
+	doActive() {
+		let result = '';
+		let damageResult;
+		// eslint-disable-next-line no-undef
+		const targets = getRandomTargets(this, this._enemies, 3);
+		const maxShield = this._currentStats.totalAttack * 50;
+		let damageDealt = 0;
+		let canCrit = 1;
+		let extraHit = false;
+		let hpDamageResult = { damageAmount: 0 };
+
+		if ('Swordwind Shield' in this._buffs) {
+			canCrit = 2;
+			extraHit = true;
+		}
+
+
+		for (const t of targets) {
+			const targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', 12, canCrit);
+				result += t.takeDamage(this, 'Justicial Strike', damageResult);
+				damageDealt += damageResult.damageAmount;
+
+				if (extraHit) {
+					const maxHPDamage = this._currentStats.totalAttack * 50;
+					let hpDamage = Math.floor(t._currentStats.totalHP * 0.80);
+
+					if (hpDamage > maxHPDamage) hpDamage = maxHPDamage;
+					hpDamageResult = this.calcDamage(t, hpDamage, 'active', 'true', 1);
+					extraHit = false;
+
+					result += t.takeDamage(this, 'Justicial Strike HP', hpDamageResult);
+					damageDealt += hpDamageResult.damageAmount;
+				}
+
+				// eslint-disable-next-line no-undef
+				activeQueue.push([this, t, damageResult.damageAmount + hpDamageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+
+		let shieldAmount = Math.floor(damageDealt * 0.50);
+
+		if ('Swordwind Shield' in this._buffs) {
+			const buffStack = Object.values(this._buffs['Swordwind Shield'])[0];
+
+			if (shieldAmount + buffStack.effects.attackAmount > maxShield) {
+				buffStack.effects.attackAmount = maxShield;
+			} else {
+				buffStack.effects.attackAmount += shieldAmount;
+			}
+		} else {
+			if (shieldAmount > maxShield) shieldAmount = maxShield;
+
+			if (shieldAmount > 0) {
+				result += this.getBuff(this, 'Swordwind Shield', 15, { attackAmount: shieldAmount });
+			}
+		}
+
+		return result;
+	}
+}
