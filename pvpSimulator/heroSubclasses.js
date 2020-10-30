@@ -4902,32 +4902,6 @@ class Inosuke extends hero {
 	}
 
 
-	takeDamage(source, strAttackDesc, damageResult) {
-		let result = '';
-
-		if ('Swordwind Shield' in this._buffs) {
-			const buffStack = Object.values(this._buffs['Swordwind Shield'])[0];
-			let damagePrevented = 0;
-
-			if (damageResult.damageAmount > buffStack.effects.attackAmount) {
-				damagePrevented = buffStack.effects.attackAmount;
-				damageResult.damageAmount -= damagePrevented;
-				result += this.removeBuff('Swordwind Shield');
-			} else {
-				damagePrevented = Math.floor(damageResult.damageAmount);
-				damageResult.damageAmount = 0;
-			}
-
-			this._currentStats.damageHealed += damagePrevented;
-			// eslint-disable-next-line no-undef
-			result += `<div><span class='skill'>Swordwind Shield</span> prevented <span class='num'>${formatNum(damagePrevented)}</span> damage.</div>`;
-		}
-
-		result += super.takeDamage(source, strAttackDesc, damageResult);
-		return result;
-	}
-
-
 	doBasic() {
 		let result = '';
 		let damageResult;

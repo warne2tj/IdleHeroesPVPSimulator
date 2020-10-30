@@ -1,8 +1,8 @@
-var basicQueue = [];
-var activeQueue = [];
-var triggerQueue = [];
-var logColor = 0;
-var roundNum = 0;
+let basicQueue = [];
+let activeQueue = [];
+let triggerQueue = [];
+let logColor = 0;
+let roundNum = 0;
 
 function runSim() {
 	const oCombatLog = document.getElementById('combatLog');
@@ -14,9 +14,6 @@ function runSim() {
 	let monsterResult = '';
 	let someoneWon = '';
 	let endingRoundSum = 0;
-	const endRoundDesc = '';
-	const numLiving = 0;
-	let tempTrigger;
 	let currentHero;
 
 	const attMonsterName = document.getElementById('attMonster').value;
