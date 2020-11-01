@@ -697,7 +697,7 @@ class hero {
 
 
 		if (roundNum > 15) {
-			attackDamage = attackDamage * (1.15 ^ (roundNum - 15));
+			attackDamage = attackDamage * (1.15 ** (roundNum - 15));
 		}
 
 
