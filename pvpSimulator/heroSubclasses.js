@@ -1,4 +1,8 @@
+/* eslint-disable no-undef */
+
+
 // Aida
+// eslint-disable-next-line no-unused-vars
 class Aida extends hero {
 	passiveStats() {
 		// apply Blessing of Light passive
@@ -34,7 +38,7 @@ class Aida extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 		let healAmount = 0;
 		let damageResult = {};
@@ -102,7 +106,7 @@ class Aida extends hero {
 		let targets = getRandomTargets(this, this._enemies, 4);
 		let targetLock;
 
-		for (var i in targets) {
+		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
@@ -114,7 +118,7 @@ class Aida extends hero {
 		}
 
 		targets = getAllTargets(this, this._enemies);
-		for (var i in targets) {
+		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
@@ -130,6 +134,7 @@ class Aida extends hero {
 
 
 // Amen-Ra
+// eslint-disable-next-line no-unused-vars
 class AmenRa extends hero {
 	passiveStats() {
 		// apply Aura of Despair passive
@@ -207,10 +212,9 @@ class AmenRa extends hero {
 		let result = '';
 		let damageResult = {};
 		let targets = getFrontTargets(this, this._enemies);
-		const controlPrecision = 1 + this._currentStats['controlPrecision'];
 		let targetLock;
 
-		for (var i in targets) {
+		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
@@ -223,7 +227,7 @@ class AmenRa extends hero {
 		}
 
 		targets = getAllTargets(this, this._allies);
-		for (i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Guardian Shadow', 15, {});
 			result += targets[i].getBuff(this, 'Guardian Shadow', 15, {});
 		}
@@ -234,6 +238,7 @@ class AmenRa extends hero {
 
 
 // Amuvor
+// eslint-disable-next-line no-unused-vars
 class Amuvor extends hero {
 	passiveStats() {
 		// apply Journey of Soul passive
@@ -338,6 +343,7 @@ class Amuvor extends hero {
 
 
 // Aspen
+// eslint-disable-next-line no-unused-vars
 class Aspen extends hero {
 	passiveStats() {
 		// apply Dark Storm passive
@@ -490,6 +496,7 @@ class Aspen extends hero {
 
 
 // Belrain
+// eslint-disable-next-line no-unused-vars
 class Belrain extends hero {
 	passiveStats() {
 		// apply Divine Awakening passive
@@ -545,7 +552,7 @@ class Belrain extends hero {
 		let targets = getRandomTargets(this, this._enemies, 4);
 		let targetLock;
 
-		for (var i in targets) {
+		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
@@ -557,7 +564,7 @@ class Belrain extends hero {
 		}
 
 		targets = getRandomTargets(this, this._allies, 4);
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Attack Percent', 3, { attackPercent: 0.3 });
 			result += targets[i].getBuff(this, 'Speed', 3, { speed: 30 });
 			result += targets[i].getBuff(this, 'Effect Being Healed', 3, { effectBeingHealed: 0.2 });
@@ -577,6 +584,7 @@ class Belrain extends hero {
 
 
 // Carrie
+// eslint-disable-next-line no-unused-vars
 class Carrie extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -623,13 +631,13 @@ class Carrie extends hero {
 	}
 
 
-	eventAllyDied(e) {
+	eventAllyDied() {
 		this._currentStats['spiritPowerStacks'] += 1;
 		return '';
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 
 		if (this._currentStats['totalHP'] <= 0) {
@@ -755,6 +763,7 @@ class Carrie extends hero {
 
 
 // Cthugha
+// eslint-disable-next-line no-unused-vars
 class Cthugha extends hero {
 	passiveStats() {
 		// apply Demon Bloodline passive
@@ -878,6 +887,7 @@ class Cthugha extends hero {
 
 
 // Dark Arthindol
+// eslint-disable-next-line no-unused-vars
 class DarkArthindol extends hero {
 	passiveStats() {
 		// apply Black Hole passive
@@ -962,13 +972,14 @@ class DarkArthindol extends hero {
 
 
 // Delacium
+// eslint-disable-next-line no-unused-vars
 class Delacium extends hero {
 	passiveStats() {
 		// apply Extreme Rage passive
 		this.applyStatChange({ attackPercent: 0.40, hpPercent: 0.30, crit: 0.35, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
 	}
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 		let targets = [];
 		let maxTargets = 3;
@@ -1118,6 +1129,7 @@ class Delacium extends hero {
 
 
 // Elyvia
+// eslint-disable-next-line no-unused-vars
 class Elyvia extends hero {
 	passiveStats() {
 		// apply Nothing Scare Elyvia passive
@@ -1167,11 +1179,11 @@ class Elyvia extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 
 		if (this._currentStats['totalHP'] > 0) {
-			var targets = getRandomTargets(this, this._enemies);
+			let targets = getRandomTargets(this, this._enemies);
 			let speedDiff = 0;
 
 			for (const i in targets) {
@@ -1187,7 +1199,7 @@ class Elyvia extends hero {
 			}
 
 
-			var targets = getRandomTargets(this, this._allies, 1);
+			targets = getRandomTargets(this, this._allies, 1);
 			if (targets.length > 0) {
 				result += targets[0].getBuff(this, 'Fairy\'s Guard', 2, {}, true);
 			}
@@ -1200,7 +1212,7 @@ class Elyvia extends hero {
 	doActive() {
 		let result = '';
 		let damageResult = {};
-		var targets = getRandomTargets(this, this._enemies, 1);
+		let targets = getRandomTargets(this, this._enemies, 1);
 		let targetLock;
 
 		if (targets.length > 0) {
@@ -1214,7 +1226,7 @@ class Elyvia extends hero {
 			}
 		}
 
-		var targets = getRandomTargets(this, this._allies, 3);
+		targets = getRandomTargets(this, this._allies, 3);
 		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Fairy\'s Guard', 2, {}, true);
 		}
@@ -1225,6 +1237,7 @@ class Elyvia extends hero {
 
 
 // Emily
+// eslint-disable-next-line no-unused-vars
 class Emily extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -1240,12 +1253,12 @@ class Emily extends hero {
 			result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Courageous</span> triggered.</div>';
 
 			let targets = getAllTargets(this, this._allies);
-			for (var h in targets) {
+			for (const h in targets) {
 				result += targets[h].getBuff(this, 'Attack Percent', 3, { attackPercent: 0.29 });
 			}
 
 			targets = getAllTargets(this, this._enemies);
-			for (var h in targets) {
+			for (const h in targets) {
 				result += targets[h].getDebuff(this, 'Armor Percent', 3, { armorPercent: 0.29 });
 			}
 		}
@@ -1288,7 +1301,7 @@ class Emily extends hero {
 		let targets = getAllTargets(this, this._enemies);
 		let targetLock;
 
-		for (var i in targets) {
+		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
@@ -1301,7 +1314,7 @@ class Emily extends hero {
 		}
 
 		targets = getAllTargets(this, this._allies);
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Speed', 3, { speed: 30 });
 			result += targets[i].getBuff(this, 'Attack Percent', 3, { attackPercent: 0.20 });
 		}
@@ -1312,6 +1325,7 @@ class Emily extends hero {
 
 
 // Garuda
+// eslint-disable-next-line no-unused-vars
 class Garuda extends hero {
 	passiveStats() {
 		// apply Eagle Power passive
@@ -1374,7 +1388,7 @@ class Garuda extends hero {
 		const targets = getRandomTargets(this, this._enemies, 3);
 		let targetLock;
 
-		for (var i in targets) {
+		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
@@ -1390,7 +1404,8 @@ class Garuda extends hero {
 		if ('Feather Blade' in this._buffs) {
 			const numBlades = Object.keys(this._buffs['Feather Blade']);
 
-			for (var i in numBlades) {
+			// eslint-disable-next-line no-unused-vars
+			for (const i in numBlades) {
 				featherTarget = getRandomTargets(this, targets, 1);
 
 				if (featherTarget.length > 0) {
@@ -1412,6 +1427,7 @@ class Garuda extends hero {
 
 
 // Faith Blade
+// eslint-disable-next-line no-unused-vars
 class FaithBlade extends hero {
 	passiveStats() {
 		// apply Ultimate Faith passive
@@ -1501,6 +1517,7 @@ class FaithBlade extends hero {
 
 
 // Gustin
+// eslint-disable-next-line no-unused-vars
 class Gustin extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -1559,7 +1576,7 @@ class Gustin extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 		let targets = [];
 
@@ -1574,7 +1591,7 @@ class Gustin extends hero {
 
 		if (random() < 0.5 && this._currentStats['totalHP'] > 0) {
 			targets = getRandomTargets(this, this._enemies, 2);
-			for (var i in targets) {
+			for (const i in targets) {
 				result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Cloak of Fog</span> drained ' + targets[i].heroDesc() + ' energy.</div>';
 				result += targets[i].loseEnergy(this, 30);
 			}
@@ -1585,7 +1602,7 @@ class Gustin extends hero {
 		targets = getRandomTargets(this, this._enemies);
 
 		if (targets.length > 0) {
-			for (var i in targets) {
+			for (const i in targets) {
 				if ('Link of Souls' in targets[i]._debuffs) { linked = true; }
 			}
 
@@ -1613,7 +1630,7 @@ class Gustin extends hero {
 					const allDebuffs = Object.keys(e[i][1]._debuffs);
 					let maxDispell = 2;
 
-					for (var d in allDebuffs) {
+					for (const d in allDebuffs) {
 						if (isDispellable(allDebuffs[d])) {
 							listDebuffs.push([allDebuffs[d], random()]);
 						}
@@ -1629,7 +1646,7 @@ class Gustin extends hero {
 
 					if (listDebuffs.length < maxDispell) { maxDispell = listDebuffs.length; }
 
-					for (var d = 0; d < maxDispell; d++) {
+					for (let d = 0; d < maxDispell; d++) {
 						result += e[i][1].removeDebuff(listDebuffs[d][0]);
 					}
 				}
@@ -1702,6 +1719,7 @@ class Gustin extends hero {
 
 
 // Horus
+// eslint-disable-next-line no-unused-vars
 class Horus extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -1790,7 +1808,6 @@ class Horus extends hero {
 		let bleedDamageResult = {};
 		let hpDamage = 0;
 		let hpDamageResult = { damageAmount: 0 };
-		const additionalDamage = 0;
 		let additionalDamageResult = { damageAmount: 0, critted: false };
 		const targets = getRandomTargets(this, this._enemies, 3);
 		let targetLock;
@@ -1853,6 +1870,7 @@ class Horus extends hero {
 
 
 // Ithaqua
+// eslint-disable-next-line no-unused-vars
 class Ithaqua extends hero {
 	passiveStats() {
 		// apply Ode to Shadow passive
@@ -1873,7 +1891,7 @@ class Ithaqua extends hero {
 	}
 
 
-	eventEnemyDied(e) {
+	eventEnemyDied() {
 		let result = '';
 		const targets = getRandomTargets(this, this._enemies, 1);
 
@@ -2035,6 +2053,7 @@ class Ithaqua extends hero {
 
 
 // Kroos
+// eslint-disable-next-line no-unused-vars
 class Kroos extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -2071,7 +2090,7 @@ class Kroos extends hero {
 		let targets = getBackTargets(this, this._enemies);
 		let targetLock;
 
-		for (var i in targets) {
+		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
@@ -2086,7 +2105,7 @@ class Kroos extends hero {
 
 		let healAmount = 0;
 		targets = getRandomTargets(this, this._allies, 2);
-		for (var i in targets) {
+		for (const i in targets) {
 			healAmount = this.calcHeal(targets[i], targets[i]._stats['totalHP'] * 0.20);
 			result += targets[i].getHeal(this, healAmount);
 		}
@@ -2125,6 +2144,7 @@ class Kroos extends hero {
 
 
 // Michelle
+// eslint-disable-next-line no-unused-vars
 class Michelle extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -2151,7 +2171,7 @@ class Michelle extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 
 		if (this._currentStats['totalHP'] <= 0 && this._currentStats['revive'] == 1) {
@@ -2249,6 +2269,7 @@ class Michelle extends hero {
 
 
 // Mihm
+// eslint-disable-next-line no-unused-vars
 class Mihm extends hero {
 	passiveStats() {
 		// apply Unreal Instinct passive
@@ -2337,6 +2358,7 @@ class Mihm extends hero {
 
 
 // Nakia
+// eslint-disable-next-line no-unused-vars
 class Nakia extends hero {
 	passiveStats() {
 		// apply Arachnid Madness passive
@@ -2380,11 +2402,11 @@ class Nakia extends hero {
 		const targets = getAllTargets(this, this._enemies);
 		let didCrit = false;
 
-		for (var i in e) {
+		for (const i in e) {
 			if (e[i][3] == true) { didCrit = true; }
 		}
 
-		for (var i in targets) {
+		for (const i in targets) {
 			if ('Bleed' in targets[i]._debuffs) {
 				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'passive', 'bleed', 1, 1, 3);
 				result += targets[i].getDebuff(this, 'Bleed', 3, { bleed: damageResult['damageAmount'] }, false, 'passive');
@@ -2456,6 +2478,7 @@ class Nakia extends hero {
 
 
 // Oberon
+// eslint-disable-next-line no-unused-vars
 class Oberon extends hero {
 	passiveStats() {
 		// apply Strength of Elf passive
@@ -2557,6 +2580,7 @@ class Oberon extends hero {
 
 
 // Penny
+// eslint-disable-next-line no-unused-vars
 class Penny extends hero {
 	passiveStats() {
 		// apply Troublemaker Gene passive
@@ -2579,13 +2603,9 @@ class Penny extends hero {
 
 	eventTookDamage(target, damageAmount) {
 		let result = '';
-		let reflectDamageResult;
-
 		result += '<div><span class=\'skill\'>Reflection Armor</span> consumed.</div>';
-
-		reflectDamageResult = this.calcDamage(target, damageAmount, 'passive', 'true');
+		const reflectDamageResult = this.calcDamage(target, damageAmount, 'passive', 'true');
 		result += target.takeDamage(this, 'Reflection Armor', reflectDamageResult);
-
 		return result;
 	}
 
@@ -2625,7 +2645,6 @@ class Penny extends hero {
 
 	takeDamage(source, strAttackDesc, damageResult) {
 		let result = '';
-		const reflectDamageResult = {};
 		let tempDamageAmount = damageResult['damageAmount'];
 
 
@@ -2758,6 +2777,7 @@ class Penny extends hero {
 
 
 // Sherlock
+// eslint-disable-next-line no-unused-vars
 class Sherlock extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -2831,7 +2851,7 @@ class Sherlock extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 
 		if(random() < 0.5) {
@@ -2915,6 +2935,7 @@ class Sherlock extends hero {
 
 
 // Tara
+// eslint-disable-next-line no-unused-vars
 class Tara extends hero {
 	passiveStats() {
 		// apply Immense Power passive
@@ -3039,6 +3060,7 @@ class Tara extends hero {
 
 
 // Unimax-3000
+// eslint-disable-next-line no-unused-vars
 class UniMax3000 extends hero {
 	passiveStats() {
 		// apply Machine Forewarning passive
@@ -3159,6 +3181,7 @@ class UniMax3000 extends hero {
 
 
 // Asmodel
+// eslint-disable-next-line no-unused-vars
 class Asmodel extends hero {
 	passiveStats() {
 		// apply Asmodeus passive
@@ -3187,7 +3210,7 @@ class Asmodel extends hero {
 		for (const t in e) {
 			if (e[t][1].heroDesc() == this.heroDesc()) {
 				const targets = getAllTargets(this, this._enemies);
-				var damageResult;
+				let damageResult;
 
 				for (const i in targets) {
 					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 1.8, 'mark', 'normal');
@@ -3269,6 +3292,7 @@ class Asmodel extends hero {
 
 
 // Drake
+// eslint-disable-next-line no-unused-vars
 class Drake extends hero {
 	passiveStats() {
 		// apply Power of Void passive
@@ -3304,7 +3328,7 @@ class Drake extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		return this.startOfBattle();
 	}
 
@@ -3387,6 +3411,7 @@ class Drake extends hero {
 
 
 // Russell
+// eslint-disable-next-line no-unused-vars
 class Russell extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -3427,12 +3452,13 @@ class Russell extends hero {
 		let targets;
 
 		if ('Light Arrow' in this._buffs && !(this._currentStats['isCharging'])) {
+			// eslint-disable-next-line no-unused-vars
 			for (const i in Object.keys(this._buffs['Light Arrow'])) {
 				targets = getLowestHPTargets(this, this._enemies, 1);
 
-				for (const i in targets) {
-					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 3, 'passive', 'normal');
-					result += targets[i].takeDamage(this, 'Light Arrow', damageResult);
+				for (const target of targets) {
+					damageResult = this.calcDamage(target, this._currentStats['totalAttack'] * 3, 'passive', 'normal');
+					result += target.takeDamage(this, 'Light Arrow', damageResult);
 				}
 			}
 		}
@@ -3453,7 +3479,7 @@ class Russell extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 		const healAmount = this.calcHeal(this, 4 * this._currentStats['totalAttack']);
 		const targets = getLowestHPTargets(this, this._enemies, 2);
@@ -3553,6 +3579,7 @@ class Russell extends hero {
 
 
 // Valkryie
+// eslint-disable-next-line no-unused-vars
 class Valkryie extends hero {
 	passiveStats() {
 		// apply Unparalleled Brave passive
@@ -3591,7 +3618,6 @@ class Valkryie extends hero {
 	doBasic() {
 		let result = '';
 		let damageResult = {};
-		const burnDamageResult = { damageAmount: 0 };
 		const targets = getRandomTargets(this, this._enemies, 3);
 		let targetLock;
 
@@ -3604,8 +3630,8 @@ class Valkryie extends hero {
 				result += targets[i].takeDamage(this, 'Fire of the Soul', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					damageResult = this.calcDamage(targets[i], this._stats['totalHP'] * 0.06, 'basic', 'burnTrue', 1, 0, 1);
-					result += targets[i].getDebuff(this, 'Burn True', 1, { burnTrue: damageResult['damageAmount'] });
+					const burnDamageResult = this.calcDamage(targets[i], this._stats['totalHP'] * 0.06, 'basic', 'burnTrue', 1, 0, 1);
+					result += targets[i].getDebuff(this, 'Burn True', 1, { burnTrue: burnDamageResult['damageAmount'] });
 				}
 
 				result += targets[i].getDebuff(this, 'Attack', 3, { attack: Math.floor(targets[i]._stats['attack'] * 0.12) });
@@ -3658,6 +3684,7 @@ class Valkryie extends hero {
 
 
 // Ormus
+// eslint-disable-next-line no-unused-vars
 class Ormus extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -3768,6 +3795,7 @@ class Ormus extends hero {
 
 
 // Rogan
+// eslint-disable-next-line no-unused-vars
 class Rogan extends hero {
 	passiveStats() {
 		// apply Wolfish Blood passive
@@ -3793,7 +3821,7 @@ class Rogan extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 		const targets = getAllTargets(this, this._allies);
 
@@ -3936,6 +3964,7 @@ class Rogan extends hero {
 
 
 // Gerke
+// eslint-disable-next-line no-unused-vars
 class Gerke extends hero {
 	passiveStats() {
 		// apply Heavenly Order passive
@@ -4018,6 +4047,7 @@ class Gerke extends hero {
 
 
 // Sleepless
+// eslint-disable-next-line no-unused-vars
 class Sleepless extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -4078,7 +4108,7 @@ class Sleepless extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 
 		if (this._currentStats['totalHP'] <= 0 && this._currentStats['revive'] == 1) {
@@ -4145,6 +4175,7 @@ class Sleepless extends hero {
 
 
 // Das Moge
+// eslint-disable-next-line no-unused-vars
 class DasMoge extends hero {
 	passiveStats() {
 		// apply Dark Insight passive
@@ -4217,6 +4248,7 @@ class DasMoge extends hero {
 
 
 // Ignis
+// eslint-disable-next-line no-unused-vars
 class Ignis extends hero {
 	passiveStats() {
 		// apply Blood of Dragons passive
@@ -4310,6 +4342,7 @@ class Ignis extends hero {
 
 
 // Heart Watcher
+// eslint-disable-next-line no-unused-vars
 class HeartWatcher extends hero {
 	passiveStats() {
 		// apply Tough Heart passive
@@ -4416,6 +4449,7 @@ class HeartWatcher extends hero {
 
 
 // King Barton
+// eslint-disable-next-line no-unused-vars
 class KingBarton extends hero {
 	passiveStats() {
 		// apply King's Demeanor passive
@@ -4440,7 +4474,7 @@ class KingBarton extends hero {
 		for (const i in e) {
 			if (e[i][1].heroDesc() == this.heroDesc()) {
 				const targets = getAllTargets(this, this._enemies);
-				var damageResult;
+				let damageResult;
 
 				result += this.getBuff(this, 'Attack Percent', 1, { attackPercent: 0.30 });
 
@@ -4517,6 +4551,7 @@ class KingBarton extends hero {
 
 
 // Xia
+// eslint-disable-next-line no-unused-vars
 class Xia extends hero {
 	passiveStats() {
 		// apply Shadow Step passive
@@ -4553,6 +4588,7 @@ class Xia extends hero {
 		let damageResult;
 
 		if ('Aggression' in this._buffs) {
+			// eslint-disable-next-line no-unused-vars
 			for (const s of Object.values(this._buffs['Aggression'])) {
 				targets = getLowestHPTargets(this, this._enemies, 1);
 
@@ -4621,6 +4657,7 @@ class Xia extends hero {
 
 
 // Tix
+// eslint-disable-next-line no-unused-vars
 class Tix extends hero {
 	passiveStats() {
 		// apply Coffin of Nothingness passive
@@ -4644,7 +4681,7 @@ class Tix extends hero {
 	}
 
 
-	endOfRound(roundNum) {
+	endOfRound() {
 		let result = '';
 
 		if (this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
@@ -4747,6 +4784,7 @@ class Tix extends hero {
 
 
 // Flora
+// eslint-disable-next-line no-unused-vars
 class Flora extends hero {
 	passiveStats() {
 		// apply Blessings of Nature passive

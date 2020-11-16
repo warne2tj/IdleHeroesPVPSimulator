@@ -60,13 +60,15 @@ function rng(seed = 0) {
 
 
 // stack ids for buffs and debuffs
-var uniqID;
+let uniqID;
+// eslint-disable-next-line no-unused-vars
 function uuid() {
 	uniqID++;
 	return uniqID;
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function speedSort(heroA, heroB) {
 	if (heroA._currentStats['speed'] > heroB._currentStats['speed']) {
 		return -1;
@@ -84,6 +86,7 @@ function speedSort(heroA, heroB) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function slotSort(heroA, heroB) {
 	if (heroA._attOrDef == 'att' && heroB._attOrDef == 'def') {
 		return -1;
@@ -118,6 +121,7 @@ function isDispellable(strName) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function isControlEffect(strName, effects = {}) {
 	if (['stun', 'petrify', 'freeze', 'twine', 'Silence', 'Seal of Light', 'Horrify', 'Shapeshift', 'Taunt', 'Dazzle'].includes(strName)) {
 		return true;
@@ -133,6 +137,7 @@ function isControlEffect(strName, effects = {}) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function isDot(strName, effects = {}) {
 	if (['Burn', 'Bleed', 'Poison', 'Dot', 'burn', 'bleed', 'poison', 'dot', 'Burn True', 'Bleed True', 'Poison True', 'burnTrue', 'bleedTrue', 'poisonTrue'].includes(strName)) {
 		return true;
@@ -148,19 +153,13 @@ function isDot(strName, effects = {}) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function isFrontLine(target, arrTargets) {
 	let frontCount = 0;
-	let backCount = 0;
 
-	for (var i = 0; i < 2; i++) {
+	for (let i = 0; i < 2; i++) {
 		if (arrTargets[i]._currentStats['totalHP'] > 0) {
 			frontCount++;
-		}
-	}
-
-	for (var i = 2; i < arrTargets.length; i++) {
-		if (arrTargets[i]._currentStats['totalHP'] > 0) {
-			backCount++;
 		}
 	}
 
@@ -174,17 +173,11 @@ function isFrontLine(target, arrTargets) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function isBackLine(target, arrTargets) {
-	let frontCount = 0;
 	let backCount = 0;
 
-	for (var i = 0; i < 2; i++) {
-		if (arrTargets[i]._currentStats['totalHP'] > 0) {
-			frontCount++;
-		}
-	}
-
-	for (var i = 2; i < arrTargets.length; i++) {
+	for (let i = 2; i < arrTargets.length; i++) {
 		if (arrTargets[i]._currentStats['totalHP'] > 0) {
 			backCount++;
 		}
@@ -200,6 +193,7 @@ function isBackLine(target, arrTargets) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function isAttribute(strName, effects = {}) {
 	const arrAttributes = [
 		'attack', 'attackPercent', 'armor', 'armorPercent', 'hp', 'hpPercent', 'speed',
@@ -229,6 +223,7 @@ function isAttribute(strName, effects = {}) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function getFrontTargets(source, arrTargets) {
 	let copyTargets = [];
 
@@ -254,20 +249,21 @@ function getFrontTargets(source, arrTargets) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function getBackTargets(source, arrTargets) {
 	let copyTargets = [];
 
 	copyTargets = getTauntedTargets(source, arrTargets);
 	if (copyTargets.length > 0) { return copyTargets; }
 
-	for (var h = 2; h < arrTargets.length; h++) {
+	for (let h = 2; h < arrTargets.length; h++) {
 		if (arrTargets[h]._currentStats['totalHP'] > 0) {
 			copyTargets.push(arrTargets[h]);
 		}
 	}
 
 	if (copyTargets.length == 0) {
-		for (var h = 0; h < 2; h++) {
+		for (let h = 0; h < 2; h++) {
 			if (arrTargets[h]._currentStats['totalHP'] > 0) {
 				copyTargets.push(arrTargets[h]);
 			}
@@ -278,6 +274,7 @@ function getBackTargets(source, arrTargets) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function getAllTargets(source, arrTargets, num = 6) {
 	let copyTargets = [];
 	let count = 0;
@@ -298,6 +295,7 @@ function getAllTargets(source, arrTargets, num = 6) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function getNearestTargets(source, arrTargets, num = 6) {
 	let copyTargets = [];
 	const copyTargets2 = [];
@@ -306,7 +304,7 @@ function getNearestTargets(source, arrTargets, num = 6) {
 	copyTargets = getTauntedTargets(source, arrTargets, num);
 	if (copyTargets.length > 0) { return copyTargets; }
 
-	for (var i in arrTargets) {
+	for (const i in arrTargets) {
 		if (arrTargets[i]._currentStats['totalHP'] > 0) {
 			arrTargets[i]._rng = Math.abs(source._heroPos - arrTargets[i]._heroPos);
 			copyTargets.push(arrTargets[i]);
@@ -331,7 +329,7 @@ function getNearestTargets(source, arrTargets, num = 6) {
 		}
 	});
 
-	for (var i in copyTargets) {
+	for (const i in copyTargets) {
 		copyTargets2.push(copyTargets[i]);
 		count++;
 		if (count == num) { break; }
@@ -351,7 +349,7 @@ function getRandomTargets(source, arrTargets, num = 6, dazzleBypass = false) {
 	}
 	if (copyTargets.length > 0) { return copyTargets; }
 
-	for (var i in arrTargets) {
+	for (const i in arrTargets) {
 		if (arrTargets[i]._currentStats['totalHP'] > 0) {
 			arrTargets[i]._rng = random();
 			copyTargets.push(arrTargets[i]);
@@ -368,7 +366,7 @@ function getRandomTargets(source, arrTargets, num = 6, dazzleBypass = false) {
 		}
 	});
 
-	for (var i in copyTargets) {
+	for (const i in copyTargets) {
 		copyTargets2.push(copyTargets[i]);
 		count++;
 		if (count == num) { break; }
@@ -378,6 +376,7 @@ function getRandomTargets(source, arrTargets, num = 6, dazzleBypass = false) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function getLowestHPTargets(source, arrTargets, num = 6) {
 	// get living targets with lowest current HP
 	let copyTargets = [];
@@ -387,7 +386,7 @@ function getLowestHPTargets(source, arrTargets, num = 6) {
 	copyTargets = getTauntedTargets(source, arrTargets, num);
 	if (copyTargets.length > 0) { return copyTargets; }
 
-	for (var i in arrTargets) {
+	for (const i in arrTargets) {
 		if (arrTargets[i]._currentStats['totalHP'] > 0) {
 			copyTargets.push(arrTargets[i]);
 		}
@@ -405,7 +404,7 @@ function getLowestHPTargets(source, arrTargets, num = 6) {
 		}
 	});
 
-	for (var i in copyTargets) {
+	for (const i in copyTargets) {
 		copyTargets2.push(copyTargets[i]);
 		count++;
 		if (count == num) { break; }
@@ -415,6 +414,7 @@ function getLowestHPTargets(source, arrTargets, num = 6) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function getLowestHPPercentTargets(source, arrTargets, num = 6) {
 	// get living targets with lowest current HP percent
 	let copyTargets = [];
@@ -424,7 +424,7 @@ function getLowestHPPercentTargets(source, arrTargets, num = 6) {
 	copyTargets = getTauntedTargets(source, arrTargets, num);
 	if (copyTargets.length > 0) { return copyTargets; }
 
-	for (var i in arrTargets) {
+	for (const i in arrTargets) {
 		if (arrTargets[i]._currentStats['totalHP'] > 0) {
 			copyTargets.push(arrTargets[i]);
 		}
@@ -442,7 +442,7 @@ function getLowestHPPercentTargets(source, arrTargets, num = 6) {
 		}
 	});
 
-	for (var i in copyTargets) {
+	for (const i in copyTargets) {
 		copyTargets2.push(copyTargets[i]);
 		count++;
 		if (count == num) { break; }
@@ -452,6 +452,7 @@ function getLowestHPPercentTargets(source, arrTargets, num = 6) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function getHighestHPTargets(source, arrTargets, num = 6) {
 	// get living target with highest current HP
 	let copyTargets = [];
@@ -461,7 +462,7 @@ function getHighestHPTargets(source, arrTargets, num = 6) {
 	copyTargets = getTauntedTargets(source, arrTargets, num);
 	if (copyTargets.length > 0) { return copyTargets; }
 
-	for (var i in arrTargets) {
+	for (const i in arrTargets) {
 		if (arrTargets[i]._currentStats['totalHP'] > 0) {
 			copyTargets.push(arrTargets[i]);
 		}
@@ -479,7 +480,7 @@ function getHighestHPTargets(source, arrTargets, num = 6) {
 		}
 	});
 
-	for (var i in copyTargets) {
+	for (const i in copyTargets) {
 		copyTargets2.push(copyTargets[i]);
 		count++;
 		if (count == num) { break; }
@@ -489,7 +490,7 @@ function getHighestHPTargets(source, arrTargets, num = 6) {
 }
 
 
-function getTauntedTargets(source, arrTargets, num = 6) {
+function getTauntedTargets(source, arrTargets) {
 	const copyTargets = [];
 
 	if (!(isMonster(source)) && arrTargets.length > 0) {
@@ -510,7 +511,8 @@ function getTauntedTargets(source, arrTargets, num = 6) {
 }
 
 
-var translate = {
+// eslint-disable-next-line no-unused-vars
+const translate = {
 	'hp': 'Pre-Multiplier HP',
 	'attack': 'Pre-Multiplier Attack',
 	'armor': 'Pre-Multiplier Armor',
@@ -602,6 +604,7 @@ var translate = {
 };
 
 
+// eslint-disable-next-line no-unused-vars
 function getHighestAttackTargets(source, arrTargets, num = 6) {
 	// get living target with highest current attack
 	let copyTargets = [];

@@ -1,9 +1,16 @@
-let basicQueue = [];
-let activeQueue = [];
-let triggerQueue = [];
-let logColor = 0;
-let roundNum = 0;
+/* eslint-disable no-undef */
 
+// eslint-disable-next-line no-var
+var basicQueue = [];
+// eslint-disable-next-line no-var
+var activeQueue = [];
+// eslint-disable-next-line no-var
+var triggerQueue = [];
+let logColor = 0;
+// eslint-disable-next-line no-var
+var roundNum = 0;
+
+// eslint-disable-next-line no-unused-vars
 function runSim() {
 	const oCombatLog = document.getElementById('combatLog');
 	const numSims = document.getElementById('numSims').value;
@@ -13,6 +20,7 @@ function runSim() {
 	let result = {};
 	let monsterResult = '';
 	let someoneWon = '';
+	let temp = '';
 	let endingRoundSum = 0;
 	let currentHero;
 
@@ -32,12 +40,12 @@ function runSim() {
 	logColor = 0;
 	oCombatLog.innerHTML = '';
 
-	for (var i = 0; i < attHeroes.length; i++) {
+	for (let i = 0; i < attHeroes.length; i++) {
 		attHeroes[i]._damageDealt = 0;
 		attHeroes[i]._damageHealed = 0;
 	}
 
-	for (var i = 0; i < defHeroes.length; i++) {
+	for (let i = 0; i < defHeroes.length; i++) {
 		defHeroes[i]._damageDealt = 0;
 		defHeroes[i]._damageHealed = 0;
 	}
@@ -53,7 +61,7 @@ function runSim() {
 
 		// snapshot stats as they are
 		numOfHeroes = attHeroes.length;
-		for (var i = 0; i < numOfHeroes; i++) {
+		for (let i = 0; i < numOfHeroes; i++) {
 			if (attHeroes[i]._heroName != 'None') {
 				attHeroes[i].snapshotStats();
 				attHeroes[i]._buffs = {};
@@ -62,7 +70,7 @@ function runSim() {
 		}
 
 		numOfHeroes = defHeroes.length;
-		for (var i = 0; i < numOfHeroes; i++) {
+		for (let i = 0; i < numOfHeroes; i++) {
 			if (defHeroes[i]._heroName != 'None') {
 				defHeroes[i].snapshotStats();
 				defHeroes[i]._buffs = {};
@@ -71,7 +79,7 @@ function runSim() {
 		}
 
 		// trigger start of battle abilities
-		for (var h in attHeroes) {
+		for (const h in attHeroes) {
 			if ((attHeroes[h].isNotSealed() && attHeroes[h]._currentStats['totalHP'] > 0) || attHeroes[h]._currentStats['revive'] == 1) {
 				temp = attHeroes[h].startOfBattle();
 				if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
@@ -86,7 +94,7 @@ function runSim() {
 			}
 		}
 
-		for (var h in defHeroes) {
+		for (const h in defHeroes) {
 			if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats['totalHP'] > 0) {
 				temp = defHeroes[h].startOfBattle();
 				if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
@@ -102,7 +110,7 @@ function runSim() {
 		}
 
 		roundNum = 1;
-		while (true) {
+		while (roundNum < 128) {
 			// @ start of round
 
 			// Output detailed combat log only if running a single simulation
@@ -173,20 +181,20 @@ function runSim() {
 
 							triggerQueue.push([currentHero, 'eventSelfActive', activeQueue]);
 
-							for (var h in currentHero._allies) {
+							for (const h in currentHero._allies) {
 								if (currentHero._heroPos != currentHero._allies[h]._heroPos) {
 									triggerQueue.push([currentHero._allies[h], 'eventAllyActive', currentHero, activeQueue]);
 								}
 							}
 
-							for (var h in currentHero._enemies) {
+							for (const h in currentHero._enemies) {
 								triggerQueue.push([currentHero._enemies[h], 'eventEnemyActive', currentHero, activeQueue]);
 							}
 
 
 							// get energy after getting hit by active
 							temp = '';
-							for (var i = 0; i < activeQueue.length; i++) {
+							for (let i = 0; i < activeQueue.length; i++) {
 								if (activeQueue[i][1]._currentStats['totalHP'] > 0) {
 									if (activeQueue[i][2] > 0) {
 										if (activeQueue[i][3] == true) {
@@ -218,19 +226,19 @@ function runSim() {
 
 							triggerQueue.push([currentHero, 'eventSelfBasic', basicQueue]);
 
-							for (var h in currentHero._allies) {
+							for (const h in currentHero._allies) {
 								if (currentHero._heroPos != currentHero._allies[h]._heroPos) {
 									triggerQueue.push([currentHero._allies[h], 'eventAllyBasic', currentHero, basicQueue]);
 								}
 							}
 
-							for (var h in currentHero._enemies) {
+							for (const h in currentHero._enemies) {
 								triggerQueue.push([currentHero._enemies[h], 'eventEnemyBasic', currentHero, basicQueue]);
 							}
 
 							// get energy after getting hit by basic
 							temp = '';
-							for (var i = 0; i < basicQueue.length; i++) {
+							for (let i = 0; i < basicQueue.length; i++) {
 								if (basicQueue[i][1]._currentStats['totalHP'] > 0) {
 									if (basicQueue[i][2] > 0) {
 										if (basicQueue[i][3] == true) {
@@ -403,7 +411,7 @@ function runSim() {
 
 
 		numOfHeroes = attHeroes.length;
-		for (var i = 0; i < numOfHeroes; i++) {
+		for (let i = 0; i < numOfHeroes; i++) {
 			if (attHeroes[i]._heroName != 'None') {
 				attHeroes[i]._damageDealt += attHeroes[i]._currentStats['damageDealt'];
 				attHeroes[i]._currentStats['damageDealt'] = 0;
@@ -413,7 +421,7 @@ function runSim() {
 		}
 
 		numOfHeroes = defHeroes.length;
-		for (var i = 0; i < numOfHeroes; i++) {
+		for (let i = 0; i < numOfHeroes; i++) {
 			if (defHeroes[i]._heroName != 'None') {
 				defHeroes[i]._damageDealt += defHeroes[i]._currentStats['damageDealt'];
 				defHeroes[i]._currentStats['damageDealt'] = 0;
@@ -432,7 +440,7 @@ function runSim() {
 
 	// damage summary
 	oCombatLog.innerHTML += '<p><div class=\'logSeg\'>Attacker average damage summary.</div>';
-	for (var i = 0; i < attHeroes.length; i++) {
+	for (let i = 0; i < attHeroes.length; i++) {
 		if (attHeroes[i]._heroName != 'None') {
 			oCombatLog.innerHTML += '<div><span class=\'att\'>' + attHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(attHeroes[i]._damageDealt / numSims)) + '</div>';
 		}
@@ -443,7 +451,7 @@ function runSim() {
 	oCombatLog.innerHTML += '</p>';
 
 	oCombatLog.innerHTML += '<p><div class=\'logSeg\'>Defender average damage summary.</div>';
-	for (var i = 0; i < defHeroes.length; i++) {
+	for (let i = 0; i < defHeroes.length; i++) {
 		if (defHeroes[i]._heroName != 'None') {
 			oCombatLog.innerHTML += '<div><span class=\'def\'>' + defHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(defHeroes[i]._damageDealt / numSims)) + '</div>';
 		}
@@ -455,7 +463,7 @@ function runSim() {
 
 	// healing and damage prevention summary
 	oCombatLog.innerHTML += '<p><div class=\'logSeg\'>Attacker average healing and damage prevention summary.</div>';
-	for (var i = 0; i < attHeroes.length; i++) {
+	for (let i = 0; i < attHeroes.length; i++) {
 		if (attHeroes[i]._heroName != 'None') {
 			oCombatLog.innerHTML += '<div><span class=\'att\'>' + attHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(attHeroes[i]._damageHealed / numSims)) + '</div>';
 		}
@@ -466,7 +474,7 @@ function runSim() {
 	oCombatLog.innerHTML += '</p>';
 
 	oCombatLog.innerHTML += '<p><div class=\'logSeg\'>Defender average healing and damage prevention summary.</div>';
-	for (var i = 0; i < defHeroes.length; i++) {
+	for (let i = 0; i < defHeroes.length; i++) {
 		if (defHeroes[i]._heroName != 'None') {
 			oCombatLog.innerHTML += '<div><span class=\'def\'>' + defHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + '</div>';
 		}
@@ -587,14 +595,14 @@ function checkForWin() {
 	let numOfHeroes = 0;
 
 	numOfHeroes = attHeroes.length;
-	for (var i = 0; i < numOfHeroes; i++) {
+	for (let i = 0; i < numOfHeroes; i++) {
 		if (attHeroes[i]._currentStats['totalHP'] > 0 || (attHeroes[i]._currentStats['revive'] == 1 && attHeroes[i]._heroName != 'Carrie')) {
 			attAlive++;
 		}
 	}
 
 	numOfHeroes = defHeroes.length;
-	for (var i = 0; i < numOfHeroes; i++) {
+	for (let i = 0; i < numOfHeroes; i++) {
 		if (defHeroes[i]._currentStats['totalHP'] > 0 || (defHeroes[i]._currentStats['revive'] == 1 && defHeroes[i]._heroName != 'Carrie')) {
 			defAlive++;
 		}

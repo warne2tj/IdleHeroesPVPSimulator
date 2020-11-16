@@ -1,4 +1,7 @@
+/* eslint-disable no-undef */
+
 // base hero class, extend this class for each hero
+// eslint-disable-next-line no-unused-vars
 class hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		this._heroName = sHeroName;
@@ -245,7 +248,7 @@ class hero {
 
 
 		// Set bonus multipliers seem to be applied in a specific order?
-		for (var x in setBonus) {
+		for (const x in setBonus) {
 			if (x in sets) {
 				if (sets[x] >= 2) {
 					this.applyStatChange(setBonus[x][2], 'Two piece ' + x);
@@ -350,7 +353,7 @@ class hero {
 
 		let heroCount = 0;
 
-		for (var x = 0; x < arrToUse.length; x++) {
+		for (let x = 0; x < arrToUse.length; x++) {
 			if (arrToUse[x]._heroFaction != '') {
 				factionCount[arrToUse[x]._heroFaction] += 1;
 				heroCount++;
@@ -360,7 +363,7 @@ class hero {
 		let factionHPBonus = 0;
 		let factionAttackBonus = 0;
 		if (heroCount == 6) {
-			for (var x in factionCount) {
+			for (const x in factionCount) {
 				factionHPBonus += arrIdentical[factionCount[x]]['hpPercent'];
 				factionAttackBonus += arrIdentical[factionCount[x]]['attackPercent'];
 			}
@@ -734,7 +737,6 @@ class hero {
 		if (!(isMonster(source)) && 'Healing Curse' in this._debuffs) {
 			const debuffKey = Object.keys(this._debuffs['Healing Curse'])[0];
 			const debuffStack = this._debuffs['Healing Curse'][debuffKey];
-			const damageResult = {};
 
 			result += '<div>Heal from ' + source.heroDesc() + ' blocked by <span class=\'skill\'>Healing Curse</span>.</div>';
 			result += this.removeDebuff('Healing Curse', debuffKey);
@@ -1062,13 +1064,13 @@ class hero {
 					result += this.getDebuff(source, 'Seal of Light', 2);
 
 				} else if (debuffName == 'twine') {
-					for (var h in source._allies) {
+					for (const h in source._allies) {
 						if (source._allies[h]._heroName == 'Oberon') {
 							triggerQueue.push([source._allies[h], 'eventTwine']);
 						}
 					}
 				} else if (debuffName == 'Horrify') {
-					for (var h in this._enemies) {
+					for (const h in this._enemies) {
 						triggerQueue.push([this._enemies[h], 'enemyHorrified']);
 					}
 				}
@@ -1196,7 +1198,7 @@ class hero {
 							result += '<div>' + this.heroDesc() + ' stack of buff (<span class=\'skill\'>' + b + '</span>) ended.</div>';
 
 							// remove the effects
-							for (var strStatName in this._buffs[b][s]['effects']) {
+							for (const strStatName in this._buffs[b][s]['effects']) {
 								if (strStatName == 'attackPercent') {
 									this._currentStats['totalAttack'] = this.calcCombatAttack();
 
@@ -1220,7 +1222,7 @@ class hero {
 						} else {
 							stacksLeft++;
 
-							for (var strStatName in this._buffs[b][s]['effects']) {
+							for (const strStatName in this._buffs[b][s]['effects']) {
 								if (strStatName == 'heal') {
 									result += '<div>' + this.heroDesc() + ' stack of buff <span class=\'skill\'>' + b + '</span> ticked.</div>';
 									result += '<div>' + this.getHeal(this._buffs[b][s]['source'], this._buffs[b][s]['effects'][strStatName]) + '</div>';
@@ -1274,14 +1276,14 @@ class hero {
 							} else if (b == 'Round Mark') {
 								if (this._currentStats['totalHP'] > 0) {
 									const roundMark = this._debuffs[b][s];
-									const damageResult = roundMark['effects']['attackAmount'];
+									damageResult = roundMark['effects']['attackAmount'];
 
 									result += '<div>' + this.takeDamage(roundMark['source'], 'Round Mark', damageResult) + '</div>';
 								}
 
 							} else {
 								// remove the effects
-								for (var strStatName in this._debuffs[b][s]['effects']) {
+								for (const strStatName in this._debuffs[b][s]['effects']) {
 									if (strStatName == 'attackPercent') {
 										this._currentStats['totalAttack'] = this.calcCombatAttack();
 
@@ -1321,7 +1323,7 @@ class hero {
 						} else {
 							stacksLeft++;
 
-							for (var strStatName in this._debuffs[b][s]['effects']) {
+							for (const strStatName in this._debuffs[b][s]['effects']) {
 								if (isDot(strStatName)) {
 									if (this._currentStats['totalHP'] > 0) {
 										damageResult = {
@@ -1394,11 +1396,11 @@ class hero {
 		} else if (this._enable3 == 'SharedFate') {
 			let numLiving = 0;
 
-			for (var h in this._allies) {
+			for (const h in this._allies) {
 				if (this._allies[h]._currentStats['totalHP'] > 0) { numLiving++; }
 			}
 
-			for (var h in this._enemies) {
+			for (const h in this._enemies) {
 				if (this._enemies[h]._currentStats['totalHP'] > 0) { numLiving++; }
 			}
 
@@ -1411,7 +1413,6 @@ class hero {
 
 		} else if (this._enable3 == 'Purify') {
 			const listDebuffs = [];
-			let rng;
 
 			for (const d in this._debuffs) {
 				if (isDispellable(d)) {
@@ -1419,7 +1420,7 @@ class hero {
 				}
 			}
 
-			rng = Math.floor(random() * listDebuffs.length);
+			const rng = Math.floor(random() * listDebuffs.length);
 
 			if (listDebuffs.length > 0) {
 				result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Purify</span> removed debuff.</div>';
@@ -1435,24 +1436,33 @@ class hero {
 	// usually you'll want to check that the hero is still alive before triggering their effect
 
 	passiveStats() { return {}; }
+	// eslint-disable-next-line no-unused-vars
 	eventSelfBasic(e) { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	eventAllyBasic(e) { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	eventEnemyBasic(e) { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	eventAllyActive(e) { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	eventEnemyActive(e) { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	eventSelfDied(e) { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	eventAllyDied(e) { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	eventEnemyDied(e) { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	eventGotCC(source, ccName, ccStackID) { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	startOfBattle() { return ''; }
+	// eslint-disable-next-line no-unused-vars
 	endOfRound(roundNum) { return ''; }
 	eventHPlte50() { return ''; }
 	eventHPlte30() { return ''; }
 
 
 	handleTrigger(trigger) {
-		const result = '';
-
 		if (trigger[1] == 'addHurt' && this._currentStats['totalHP'] > 0) {
 			if (trigger[2]._currentStats['totalHP'] > 0) {
 				const damageResult = this.calcDamage(trigger[2], trigger[3], 'passive', 'true');
@@ -1594,13 +1604,13 @@ class hero {
 
 				triggerQueue.push([this, 'eventSelfDied', source, this]);
 
-				for (var h in this._allies) {
+				for (const h in this._allies) {
 					if (this._heroPos != this._allies[h]._heroPos) {
 						triggerQueue.push([this._allies[h], 'eventAllyDied', source, this]);
 					}
 				}
 
-				for (var h in this._enemies) {
+				for (const h in this._enemies) {
 					triggerQueue.push([this._enemies[h], 'eventEnemyDied', source, this]);
 				}
 			}
@@ -1792,7 +1802,6 @@ class hero {
 		let result = '';
 		let damageResult = {};
 		let hpDamage = 0;
-		const healAmount = 0;
 		let maxDamage = 15 * this._currentStats['totalAttack'];
 
 		for (const i in targets) {

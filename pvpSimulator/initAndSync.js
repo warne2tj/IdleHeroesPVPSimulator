@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+
+// eslint-disable-next-line no-var
 var attHeroes = [
 	new hero('None', 0, 'att'),
 	new hero('None', 1, 'att'),
@@ -7,6 +10,7 @@ var attHeroes = [
 	new hero('None', 5, 'att'),
 ];
 
+// eslint-disable-next-line no-var
 var defHeroes = [
 	new hero('None', 0, 'def'),
 	new hero('None', 1, 'def'),
@@ -19,10 +23,11 @@ var defHeroes = [
 const lsPrefix = 'pvp_';
 
 
+// eslint-disable-next-line no-unused-vars
 function initialize() {
 	// layout stuff
-	var acc = document.getElementsByClassName('colorA');
-	for (var i = 0; i < acc.length; i++) {
+	let acc = document.getElementsByClassName('colorA');
+	for (let i = 0; i < acc.length; i++) {
 		acc[i].addEventListener('click', function() {
 			/* Toggle between adding and removing the "active" class,
       to highlight the button that controls the panel */
@@ -38,8 +43,8 @@ function initialize() {
 		});
 	}
 
-	var acc = document.getElementsByClassName('colorB');
-	for (var i = 0; i < acc.length; i++) {
+	acc = document.getElementsByClassName('colorB');
+	for (let i = 0; i < acc.length; i++) {
 		acc[i].addEventListener('click', function() {
 			this.classList.toggle('activeB');
 
@@ -52,8 +57,8 @@ function initialize() {
 		});
 	}
 
-	var acc = document.getElementsByClassName('colorC');
-	for (var i = 0; i < acc.length; i++) {
+	acc = document.getElementsByClassName('colorC');
+	for (let i = 0; i < acc.length; i++) {
 		acc[i].addEventListener('click', function() {
 			this.classList.toggle('activeC');
 
@@ -87,7 +92,7 @@ function initialize() {
 
 	let option;
 
-	for(var x in avatarFrames) {
+	for(const x in avatarFrames) {
 		option = document.createElement('option');
 		option.text = x;
 		document.getElementById('attAvatarFrame').add(option);
@@ -97,7 +102,7 @@ function initialize() {
 		document.getElementById('defAvatarFrame').add(option);
 	}
 
-	for(var x in baseMonsterStats) {
+	for(const x in baseMonsterStats) {
 		option = document.createElement('option');
 		option.text = x;
 		document.getElementById('attMonster').add(option);
@@ -125,6 +130,7 @@ function initialize() {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function storeLocal(i) {
 	if (typeof (Storage) !== 'undefined') {
 		localStorage.setItem(lsPrefix + i.id, i.value);
@@ -132,14 +138,15 @@ function storeLocal(i) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function swapAttDef() {
 	createConfig();
 
 	const oConfig = document.getElementById('configText');
 	let configString = oConfig.value;
 
-	configString = configString.replace(/\"att/g, '@@@');
-	configString = configString.replace(/\"def/g, '"att');
+	configString = configString.replace(/"att/g, '@@@');
+	configString = configString.replace(/"def/g, '"att');
 	configString = configString.replace(/@@@/g, '"def');
 
 	oConfig.value = configString;
@@ -153,6 +160,7 @@ function swapAttDef() {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function swapHero() {
 	const heroA = document.getElementById('heroA').value;
 	const heroB = document.getElementById('heroB').value;
@@ -181,6 +189,7 @@ function swapHero() {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function copyHero() {
 	const heroA = document.getElementById('heroA').value;
 	const heroB = document.getElementById('heroB').value;
@@ -191,7 +200,7 @@ function copyHero() {
 		const oConfig = document.getElementById('configText');
 		const jsonConfig = JSON.parse(oConfig.value);
 
-		for (x in jsonConfig) {
+		for (const x in jsonConfig) {
 			if (x.substring(0, 8) == heroA) {
 				jsonConfig[heroB + x.substring(8)] = jsonConfig[x];
 			}
@@ -210,9 +219,13 @@ function copyHero() {
 
 
 // When the user clicks on the button, scroll to the top of the document
+// eslint-disable-next-line no-unused-vars
 function topFunction() {
-	document.body.scrollTop = 0; // For Safari
-	document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+	// For Safari
+	document.body.scrollTop = 0;
+
+	// For Chrome, Firefox, IE and Opera
+	document.documentElement.scrollTop = 0;
 }
 
 
@@ -220,13 +233,13 @@ function addOptions(dictItems, strPostfix) {
 	let option;
 
 	for(const x in dictItems) {
-		for(i = 0; i < attHeroes.length; i++) {
+		for(let i = 0; i < attHeroes.length; i++) {
 			option = document.createElement('option');
 			option.text = x;
 			document.getElementById('attHero' + i + strPostfix).add(option);
 		}
 
-		for(i = 0; i < defHeroes.length; i++) {
+		for(let i = 0; i < defHeroes.length; i++) {
 			option = document.createElement('option');
 			option.text = x;
 			document.getElementById('defHero' + i + strPostfix).add(option);
@@ -340,9 +353,9 @@ function createConfig() {
 	const oConfig = document.getElementById('configText');
 	oConfig.value = '{\n';
 
-	var arrInputs = document.getElementsByTagName('INPUT');
-	for (var e = 0; e < arrInputs.length; e++) {
-		elem = arrInputs[e];
+	let arrInputs = document.getElementsByTagName('INPUT');
+	for (let e = 0; e < arrInputs.length; e++) {
+		const elem = arrInputs[e];
 
 		if ('id' in elem) {
 			if (elem.id.substring(0, 3) == 'att' || elem.id.substring(0, 3) == 'def') {
@@ -351,9 +364,9 @@ function createConfig() {
 		}
 	}
 
-	var arrInputs = document.getElementsByTagName('SELECT');
-	for (var e = 0; e < arrInputs.length; e++) {
-		elem = arrInputs[e];
+	arrInputs = document.getElementsByTagName('SELECT');
+	for (let e = 0; e < arrInputs.length; e++) {
+		const elem = arrInputs[e];
 
 		if ('id' in elem) {
 			if (elem.id.substring(0, 3) == 'att' || elem.id.substring(0, 3) == 'def') {
@@ -397,6 +410,7 @@ function loadConfig() {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 function genSeed() {
 	const dt = new Date();
 	document.getElementById('domSeed').value = dt.valueOf().toString();

@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 class monster {
 	constructor(sMonsterName, attOrDef) {
 		this._monsterName = sMonsterName;
@@ -67,22 +69,23 @@ class monster {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 class mDyne extends monster {
 	doActive() {
 		let result = '';
 		let damageResult = [];
-		var targets = getRandomTargets(this, this._enemies, 4);
+		let targets = getRandomTargets(this, this._enemies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			damageResult = this.calcDamage(targets[i], 402068, 'monster', 'true');
 			result += targets[i].takeDamage(this, 'Emerald Nourishing', damageResult);
 		}
 
 
 		let healAmount = 0;
-		var targets = getRandomTargets(this, this._allies, 4);
+		targets = getRandomTargets(this, this._allies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Armor Percent', 2, { armorPercent: 0.37 });
 			result += targets[i].getBuff(this, 'Attack Percent', 2, { attackPercent: 0.15 });
 
@@ -97,13 +100,14 @@ class mDyne extends monster {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 class mFenlier extends monster {
 	doActive() {
 		let result = '';
 		let damageResult = [];
 		let targets = getRandomTargets(this, this._enemies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			damageResult = this.calcDamage(targets[i], 602441, 'monster', 'true');
 			result += targets[i].takeDamage(this, 'Violent Bite', damageResult);
 
@@ -113,7 +117,7 @@ class mFenlier extends monster {
 
 
 		targets = getRandomTargets(this, this._allies, 4);
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Damage Against Bleeding', 3, { damageAgainstBleeding: 0.8 });
 		}
 
@@ -124,20 +128,21 @@ class mFenlier extends monster {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 class mFox extends monster {
 	doActive() {
 		let result = '';
 		let damageResult = [];
 		let targets = getRandomTargets(this, this._enemies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			damageResult = this.calcDamage(targets[i], 636573, 'monster', 'true');
 			result += targets[i].takeDamage(this, 'Soul Shock', damageResult);
 			result += targets[i].getDebuff(this, 'Silence', 2, {}, false, '', 0.40);
 		}
 
 		targets = getRandomTargets(this, this._allies, 4);
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getEnergy(this, 62);
 		}
 
@@ -148,20 +153,21 @@ class mFox extends monster {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 class mIceGolem extends monster {
 	doActive() {
 		let result = '';
 		let damageResult = [];
 		let targets = getRandomTargets(this, this._enemies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			damageResult = this.calcDamage(targets[i], 809114, 'monster', 'true');
 			result += targets[i].takeDamage(this, 'Frozen', damageResult);
 			result += targets[i].getDebuff(this, 'freeze', 2, {}, false, '', 0.36);
 		}
 
 		targets = getRandomTargets(this, this._allies, 4);
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Damage Against Frozen', 2, { damageAgainstFrozen: 1.2 });
 		}
 
@@ -172,13 +178,14 @@ class mIceGolem extends monster {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 class mJormangund extends monster {
 	doActive() {
 		let result = '';
 		let damageResult = [];
 		let targets = getRandomTargets(this, this._enemies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			damageResult = this.calcDamage(targets[i], 593312, 'monster', 'true');
 			result += targets[i].takeDamage(this, 'Toxic Track', damageResult);
 
@@ -188,7 +195,7 @@ class mJormangund extends monster {
 
 
 		targets = getRandomTargets(this, this._allies, 4);
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Damage Against Poisoned', 3, { damageAgainstPoisoned: 0.8 });
 		}
 
@@ -199,20 +206,21 @@ class mJormangund extends monster {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 class mNiederhog extends monster {
 	doActive() {
 		let result = '';
 		let damageResult = [];
 		let targets = getRandomTargets(this, this._enemies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			damageResult = this.calcDamage(targets[i], 809114, 'monster', 'true');
 			result += targets[i].takeDamage(this, 'Dragon Sigh', damageResult);
 			result += targets[i].getDebuff(this, 'stun', 2, {}, false, '', 0.36);
 		}
 
 		targets = getRandomTargets(this, this._allies, 4);
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Holy Damage', 2, { holyDamage: 0.75 });
 		}
 
@@ -223,13 +231,14 @@ class mNiederhog extends monster {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 class mPhoenix extends monster {
 	doActive() {
 		let result = '';
 		let damageResult = [];
 		let targets = getRandomTargets(this, this._enemies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			damageResult = this.calcDamage(targets[i], 451830, 'monster', 'true');
 			result += targets[i].takeDamage(this, 'Blazing Spirit', damageResult);
 
@@ -240,7 +249,7 @@ class mPhoenix extends monster {
 
 		let healAmount = 0;
 		targets = getRandomTargets(this, this._allies, 4);
-		for (var i in targets) {
+		for (const i in targets) {
 			healAmount = this.calcHeal(targets[i], 500535);
 			result += targets[i].getBuff(this, 'Heal', 3, { heal: healAmount });
 			result += targets[i].getBuff(this, 'Damage Against Burning', 15, { damageAgainstBurning: 0.8 });
@@ -253,13 +262,14 @@ class mPhoenix extends monster {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 class mSphinx extends monster {
 	doActive() {
 		let result = '';
 		let damageResult = [];
 		let targets = getRandomTargets(this, this._enemies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			damageResult = this.calcDamage(targets[i], 636141, 'monster', 'true');
 			result += targets[i].takeDamage(this, 'Subduction Hit', damageResult);
 			result += targets[i].getDebuff(this, 'Armor Percent', 3, { armorPercent: 0.37 });
@@ -268,7 +278,7 @@ class mSphinx extends monster {
 
 
 		targets = getRandomTargets(this, this._allies, 4);
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Attack Percent', 2, { attackPercent: 0.25 });
 		}
 
@@ -279,20 +289,21 @@ class mSphinx extends monster {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 class mStoneGolem extends monster {
 	doActive() {
 		let result = '';
 		let damageResult = [];
 		let targets = getRandomTargets(this, this._enemies, 4);
 
-		for (var i in targets) {
+		for (const i in targets) {
 			damageResult = this.calcDamage(targets[i], 809114, 'monster', 'true');
 			result += targets[i].takeDamage(this, 'Death Stares', damageResult);
 			result += targets[i].getDebuff(this, 'petrify', 2, {}, false, '', 0.36);
 		}
 
 		targets = getRandomTargets(this, this._allies, 4);
-		for (var i in targets) {
+		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Crit Damage', 2, { critDamage: 0.75 });
 		}
 
