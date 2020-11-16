@@ -4,9 +4,22 @@ function formatNum(num) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
+function logCombat(str, append = true) {
+	// eslint-disable-next-line no-undef
+	const oCombatLog = document.getElementById('combatLog');
+
+	if (append) {
+		oCombatLog.innerHTML += str;
+	} else {
+		oCombatLog.innerHTML = str;
+	}
+}
+
+
 // replacement seedable prng
-// eslint-disable-next-line prefer-const
-let random = rng();
+// eslint-disable-next-line no-var
+var random = rng();
 function rng(seed = 0) {
 	if (seed == 0) {
 		const dt = new Date();

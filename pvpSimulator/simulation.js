@@ -11,9 +11,7 @@ let logColor = 0;
 var roundNum = 0;
 
 // eslint-disable-next-line no-unused-vars
-function runSim() {
-	const oCombatLog = document.getElementById('combatLog');
-	const numSims = document.getElementById('numSims').value;
+function runSim(attMonsterName, defMonsterName, numSims, domSeed = 0) {
 	let winCount = 0;
 	let orderOfAttack = [];
 	let numOfHeroes = 0;
@@ -24,13 +22,9 @@ function runSim() {
 	let endingRoundSum = 0;
 	let currentHero;
 
-	const attMonsterName = document.getElementById('attMonster').value;
 	const attMonster = new baseMonsterStats[attMonsterName]['className'](attMonsterName, 'att');
-
-	const defMonsterName = document.getElementById('defMonster').value;
 	const defMonster = new baseMonsterStats[defMonsterName]['className'](defMonsterName, 'def');
 
-	const domSeed = document.getElementById('domSeed');
 	if (domSeed !== null) {
 		random = rng(domSeed.value);
 	} else {
@@ -38,7 +32,7 @@ function runSim() {
 	}
 
 	logColor = 0;
-	oCombatLog.innerHTML = '';
+	logCombat('', false);
 
 	for (let i = 0; i < attHeroes.length; i++) {
 		attHeroes[i]._damageDealt = 0;
@@ -53,7 +47,7 @@ function runSim() {
 	for (let simIterNum = 1; simIterNum <= numSims; simIterNum++) {
 		// @ start of single simulation
 
-		if(numSims == 1) {oCombatLog.innerHTML += '<p class =\'logSeg\'>Simulation #' + formatNum(simIterNum) + ' Started.</p>';}
+		if(numSims == 1) logCombat('<p class =\'logSeg\'>Simulation #' + formatNum(simIterNum) + ' Started.</p>');
 		someoneWon = '';
 		uniqID = 0;
 		attMonster._energy = 0;
@@ -82,14 +76,14 @@ function runSim() {
 		for (const h in attHeroes) {
 			if ((attHeroes[h].isNotSealed() && attHeroes[h]._currentStats['totalHP'] > 0) || attHeroes[h]._currentStats['revive'] == 1) {
 				temp = attHeroes[h].startOfBattle();
-				if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
+				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
 
 
 			if (attHeroes[h]._artifact.includes(' Golden Crown')) {
 				temp = attHeroes[h].getBuff(attHeroes[h], 'Golden Crown', 5, { allDamageReduce: artifacts[attHeroes[h]._artifact].enhance });
-				if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
+				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
 		}
@@ -97,14 +91,14 @@ function runSim() {
 		for (const h in defHeroes) {
 			if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats['totalHP'] > 0) {
 				temp = defHeroes[h].startOfBattle();
-				if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
+				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
 
 
 			if (defHeroes[h]._artifact.includes(' Golden Crown')) {
 				temp = defHeroes[h].getBuff(defHeroes[h], 'Golden Crown', 5, { allDamageReduce: artifacts[defHeroes[h]._artifact].enhance });
-				if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
+				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
 		}
@@ -114,7 +108,7 @@ function runSim() {
 			// @ start of round
 
 			// Output detailed combat log only if running a single simulation
-			if(numSims == 1) {oCombatLog.innerHTML += '<p class=\'logSeg log' + logColor + '\'>Round ' + formatNum(roundNum) + ' Start</p>';}
+			if(numSims == 1) logCombat('<p class=\'logSeg log' + logColor + '\'>Round ' + formatNum(roundNum) + ' Start</p>');
 			logColor = (logColor + 1) % 2;
 
 
@@ -132,7 +126,7 @@ function runSim() {
 
 				if (currentHero._currentStats['totalHP'] > 0) {
 					if(currentHero.isUnderStandardControl()) {
-						if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + currentHero.heroDesc() + ' is under control effect, turn skipped.</div>';}
+						if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + currentHero.heroDesc() + ' is under control effect, turn skipped.</div>');
 					} else {
 
 						let isRussellCharging = false;
@@ -154,7 +148,7 @@ function runSim() {
 
 							// do active
 							result = currentHero.doActive();
-							if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + result + '</div>';}
+							if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + result + '</div>');
 
 							// monster gains energy from hero active
 							if (currentHero._attOrDef == 'att') {
@@ -162,14 +156,14 @@ function runSim() {
 									monsterResult = '<div>' + attMonster.heroDesc() + ' gained ' + formatNum(10) + ' energy. ';
 									attMonster._energy += 10;
 									monsterResult += 'Energy at ' + formatNum(attMonster._energy) + '.</div>';
-									if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + monsterResult + '</div>';}
+									if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + monsterResult + '</div>');
 								}
 
 							} else if (defMonster._monsterName != 'None') {
 								monsterResult = '<div>' + defMonster.heroDesc() + ' gained ' + formatNum(10) + ' energy. ';
 								defMonster._energy += 10;
 								monsterResult += 'Energy at ' + formatNum(defMonster._energy) + '.</div>';
-								if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + monsterResult + '</div>';}
+								if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + monsterResult + '</div>');
 							}
 
 							// check for Aida's Balance Mark debuffs
@@ -206,22 +200,22 @@ function runSim() {
 									}
 								}
 							}
-							if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
+							if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 
 						} else if ('Horrify' in currentHero._debuffs) {
-							if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + currentHero.heroDesc() + ' is Horrified, basic attack skipped.</div>';}
+							if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + currentHero.heroDesc() + ' is Horrified, basic attack skipped.</div>');
 
 						} else {
 							// do basic
 							result = currentHero.doBasic();
 							if(numSims == 1) {
 								result = '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + result + '</div>';
-								oCombatLog.innerHTML += result;
+								logCombat(result);
 							}
 
 							// hero gains 50 energy after doing basic
 							temp = currentHero.getEnergy(currentHero, 50);
-							if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
+							if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 
 
 							triggerQueue.push([currentHero, 'eventSelfBasic', basicQueue]);
@@ -250,14 +244,14 @@ function runSim() {
 									}
 								}
 							}
-							if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
+							if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 						}
 					}
 
 
 					// process triggers and events
 					temp = processQueue();
-					if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'>' + temp + '</div>';}
+					if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'>' + temp + '</div>');
 					someoneWon = checkForWin();
 					if (someoneWon != '') {break;}
 
@@ -268,7 +262,7 @@ function runSim() {
 			if (someoneWon != '') {break;}
 
 			// trigger end of round stuff
-			if(numSims == 1) {oCombatLog.innerHTML += '<p class=\'logSeg log' + logColor + '\'>End of round ' + formatNum(roundNum) + '.</p>';}
+			if(numSims == 1) logCombat('<p class=\'logSeg log' + logColor + '\'>End of round ' + formatNum(roundNum) + '.</p>');
 			logColor = (logColor + 1) % 2;
 
 
@@ -282,7 +276,7 @@ function runSim() {
 					monsterResult += attMonster.doActive();
 				}
 
-				if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + monsterResult + '</div>';}
+				if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + monsterResult + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
 
@@ -295,12 +289,12 @@ function runSim() {
 					monsterResult += defMonster.doActive();
 				}
 
-				if(numSims == 1) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + monsterResult + '</div>';}
+				if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + monsterResult + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
 
 			temp = processQueue();
-			if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'>' + temp + '</div>';}
+			if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'>' + temp + '</div>');
 			someoneWon = checkForWin();
 			if (someoneWon != '') {break;}
 
@@ -385,12 +379,12 @@ function runSim() {
 				}
 
 
-				if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>';}
+				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 				logColor = (logColor + 1) % 2;
 
 
 				temp = processQueue();
-				if(numSims == 1 && temp.length > 0) {oCombatLog.innerHTML += '<div class=\'log' + logColor + '\'>' + temp + '</div>';}
+				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'>' + temp + '</div>');
 				someoneWon = checkForWin();
 				if (someoneWon != '') {break;}
 			} else {
@@ -404,8 +398,10 @@ function runSim() {
 
 		if (someoneWon == 'att') {
 			winCount++;
-			if(numSims == 1) {oCombatLog.innerHTML += '<p class=\'logSeg\'>Attacker wins!</p>';}
-		} else if(numSims == 1) {oCombatLog.innerHTML += '<p class=\'logSeg\'>Defender wins!</p>';}
+			if(numSims == 1) logCombat('<p class=\'logSeg\'>Attacker wins!</p>');
+		} else if(numSims == 1) {
+			logCombat('<p class=\'logSeg\'>Defender wins!</p>');
+		}
 
 		endingRoundSum += roundNum;
 
@@ -430,61 +426,59 @@ function runSim() {
 			}
 		}
 
-		if(numSims == 1) {oCombatLog.innerHTML += '<p class=\'logSeg\'>Simulation #' + formatNum(simIterNum) + ' Ended.</p>';}
+		if(numSims == 1) logCombat('<p class=\'logSeg\'>Simulation #' + formatNum(simIterNum) + ' Ended.</p>');
 
 		// @ end of simulation
 	}
 
-	oCombatLog.innerHTML += '<p class=\'logSeg\'>Attacker won ' + winCount + ' out of ' + numSims + ' (' + formatNum((winCount / numSims * 100).toFixed(2)) + '%).</p>';
-	oCombatLog.innerHTML += '<p class=\'logSeg\'>Average Combat Length: ' + formatNum((endingRoundSum / numSims).toFixed(2)) + ' rounds.</p>';
+	logCombat('<p class=\'logSeg\'>Attacker won ' + winCount + ' out of ' + numSims + ' (' + formatNum((winCount / numSims * 100).toFixed(2)) + '%).</p>');
+	logCombat('<p class=\'logSeg\'>Average Combat Length: ' + formatNum((endingRoundSum / numSims).toFixed(2)) + ' rounds.</p>');
 
 	// damage summary
-	oCombatLog.innerHTML += '<p><div class=\'logSeg\'>Attacker average damage summary.</div>';
+	logCombat('<p><div class=\'logSeg\'>Attacker average damage summary.</div>');
 	for (let i = 0; i < attHeroes.length; i++) {
 		if (attHeroes[i]._heroName != 'None') {
-			oCombatLog.innerHTML += '<div><span class=\'att\'>' + attHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(attHeroes[i]._damageDealt / numSims)) + '</div>';
+			logCombat('<div><span class=\'att\'>' + attHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(attHeroes[i]._damageDealt / numSims)) + '</div>');
 		}
 	}
 	if (attMonster._monsterName != 'None') {
-		oCombatLog.innerHTML += '<div><span class=\'att\'>' + attMonster._monsterName + '</span>: ' + formatNum(Math.floor(attMonster._currentStats['damageDealt'] / numSims)) + '</div>';
+		logCombat('<div><span class=\'att\'>' + attMonster._monsterName + '</span>: ' + formatNum(Math.floor(attMonster._currentStats['damageDealt'] / numSims)) + '</div>');
 	}
-	oCombatLog.innerHTML += '</p>';
+	logCombat('</p>');
 
-	oCombatLog.innerHTML += '<p><div class=\'logSeg\'>Defender average damage summary.</div>';
+	logCombat('<p><div class=\'logSeg\'>Defender average damage summary.</div>');
 	for (let i = 0; i < defHeroes.length; i++) {
 		if (defHeroes[i]._heroName != 'None') {
-			oCombatLog.innerHTML += '<div><span class=\'def\'>' + defHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(defHeroes[i]._damageDealt / numSims)) + '</div>';
+			logCombat('<div><span class=\'def\'>' + defHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(defHeroes[i]._damageDealt / numSims)) + '</div>');
 		}
 	}
 	if (defMonster._monsterName != 'None') {
-		oCombatLog.innerHTML += '<div><span class=\'def\'>' + defMonster._monsterName + '</span>: ' + formatNum(Math.floor(defMonster._currentStats['damageDealt'] / numSims)) + '</div>';
+		logCombat('<div><span class=\'def\'>' + defMonster._monsterName + '</span>: ' + formatNum(Math.floor(defMonster._currentStats['damageDealt'] / numSims)) + '</div>');
 	}
-	oCombatLog.innerHTML += '</p>';
+	logCombat('</p>');
 
 	// healing and damage prevention summary
-	oCombatLog.innerHTML += '<p><div class=\'logSeg\'>Attacker average healing and damage prevention summary.</div>';
+	logCombat('<p><div class=\'logSeg\'>Attacker average healing and damage prevention summary.</div>');
 	for (let i = 0; i < attHeroes.length; i++) {
 		if (attHeroes[i]._heroName != 'None') {
-			oCombatLog.innerHTML += '<div><span class=\'att\'>' + attHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(attHeroes[i]._damageHealed / numSims)) + '</div>';
+			logCombat('<div><span class=\'att\'>' + attHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(attHeroes[i]._damageHealed / numSims)) + '</div>');
 		}
 	}
 	if (attMonster._monsterName != 'None') {
-		oCombatLog.innerHTML += '<div><span class=\'att\'>' + attMonster._monsterName + '</span>: ' + formatNum(Math.floor(attMonster._currentStats['damageHealed'] / numSims)) + '</div>';
+		logCombat('<div><span class=\'att\'>' + attMonster._monsterName + '</span>: ' + formatNum(Math.floor(attMonster._currentStats['damageHealed'] / numSims)) + '</div>');
 	}
-	oCombatLog.innerHTML += '</p>';
+	logCombat('</p>');
 
-	oCombatLog.innerHTML += '<p><div class=\'logSeg\'>Defender average healing and damage prevention summary.</div>';
+	logCombat('<p><div class=\'logSeg\'>Defender average healing and damage prevention summary.</div>');
 	for (let i = 0; i < defHeroes.length; i++) {
 		if (defHeroes[i]._heroName != 'None') {
-			oCombatLog.innerHTML += '<div><span class=\'def\'>' + defHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + '</div>';
+			logCombat('<div><span class=\'def\'>' + defHeroes[i]._heroName + '</span>: ' + formatNum(Math.floor(defHeroes[i]._damageHealed / numSims)) + '</div>');
 		}
 	}
 	if (defMonster._monsterName != 'None') {
-		oCombatLog.innerHTML += '<div><span class=\'def\'>' + defMonster._monsterName + '</span>: ' + formatNum(Math.floor(defMonster._currentStats['damageHealed'] / numSims)) + '</div>';
+		logCombat('<div><span class=\'def\'>' + defMonster._monsterName + '</span>: ' + formatNum(Math.floor(defMonster._currentStats['damageHealed'] / numSims)) + '</div>');
 	}
-	oCombatLog.innerHTML += '</p>';
-
-	oCombatLog.scrollTop = 0;
+	logCombat('</p>');
 
 	return winCount;
 }

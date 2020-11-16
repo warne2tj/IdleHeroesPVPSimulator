@@ -126,7 +126,7 @@ function initialize() {
 
 	// load default configuration
 	loadConfig();
-	runSim();
+	callSim();
 }
 
 
@@ -414,4 +414,10 @@ function loadConfig() {
 function genSeed() {
 	const dt = new Date();
 	document.getElementById('domSeed').value = dt.valueOf().toString();
+}
+
+
+// eslint-disable-next-line no-unused-vars
+function callSim() {
+	runSim(document.getElementById('attMonster').value, document.getElementById('defMonster').value, document.getElementById('numSims').value, document.getElementById('domSeed'));
 }
