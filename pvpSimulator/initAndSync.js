@@ -1,24 +1,8 @@
-/* eslint-disable no-undef */
+/*
+	global baseHeroStats, baseMonsterStats, artifacts, avatarFrames, skins, stones, armors, accessories, weapons, shoes
+	hero, attHeroes, defHeroes, runSim
+*/
 
-// eslint-disable-next-line no-var
-var attHeroes = [
-	new hero('None', 0, 'att'),
-	new hero('None', 1, 'att'),
-	new hero('None', 2, 'att'),
-	new hero('None', 3, 'att'),
-	new hero('None', 4, 'att'),
-	new hero('None', 5, 'att'),
-];
-
-// eslint-disable-next-line no-var
-var defHeroes = [
-	new hero('None', 0, 'def'),
-	new hero('None', 1, 'def'),
-	new hero('None', 2, 'def'),
-	new hero('None', 3, 'def'),
-	new hero('None', 4, 'def'),
-	new hero('None', 5, 'def'),
-];
 
 const lsPrefix = 'pvp_';
 

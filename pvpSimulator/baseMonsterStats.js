@@ -1,4 +1,7 @@
-/* eslint-disable no-undef */
+/*
+	global monster, mDyne, mNiederhog, mFox, mIceGolem, mPhoenix, mFenlier, mStoneGolem, mSphinx, mJormangund
+*/
+
 // eslint-disable-next-line no-unused-vars
 const baseMonsterStats = {
 	'None': {

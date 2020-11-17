@@ -1,4 +1,7 @@
-/* eslint-disable no-undef */
+/*
+	global attHeroes, defHeroes,
+	isDot, getRandomTargets
+*/
 
 class monster {
 	constructor(sMonsterName, attOrDef) {

@@ -1,4 +1,8 @@
-/* eslint-disable no-undef */
+/*
+	global attHeroes, defHeroes, triggerQueue, activeQueue, basicQueue, roundNum
+	baseHeroStats, baseMonsterStats, artifacts, avatarFrames, skins, stones, armors, accessories, weapons, shoes, setBonus, guildTech
+	random, getAllTargets, translate, isDot, isMonster, formatNum, isControlEffect, uuid, isDispellable
+*/
 
 // base hero class, extend this class for each hero
 // eslint-disable-next-line no-unused-vars
@@ -1436,28 +1440,17 @@ class hero {
 	// usually you'll want to check that the hero is still alive before triggering their effect
 
 	passiveStats() { return {}; }
-	// eslint-disable-next-line no-unused-vars
-	eventSelfBasic(e) { return ''; }
-	// eslint-disable-next-line no-unused-vars
-	eventAllyBasic(e) { return ''; }
-	// eslint-disable-next-line no-unused-vars
-	eventEnemyBasic(e) { return ''; }
-	// eslint-disable-next-line no-unused-vars
-	eventAllyActive(e) { return ''; }
-	// eslint-disable-next-line no-unused-vars
-	eventEnemyActive(e) { return ''; }
-	// eslint-disable-next-line no-unused-vars
-	eventSelfDied(e) { return ''; }
-	// eslint-disable-next-line no-unused-vars
-	eventAllyDied(e) { return ''; }
-	// eslint-disable-next-line no-unused-vars
-	eventEnemyDied(e) { return ''; }
-	// eslint-disable-next-line no-unused-vars
-	eventGotCC(source, ccName, ccStackID) { return ''; }
-	// eslint-disable-next-line no-unused-vars
+	eventSelfBasic() { return ''; }
+	eventAllyBasic() { return ''; }
+	eventEnemyBasic() { return ''; }
+	eventAllyActive() { return ''; }
+	eventEnemyActive() { return ''; }
+	eventSelfDied() { return ''; }
+	eventAllyDied() { return ''; }
+	eventEnemyDied() { return ''; }
+	eventGotCC() { return ''; }
 	startOfBattle() { return ''; }
-	// eslint-disable-next-line no-unused-vars
-	endOfRound(roundNum) { return ''; }
+	endOfRound() { return ''; }
 	eventHPlte50() { return ''; }
 	eventHPlte30() { return ''; }
 
@@ -1544,7 +1537,6 @@ class hero {
 			}
 
 			this._currentStats.damageHealed += damagePrevented;
-			// eslint-disable-next-line no-undef
 			result += `<div><span class='skill'>Swordwind Shield</span> prevented <span class='num'>${formatNum(damagePrevented)}</span> damage.</div>`;
 		}
 

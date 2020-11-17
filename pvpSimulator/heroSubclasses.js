@@ -1,4 +1,9 @@
-/* eslint-disable no-undef */
+/*
+	global hero, basicQueue, activeQueue, triggerQueue,
+	random:writable, formatNum, isDot, isMonster, formatNum, isControlEffect, isDispellable, isAttribute,
+	isFrontLine, isBackLine, getBackTargets, getHighestAttackTargets, getNearestTargets,
+	getAllTargets, getHighestHPTargets, getLowestHPTargets, getLowestHPPercentTargets, getRandomTargets, getFrontTargets
+*/
 
 
 // Aida

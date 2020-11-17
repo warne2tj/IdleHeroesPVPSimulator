@@ -1,4 +1,9 @@
-/* eslint-disable no-undef */
+/*
+	global hero, Carrie, Sherlock, Rogan, Russell, Drake, Ignis, Aida, Garuda, Tix, Michelle, AmenRa,
+	KingBarton, Flora, Aspen, Elyvia, UniMax3000, Ormus, Belrain, Asmodel, Kroos, Inosuke, DasMoge, Mihm,
+	DarkArthindol, Gustin, Emily, Valkryie, Horus, Tara, Nakia, Cthugha, HeartWatcher, Penny, Xia,
+	Oberon, Ithaqua, Gerke, Delacium, Amuvor, Sleepless, FaithBlade
+*/
 
 // hero base stats dictionary
 // base stats before anything is applied, even passives
