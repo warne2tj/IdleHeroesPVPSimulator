@@ -635,3 +635,8 @@ function checkForWin() {
 		return '';
 	}
 }
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { attHeroes, defHeroes, basicQueue, activeQueue, triggerQueue, roundNum, runSim };
+}
