@@ -6,13 +6,12 @@ function formatNum(num) {
 
 // eslint-disable-next-line no-unused-vars
 function logCombat(str, append = true) {
-	// eslint-disable-next-line no-undef
-	const oCombatLog = document.getElementById('combatLog');
-
-	if (append) {
-		oCombatLog.innerHTML += str;
+	if (typeof document == 'undefined') {
+		return;
+	} else if (append) {
+		document.getElementById('combatLog').innerHTML += str;
 	} else {
-		oCombatLog.innerHTML = str;
+		document.getElementById('combatLog').innerHTML = str;
 	}
 }
 
@@ -20,6 +19,7 @@ function logCombat(str, append = true) {
 // replacement seedable prng
 // eslint-disable-next-line no-var
 var random = rng();
+
 function rng(seed = 0) {
 	if (seed == 0) {
 		const dt = new Date();
@@ -73,11 +73,14 @@ function rng(seed = 0) {
 
 
 // stack ids for buffs and debuffs
-let uniqID;
-// eslint-disable-next-line no-unused-vars
-function uuid() {
-	uniqID++;
-	return uniqID;
+function uuid(initialize = false) {
+	if (initialize || typeof uuid.counter == 'undefined') {
+		uuid.counter = 0;
+	}
+
+	uuid.counter++;
+	// eslint-disable-next-line no-unused-vars
+	return uuid.counter;
 }
 
 

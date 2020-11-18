@@ -1,6 +1,6 @@
 /*
 	global hero, baseMonsterStats, artifacts,
-	random:writable, uniqID:writable, rng, logCombat, formatNum, speedSort, getAllTargets
+	random:writable, uuid, rng, logCombat, formatNum, speedSort, getAllTargets
 */
 
 
@@ -30,13 +30,13 @@ var basicQueue = [];
 var activeQueue = [];
 // eslint-disable-next-line no-var
 var triggerQueue = [];
-let logColor = 0;
 // eslint-disable-next-line no-var
 var roundNum = 0;
+let logColor = 0;
 
 
 // eslint-disable-next-line no-unused-vars
-function runSim(attMonsterName, defMonsterName, numSims, domSeed = 0) {
+function runSim(attMonsterName, defMonsterName, numSims, domSeed = null) {
 	let winCount = 0;
 	let orderOfAttack = [];
 	let numOfHeroes = 0;
@@ -53,7 +53,7 @@ function runSim(attMonsterName, defMonsterName, numSims, domSeed = 0) {
 	if (domSeed !== null) {
 		random = rng(domSeed.value);
 	} else {
-		random = rng();
+		random = Math.random;
 	}
 
 	logColor = 0;
@@ -74,9 +74,9 @@ function runSim(attMonsterName, defMonsterName, numSims, domSeed = 0) {
 
 		if(numSims == 1) logCombat('<p class =\'logSeg\'>Simulation #' + formatNum(simIterNum) + ' Started.</p>');
 		someoneWon = '';
-		uniqID = 0;
 		attMonster._energy = 0;
 		defMonster._energy = 0;
+		uuid(true);
 
 		// snapshot stats as they are
 		numOfHeroes = attHeroes.length;

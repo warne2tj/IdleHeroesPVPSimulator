@@ -1,7 +1,8 @@
 /*
-	global attHeroes, defHeroes, triggerQueue, activeQueue, basicQueue, roundNum
-	baseHeroStats, baseMonsterStats, artifacts, avatarFrames, skins, stones, armors, accessories, weapons, shoes, setBonus, guildTech
-	random, getAllTargets, translate, isDot, isMonster, formatNum, isControlEffect, uuid, isDispellable
+	global attHeroes, defHeroes, triggerQueue, activeQueue, basicQueue, roundNum,
+	baseHeroStats, baseMonsterStats, artifacts, avatarFrames, skins, stones, armors, accessories, weapons, shoes, setBonus, guildTech,
+	random, getAllTargets, translate, isDot, isMonster, formatNum, isControlEffect, uuid, isDispellable,
+	attMonsterName, defMonsterName, attFrame, defFrame
 */
 
 // base hero class, extend this class for each hero
@@ -274,10 +275,19 @@ class hero {
 
 
 		// get and apply guild tech
+		const techLevels = [60, 50, 40, 30, 20, 20, 20, 20, 30, 30, 30, 30, 20, 20, 20, 20];
 		const tech = guildTech[this._heroClass];
+		let tindex = 0;
 
 		for (const techName in tech) {
-			const techLevel = document.getElementById(this._attOrDef + 'Tech' + this._heroClass + techName).value;
+			let techLevel;
+
+			if (typeof document !== 'undefined') {
+				techLevel = document.getElementById(this._attOrDef + 'Tech' + this._heroClass + techName).value;
+			} else {
+				techLevel = techLevels[tindex];
+				tindex++;
+			}
 
 			for (const statToBuff in tech[techName]) {
 				const techStatsToBuff = {};
@@ -304,12 +314,30 @@ class hero {
 
 
 		// avatar frame
-		const sAvatarFrame = document.getElementById(this._attOrDef + 'AvatarFrame').value;
+		let sAvatarFrame;
+
+		if (typeof document !== 'undefined') {
+			sAvatarFrame = document.getElementById(this._attOrDef + 'AvatarFrame').value;
+		} else if (this._attOrDef == 'att') {
+			sAvatarFrame = attFrame;
+		} else {
+			sAvatarFrame = defFrame;
+		}
+
 		this.applyStatChange(avatarFrames[sAvatarFrame], 'avatarFrame');
 
 
 		// monster
-		const monsterName = document.getElementById(this._attOrDef + 'Monster').value;
+		let monsterName;
+
+		if (typeof document !== 'undefined') {
+			monsterName = document.getElementById(this._attOrDef + 'Monster').value;
+		} else if (this._attOrDef == 'att') {
+			monsterName = attMonsterName;
+		} else {
+			monsterName = defMonsterName;
+		}
+
 		this.applyStatChange(baseMonsterStats[monsterName]['stats'], 'monster');
 
 
@@ -322,9 +350,17 @@ class hero {
 		}
 
 		const statueStats = {};
-		statueStats['speed'] = 2 * document.getElementById(statuePrefix + 'speed').value;
-		statueStats['hpPercent'] = 0.01 * document.getElementById(statuePrefix + 'hpPercent').value;
-		statueStats['attackPercent'] = 0.005 * document.getElementById(statuePrefix + 'attackPercent').value;
+
+		if (typeof document !== 'undefined') {
+			statueStats['speed'] = 2 * document.getElementById(statuePrefix + 'speed').value;
+			statueStats['hpPercent'] = 0.01 * document.getElementById(statuePrefix + 'hpPercent').value;
+			statueStats['attackPercent'] = 0.005 * document.getElementById(statuePrefix + 'attackPercent').value;
+		} else {
+			statueStats['speed'] = 2 * 30;
+			statueStats['hpPercent'] = 0.01 * 30;
+			statueStats['attackPercent'] = 0.005 * 30;
+		}
+
 		this.applyStatChange(statueStats, 'statue');
 
 
