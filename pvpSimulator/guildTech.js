@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 const guildTech = {
 	'Warrior': {
 		hpPercent: { hpPercent: 0.005 },
@@ -91,3 +90,8 @@ const guildTech = {
 		blessingOfPurification: { stunImmune: 0.01, freezeImmune: 0.01, SilenceImmune: 0.01 },
 	},
 };
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { guildTech };
+}

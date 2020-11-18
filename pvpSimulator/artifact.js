@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 const artifacts = {
 	'None': {
 		stats: {},
@@ -602,3 +601,8 @@ const artifacts = {
 		limitStats: { holyDamage: 0.18 },
 	},
 };
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { artifacts };
+}

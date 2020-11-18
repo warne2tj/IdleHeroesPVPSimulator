@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 const stones = {
 	'None': {},
 	'S3 Attack, Attack': { attack: 4000, attackPercent: 0.37 },
@@ -26,3 +25,8 @@ const stones = {
 	'S3 Speed, HP': { hpPercent: 0.32, speed: 115 },
 	'S3 Speed, Precision': { speed: 115, precision: 0.23 },
 };
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { stones };
+}

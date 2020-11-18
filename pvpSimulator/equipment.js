@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 const weapons = {
 	'None': {
 		set: '',
@@ -58,7 +57,6 @@ const weapons = {
 };
 
 
-// eslint-disable-next-line no-unused-vars
 const armors = {
 	'None': {
 		set: '',
@@ -118,7 +116,6 @@ const armors = {
 };
 
 
-// eslint-disable-next-line no-unused-vars
 const shoes = {
 	'None': {
 		set: '',
@@ -178,7 +175,6 @@ const shoes = {
 };
 
 
-// eslint-disable-next-line no-unused-vars
 const accessories = {
 	'None': {
 		set: '',
@@ -239,7 +235,6 @@ const accessories = {
 
 
 // Set order seems to matter, ordered in order of weakest to strongest set.
-// eslint-disable-next-line no-unused-vars
 const setBonus = {
 	'Glory Suit': {
 		2: { hpPercent: 0.15 },
@@ -256,7 +251,6 @@ const setBonus = {
 
 
 // for mass testing
-// eslint-disable-next-line no-unused-vars
 const classGearMapping = {
 	'Warrior': {
 		weapon: 'Warrior\'s Epee',
@@ -293,3 +287,8 @@ const classGearMapping = {
 		accessory: 'Ring of the Oracle',
 	},
 };
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { weapons, shoes, accessories, armors, setBonus, classGearMapping };
+}

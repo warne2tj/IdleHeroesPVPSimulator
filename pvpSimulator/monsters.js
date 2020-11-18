@@ -72,7 +72,6 @@ class monster {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 class mDyne extends monster {
 	doActive() {
 		let result = '';
@@ -103,7 +102,6 @@ class mDyne extends monster {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 class mFenlier extends monster {
 	doActive() {
 		let result = '';
@@ -131,7 +129,6 @@ class mFenlier extends monster {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 class mFox extends monster {
 	doActive() {
 		let result = '';
@@ -156,7 +153,6 @@ class mFox extends monster {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 class mIceGolem extends monster {
 	doActive() {
 		let result = '';
@@ -181,7 +177,6 @@ class mIceGolem extends monster {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 class mJormangund extends monster {
 	doActive() {
 		let result = '';
@@ -209,7 +204,6 @@ class mJormangund extends monster {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 class mNiederhog extends monster {
 	doActive() {
 		let result = '';
@@ -234,7 +228,6 @@ class mNiederhog extends monster {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 class mPhoenix extends monster {
 	doActive() {
 		let result = '';
@@ -265,7 +258,6 @@ class mPhoenix extends monster {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 class mSphinx extends monster {
 	doActive() {
 		let result = '';
@@ -292,7 +284,6 @@ class mSphinx extends monster {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 class mStoneGolem extends monster {
 	doActive() {
 		let result = '';
@@ -314,4 +305,9 @@ class mStoneGolem extends monster {
 
 		return result;
 	}
+}
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { mStoneGolem, mPhoenix, mFox, mJormangund, mIceGolem, mFenlier, mDyne, mNiederhog, mSphinx };
 }

@@ -8,7 +8,6 @@
 // hero base stats dictionary
 // base stats before anything is applied, even passives
 
-// eslint-disable-next-line no-unused-vars
 const baseHeroStats = {
 	'None': {
 		className: hero,
@@ -682,3 +681,8 @@ const baseHeroStats = {
 		},
 	},
 };
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { baseHeroStats };
+}

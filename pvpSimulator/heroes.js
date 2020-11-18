@@ -6,7 +6,6 @@
 */
 
 // base hero class, extend this class for each hero
-// eslint-disable-next-line no-unused-vars
 class hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		this._heroName = sHeroName;
@@ -1846,4 +1845,9 @@ class hero {
 
 		return result;
 	}
+}
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { hero };
 }

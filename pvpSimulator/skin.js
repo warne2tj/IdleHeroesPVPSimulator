@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 const skins = {
 	'Aida': {
 		'Dark Eclipse': { controlImmune: 0.05, hpPercent: 0.03, attackPercent: 0.03 },
@@ -251,3 +250,8 @@ const skins = {
 		'Legendary Skin Placeholder': {},
 	},
 };
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { skins };
+}

@@ -7,7 +7,7 @@
 
 
 // Aida
-// eslint-disable-next-line no-unused-vars
+
 class Aida extends hero {
 	passiveStats() {
 		// apply Blessing of Light passive
@@ -139,7 +139,7 @@ class Aida extends hero {
 
 
 // Amen-Ra
-// eslint-disable-next-line no-unused-vars
+
 class AmenRa extends hero {
 	passiveStats() {
 		// apply Aura of Despair passive
@@ -243,7 +243,7 @@ class AmenRa extends hero {
 
 
 // Amuvor
-// eslint-disable-next-line no-unused-vars
+
 class Amuvor extends hero {
 	passiveStats() {
 		// apply Journey of Soul passive
@@ -348,7 +348,7 @@ class Amuvor extends hero {
 
 
 // Aspen
-// eslint-disable-next-line no-unused-vars
+
 class Aspen extends hero {
 	passiveStats() {
 		// apply Dark Storm passive
@@ -501,7 +501,7 @@ class Aspen extends hero {
 
 
 // Belrain
-// eslint-disable-next-line no-unused-vars
+
 class Belrain extends hero {
 	passiveStats() {
 		// apply Divine Awakening passive
@@ -589,7 +589,7 @@ class Belrain extends hero {
 
 
 // Carrie
-// eslint-disable-next-line no-unused-vars
+
 class Carrie extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -768,7 +768,7 @@ class Carrie extends hero {
 
 
 // Cthugha
-// eslint-disable-next-line no-unused-vars
+
 class Cthugha extends hero {
 	passiveStats() {
 		// apply Demon Bloodline passive
@@ -892,7 +892,7 @@ class Cthugha extends hero {
 
 
 // Dark Arthindol
-// eslint-disable-next-line no-unused-vars
+
 class DarkArthindol extends hero {
 	passiveStats() {
 		// apply Black Hole passive
@@ -977,7 +977,7 @@ class DarkArthindol extends hero {
 
 
 // Delacium
-// eslint-disable-next-line no-unused-vars
+
 class Delacium extends hero {
 	passiveStats() {
 		// apply Extreme Rage passive
@@ -1134,7 +1134,7 @@ class Delacium extends hero {
 
 
 // Elyvia
-// eslint-disable-next-line no-unused-vars
+
 class Elyvia extends hero {
 	passiveStats() {
 		// apply Nothing Scare Elyvia passive
@@ -1242,7 +1242,7 @@ class Elyvia extends hero {
 
 
 // Emily
-// eslint-disable-next-line no-unused-vars
+
 class Emily extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -1330,7 +1330,7 @@ class Emily extends hero {
 
 
 // Garuda
-// eslint-disable-next-line no-unused-vars
+
 class Garuda extends hero {
 	passiveStats() {
 		// apply Eagle Power passive
@@ -1409,6 +1409,7 @@ class Garuda extends hero {
 		if ('Feather Blade' in this._buffs) {
 			const numBlades = Object.keys(this._buffs['Feather Blade']);
 
+
 			// eslint-disable-next-line no-unused-vars
 			for (const i in numBlades) {
 				featherTarget = getRandomTargets(this, targets, 1);
@@ -1432,7 +1433,7 @@ class Garuda extends hero {
 
 
 // Faith Blade
-// eslint-disable-next-line no-unused-vars
+
 class FaithBlade extends hero {
 	passiveStats() {
 		// apply Ultimate Faith passive
@@ -1522,7 +1523,7 @@ class FaithBlade extends hero {
 
 
 // Gustin
-// eslint-disable-next-line no-unused-vars
+
 class Gustin extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -1724,7 +1725,7 @@ class Gustin extends hero {
 
 
 // Horus
-// eslint-disable-next-line no-unused-vars
+
 class Horus extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -1875,7 +1876,7 @@ class Horus extends hero {
 
 
 // Ithaqua
-// eslint-disable-next-line no-unused-vars
+
 class Ithaqua extends hero {
 	passiveStats() {
 		// apply Ode to Shadow passive
@@ -2058,7 +2059,7 @@ class Ithaqua extends hero {
 
 
 // Kroos
-// eslint-disable-next-line no-unused-vars
+
 class Kroos extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -2149,7 +2150,7 @@ class Kroos extends hero {
 
 
 // Michelle
-// eslint-disable-next-line no-unused-vars
+
 class Michelle extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -2274,7 +2275,7 @@ class Michelle extends hero {
 
 
 // Mihm
-// eslint-disable-next-line no-unused-vars
+
 class Mihm extends hero {
 	passiveStats() {
 		// apply Unreal Instinct passive
@@ -2363,7 +2364,7 @@ class Mihm extends hero {
 
 
 // Nakia
-// eslint-disable-next-line no-unused-vars
+
 class Nakia extends hero {
 	passiveStats() {
 		// apply Arachnid Madness passive
@@ -2483,7 +2484,7 @@ class Nakia extends hero {
 
 
 // Oberon
-// eslint-disable-next-line no-unused-vars
+
 class Oberon extends hero {
 	passiveStats() {
 		// apply Strength of Elf passive
@@ -2585,7 +2586,7 @@ class Oberon extends hero {
 
 
 // Penny
-// eslint-disable-next-line no-unused-vars
+
 class Penny extends hero {
 	passiveStats() {
 		// apply Troublemaker Gene passive
@@ -2782,7 +2783,7 @@ class Penny extends hero {
 
 
 // Sherlock
-// eslint-disable-next-line no-unused-vars
+
 class Sherlock extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -2940,7 +2941,7 @@ class Sherlock extends hero {
 
 
 // Tara
-// eslint-disable-next-line no-unused-vars
+
 class Tara extends hero {
 	passiveStats() {
 		// apply Immense Power passive
@@ -3065,7 +3066,7 @@ class Tara extends hero {
 
 
 // Unimax-3000
-// eslint-disable-next-line no-unused-vars
+
 class UniMax3000 extends hero {
 	passiveStats() {
 		// apply Machine Forewarning passive
@@ -3186,7 +3187,7 @@ class UniMax3000 extends hero {
 
 
 // Asmodel
-// eslint-disable-next-line no-unused-vars
+
 class Asmodel extends hero {
 	passiveStats() {
 		// apply Asmodeus passive
@@ -3297,7 +3298,7 @@ class Asmodel extends hero {
 
 
 // Drake
-// eslint-disable-next-line no-unused-vars
+
 class Drake extends hero {
 	passiveStats() {
 		// apply Power of Void passive
@@ -3416,7 +3417,7 @@ class Drake extends hero {
 
 
 // Russell
-// eslint-disable-next-line no-unused-vars
+
 class Russell extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -3457,6 +3458,7 @@ class Russell extends hero {
 		let targets;
 
 		if ('Light Arrow' in this._buffs && !(this._currentStats['isCharging'])) {
+
 			// eslint-disable-next-line no-unused-vars
 			for (const i in Object.keys(this._buffs['Light Arrow'])) {
 				targets = getLowestHPTargets(this, this._enemies, 1);
@@ -3584,7 +3586,7 @@ class Russell extends hero {
 
 
 // Valkryie
-// eslint-disable-next-line no-unused-vars
+
 class Valkryie extends hero {
 	passiveStats() {
 		// apply Unparalleled Brave passive
@@ -3689,7 +3691,7 @@ class Valkryie extends hero {
 
 
 // Ormus
-// eslint-disable-next-line no-unused-vars
+
 class Ormus extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -3800,7 +3802,7 @@ class Ormus extends hero {
 
 
 // Rogan
-// eslint-disable-next-line no-unused-vars
+
 class Rogan extends hero {
 	passiveStats() {
 		// apply Wolfish Blood passive
@@ -3969,7 +3971,7 @@ class Rogan extends hero {
 
 
 // Gerke
-// eslint-disable-next-line no-unused-vars
+
 class Gerke extends hero {
 	passiveStats() {
 		// apply Heavenly Order passive
@@ -4052,7 +4054,7 @@ class Gerke extends hero {
 
 
 // Sleepless
-// eslint-disable-next-line no-unused-vars
+
 class Sleepless extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -4180,7 +4182,7 @@ class Sleepless extends hero {
 
 
 // Das Moge
-// eslint-disable-next-line no-unused-vars
+
 class DasMoge extends hero {
 	passiveStats() {
 		// apply Dark Insight passive
@@ -4253,7 +4255,7 @@ class DasMoge extends hero {
 
 
 // Ignis
-// eslint-disable-next-line no-unused-vars
+
 class Ignis extends hero {
 	passiveStats() {
 		// apply Blood of Dragons passive
@@ -4347,7 +4349,7 @@ class Ignis extends hero {
 
 
 // Heart Watcher
-// eslint-disable-next-line no-unused-vars
+
 class HeartWatcher extends hero {
 	passiveStats() {
 		// apply Tough Heart passive
@@ -4454,7 +4456,7 @@ class HeartWatcher extends hero {
 
 
 // King Barton
-// eslint-disable-next-line no-unused-vars
+
 class KingBarton extends hero {
 	passiveStats() {
 		// apply King's Demeanor passive
@@ -4556,7 +4558,7 @@ class KingBarton extends hero {
 
 
 // Xia
-// eslint-disable-next-line no-unused-vars
+
 class Xia extends hero {
 	passiveStats() {
 		// apply Shadow Step passive
@@ -4593,6 +4595,7 @@ class Xia extends hero {
 		let damageResult;
 
 		if ('Aggression' in this._buffs) {
+
 			// eslint-disable-next-line no-unused-vars
 			for (const s of Object.values(this._buffs['Aggression'])) {
 				targets = getLowestHPTargets(this, this._enemies, 1);
@@ -4662,7 +4665,7 @@ class Xia extends hero {
 
 
 // Tix
-// eslint-disable-next-line no-unused-vars
+
 class Tix extends hero {
 	passiveStats() {
 		// apply Coffin of Nothingness passive
@@ -4789,7 +4792,7 @@ class Tix extends hero {
 
 
 // Flora
-// eslint-disable-next-line no-unused-vars
+
 class Flora extends hero {
 	passiveStats() {
 		// apply Blessings of Nature passive
@@ -5056,4 +5059,15 @@ class Inosuke extends hero {
 
 		return result;
 	}
+}
+
+
+if (typeof module !== 'undefined') {
+	module.exports = {
+		Carrie, Sherlock, Rogan, Russell, Drake, Ignis, Aida, Garuda, Tix, Michelle,
+		AmenRa, KingBarton, Flora, Aspen, Elyvia, UniMax3000, Ormus, Belrain, Asmodel, Kroos,
+		Inosuke, DasMoge, Mihm, DarkArthindol, Gustin, Emily, Valkryie, Horus, Tara, Nakia,
+		Cthugha, HeartWatcher, Penny, Xia, Oberon, Ithaqua, Gerke, Delacium, Amuvor, Sleepless,
+		FaithBlade,
+	};
 }

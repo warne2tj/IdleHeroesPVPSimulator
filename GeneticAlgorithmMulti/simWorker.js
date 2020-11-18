@@ -17,26 +17,16 @@ self.importScripts('../pvpSimulator/baseMonsterStats.js');
 self.importScripts('../pvpSimulator/simulation.js');
 
 
-// eslint-disable-next-line no-var
-var attMonsterName;
-// eslint-disable-next-line no-var
-var defMonsterName;
-// eslint-disable-next-line no-var, no-unused-vars
-var attFrame = 'Royal Amethyst +9';
-// eslint-disable-next-line no-var, no-unused-vars
-var defFrame = 'Royal Amethyst +9';
-// eslint-disable-next-line no-var
-var attHeroes = [];
-// eslint-disable-next-line no-var
-var defHeroes = [];
-// eslint-disable-next-line no-var
-var allAttTeams = {};
-// eslint-disable-next-line no-var
-var allDefTeams = {};
-// eslint-disable-next-line no-var
-var wid;
-// eslint-disable-next-line no-var
-var numSims;
+let attMonsterName;
+let defMonsterName;
+// eslint-disable-next-line no-unused-vars
+const attFrame = 'Royal Amethyst +9';
+// eslint-disable-next-line no-unused-vars
+const defFrame = 'Royal Amethyst +9';
+let allAttTeams = {};
+let allDefTeams = {};
+let wid;
+let numSims;
 
 self.onmessage = handleCall;
 

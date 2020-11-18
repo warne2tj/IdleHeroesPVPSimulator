@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 const avatarFrames = {
 	'None': {},
 	'Golden Amber': { hpPercent: 0.03, attackPercent: 0.01 },
@@ -112,3 +111,8 @@ const avatarFrames = {
 	'Black Gold +8': { hpPercent: 0.13, attackPercent: 0.07 },
 	'Black Gold +9': { hpPercent: 0.14, attackPercent: 0.08 },
 };
+
+
+if (typeof module !== 'undefined') {
+	module.exports = { avatarFrames };
+}
