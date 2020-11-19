@@ -252,6 +252,4 @@ const skins = {
 };
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { skins };
-}
+export { skins };

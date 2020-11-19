@@ -113,6 +113,4 @@ const avatarFrames = {
 };
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { avatarFrames };
-}
+export { avatarFrames };

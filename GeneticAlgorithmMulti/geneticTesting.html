@@ -8,16 +8,7 @@
   
   <link rel="stylesheet" type="text/css" href="../pvpSimulator/style.css">
   
-  <script src="../pvpSimulator/heroes.js"></script>
-  <script src="../pvpSimulator/heroSubclasses.js"></script>
-  <script src="../pvpSimulator/monsters.js"></script>
-  <script src="../pvpSimulator/baseHeroStats.js"></script>
-  <script src="../pvpSimulator/baseMonsterStats.js"></script>
-  <script src="../pvpSimulator/stone.js"></script>
-  <script src="../pvpSimulator/skin.js"></script>
-  <script src="gaBreed.js"></script>
-  <script src="seededHeroes.js"></script>
-  <script src="geneticInitAndSync.js"></script>
+  <script type="module" src="geneticInitAndSync.js"></script>
 </head>
 
 
@@ -38,7 +29,7 @@
       <label for="numSims">Number of Simulations to Run per Team:</label>
       <input type="text" id="numSims" size="3" value="50" onchange="storeLocal(this);" />
       <input type="submit" value="Run" onclick="runMassLoop();"></input>
-      <input type="submit" value="Stop" onclick="stopLoop=true;"></input>
+      <input type="submit" value="Stop" onclick="setStopLoop();"></input>
     </div>
     
     <div>

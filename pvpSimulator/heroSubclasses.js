@@ -1,9 +1,10 @@
-/*
-	global hero, basicQueue, activeQueue, triggerQueue,
-	random:writable, formatNum, isDot, isMonster, formatNum, isControlEffect, isDispellable, isAttribute,
-	isFrontLine, isBackLine, getBackTargets, getHighestAttackTargets, getNearestTargets,
-	getAllTargets, getHighestHPTargets, getLowestHPTargets, getLowestHPPercentTargets, getRandomTargets, getFrontTargets
-*/
+import { hero } from './heroes.js';
+import { triggerQueue, activeQueue, basicQueue } from './simulation.js';
+import {
+	random, formatNum, isDot, isMonster, isControlEffect, isDispellable, isAttribute,
+	isFrontLine, isBackLine, getBackTargets, getHighestAttackTargets, getNearestTargets, getFrontTargets,
+	getAllTargets, getHighestHPTargets, getLowestHPTargets, getLowestHPPercentTargets, getRandomTargets,
+} from './utilityFunctions.js';
 
 
 // Aida
@@ -4815,8 +4816,8 @@ class Flora extends hero {
 		let result = '';
 
 		if (target._currentStats['totalHP'] > 0) {
-			for (const hero of e) {
-				if (this.heroDesc() == hero[1].heroDesc()) {
+			for (const source of e) {
+				if (this.heroDesc() == source[1].heroDesc()) {
 					let stackCount = 0;
 
 					if ('All Damage Dealt' in target._debuffs) {
@@ -5062,12 +5063,50 @@ class Inosuke extends hero {
 }
 
 
-if (typeof module !== 'undefined') {
-	module.exports = {
-		Carrie, Sherlock, Rogan, Russell, Drake, Ignis, Aida, Garuda, Tix, Michelle,
-		AmenRa, KingBarton, Flora, Aspen, Elyvia, UniMax3000, Ormus, Belrain, Asmodel, Kroos,
-		Inosuke, DasMoge, Mihm, DarkArthindol, Gustin, Emily, Valkryie, Horus, Tara, Nakia,
-		Cthugha, HeartWatcher, Penny, Xia, Oberon, Ithaqua, Gerke, Delacium, Amuvor, Sleepless,
-		FaithBlade,
-	};
-}
+const heroMapping = {
+	'hero': hero,
+	'Carrie': Carrie,
+	'Sherlock': Sherlock,
+	'Rogan': Rogan,
+	'Russell': Russell,
+	'Drake': Drake,
+	'Ignis': Ignis,
+	'Aida': Aida,
+	'Garuda': Garuda,
+	'Tix': Tix,
+	'Michelle': Michelle,
+	'AmenRa': AmenRa,
+	'KingBarton': KingBarton,
+	'Flora': Flora,
+	'Aspen': Aspen,
+	'Elyvia': Elyvia,
+	'UniMax3000': UniMax3000,
+	'Ormus': Ormus,
+	'Belrain': Belrain,
+	'Asmodel': Asmodel,
+	'Kroos': Kroos,
+	'Inosuke': Inosuke,
+	'DasMoge': DasMoge,
+	'Mihm': Mihm,
+	'DarkArthindol': DarkArthindol,
+	'Gustin': Gustin,
+	'Emily': Emily,
+	'Valkryie': Valkryie,
+	'Horus': Horus,
+	'Tara': Tara,
+	'Nakia': Nakia,
+	'Cthugha': Cthugha,
+	'HeartWatcher': HeartWatcher,
+	'Penny': Penny,
+	'Xia': Xia,
+	'Oberon': Oberon,
+	'Ithaqua': Ithaqua,
+	'Gerke': Gerke,
+	'Delacium': Delacium,
+	'Amuvor': Amuvor,
+	'Sleepless': Sleepless,
+	'FaithBlade': FaithBlade,
+};
+
+
+export { heroMapping };

@@ -1,15 +1,11 @@
-/*
-	global monster, mDyne, mNiederhog, mFox, mIceGolem, mPhoenix, mFenlier, mStoneGolem, mSphinx, mJormangund
-*/
-
 const baseMonsterStats = {
 	'None': {
-		className: monster,
+		className: 'monster',
 		stats: {},
 	},
 
 	'Deer': {
-		className: mDyne,
+		className: 'mDyne',
 		stats: {
 			attack: 9604,
 			hp: 231805,
@@ -22,7 +18,7 @@ const baseMonsterStats = {
 	},
 
 	'Dragon': {
-		className: mNiederhog,
+		className: 'mNiederhog',
 		stats: {
 			attack: 10547,
 			hp: 211085,
@@ -35,7 +31,7 @@ const baseMonsterStats = {
 	},
 
 	'Fox': {
-		className: mFox,
+		className: 'mFox',
 		stats: {
 			attack: 10890,
 			hp: 204610,
@@ -48,7 +44,7 @@ const baseMonsterStats = {
 	},
 
 	'Ice Golem': {
-		className: mIceGolem,
+		className: 'mIceGolem',
 		stats: {
 			attack: 11062,
 			hp: 202020,
@@ -61,7 +57,7 @@ const baseMonsterStats = {
 	},
 
 	'Phoenix': {
-		className: mPhoenix,
+		className: 'mPhoenix',
 		stats: {
 			attack: 10377,
 			hp: 201409,
@@ -74,7 +70,7 @@ const baseMonsterStats = {
 	},
 
 	'Snake': {
-		className: mJormangund,
+		className: 'mJormangund',
 		stats: {
 			attack: 11149,
 			hp: 199430,
@@ -87,7 +83,7 @@ const baseMonsterStats = {
 	},
 
 	'Sphinx': {
-		className: mSphinx,
+		className: 'mSphinx',
 		stats: {
 			attack: 10033,
 			hp: 221445,
@@ -100,7 +96,7 @@ const baseMonsterStats = {
 	},
 
 	'Stone Golem': {
-		className: mStoneGolem,
+		className: 'mStoneGolem',
 		stats: {
 			attack: 10719,
 			hp: 207200,
@@ -113,7 +109,7 @@ const baseMonsterStats = {
 	},
 
 	'Wolf': {
-		className: mFenlier,
+		className: 'mFenlier',
 		stats: {
 			attack: 11405,
 			hp: 195545,
@@ -127,6 +123,4 @@ const baseMonsterStats = {
 };
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { baseMonsterStats };
-}
+export { baseMonsterStats };

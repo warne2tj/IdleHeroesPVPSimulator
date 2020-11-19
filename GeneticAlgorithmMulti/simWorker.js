@@ -1,7 +1,4 @@
 /*
-	global baseHeroStats, classGearMapping, runSim
-*/
-
 self.importScripts('../pvpSimulator/artifact.js');
 self.importScripts('../pvpSimulator/avatarFrame.js');
 self.importScripts('../pvpSimulator/equipment.js');
@@ -15,13 +12,14 @@ self.importScripts('../pvpSimulator/baseHeroStats.js');
 self.importScripts('../pvpSimulator/monsters.js');
 self.importScripts('../pvpSimulator/baseMonsterStats.js');
 self.importScripts('../pvpSimulator/simulation.js');
+*/
+import { classGearMapping } from '../pvpSimulator/equipment.js';
+import { baseHeroStats } from '../pvpSimulator/baseHeroStats.js';
+import { heroMapping } from '../pvpSimulator/heroSubclasses.js';
+import { runSim } from '../pvpSimulator/simulation.js';
 
 
-let attMonsterName;
-let defMonsterName;
-// eslint-disable-next-line no-unused-vars
 const attFrame = 'Royal Amethyst +9';
-// eslint-disable-next-line no-unused-vars
 const defFrame = 'Royal Amethyst +9';
 let allAttTeams = {};
 let allDefTeams = {};
@@ -57,11 +55,10 @@ function handleCall(e) {
 			// add team as attacker
 			allAttTeams[teamIndex] = {};
 			allAttTeams[teamIndex]['pet'] = jsonConfig[t][60];
-			attMonsterName = jsonConfig[t][60];
 			team = [];
 
 			for (let p = 0; p < 60; p += 10) {
-				tHero = new baseHeroStats[jsonConfig[t][p]]['className'](jsonConfig[t][p], Math.floor(p / 10), 'att');
+				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / 10), 'att');
 
 				tHero._heroLevel = 350;
 				tHero._skin = jsonConfig[t][p + 1];
@@ -107,11 +104,10 @@ function handleCall(e) {
 			// add team as defender
 			allDefTeams[teamIndex] = {};
 			allDefTeams[teamIndex]['pet'] = jsonConfig[t][60];
-			defMonsterName = jsonConfig[t][60];
 			team = [];
 
 			for (let p = 0; p < 60; p += 10) {
-				tHero = new baseHeroStats[jsonConfig[t][p]]['className'](jsonConfig[t][p], Math.floor(p / 10), 'def');
+				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / 10), 'def');
 
 				tHero._heroLevel = 350;
 				tHero._skin = jsonConfig[t][p + 1];
@@ -153,32 +149,10 @@ function handleCall(e) {
 
 			allDefTeams[teamIndex]['team'] = team;
 
-
-			// update stats for team
-			for (let h = 0; h < 6; h++) {
-				allAttTeams[teamIndex]['team'][h].updateCurrentStats();
-				allDefTeams[teamIndex]['team'][h].updateCurrentStats();
-			}
-
 			teamIndex++;
 		}
 	}
 
-
-	attHeroes = allAttTeams[e.data[1]]['team'];
-	defHeroes = allDefTeams[e.data[2]]['team'];
-
-	attMonsterName = allAttTeams[e.data[1]]['pet'];
-	defMonsterName = allDefTeams[e.data[2]]['pet'];
-
-	for (let p = 0; p < 6; p++) {
-		attHeroes[p]._allies = attHeroes;
-		attHeroes[p]._enemies = defHeroes;
-
-		defHeroes[p]._allies = defHeroes;
-		defHeroes[p]._enemies = attHeroes;
-	}
-
-	const numWins = runSim(attMonsterName, defMonsterName, numSims);
+	const numWins = runSim(allAttTeams[e.data[1]]['team'], allDefTeams[e.data[2]]['team'], allAttTeams[e.data[1]]['pet'], allDefTeams[e.data[2]]['pet'], attFrame, defFrame, numSims);
 	postMessage([wid, e.data[1], e.data[2], numWins]);
 }

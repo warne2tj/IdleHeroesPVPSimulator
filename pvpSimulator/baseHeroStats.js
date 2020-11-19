@@ -1,16 +1,9 @@
-/*
-	global hero, Carrie, Sherlock, Rogan, Russell, Drake, Ignis, Aida, Garuda, Tix, Michelle, AmenRa,
-	KingBarton, Flora, Aspen, Elyvia, UniMax3000, Ormus, Belrain, Asmodel, Kroos, Inosuke, DasMoge, Mihm,
-	DarkArthindol, Gustin, Emily, Valkryie, Horus, Tara, Nakia, Cthugha, HeartWatcher, Penny, Xia,
-	Oberon, Ithaqua, Gerke, Delacium, Amuvor, Sleepless, FaithBlade
-*/
-
 // hero base stats dictionary
 // base stats before anything is applied, even passives
 
 const baseHeroStats = {
 	'None': {
-		className: hero,
+		className: 'hero',
 		heroFaction: '',
 		heroClass: '',
 		stats: {
@@ -26,7 +19,7 @@ const baseHeroStats = {
 	},
 
 	'Aida': {
-		className: Aida,
+		className: 'Aida',
 		heroFaction: 'Light',
 		heroClass: 'Mage',
 		stats: {
@@ -42,7 +35,7 @@ const baseHeroStats = {
 	},
 
 	'Amen-Ra': {
-		className: AmenRa,
+		className: 'AmenRa',
 		heroFaction: 'Dark',
 		heroClass: 'Priest',
 		stats: {
@@ -58,7 +51,7 @@ const baseHeroStats = {
 	},
 
 	'Amuvor': {
-		className: Amuvor,
+		className: 'Amuvor',
 		heroFaction: 'Dark',
 		heroClass: 'Assassin',
 		stats: {
@@ -74,7 +67,7 @@ const baseHeroStats = {
 	},
 
 	'Asmodel': {
-		className: Asmodel,
+		className: 'Asmodel',
 		heroFaction: 'Light',
 		heroClass: 'Warrior',
 		stats: {
@@ -90,7 +83,7 @@ const baseHeroStats = {
 	},
 
 	'Aspen': {
-		className: Aspen,
+		className: 'Aspen',
 		heroFaction: 'Dark',
 		heroClass: 'Warrior',
 		stats: {
@@ -106,7 +99,7 @@ const baseHeroStats = {
 	},
 
 	'Belrain': {
-		className: Belrain,
+		className: 'Belrain',
 		heroFaction: 'Light',
 		heroClass: 'Priest',
 		stats: {
@@ -122,7 +115,7 @@ const baseHeroStats = {
 	},
 
 	'Carrie': {
-		className: Carrie,
+		className: 'Carrie',
 		heroFaction: 'Dark',
 		heroClass: 'Ranger',
 		stats: {
@@ -138,7 +131,7 @@ const baseHeroStats = {
 	},
 
 	'Cthugha': {
-		className: Cthugha,
+		className: 'Cthugha',
 		heroFaction: 'Abyss',
 		heroClass: 'Ranger',
 		stats: {
@@ -154,7 +147,7 @@ const baseHeroStats = {
 	},
 
 	'Dark Arthindol': {
-		className: DarkArthindol,
+		className: 'DarkArthindol',
 		heroFaction: 'Dark',
 		heroClass: 'Mage',
 		stats: {
@@ -170,7 +163,7 @@ const baseHeroStats = {
 	},
 
 	'Das Moge': {
-		className: DasMoge,
+		className: 'DasMoge',
 		heroFaction: 'Dark',
 		heroClass: 'Ranger',
 		stats: {
@@ -186,7 +179,7 @@ const baseHeroStats = {
 	},
 
 	'Delacium': {
-		className: Delacium,
+		className: 'Delacium',
 		heroFaction: 'Abyss',
 		heroClass: 'Mage',
 		stats: {
@@ -202,7 +195,7 @@ const baseHeroStats = {
 	},
 
 	'Drake': {
-		className: Drake,
+		className: 'Drake',
 		heroFaction: 'Dark',
 		heroClass: 'Assassin',
 		stats: {
@@ -218,7 +211,7 @@ const baseHeroStats = {
 	},
 
 	'Elyvia': {
-		className: Elyvia,
+		className: 'Elyvia',
 		heroFaction: 'Forest',
 		heroClass: 'Priest',
 		stats: {
@@ -234,7 +227,7 @@ const baseHeroStats = {
 	},
 
 	'Emily': {
-		className: Emily,
+		className: 'Emily',
 		heroFaction: 'Fortress',
 		heroClass: 'Priest',
 		stats: {
@@ -250,7 +243,7 @@ const baseHeroStats = {
 	},
 
 	'Faith Blade': {
-		className: FaithBlade,
+		className: 'FaithBlade',
 		heroFaction: 'Light',
 		heroClass: 'Assassin',
 		stats: {
@@ -266,7 +259,7 @@ const baseHeroStats = {
 	},
 
 	'Flora': {
-		className: Flora,
+		className: 'Flora',
 		heroFaction: 'Forest',
 		heroClass: 'Ranger',
 		stats: {
@@ -282,7 +275,7 @@ const baseHeroStats = {
 	},
 
 	'Garuda': {
-		className: Garuda,
+		className: 'Garuda',
 		heroFaction: 'Forest',
 		heroClass: 'Warrior',
 		stats: {
@@ -298,7 +291,7 @@ const baseHeroStats = {
 	},
 
 	'Gerke': {
-		className: Gerke,
+		className: 'Gerke',
 		heroFaction: 'Light',
 		heroClass: 'Priest',
 		stats: {
@@ -314,7 +307,7 @@ const baseHeroStats = {
 	},
 
 	'Gustin': {
-		className: Gustin,
+		className: 'Gustin',
 		heroFaction: 'Shadow',
 		heroClass: 'Priest',
 		stats: {
@@ -330,7 +323,7 @@ const baseHeroStats = {
 	},
 
 	'Heart Watcher': {
-		className: HeartWatcher,
+		className: 'HeartWatcher',
 		heroFaction: 'Forest',
 		heroClass: 'Assassin',
 		stats: {
@@ -346,7 +339,7 @@ const baseHeroStats = {
 	},
 
 	'Horus': {
-		className: Horus,
+		className: 'Horus',
 		heroFaction: 'Shadow',
 		heroClass: 'Warrior',
 		stats: {
@@ -362,7 +355,7 @@ const baseHeroStats = {
 	},
 
 	'Ignis': {
-		className: Ignis,
+		className: 'Ignis',
 		heroFaction: 'Abyss',
 		heroClass: 'Priest',
 		stats: {
@@ -378,7 +371,7 @@ const baseHeroStats = {
 	},
 
 	'Inosuke': {
-		className: Inosuke,
+		className: 'Inosuke',
 		heroFaction: 'Fortress',
 		heroClass: 'Ranger',
 		stats: {
@@ -394,7 +387,7 @@ const baseHeroStats = {
 	},
 
 	'Ithaqua': {
-		className: Ithaqua,
+		className: 'Ithaqua',
 		heroFaction: 'Shadow',
 		heroClass: 'Assassin',
 		stats: {
@@ -410,7 +403,7 @@ const baseHeroStats = {
 	},
 
 	'King Barton': {
-		className: KingBarton,
+		className: 'KingBarton',
 		heroFaction: 'Abyss',
 		heroClass: 'Warrior',
 		stats: {
@@ -426,7 +419,7 @@ const baseHeroStats = {
 	},
 
 	'Kroos': {
-		className: Kroos,
+		className: 'Kroos',
 		heroFaction: 'Abyss',
 		heroClass: 'Priest',
 		stats: {
@@ -442,7 +435,7 @@ const baseHeroStats = {
 	},
 
 	'Michelle': {
-		className: Michelle,
+		className: 'Michelle',
 		heroFaction: 'Light',
 		heroClass: 'Ranger',
 		stats: {
@@ -458,7 +451,7 @@ const baseHeroStats = {
 	},
 
 	'Mihm': {
-		className: Mihm,
+		className: 'Mihm',
 		heroFaction: 'Dark',
 		heroClass: 'Mage',
 		stats: {
@@ -474,7 +467,7 @@ const baseHeroStats = {
 	},
 
 	'Nakia': {
-		className: Nakia,
+		className: 'Nakia',
 		heroFaction: 'Abyss',
 		heroClass: 'Assassin',
 		stats: {
@@ -490,7 +483,7 @@ const baseHeroStats = {
 	},
 
 	'Oberon': {
-		className: Oberon,
+		className: 'Oberon',
 		heroFaction: 'Forest',
 		heroClass: 'Mage',
 		stats: {
@@ -506,7 +499,7 @@ const baseHeroStats = {
 	},
 
 	'Ormus': {
-		className: Ormus,
+		className: 'Ormus',
 		heroFaction: 'Fortress',
 		heroClass: 'Priest',
 		stats: {
@@ -522,7 +515,7 @@ const baseHeroStats = {
 	},
 
 	'Penny': {
-		className: Penny,
+		className: 'Penny',
 		heroFaction: 'Fortress',
 		heroClass: 'Ranger',
 		stats: {
@@ -538,7 +531,7 @@ const baseHeroStats = {
 	},
 
 	'Rogan': {
-		className: Rogan,
+		className: 'Rogan',
 		heroFaction: 'Forest',
 		heroClass: 'Assassin',
 		stats: {
@@ -554,7 +547,7 @@ const baseHeroStats = {
 	},
 
 	'Russell': {
-		className: Russell,
+		className: 'Russell',
 		heroFaction: 'Light',
 		heroClass: 'Ranger',
 		stats: {
@@ -570,7 +563,7 @@ const baseHeroStats = {
 	},
 
 	'Sherlock': {
-		className: Sherlock,
+		className: 'Sherlock',
 		heroFaction: 'Fortress',
 		heroClass: 'Mage',
 		stats: {
@@ -586,7 +579,7 @@ const baseHeroStats = {
 	},
 
 	'Sleepless': {
-		className: Sleepless,
+		className: 'Sleepless',
 		heroFaction: 'Dark',
 		heroClass: 'Warrior',
 		stats: {
@@ -602,7 +595,7 @@ const baseHeroStats = {
 	},
 
 	'Tara': {
-		className: Tara,
+		className: 'Tara',
 		heroFaction: 'Light',
 		heroClass: 'Warrior',
 		stats: {
@@ -618,7 +611,7 @@ const baseHeroStats = {
 	},
 
 	'Tix': {
-		className: Tix,
+		className: 'Tix',
 		heroFaction: 'Shadow',
 		heroClass: 'Mage',
 		stats: {
@@ -634,7 +627,7 @@ const baseHeroStats = {
 	},
 
 	'UniMax-3000': {
-		className: UniMax3000,
+		className: 'UniMax3000',
 		heroFaction: 'Fortress',
 		heroClass: 'Warrior',
 		stats: {
@@ -650,7 +643,7 @@ const baseHeroStats = {
 	},
 
 	'Valkryie': {
-		className: Valkryie,
+		className: 'Valkryie',
 		heroFaction: 'Forest',
 		heroClass: 'Ranger',
 		stats: {
@@ -666,7 +659,7 @@ const baseHeroStats = {
 	},
 
 	'Xia': {
-		className: Xia,
+		className: 'Xia',
 		heroFaction: 'Fortress',
 		heroClass: 'Assassin',
 		stats: {
@@ -683,6 +676,4 @@ const baseHeroStats = {
 };
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { baseHeroStats };
-}
+export { baseHeroStats };

@@ -1,21 +1,13 @@
-/*
-	global attHeroes, defHeroes,
-	isDot, getRandomTargets
-*/
+import { isDot, getRandomTargets } from './utilityFunctions.js';
+
 
 class monster {
 	constructor(sMonsterName, attOrDef) {
 		this._monsterName = sMonsterName;
 		this._attOrDef = attOrDef;
 		this._heroClass = 'monster';
-
-		if (attOrDef == 'att') {
-			this._allies = attHeroes;
-			this._enemies = defHeroes;
-		} else {
-			this._allies = defHeroes;
-			this._enemies = attHeroes;
-		}
+		this._allies = [];
+		this._enemies = [];
 
 		this._currentStats = {
 			'damageDealt': 0,
@@ -308,6 +300,18 @@ class mStoneGolem extends monster {
 }
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { mStoneGolem, mPhoenix, mFox, mJormangund, mIceGolem, mFenlier, mDyne, mNiederhog, mSphinx };
-}
+const monsterMapping = {
+	'monster': monster,
+	'mStoneGolem': mStoneGolem,
+	'mPhoenix': mPhoenix,
+	'mFox': mFox,
+	'mJormangund': mJormangund,
+	'mIceGolem': mIceGolem,
+	'mFenlier': mFenlier,
+	'mDyne': mDyne,
+	'mNiederhog': mNiederhog,
+	'mSphinx': mSphinx,
+};
+
+
+export { monsterMapping };

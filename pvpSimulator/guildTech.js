@@ -92,6 +92,4 @@ const guildTech = {
 };
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { guildTech };
-}
+export { guildTech };

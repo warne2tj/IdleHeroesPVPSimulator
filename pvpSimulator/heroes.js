@@ -1,9 +1,16 @@
-/*
-	global attHeroes, defHeroes, triggerQueue, activeQueue, basicQueue, roundNum,
-	baseHeroStats, baseMonsterStats, artifacts, avatarFrames, skins, stones, armors, accessories, weapons, shoes, setBonus, guildTech,
-	random, getAllTargets, translate, isDot, isMonster, formatNum, isControlEffect, uuid, isDispellable,
-	attMonsterName, defMonsterName, attFrame, defFrame
-*/
+import { baseHeroStats } from './baseHeroStats.js';
+import { baseMonsterStats } from './baseMonsterStats.js';
+import { artifacts } from './artifact.js';
+import { avatarFrames } from './avatarFrame.js';
+import { skins } from './skin.js';
+import { stones } from './stone.js';
+import { armors, accessories, weapons, shoes, setBonus } from './equipment.js';
+import { guildTech } from './guildTech.js';
+import { triggerQueue, activeQueue, basicQueue, roundNum } from './simulation.js';
+import { random, getAllTargets, translate, isDot, isMonster, formatNum, isControlEffect, uuid, isDispellable } from './utilityFunctions.js';
+
+
+let attMonsterName, defMonsterName, attFrame, defFrame;
 
 // base hero class, extend this class for each hero
 class hero {
@@ -44,13 +51,8 @@ class hero {
 		this._buffs = {};
 		this._debuffs = {};
 
-		if (attOrDef == 'att') {
-			this._allies = attHeroes;
-			this._enemies = defHeroes;
-		} else {
-			this._allies = defHeroes;
-			this._enemies = attHeroes;
-		}
+		this._allies = [];
+		this._enemies = [];
 
 		this._damageDealt = 0;
 		this._damageHealed = 0;
@@ -315,9 +317,7 @@ class hero {
 		// avatar frame
 		let sAvatarFrame;
 
-		if (typeof document !== 'undefined') {
-			sAvatarFrame = document.getElementById(this._attOrDef + 'AvatarFrame').value;
-		} else if (this._attOrDef == 'att') {
+		if (this._attOrDef == 'att') {
 			sAvatarFrame = attFrame;
 		} else {
 			sAvatarFrame = defFrame;
@@ -329,9 +329,7 @@ class hero {
 		// monster
 		let monsterName;
 
-		if (typeof document !== 'undefined') {
-			monsterName = document.getElementById(this._attOrDef + 'Monster').value;
-		} else if (this._attOrDef == 'att') {
+		if (this._attOrDef == 'att') {
 			monsterName = attMonsterName;
 		} else {
 			monsterName = defMonsterName;
@@ -364,13 +362,6 @@ class hero {
 
 
 		// aura
-		let arrToUse;
-		if (this._attOrDef == 'att') {
-			arrToUse = attHeroes;
-		} else {
-			arrToUse = defHeroes;
-		}
-
 		const arrIdentical = {
 			0: { hpPercent: 0, attackPercent: 0 },
 			1: { hpPercent: 0.02, attackPercent: 0.015 },
@@ -392,10 +383,12 @@ class hero {
 
 		let heroCount = 0;
 
-		for (let x = 0; x < arrToUse.length; x++) {
-			if (arrToUse[x]._heroFaction != '') {
-				factionCount[arrToUse[x]._heroFaction] += 1;
-				heroCount++;
+		for (let x = 0; x < this._allies.length; x++) {
+			if (this._allies[x] !== null) {
+				if (this._allies[x]._heroFaction != '') {
+					factionCount[this._allies[x]._heroFaction] += 1;
+					heroCount++;
+				}
 			}
 		}
 
@@ -1848,6 +1841,12 @@ class hero {
 }
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { hero };
+function setTeamData(strAttMonsterName, strDefMonsterName, strAttFrame, strDefFrame) {
+	attMonsterName = strAttMonsterName;
+	defMonsterName = strDefMonsterName;
+	attFrame = strAttFrame;
+	defFrame = strDefFrame;
 }
+
+
+export { hero, setTeamData };

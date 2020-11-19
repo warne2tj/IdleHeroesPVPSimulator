@@ -1,13 +1,19 @@
-/*
-	global baseHeroStats, baseMonsterStats, artifacts, avatarFrames, skins, stones, armors, accessories, weapons, shoes
-	hero, attHeroes, defHeroes, runSim
-*/
-
+import { hero, setTeamData } from './heroes.js';
+import { heroMapping } from './heroSubclasses.js';
+import { baseHeroStats } from './baseHeroStats.js';
+import { baseMonsterStats } from './baseMonsterStats.js';
+import { artifacts } from './artifact.js';
+import { avatarFrames } from './avatarFrame.js';
+import { skins } from './skin.js';
+import { stones } from './stone.js';
+import { armors, accessories, weapons, shoes } from './equipment.js';
+import { runSim } from './simulation.js';
 
 const lsPrefix = 'pvp_';
+const attHeroes = [null, null, null, null, null, null];
+const defHeroes = [null, null, null, null, null, null];
 
 
-// eslint-disable-next-line no-unused-vars
 function initialize() {
 	// layout stuff
 	let acc = document.getElementsByClassName('colorA');
@@ -108,13 +114,18 @@ function initialize() {
 	}
 
 
+	for (const h in attHeroes) {
+		attHeroes[h] = new hero('None', h, 'att');
+		defHeroes[h] = new hero('None', h, 'def');
+	}
+
+
 	// load default configuration
 	loadConfig();
 	callSim();
 }
 
 
-// eslint-disable-next-line no-unused-vars
 function storeLocal(i) {
 	if (typeof (Storage) !== 'undefined') {
 		localStorage.setItem(lsPrefix + i.id, i.value);
@@ -122,7 +133,6 @@ function storeLocal(i) {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 function swapAttDef() {
 	createConfig();
 
@@ -144,7 +154,6 @@ function swapAttDef() {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 function swapHero() {
 	const heroA = document.getElementById('heroA').value;
 	const heroB = document.getElementById('heroB').value;
@@ -173,7 +182,6 @@ function swapHero() {
 }
 
 
-// eslint-disable-next-line no-unused-vars
 function copyHero() {
 	const heroA = document.getElementById('heroA').value;
 	const heroB = document.getElementById('heroB').value;
@@ -260,7 +268,7 @@ function changeHero(heroPos, prefix, skipUpdates = false) {
 			arrToUse[heroPos] = new hero('None', heroPos, prefix);
 			cHeroSheet.innerHTML = '';
 		} else {
-			arrToUse[heroPos] = new baseHeroStats[cHeroName]['className'](cHeroName, heroPos, prefix);
+			arrToUse[heroPos] = new heroMapping[baseHeroStats[cHeroName]['className']](cHeroName, heroPos, prefix);
 
 			if ([cHeroName] in skins) {
 				let option;
@@ -274,8 +282,12 @@ function changeHero(heroPos, prefix, skipUpdates = false) {
 
 		if (skipUpdates == false) {
 			if (prefix == 'att') {
+				arrToUse[heroPos]._allies = attHeroes;
+				arrToUse[heroPos]._enemies = defHeroes;
 				updateAttackers();
 			} else {
+				arrToUse[heroPos]._allies = defHeroes;
+				arrToUse[heroPos]._enemies = attHeroes;
 				updateDefenders();
 			}
 		}
@@ -320,6 +332,13 @@ function updateHero(heroPos, prefix) {
 
 
 function updateAttackers() {
+	setTeamData(
+		document.getElementById('attMonster').value,
+		document.getElementById('defMonster').value,
+		document.getElementById('attAvatarFrame').value,
+		document.getElementById('defAvatarFrame').value,
+	);
+
 	for (let i = 0; i < attHeroes.length; i++) {
 		updateHero(i, 'att');
 	}
@@ -327,6 +346,13 @@ function updateAttackers() {
 
 
 function updateDefenders() {
+	setTeamData(
+		document.getElementById('attMonster').value,
+		document.getElementById('defMonster').value,
+		document.getElementById('attAvatarFrame').value,
+		document.getElementById('defAvatarFrame').value,
+	);
+
 	for (let i = 0; i < defHeroes.length; i++) {
 		updateHero(i, 'def');
 	}
@@ -385,7 +411,7 @@ function loadConfig() {
 		}
 
 		if (x.substring(x.length - 4, x.length) == 'Name') {
-			changeHero(x.substring(7, 8), x.substring(0, 3), true);
+			changeHero(Number.parseInt(x.substring(7, 8)), x.substring(0, 3), true);
 		}
 	}
 
@@ -403,5 +429,30 @@ function genSeed() {
 
 // eslint-disable-next-line no-unused-vars
 function callSim() {
-	runSim(document.getElementById('attMonster').value, document.getElementById('defMonster').value, document.getElementById('numSims').value, document.getElementById('domSeed'));
+	runSim(
+		attHeroes,
+		defHeroes,
+		document.getElementById('attMonster').value,
+		document.getElementById('defMonster').value,
+		document.getElementById('attAvatarFrame').value,
+		document.getElementById('defAvatarFrame').value,
+		document.getElementById('numSims').value,
+		document.getElementById('domSeed'),
+	);
 }
+
+
+window.callSim = callSim;
+window.genSeed = genSeed;
+window.createConfig = createConfig;
+window.loadConfig = loadConfig;
+window.initialize = initialize;
+window.storeLocal = storeLocal;
+window.swapAttDef = swapAttDef;
+window.changeHero = changeHero;
+window.swapHero = swapHero;
+window.copyHero = copyHero;
+window.updateAttackers = updateAttackers;
+window.updateDefenders = updateDefenders;
+window.topFunction = topFunction;
+window.updateHero = updateHero;

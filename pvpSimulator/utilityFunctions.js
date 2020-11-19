@@ -15,58 +15,61 @@ function logCombat(str, append = true) {
 
 
 // replacement seedable prng
-// eslint-disable-next-line no-var
-var random = rng();
+let random = Math.random;
 
 function rng(seed = 0) {
-	if (seed == 0) {
-		const dt = new Date();
-		seed = dt.valueOf();
+	if (typeof document == 'undefined') {
+		random = Math.random;
+	} else {
+		if (seed == 0) {
+			const dt = new Date();
+			seed = dt.valueOf();
+		}
+
+		const strSeed = seed.toString();
+		let a, b, c, d, i, h;
+
+		for (i = 0, h = 1779033703 ^ strSeed.length; i < strSeed.length; i++) {
+			h = Math.imul(h ^ strSeed.charCodeAt(i), 3432918353);
+			h = h << 13 | h >>> 19;
+		}
+
+		h = Math.imul(h ^ h >>> 16, 2246822507);
+		h = Math.imul(h ^ h >>> 13, 3266489909);
+		h ^= h >>> 16;
+		a = h >>> 0;
+
+		h = Math.imul(h ^ h >>> 16, 2246822507);
+		h = Math.imul(h ^ h >>> 13, 3266489909);
+		h ^= h >>> 16;
+		b = h >>> 0;
+
+		h = Math.imul(h ^ h >>> 16, 2246822507);
+		h = Math.imul(h ^ h >>> 13, 3266489909);
+		h ^= h >>> 16;
+		c = h >>> 0;
+
+		h = Math.imul(h ^ h >>> 16, 2246822507);
+		h = Math.imul(h ^ h >>> 13, 3266489909);
+		h ^= h >>> 16;
+		d = h >>> 0;
+
+
+		random = () => {
+			const t = b << 9;
+			let r = a * 5;
+
+			r = (r << 7 | r >>> 25) * 9;
+			c ^= a;
+			d ^= b;
+			b ^= c;
+			a ^= d;
+			c ^= t;
+			d = d << 11 | d >>> 21;
+
+			return (r >>> 0) / 4294967296;
+		};
 	}
-
-	const strSeed = seed.toString();
-	let a, b, c, d, i, h;
-
-	for (i = 0, h = 1779033703 ^ strSeed.length; i < strSeed.length; i++) {
-		h = Math.imul(h ^ strSeed.charCodeAt(i), 3432918353);
-		h = h << 13 | h >>> 19;
-	}
-
-	h = Math.imul(h ^ h >>> 16, 2246822507);
-	h = Math.imul(h ^ h >>> 13, 3266489909);
-	h ^= h >>> 16;
-	a = h >>> 0;
-
-	h = Math.imul(h ^ h >>> 16, 2246822507);
-	h = Math.imul(h ^ h >>> 13, 3266489909);
-	h ^= h >>> 16;
-	b = h >>> 0;
-
-	h = Math.imul(h ^ h >>> 16, 2246822507);
-	h = Math.imul(h ^ h >>> 13, 3266489909);
-	h ^= h >>> 16;
-	c = h >>> 0;
-
-	h = Math.imul(h ^ h >>> 16, 2246822507);
-	h = Math.imul(h ^ h >>> 13, 3266489909);
-	h ^= h >>> 16;
-	d = h >>> 0;
-
-
-	return function() {
-		const t = b << 9;
-		let r = a * 5;
-
-		r = (r << 7 | r >>> 25) * 9;
-		c ^= a;
-		d ^= b;
-		b ^= c;
-		a ^= d;
-		c ^= t;
-		d = d << 11 | d >>> 21;
-
-		return (r >>> 0) / 4294967296;
-	};
 }
 
 
@@ -639,11 +642,9 @@ function getHighestAttackTargets(source, arrTargets, num = 6) {
 }
 
 
-if (typeof module !== 'undefined') {
-	module.exports = {
-		getHighestAttackTargets, getHighestHPTargets, getLowestHPPercentTargets, getLowestHPTargets,
-		getRandomTargets, getNearestTargets, getAllTargets, getBackTargets, getFrontTargets,
-		isAttribute, isDot, isBackLine, isFrontLine, isControlEffect, isDispellable, isMonster,
-		slotSort, speedSort, uuid, random, rng, logCombat, formatNum, translate,
-	};
-}
+export {
+	getHighestAttackTargets, getHighestHPTargets, getLowestHPPercentTargets, getLowestHPTargets,
+	getRandomTargets, getNearestTargets, getAllTargets, getBackTargets, getFrontTargets,
+	isAttribute, isDot, isBackLine, isFrontLine, isControlEffect, isDispellable, isMonster,
+	slotSort, speedSort, uuid, random, rng, logCombat, formatNum, translate,
+};

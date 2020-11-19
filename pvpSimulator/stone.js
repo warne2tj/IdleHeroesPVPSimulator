@@ -27,6 +27,4 @@ const stones = {
 };
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { stones };
-}
+export { stones };

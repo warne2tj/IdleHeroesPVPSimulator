@@ -1,42 +1,20 @@
-/*
-	global hero, baseMonsterStats, artifacts,
-	random:writable, uuid, rng, logCombat, formatNum, speedSort, getAllTargets
-*/
+import { baseMonsterStats } from './baseMonsterStats.js';
+import { setTeamData } from './heroes.js';
+import { monsterMapping } from './monsters.js';
+import { artifacts } from './artifact.js';
+import { random, uuid, rng, logCombat, formatNum, speedSort, getAllTargets } from './utilityFunctions.js';
 
 
-// eslint-disable-next-line no-var
-var attHeroes = [
-	new hero('None', 0, 'att'),
-	new hero('None', 1, 'att'),
-	new hero('None', 2, 'att'),
-	new hero('None', 3, 'att'),
-	new hero('None', 4, 'att'),
-	new hero('None', 5, 'att'),
-];
-
-// eslint-disable-next-line no-var
-var defHeroes = [
-	new hero('None', 0, 'def'),
-	new hero('None', 1, 'def'),
-	new hero('None', 2, 'def'),
-	new hero('None', 3, 'def'),
-	new hero('None', 4, 'def'),
-	new hero('None', 5, 'def'),
-];
-
-// eslint-disable-next-line no-var
-var basicQueue = [];
-// eslint-disable-next-line no-var
-var activeQueue = [];
-// eslint-disable-next-line no-var
-var triggerQueue = [];
-// eslint-disable-next-line no-var
-var roundNum = 0;
+let attHeroes = [null, null, null, null, null, null];
+let defHeroes = [null, null, null, null, null, null];
+let basicQueue = [];
+let activeQueue = [];
+let triggerQueue = [];
+let roundNum = 0;
 let logColor = 0;
 
 
-// eslint-disable-next-line no-unused-vars
-function runSim(attMonsterName, defMonsterName, numSims, domSeed = null) {
+function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attFrame, defFrame, numSims, domSeed = null) {
 	let winCount = 0;
 	let orderOfAttack = [];
 	let numOfHeroes = 0;
@@ -47,27 +25,45 @@ function runSim(attMonsterName, defMonsterName, numSims, domSeed = null) {
 	let endingRoundSum = 0;
 	let currentHero;
 
-	const attMonster = new baseMonsterStats[attMonsterName]['className'](attMonsterName, 'att');
-	const defMonster = new baseMonsterStats[defMonsterName]['className'](defMonsterName, 'def');
+
+	// team setup
+	attHeroes = arrAttHeroes;
+	defHeroes = arrDefHeroes;
+
+	const attMonster = new monsterMapping[baseMonsterStats[attMonsterName]['className']](attMonsterName, 'att');
+	attMonster._allies = attHeroes;
+	attMonster._enemies = defHeroes;
+
+	const defMonster = new monsterMapping[baseMonsterStats[defMonsterName]['className']](defMonsterName, 'def');
+	defMonster._allies = defHeroes;
+	defMonster._enemies = attHeroes;
+
+	setTeamData(attMonsterName, defMonsterName, attFrame, defFrame);
+
+	for (let p = 0; p < 6; p++) {
+		attHeroes[p]._allies = attHeroes;
+		attHeroes[p]._enemies = defHeroes;
+		attHeroes[p]._damageDealt = 0;
+		attHeroes[p]._damageHealed = 0;
+		attHeroes[p].updateCurrentStats();
+
+		defHeroes[p]._allies = defHeroes;
+		defHeroes[p]._enemies = attHeroes;
+		defHeroes[p]._damageDealt = 0;
+		defHeroes[p]._damageHealed = 0;
+		defHeroes[p].updateCurrentStats();
+	}
+
 
 	if (domSeed !== null) {
-		random = rng(domSeed.value);
+		rng(domSeed.value);
 	} else {
-		random = Math.random;
+		rng();
 	}
 
 	logColor = 0;
 	logCombat('', false);
 
-	for (let i = 0; i < attHeroes.length; i++) {
-		attHeroes[i]._damageDealt = 0;
-		attHeroes[i]._damageHealed = 0;
-	}
-
-	for (let i = 0; i < defHeroes.length; i++) {
-		defHeroes[i]._damageDealt = 0;
-		defHeroes[i]._damageHealed = 0;
-	}
 
 	for (let simIterNum = 1; simIterNum <= numSims; simIterNum++) {
 		// @ start of single simulation
@@ -166,7 +162,7 @@ function runSim(attMonsterName, defMonsterName, numSims, domSeed = null) {
 						if ((currentHero._currentStats['energy'] >= 100 && !('Silence' in currentHero._debuffs)) || isRussellCharging) {
 
 							// set hero energy to 0
-							if (this._heroName != 'Russell') {
+							if (currentHero._heroName != 'Russell') {
 								currentHero._currentStats['energySnapshot'] = currentHero._currentStats['energy'];
 								currentHero._currentStats['energy'] = 0;
 							}
@@ -636,7 +632,4 @@ function checkForWin() {
 	}
 }
 
-
-if (typeof module !== 'undefined') {
-	module.exports = { attHeroes, defHeroes, basicQueue, activeQueue, triggerQueue, roundNum, runSim };
-}
+export { attHeroes, defHeroes, basicQueue, activeQueue, triggerQueue, roundNum, runSim };

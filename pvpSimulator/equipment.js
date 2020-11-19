@@ -289,6 +289,4 @@ const classGearMapping = {
 };
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { weapons, shoes, accessories, armors, setBonus, classGearMapping };
-}
+export { weapons, shoes, accessories, armors, setBonus, classGearMapping };

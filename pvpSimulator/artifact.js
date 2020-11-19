@@ -603,6 +603,4 @@ const artifacts = {
 };
 
 
-if (typeof module !== 'undefined') {
-	module.exports = { artifacts };
-}
+export { artifacts };
