@@ -632,7 +632,9 @@ class hero {
 		if (precisionDamageIncrease > 1.45) { precisionDamageIncrease = 1.45; }
 		if (armorBreak > 1) { armorBreak = 1; }
 		if (damageReduce > 0.75) { damageReduce = 0.75; }
+		if (damageReduce < 0) { damageReduce = 0; }
 		if (allDamageReduce < 0) { allDamageReduce = 0; }
+		if (allDamageTaken < 0) { allDamageReduce = 0; }
 
 		let blockChance = canBlock * (target._currentStats['block'] - precision);
 		if (blockChance < 0) { blockChance = 0; }
@@ -736,9 +738,8 @@ class hero {
 		}
 
 
-		if (attackDamage == 0 && this._currentStats['totalAttack'] == 0) {
-			attackDamage = 1;
-		}
+		// min damage in case of negative stats
+		if (attackDamage < 1) attackDamage = 1;
 
 
 		return {
@@ -847,13 +848,36 @@ class hero {
 
 
 	calcCombatAttack() {
-		let att = this._currentStats['attack'];
+		let att = this._stats['attack'];
 
 		for (const x in this._attackMultipliers) {
 			att = Math.floor(att * this._attackMultipliers[x]);
 		}
 
-		// apply buffs
+		// apply attack buffs and debuffs
+		for (const b of Object.values(this._buffs)) {
+			for (const s of Object.values(b)) {
+				for (const [e, oe] of Object.entries(s['effects'])) {
+					if (e == 'attack') {
+						att = Math.floor(att * (1 + oe));
+					}
+				}
+			}
+		}
+
+		for (const b of Object.values(this._debuffs)) {
+			for (const s of Object.values(b)) {
+				for (const [e, oe] of Object.entries(s['effects'])) {
+					if (e == 'attack') {
+						att = Math.floor(att * (1 - oe));
+					}
+				}
+			}
+		}
+
+		if (att < 0) att = 0;
+
+		// apply percent buffs and debuffs
 		for (const b of Object.values(this._buffs)) {
 			for (const s of Object.values(b)) {
 				for (const [e, oe] of Object.entries(s['effects'])) {
@@ -864,7 +888,6 @@ class hero {
 			}
 		}
 
-		// apply debuffs
 		for (const b of Object.values(this._debuffs)) {
 			for (const s of Object.values(b)) {
 				for (const [e, oe] of Object.entries(s['effects'])) {
@@ -876,6 +899,7 @@ class hero {
 		}
 
 		att += this._currentStats['fixedAttack'];
+		if (att < 0) att = 0;
 		return att;
 	}
 

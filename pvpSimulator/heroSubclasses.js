@@ -4102,14 +4102,14 @@ class Sleepless extends hero {
 					damageResult = this.calcDamage(target, this._currentStats['totalAttack'] * 1.85, 'mark', 'normal');
 					result += target.getDebuff(this, 'Round Mark', 1, { attackAmount: damageResult });
 
+					if (random() < 0.3) {
+						const healAmount = this.calcHeal(this, this._stats['totalHP'] * 0.10);
+						result += this.getHeal(this, healAmount);
+					}
+
 					break;
 				}
 			}
-		}
-
-		if (random() < 0.3) {
-			const healAmount = this.calcHeal(this, this._stats['totalHP'] * 0.10);
-			result += this.getHeal(this, healAmount);
 		}
 
 		return result;
@@ -4389,12 +4389,12 @@ class HeartWatcher extends hero {
 
 		if ('Watcher Mark' in target._debuffs) {
 			for (const s of Object.values(target._debuffs['Watcher Mark'])) {
-				currAmount += s['effects']['allDamageTaken'];
+				currAmount -= s['effects']['allDamageTaken'];
 			}
 		}
 
-		if (currAmount + wmAmount > 3) {
-			wmAmount = 3 - currAmount;
+		if (currAmount - wmAmount < -3) {
+			wmAmount = 3 + currAmount;
 		}
 
 		return wmAmount;
@@ -4418,7 +4418,7 @@ class HeartWatcher extends hero {
 				basicQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 
 				wmAmount = this.getWatcherMarkAmount(targets[i], 0.35);
-				result += targets[i].getDebuff(this, 'Watcher Mark', 15, { allDamageTaken: wmAmount });
+				result += targets[i].getDebuff(this, 'Watcher Mark', 15, { allDamageTaken: -wmAmount });
 			}
 		}
 
@@ -4447,7 +4447,7 @@ class HeartWatcher extends hero {
 				result += targets[i].getDebuff(this, 'Attack', 2, { attack: reduceAttackAmount });
 
 				wmAmount = this.getWatcherMarkAmount(targets[i], 0.45);
-				result += targets[i].getDebuff(this, 'Watcher Mark', 15, { allDamageTaken: wmAmount });
+				result += targets[i].getDebuff(this, 'Watcher Mark', 15, { allDamageTaken: -wmAmount });
 			}
 		}
 
