@@ -1,14 +1,14 @@
-const startOrdDice = 3;
-const startLuckDice = 3;
-const startStars = 0;
-const startPos = 5;
+const startOrdDice = 1;
+const startLuckDice = 1;
+const startStars = 187;
+const startPos = 14;
 const startDoubleNextRoll = false;
 const startMoveBackwards = false;
 const startDoubleStars = false;
 const startRollTwice = false;
 const startMushroom1 = 3;
-const startMushroom2 = 2;
-const startMushroom3 = 3;
+const startMushroom2 = 3;
+const startMushroom3 = 2;
 
 const startBoardState = [0, 3, 3, 3, 2 + startMushroom1, 0, 3, 3, 3, 3, 0, 2 + startMushroom2, 3, 3, 3, 0, 3, 3, 2 + startMushroom3, 3, 0];
 const importantTarot = [3, 5, 6, 7, 9];
@@ -21,13 +21,14 @@ const end = new Date();
 console.log(expectedValue, (end - start) / 1000);
 
 
-function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, boardState) {
+function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, boardState, depth = 1) {
 	if (ordDice + luckDice > maxDice) throw new Error(`Maximum dice of ${maxDice} exceeded. Calculation will take too long.`);
 	if ((doubleNextRoll || moveBackwards || doubleStars || rollTwice) && pos != 10) throw new Error('Tarot active but position not on tarot hut.');
 
 	// recurse ending condition
 	if (ordDice == 0 && luckDice == 0) {
-		return [stars, 'No dice left.', calcTier(stars)];
+		const endTier = calcTier(stars);
+		return [stars, 'No dice left.', endTier];
 	}
 
 
@@ -56,14 +57,14 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 	if ((ordDice + luckDice) == Math.ceil(nextTier / 2)) {
 		const finalStars = stars + (ordDice + luckDice) * 2;
-		return [finalStars, 'Let dice convert.', calcTier(finalStars)];
+		const endTier = calcTier(finalStars);
+		return [finalStars, 'Let dice convert.', endTier];
 	}
 
 
 	// get EV of using dice
 	const luckyEV = [];
 	const ordinaryEV = [];
-	let roll = 0;
 	let rollResults;
 
 
@@ -72,12 +73,10 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 		if (rollTwice) {
 			const rollChoices = [8, 10];
 
-			for (const x of rollChoices) {
-				roll = x;
-
+			for (const roll of rollChoices) {
 				rollResults = resolveRoll(ordDice, luckDice - 1, stars, pos, doubleNextRoll, moveBackwards, doubleStars, false, [...boardState], roll, 0);
 
-				luckyEV.push(calcEV(
+				const rollEV = calcEV(
 					rollResults.ordDice,
 					rollResults.luckDice,
 					rollResults.stars,
@@ -87,10 +86,14 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					rollResults.doubleStars,
 					rollResults.rollTwice,
 					rollResults.boardState,
-				));
+					depth + 1,
+				);
+
+				rollEV[1] = `Use lucky dice to roll ${roll}.`;
+				luckyEV.push(rollEV);
 			}
 		} else {
-			let rollChoices = [];
+			let rollChoices;
 
 			if (doubleNextRoll) {
 				rollChoices = [4, 5];
@@ -98,15 +101,11 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 				rollChoices = [1, 6];
 			} else if (pos == 15) {
 				rollChoices = [1, 2, 4, 5, 6];
-			} else if (pos == 11) {
-				rollChoices.push(6);
 			} else {
 				rollChoices = [1, 2, 3, 4, 5, 6];
 			}
 
-			for (const x of rollChoices) {
-				roll = x;
-
+			for (const roll of rollChoices) {
 				if (pos + roll == 10 && ordDice + luckDice > 1) {
 					const tarotEV = [];
 
@@ -121,6 +120,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 						unimportantRollResults.doubleStars,
 						unimportantRollResults.rollTwice,
 						unimportantRollResults.boardState,
+						depth + 1,
 					);
 
 					for (let i = 0; i < 4; i++) {
@@ -140,6 +140,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 							rollResults.doubleStars,
 							rollResults.rollTwice,
 							rollResults.boardState,
+							depth + 1,
 						));
 					}
 
@@ -154,7 +155,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 				} else {
 					rollResults = resolveRoll(ordDice, luckDice - 1, stars, pos, doubleNextRoll, moveBackwards, doubleStars, false, [...boardState], roll, 0);
 
-					luckyEV.push(calcEV(
+					const rollEV = calcEV(
 						rollResults.ordDice,
 						rollResults.luckDice,
 						rollResults.stars,
@@ -164,7 +165,11 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 						rollResults.doubleStars,
 						rollResults.rollTwice,
 						rollResults.boardState,
-					));
+						depth + 1,
+					);
+
+					rollEV[1] = `Use lucky dice to roll ${roll}.`;
+					luckyEV.push(rollEV);
 				}
 			}
 		}
@@ -174,8 +179,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 	// EV of ordinary dice
 	if (ordDice > 0) {
 		if (rollTwice) {
-			for (const x of twoDiceDist) {
-				roll = x[0];
+			for (const roll of twoDiceDist) {
 				rollResults = resolveRoll(ordDice - 1, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, false, [...boardState], roll, 0);
 
 				const tempEV = calcEV(
@@ -188,16 +192,17 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					rollResults.doubleStars,
 					rollResults.rollTwice,
 					rollResults.boardState,
+					depth + 1,
 				);
 
-				for (let y = 0; y < x[1]; y++) {
+				tempEV[1] = 'Use ordinary dice.';
+
+				for (let y = 0; y < roll[1]; y++) {
 					ordinaryEV.push(tempEV);
 				}
 			}
 		} else {
-			for (let x = 1; x <= 6; x++) {
-				roll = x;
-
+			for (let roll = 1; roll <= 6; roll++) {
 				if (pos + roll == 10 && ordDice + luckDice > 1) {
 					const tarotEV = [];
 
@@ -212,6 +217,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 						unimportantRollResults.doubleStars,
 						unimportantRollResults.rollTwice,
 						unimportantRollResults.boardState,
+						depth + 1,
 					);
 
 					for (let i = 0; i < 4; i++) {
@@ -231,6 +237,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 							rollResults.doubleStars,
 							rollResults.rollTwice,
 							rollResults.boardState,
+							depth + 1,
 						));
 					}
 
@@ -245,7 +252,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 				} else {
 					rollResults = resolveRoll(ordDice - 1, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, false, [...boardState], roll, 0);
 
-					ordinaryEV.push(calcEV(
+					const rollEV = calcEV(
 						rollResults.ordDice,
 						rollResults.luckDice,
 						rollResults.stars,
@@ -255,7 +262,11 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 						rollResults.doubleStars,
 						rollResults.rollTwice,
 						rollResults.boardState,
-					));
+						depth + 1,
+					);
+
+					rollEV[1] = 'Use ordinary dice.';
+					ordinaryEV.push(rollEV);
 				}
 			}
 		}
@@ -263,15 +274,10 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 
 	// get max for lucky, avg for ordinary
-	const luckyResults = luckyEV.reduce((prev, curr, index) => {
-		if (curr[1] == 'Let dice convert.') {
-			curr[1] = `Use lucky dice to roll ${index + 1}`;
-			return curr;
-		} else if (curr[2] > prev[2]) {
-			curr[1] = `Use lucky dice to roll ${index + 1}`;
+	const luckyResults = luckyEV.reduce((prev, curr) => {
+		if (curr[2] > prev[2]) {
 			return curr;
 		}if (curr[2] == prev[2] && curr[0] >= prev[0]) {
-			curr[1] = `Use lucky dice to roll ${index + 1}`;
 			return curr;
 		} else {
 			return prev;
@@ -289,10 +295,17 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 	}
 
 	// console.info('luckyEV', luckyEV, 'luckyResults', luckyResults, 'ordinaryEV', ordinaryEV, 'ordinaryResults', ordinaryResults);
+	// output more detailed results
+	if (depth == 1) {
+		console.info('ordinaryEV', ordinaryEV);
+		console.info('luckyEV', luckyEV);
+	}
+
+
 	if (ordinaryResults[2] > luckyResults[2]) {
-		return [ordinaryResults[0], 'Use ordinary dice.', ordinaryResults[2]];
+		return ordinaryResults;
 	} else if (ordinaryResults[2] == luckyResults[2] && ordinaryResults[0] >= luckyResults[0]) {
-		return [ordinaryResults[0], 'Use ordinary dice.', ordinaryResults[2]];
+		return ordinaryResults;
 	} else {
 		return luckyResults;
 	}

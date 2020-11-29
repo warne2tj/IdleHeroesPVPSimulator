@@ -466,6 +466,22 @@ const baseHeroStats = {
 		},
 	},
 
+	'Morax': {
+		className: 'Morax',
+		heroFaction: 'Abyss',
+		heroClass: 'Warrior',
+		stats: {
+			baseHP: 8286,
+			baseAttack: 338,
+			baseArmor: 63,
+			baseSpeed: 235,
+			growHP: 8286,
+			growAttack: 34,
+			growArmor: 6.3,
+			growSpeed: 2,
+		},
+	},
+
 	'Nakia': {
 		className: 'Nakia',
 		heroFaction: 'Abyss',

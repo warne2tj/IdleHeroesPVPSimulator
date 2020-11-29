@@ -5063,6 +5063,108 @@ class Inosuke extends hero {
 }
 
 
+class Morax extends hero {
+	passiveStats() {
+		// apply Tough Guy passive
+		this.applyStatChange({ attackPercent: 0.30, hpPercent: 0.40, crit: 0.30, precision: 0.70, effectBeingHealed: 0.40 }, 'PassiveStats');
+	}
+
+
+	startOfBattle() {
+		let result = this.getBuff(this, 'Extra Ammo', 15);
+		result += this.getBuff(this, 'Extra Ammo', 15);
+		return result;
+	}
+
+
+	takeDamage(source, strAttackDesc, damageResult) {
+		let result = super.takeDamage(source, strAttackDesc, damageResult);
+		const currentHPPercent = 1 - (this._currentStats.totalHP / this._stats.totalHP);
+		const allDamageReduceGained = 0.40 * currentHPPercent;
+		const allDamageDealtGained = 1.2 * currentHPPercent;
+
+		if ('Battle Frenzy' in this._buffs) this.removeBuff('Battle Frenzy');
+		result += this.getBuff(this, 'Battle Frenzy', 15, { allDamageReduce: allDamageReduceGained, allDamageDealt: allDamageDealtGained });
+		return result;
+	}
+
+
+	doBasic() {
+		let result = '';
+		let damageResult;
+		const targets = getAllTargets(this, this._enemies, 1);
+
+		for (const t of targets) {
+			const targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'basic', 'normal');
+				result += t.takeDamage(this, 'Basic Attack', damageResult);
+				basicQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+		result += this.getBuff(this, 'Extra Ammo', 15);
+		result += this.getBuff(this, 'Extra Ammo', 15);
+
+
+		const listDebuffs = [];
+
+		for (const d in this._debuffs) {
+			if (isDispellable(d)) {
+				listDebuffs.push(d);
+			}
+		}
+
+		const rng = Math.floor(random() * listDebuffs.length);
+
+		if (listDebuffs.length > 0) {
+			result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Armament</span> removed debuff.</div>';
+			result += this.removeDebuff(listDebuffs[rng]);
+		}
+
+		return result;
+	}
+
+
+	doActive() {
+		let result = '';
+		let numAttacks = 1;
+
+
+		if ('Extra Ammo' in this._buffs) {
+			numAttacks += Object.keys(this._buffs['Extra Ammo']).length;
+			result += this.removeBuff('Extra Ammo');
+		}
+
+
+		for (let i = 0; i < numAttacks; i++) {
+			const targets = getRandomTargets(this, getBackTargets(this, this._enemies), 1);
+
+			for (const t of targets) {
+				const targetLock = t.getTargetLock(this);
+				result += targetLock;
+
+				if (targetLock == '') {
+					const damageResult = this.calcDamage(t, this._currentStats['totalAttack'], 'active', 'normal', 6);
+					result += t.takeDamage(this, 'Hellish Smash', damageResult);
+
+					const burnDamageResult = this.calcDamage(t, this._currentStats['totalAttack'], 'active', 'burn', 1, 0, 2);
+					result += t.getDebuff(this, 'Burn', 2, { burn: burnDamageResult['damageAmount'] });
+
+					result += t.getDebuff(this, 'Burn Damage Taken', 2, { burnDamageTaken: -0.30 });
+
+					activeQueue.push([this, t, damageResult['damageAmount'] + burnDamageResult['damageAmount'], damageResult['critted']]);
+				}
+			}
+		}
+
+		return result;
+	}
+}
+
+
 const heroMapping = {
 	'hero': hero,
 	'Carrie': Carrie,
@@ -5106,6 +5208,7 @@ const heroMapping = {
 	'Amuvor': Amuvor,
 	'Sleepless': Sleepless,
 	'FaithBlade': FaithBlade,
+	'Morax': Morax,
 };
 
 

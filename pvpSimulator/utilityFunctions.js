@@ -127,7 +127,8 @@ function isMonster(source) {
 function isDispellable(strName) {
 	if (['Seal of Light', 'Power of Light', 'Ghost Possessed', 'Link of Souls',
 		'Demon Totem', 'Shrink', 'Shield', 'Feather Blade', 'Drake Break Defense',
-		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield'].includes(strName)) {
+		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield', 'Battle Frenzy',
+		'Extra Ammo'].includes(strName)) {
 		return false;
 	} else {
 		return true;
@@ -215,7 +216,7 @@ function isAttribute(strName, effects = {}) {
 		'freezeImmune', 'petrifyImmune', 'stunImmune', 'twineImmune', 'Seal of LightImmune',
 		'ShapeshiftImmune', 'TauntImmune', 'DazzleImmune', 'HorrifyImmune', 'SilenceImmune',
 		'damageAgainstWarrior', 'damageAgainstMage', 'damageAgainstRanger', 'damageAgainstAssassin',
-		'damageAgainstPriest',
+		'damageAgainstPriest', 'burnDamageTaken',
 	];
 
 	if (arrAttributes.includes(strName)) {
@@ -602,6 +603,7 @@ const translate = {
 	'heartOfOrmusTriggered': 'Heart of Ormus Triggered',
 	'reflectAmount': 'Link Damage Tracker',
 	'damageAgainstStun': 'Damage Dealt to Stunned Targets',
+	'burnDamageTaken': 'Damage Taken from Burn',
 };
 
 

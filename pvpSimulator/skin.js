@@ -251,6 +251,11 @@ const skins = {
 		'Solitary Warrior': { damageReduce: 0.04, attackPercent: 0.03, controlImmune: 0.05 },
 		'Legendary Solitary Warrior': { damageReduce: 0.05, attackPercent: 0.06, controlImmune: 0.06 },
 	},
+
+	'Morax': {
+		'Placeholder': { },
+		'Legendary Placeholder': { },
+	},
 };
 
 

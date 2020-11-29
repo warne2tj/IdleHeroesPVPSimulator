@@ -246,6 +246,12 @@ const seededHeroes = {
 		allowedEquipments: ['Class Gear', 'Split Attack'],
 		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"', '"Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill"'],
 	},
+	'Morax': {
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Wildfire Torch'],
+		allowedStones: ['S3 Speed, Attack', 'S3 Attack, Attack, Holy'],
+		allowedEquipments: ['Class Gear', 'Split Attack'],
+		allowedEnables: ['"Growth", "Shelter", "Resilience", "Growth", "UnbendingWill"', '"Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill"'],
+	},
 };
 
 

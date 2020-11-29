@@ -139,6 +139,7 @@ class hero {
 		this._stats['DazzleImmune'] = 0.0;
 		this._stats['HorrifyImmune'] = 0.0;
 		this._stats['SilenceImmune'] = 0.0;
+		this._stats['burnDamageTaken'] = 0.0;
 
 		this._attackMultipliers = {};
 		this._hpMultipliers = {};
@@ -602,6 +603,7 @@ class hero {
 		let classDamageReduce = target._currentStats[this._heroClass.toLowerCase() + 'Reduce'];
 		let damageReduce = target._currentStats['damageReduce'];
 		let allDamageReduce = target._currentStats['allDamageReduce'];
+		let burnDamageTaken = 1 + target._currentStats['burnDamageTaken'];
 		let dotReduce = 0;
 		let armorMitigation = armorReduces * ((1 - armorBreak) * target._currentStats['totalArmor'] / (180 + 20 * (target._heroLevel)));
 
@@ -699,6 +701,7 @@ class hero {
 			allDamageTaken = 1;
 			critChance = 0;
 			blockChance = 0;
+			burnDamageTaken = 1;
 		}
 
 		if (canCrit == 2) {
@@ -708,7 +711,7 @@ class hero {
 
 		// calculate damage
 		attackDamage = attackDamage * skillDamage * precisionDamageIncrease * damageAgainstBurning * damageAgainstBleeding * damageAgainstPoisoned * damageAgainstFrozen * damageAgainstStun * damageAgainstClass * allDamageDealt;
-		attackDamage = attackDamage * (1 - allDamageReduce) * (1 - damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1 - classDamageReduce) * (1 - dotReduce) * allDamageTaken;
+		attackDamage = attackDamage * (1 - allDamageReduce) * (1 - damageReduce) * (1 - armorMitigation + holyDamageIncrease) * (1 - classDamageReduce) * (1 - dotReduce) * allDamageTaken * burnDamageTaken;
 
 		let blocked = false;
 		let critted = false;
