@@ -5150,7 +5150,7 @@ class Morax extends hero {
 					const damageResult = this.calcDamage(t, this._currentStats['totalAttack'], 'active', 'normal', 6);
 					result += t.takeDamage(this, 'Hellish Smash', damageResult);
 
-					const burnDamageResult = this.calcDamage(t, this._currentStats['totalAttack'], 'active', 'burn', 1, 0, 2);
+					const burnDamageResult = this.calcDamage(t, this._currentStats['totalAttack'], 'active', 'burn', 6, 0, 2);
 					result += t.getDebuff(this, 'Burn', 2, { burn: burnDamageResult['damageAmount'] });
 
 					result += t.getDebuff(this, 'Burn Damage Taken', 2, { burnDamageTaken: -0.30 });
