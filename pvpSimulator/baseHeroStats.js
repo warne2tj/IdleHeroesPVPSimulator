@@ -475,7 +475,7 @@ const baseHeroStats = {
 			baseAttack: 338,
 			baseArmor: 63,
 			baseSpeed: 235,
-			growHP: 8286,
+			growHP: 828.6,
 			growAttack: 34,
 			growArmor: 6.3,
 			growSpeed: 2,

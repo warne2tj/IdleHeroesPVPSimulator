@@ -5077,34 +5077,19 @@ class Morax extends hero {
 	}
 
 
-	takeDamage(source, strAttackDesc, damageResult) {
-		let result = super.takeDamage(source, strAttackDesc, damageResult);
-		const currentHPPercent = 1 - (this._currentStats.totalHP / this._stats.totalHP);
-		const allDamageReduceGained = 0.40 * currentHPPercent;
-		const allDamageDealtGained = 1.2 * currentHPPercent;
+	handleTrigger(trigger) {
+		let result = super.handleTrigger(trigger);
 
-		if ('Battle Frenzy' in this._buffs) this.removeBuff('Battle Frenzy');
-		result += this.getBuff(this, 'Battle Frenzy', 15, { allDamageReduce: allDamageReduceGained, allDamageDealt: allDamageDealtGained });
+		if (trigger[1] == 'eventSelfBasic' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			result += this.eventSelfBasic();
+		}
+
 		return result;
 	}
 
 
-	doBasic() {
+	eventSelfBasic() {
 		let result = '';
-		let damageResult;
-		const targets = getAllTargets(this, this._enemies, 1);
-
-		for (const t of targets) {
-			const targetLock = t.getTargetLock(this);
-			result += targetLock;
-
-			if (targetLock == '') {
-				damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'basic', 'normal');
-				result += t.takeDamage(this, 'Basic Attack', damageResult);
-				basicQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
-			}
-		}
-
 		result += this.getBuff(this, 'Extra Ammo', 15);
 		result += this.getBuff(this, 'Extra Ammo', 15);
 
@@ -5128,9 +5113,22 @@ class Morax extends hero {
 	}
 
 
+	takeDamage(source, strAttackDesc, damageResult) {
+		let result = super.takeDamage(source, strAttackDesc, damageResult);
+		const currentHPPercent = 1 - (this._currentStats.totalHP / this._stats.totalHP);
+		const allDamageReduceGained = 0.40 * currentHPPercent;
+		const allDamageDealtGained = 1.2 * currentHPPercent;
+
+		if ('Battle Frenzy' in this._buffs) this.removeBuff('Battle Frenzy');
+		result += this.getBuff(this, 'Battle Frenzy', 15, { allDamageReduce: allDamageReduceGained, allDamageDealt: allDamageDealtGained });
+		return result;
+	}
+
+
 	doActive() {
 		let result = '';
 		let numAttacks = 1;
+		const alreadyTargeted = {};
 
 
 		if ('Extra Ammo' in this._buffs) {
@@ -5155,9 +5153,20 @@ class Morax extends hero {
 
 					result += t.getDebuff(this, 'Burn Damage Taken', 2, { burnDamageTaken: -0.30 });
 
-					activeQueue.push([this, t, damageResult['damageAmount'] + burnDamageResult['damageAmount'], damageResult['critted']]);
+
+					if (t._heroPos in alreadyTargeted) {
+						alreadyTargeted[t._heroPos][2] += damageResult['damageAmount'];
+						alreadyTargeted[t._heroPos][3] = alreadyTargeted[t._heroPos][3] || damageResult['critted'];
+					} else {
+						alreadyTargeted[t._heroPos] = [this, t, damageResult['damageAmount'], damageResult['critted']];
+					}
 				}
 			}
+		}
+
+
+		for (const i in alreadyTargeted) {
+			activeQueue.push(alreadyTargeted[i]);
 		}
 
 		return result;
