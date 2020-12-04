@@ -851,18 +851,16 @@ class hero {
 
 
 	calcCombatAttack() {
-		let att = this._stats['attack'];
+		let fixedAttackAmount = this._stats.fixedAttack;
+		let att = this._stats.attack;
 
-		for (const x in this._attackMultipliers) {
-			att = Math.floor(att * this._attackMultipliers[x]);
-		}
-
-		// apply attack buffs and debuffs
 		for (const b of Object.values(this._buffs)) {
 			for (const s of Object.values(b)) {
-				for (const [e, oe] of Object.entries(s['effects'])) {
+				for (const [e, oe] of Object.entries(s.effects)) {
 					if (e == 'attack') {
-						att = Math.floor(att * (1 + oe));
+						att += oe;
+					} else if (e == 'fixedAttack') {
+						fixedAttackAmount += oe;
 					}
 				}
 			}
@@ -870,9 +868,11 @@ class hero {
 
 		for (const b of Object.values(this._debuffs)) {
 			for (const s of Object.values(b)) {
-				for (const [e, oe] of Object.entries(s['effects'])) {
+				for (const [e, oe] of Object.entries(s.effects)) {
 					if (e == 'attack') {
-						att = Math.floor(att * (1 - oe));
+						att -= oe;
+					} else if (e == 'fixedAttack') {
+						fixedAttackAmount -= oe;
 					}
 				}
 			}
@@ -881,9 +881,13 @@ class hero {
 		if (att < 0) att = 0;
 
 		// apply percent buffs and debuffs
+		for (const x in this._attackMultipliers) {
+			att = Math.floor(att * this._attackMultipliers[x]);
+		}
+
 		for (const b of Object.values(this._buffs)) {
 			for (const s of Object.values(b)) {
-				for (const [e, oe] of Object.entries(s['effects'])) {
+				for (const [e, oe] of Object.entries(s.effects)) {
 					if (e == 'attackPercent') {
 						att = Math.floor(att * (1 + oe));
 					}
@@ -893,7 +897,7 @@ class hero {
 
 		for (const b of Object.values(this._debuffs)) {
 			for (const s of Object.values(b)) {
-				for (const [e, oe] of Object.entries(s['effects'])) {
+				for (const [e, oe] of Object.entries(s.effects)) {
 					if (e == 'attackPercent') {
 						att = Math.floor(att * (1 - oe));
 					}
@@ -901,14 +905,15 @@ class hero {
 			}
 		}
 
-		att += this._currentStats['fixedAttack'];
+
+		att += fixedAttackAmount;
 		if (att < 0) att = 0;
 		return att;
 	}
 
 
 	calcCombatArmor() {
-		let armr = this._currentStats['armor'];
+		let armr = this._currentStats.armor;
 
 		for (const x in this._armorMultipliers) {
 			armr = Math.floor(armr * this._armorMultipliers[x]);
@@ -917,7 +922,7 @@ class hero {
 		// apply buffs
 		for (const b of Object.values(this._debuffs)) {
 			for (const s of Object.values(b)) {
-				for (const [e, oe] of Object.entries(s['effects'])) {
+				for (const [e, oe] of Object.entries(s.effects)) {
 					if (e == 'armorPercent') {
 						armr = Math.floor(armr * (1 + oe));
 					}
@@ -928,7 +933,7 @@ class hero {
 		// apply debuffs
 		for (const b of Object.values(this._debuffs)) {
 			for (const s of Object.values(b)) {
-				for (const [e, oe] of Object.entries(s['effects'])) {
+				for (const [e, oe] of Object.entries(s.effects)) {
 					if (e == 'armorPercent') {
 						armr = Math.floor(armr * (1 - oe));
 					}
