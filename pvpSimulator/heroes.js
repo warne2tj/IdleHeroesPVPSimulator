@@ -1538,7 +1538,9 @@ class hero {
 
 
 	takeDamage(source, strAttackDesc, damageResult) {
-		if (this._currentStats['totalHP'] <= 0) { return ''; }
+		if (Number.isNaN(damageResult.damageAmount)) throw new Error('Damage amount is not a number');
+		if (damageResult.damageAmount < 0) throw new Error('Damage amount less than 0');
+		if (this._currentStats['totalHP'] <= 0) return '';
 
 		let result = '';
 		let dotAmount = 0;
