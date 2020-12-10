@@ -1,4 +1,5 @@
-const startOrdDice = 24;
+// node --max-old-space-size=4096 --expose-gc .\imp\exactMemo.js
+const startOrdDice = 6;
 const startLuckDice = 1;
 const startStars = 0;
 const startPos = 0;
@@ -14,15 +15,26 @@ const startBoardState = [0, 3, 3, 3, 2 + startMushroom1, 0, 3, 3, 3, 3, 0, 2 + s
 const importantTarot = [3, 5, 6, 7, 9];
 const twoDiceDist = [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 5], [9, 4], [10, 3], [11, 2], [12, 1]];
 
-// 26 dice takes roughly 3.5 minutes, 27 runs out of heap space
-const maxDice = 26;
+// 32 dice takes roughly 6 minutes, anything more runs out of heap space
+const maxDice = 32;
 
 
+const maxRss = 0;
+const maxHeapTotal = 0;
+const maxHeapUsed = 0;
+/*
+for (let i = 27; i <= maxDice; i++) {
+	gc();
+	maxRss = 0;
+	maxHeapTotal = 0;
+	maxHeapUsed = 0;
+*/
 const start = new Date();
 const expectedValue = calcEV(startOrdDice, startLuckDice, startStars, startPos, startDoubleNextRoll, startMoveBackwards, startDoubleStars, startRollTwice, [...startBoardState]);
 const end = new Date();
 const secondsTaken = (end - start) / 1000;
-console.log(expectedValue, secondsTaken);
+console.log(expectedValue, secondsTaken, maxRss / 1024 / 1024, maxHeapTotal / 1024 / 1024, maxHeapUsed / 1024 / 1024);
+// }
 
 
 function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, boardState, memo = new Map(), level = 0) {
@@ -314,9 +326,16 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 		ordinaryResults[2] /= ordinaryEV.length;
 	}
 
+	/*
 	if (level == 0) {
 		console.log(memo.size);
 	}
+
+	const memoryUsage = process.memoryUsage();
+	if (memoryUsage.rss > maxRss) maxRss = memoryUsage.rss;
+	if (memoryUsage.heapTotal > maxHeapTotal) maxHeapTotal = memoryUsage.heapTotal;
+	if (memoryUsage.heapUsed > maxHeapUsed) maxHeapUsed = memoryUsage.heapUsed;
+	*/
 
 	if (ordinaryResults[2] > luckyResults[2]) {
 		memo.set(memoKey, ordinaryResults);
