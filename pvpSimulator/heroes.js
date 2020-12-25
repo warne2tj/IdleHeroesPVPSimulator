@@ -1545,6 +1545,7 @@ class hero {
 		let result = '';
 		let dotAmount = 0;
 		const beforeHP = this._currentStats['totalHP'];
+		const isWildfire = strAttackDesc == 'Debuff Wildfire Torch Dot' ? true : false;
 
 		damageResult['damageAmount'] = Math.floor(damageResult['damageAmount']);
 
@@ -1553,7 +1554,7 @@ class hero {
 		result = '<div>' + source.heroDesc() + ' used ' + strAttackDesc + ' against ' + this.heroDesc() + '.</div>';
 
 
-		if (this._artifact.includes(' Magic Stone Sword') && strAttackDesc != 'Healing Curse' && !(isMonster(source))) {
+		if (!isWildfire && this._artifact.includes(' Magic Stone Sword') && strAttackDesc != 'Healing Curse' && !(isMonster(source))) {
 			const maxDamage = Math.floor(this._stats.totalHP * artifacts[this._artifact].enhance);
 			if (damageResult.damageAmount > maxDamage) {
 				result += '<div><span class=\'skill\'>' + this._artifact + '</span> prevented some damage.</div>';
@@ -1562,8 +1563,8 @@ class hero {
 		}
 
 
-		if (this._artifact.includes(' Augustus Magic Ball') && strAttackDesc != 'Healing Curse' && !(isMonster(source))) {
-			const damMit = Math.floor(this._stats.totalAttack * artifacts[this._artifact].enhance);
+		if (!isWildfire && this._artifact.includes(' Augustus Magic Ball') && strAttackDesc != 'Healing Curse' && !(isMonster(source))) {
+			const damMit = Math.floor(this._currentStats.totalAttack * artifacts[this._artifact].enhance);
 
 			if (damageResult.damageAmount > 1) {
 				result += '<div><span class=\'skill\'>' + this._artifact + '</span> prevented some damage.</div>';
@@ -1577,7 +1578,7 @@ class hero {
 		}
 
 
-		if (this._artifact.includes(' Wildfire Torch') && ['basic', 'active'].includes(damageResult['damageSource']) && damageResult['damageAmount'] > 1) {
+		if (!isWildfire && this._artifact.includes(' Wildfire Torch') && ['basic', 'active'].includes(damageResult['damageSource']) && damageResult['damageAmount'] > 1) {
 			dotAmount = Math.floor(damageResult['damageAmount'] * artifacts[this._artifact].enhance * 0.20);
 			damageResult['damageAmount'] = Math.floor(damageResult['damageAmount'] * (1 - artifacts[this._artifact].enhance));
 			result += '<div><span class=\'skill\'>' + this._artifact + '</span> converted damage to dot.</div>';
@@ -1585,7 +1586,7 @@ class hero {
 
 
 		// Inosuke's Swordwind Shield
-		if ('Swordwind Shield' in this._buffs && (['basic', 'active'].includes(damageResult['damageSource']) || (damageResult.damageSource == 'passive' && ['true', 'bleedTrue', 'burnTrue', 'poisonTrue'].includes(damageResult.damageType)))) {
+		if (!isWildfire && 'Swordwind Shield' in this._buffs && (['basic', 'active'].includes(damageResult['damageSource']) || (damageResult.damageSource == 'passive' && ['true', 'bleedTrue', 'burnTrue', 'poisonTrue'].includes(damageResult.damageType)))) {
 			const buffStack = Object.values(this._buffs['Swordwind Shield'])[0];
 			let damagePrevented = 0;
 
@@ -1604,7 +1605,7 @@ class hero {
 
 
 		// amenra shields
-		if ('Guardian Shadow' in this._buffs && !(['passive', 'mark'].includes(damageResult['damageSource'])) && !(isMonster(source)) && damageResult['damageAmount'] > 0) {
+		if (!isWildfire && 'Guardian Shadow' in this._buffs && !(['passive', 'mark'].includes(damageResult['damageSource'])) && !(isMonster(source)) && damageResult['damageAmount'] > 0) {
 			const keyDelete = Object.keys(this._buffs['Guardian Shadow']);
 
 			result += '<div>Damage prevented by <span class=\'skill\'>Guardian Shadow</span>.</div>';
@@ -1622,7 +1623,7 @@ class hero {
 			}
 		}
 
-		if (this._currentStats['unbendingWillStacks'] > 0 && damageResult['damageSource'] != 'mark') {
+		if (!isWildfire && this._currentStats['unbendingWillStacks'] > 0 && damageResult['damageSource'] != 'mark') {
 			this._currentStats['unbendingWillStacks'] -= 1;
 			this._currentStats['damageHealed'] += damageResult['damageAmount'];
 			result += '<div>' + formatNum(damageResult['damageAmount']) + ' damage prevented by <span class=\'skill\'>Unbending Will</span>.</div>';
@@ -1633,7 +1634,7 @@ class hero {
 
 		} else if (this._currentStats['totalHP'] <= damageResult['damageAmount']) {
 			// hero would die, check for unbending will
-			if (this._enable5 == 'UnbendingWill' && this._currentStats['unbendingWillTriggered'] == 0 && damageResult['damageSource'] != 'mark') {
+			if (!isWildfire && this._enable5 == 'UnbendingWill' && this._currentStats['unbendingWillTriggered'] == 0 && damageResult['damageSource'] != 'mark') {
 				this._currentStats['unbendingWillTriggered'] = 1;
 				this._currentStats['unbendingWillStacks'] = 3;
 				this._currentStats['damageHealed'] += damageResult['damageAmount'];

@@ -583,7 +583,7 @@ function processQueue() {
 						if (copyQueue[i][2][e][3] == true && copyQueue[i][2][e][1]._currentStats['totalHP'] > 0) {
 							didCrit = true;
 
-							damageAmount = copyQueue[i][2][e][1]._stats['totalHP'] * 0.12;
+							damageAmount = copyQueue[i][2][e][1]._stats['totalHP'] * artifacts[copyQueue[i][0]._artifact]['enhance'];
 							if (damageAmount > copyQueue[i][0]._currentStats['totalAttack'] * 25) { damageAmount = copyQueue[i][0]._currentStats['totalAttack'] * 25; }
 
 							damageResult = copyQueue[i][0].calcDamage(copyQueue[i][2][e][1], damageAmount, 'passive', 'true');

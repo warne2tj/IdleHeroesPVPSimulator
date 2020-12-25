@@ -68,6 +68,11 @@ div.card:after {
 }
 
 
+.gray {
+  background-color: #808080 !important;
+}
+
+
 
 @media screen and (max-width: 750px) {
   div.card .column {

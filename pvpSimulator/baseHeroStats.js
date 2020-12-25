@@ -546,6 +546,22 @@ const baseHeroStats = {
 		},
 	},
 
+	'Phorcys': {
+		className: 'Phorcys',
+		heroFaction: 'Dark',
+		heroClass: 'Mage',
+		stats: {
+			baseHP: 8352,
+			baseAttack: 386,
+			baseArmor: 60,
+			baseSpeed: 226,
+			growHP: 835.2,
+			growAttack: 38.6,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
 	'Rogan': {
 		className: 'Rogan',
 		heroFaction: 'Forest',

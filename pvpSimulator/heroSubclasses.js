@@ -4665,8 +4665,6 @@ class Xia extends hero {
 }
 
 
-// Tix
-
 class Tix extends hero {
 	passiveStats() {
 		// apply Coffin of Nothingness passive
@@ -5115,6 +5113,27 @@ class Morax extends hero {
 
 	takeDamage(source, strAttackDesc, damageResult) {
 		let result = super.takeDamage(source, strAttackDesc, damageResult);
+		result += this.battleFrenzy();
+		return result;
+	}
+
+
+	getHP(source, amountHealed) {
+		let result = super.getHP(source, amountHealed);
+		result += this.battleFrenzy();
+		return result;
+	}
+
+
+	getHeal(source, amountHealed) {
+		let result = super.getHeal(source, amountHealed);
+		result += this.battleFrenzy();
+		return result;
+	}
+
+
+	battleFrenzy() {
+		let result = '';
 		const currentHPPercent = 1 - (this._currentStats.totalHP / this._stats.totalHP);
 		const allDamageReduceGained = 0.40 * currentHPPercent;
 		const allDamageDealtGained = 1.2 * currentHPPercent;
@@ -5174,6 +5193,111 @@ class Morax extends hero {
 }
 
 
+class Phorcys extends hero {
+	passiveStats() {
+		// apply Necromancy passive
+		this.applyStatChange({ hpPercent: 0.20, attackPercent: 0.40, skillDamage: 0.70, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
+	}
+
+
+	endOfRound() {
+		let result = '';
+		const maxDamage = this._currentStats.totalAttack * 15;
+		const targets = getAllTargets(this, this._enemies);
+
+		for (const target of targets) {
+			let hpDamage = target._stats.totalHP * 0.08;
+			if (hpDamage > maxDamage) hpDamage = maxDamage;
+
+			const damageResult = this.calcDamage(target, hpDamage, 'passive', 'true');
+			result += target.takeDamage(this, 'Soul Resonance', damageResult);
+
+			if (this.getSoulCorruptionAmount(target) < 0.40) {
+				result += target.getDebuff(this, 'Soul Corruption', 6, { corruptedHP: 0.08 });
+			}
+		}
+
+		return result;
+	}
+
+
+	getSoulCorruptionAmount(target) {
+		let soulCorruptionAmount = 0;
+
+		if ('Soul Corruption' in target._debuffs) {
+			for (const stack of Object.values(target._debuffs['Soul Corruption'])) {
+				soulCorruptionAmount += stack.effects.corruptedHP;
+			}
+		}
+
+		return soulCorruptionAmount;
+	}
+
+
+	doBasic() {
+		let result = '';
+		let damageResult;
+		const targets = getHighestAttackTargets(this, this._enemies, 1);
+
+		for (const target of targets) {
+			const targetLock = target.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(target, this._currentStats.totalAttack * 6, 'basic', 'normal');
+				result += target.takeDamage(this, 'Basic Attack', damageResult);
+				result += target.getDebuff(this, 'Dark Coil', 3, { allDamageDealt: 0.25 }, false, '', 0, true);
+				basicQueue.push([this, target, damageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+		return result;
+	}
+
+
+	doActive() {
+		let result = '';
+		let damageResult;
+		const targets = getRandomTargets(this, this._enemies, 4);
+
+		for (const target of targets) {
+			const targetLock = target.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(target, this._currentStats.totalAttack, 'active', 'normal', 8);
+				result += target.takeDamage(this, 'Imminent Doom', damageResult);
+
+
+				const attributeBuffs = [];
+				for (const [buffName, buff] of Object.entries(target._buffs)) {
+					for (const stack of Object.values(buff)) {
+						if (isAttribute(buffName, stack.effects)) {
+							attributeBuffs.push(buffName);
+							break;
+						}
+					}
+				}
+
+				if (attributeBuffs.length > 0) {
+					const randomKey = Math.floor(random() * attributeBuffs.length);
+					result += target.removeBuff(attributeBuffs[randomKey]);
+				}
+
+
+				result += target.getDebuff(this, 'Curse of Decay', 15);
+				result += target.getDebuff(this, 'Curse of Decay', 15);
+				result += target.getDebuff(this, 'Curse of Decay', 15);
+
+				activeQueue.push([this, target, damageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+		return result;
+	}
+}
+
+
 const heroMapping = {
 	'hero': hero,
 	'Carrie': Carrie,
@@ -5218,6 +5342,7 @@ const heroMapping = {
 	'Sleepless': Sleepless,
 	'FaithBlade': FaithBlade,
 	'Morax': Morax,
+	'Phorcys': Phorcys,
 };
 
 

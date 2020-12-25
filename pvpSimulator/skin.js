@@ -256,6 +256,11 @@ const skins = {
 		'Placeholder': { },
 		'Legendary Placeholder': { },
 	},
+
+	'Phorcys': {
+		'Placeholder': { },
+		'Legendary Placeholder': { },
+	},
 };
 
 

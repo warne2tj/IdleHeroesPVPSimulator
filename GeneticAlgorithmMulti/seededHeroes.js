@@ -252,6 +252,12 @@ const seededHeroes = {
 		allowedEquipments: ['Class Gear', 'Split Attack'],
 		allowedEnables: ['"Growth", "Shelter", "Resilience", "Growth", "UnbendingWill"', '"Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill"'],
 	},
+	'Phorcys': {
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Wildfire Torch'],
+		allowedStones: ['S3 Speed, HP', 'S3 Speed, Attack'],
+		allowedEquipments: ['Class Gear'],
+		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"'],
+	},
 };
 
 

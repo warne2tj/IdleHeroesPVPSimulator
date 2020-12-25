@@ -128,7 +128,7 @@ function isDispellable(strName) {
 	if (['Seal of Light', 'Power of Light', 'Ghost Possessed', 'Link of Souls',
 		'Demon Totem', 'Shrink', 'Shield', 'Feather Blade', 'Drake Break Defense',
 		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield', 'Battle Frenzy',
-		'Extra Ammo'].includes(strName)) {
+		'Extra Ammo', 'Soul Corruption'].includes(strName)) {
 		return false;
 	} else {
 		return true;
@@ -604,6 +604,7 @@ const translate = {
 	'reflectAmount': 'Link Damage Tracker',
 	'damageAgainstStun': 'Damage Dealt to Stunned Targets',
 	'burnDamageTaken': 'Damage Taken from Burn',
+	'corruptedHP': 'Corrupted HP Percent',
 };
 
 
