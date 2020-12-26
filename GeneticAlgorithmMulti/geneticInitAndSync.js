@@ -17,7 +17,6 @@ let w4;
 let w5;
 let workerStatus;
 
-
 function initialize() {
 	const acc = document.getElementsByClassName('colorC');
 	for (let i = 0; i < acc.length; i++) {

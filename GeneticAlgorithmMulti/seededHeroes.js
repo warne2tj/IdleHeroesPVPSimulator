@@ -37,7 +37,7 @@ const seededHeroes = {
 		allowedEnables: ['"Mightiness", "LethalFightback", "SharedFate", "Mightiness", "BalancedStrike"', '"Growth", "Vitality2", "Purify", "Growth", "UnbendingWill"'],
 	},
 	'Carrie': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Snow Heart', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, HP', 'S3 Speed, Attack'],
 		allowedEquipments: ['Class Gear'],
 		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"', '"Growth", "LethalFightback", "Purify", "Growth", "BalancedStrike"'],
@@ -49,7 +49,7 @@ const seededHeroes = {
 		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"'],
 	},
 	'Dark Arthindol': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Staff Punisher of Immortal', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Staff Punisher of Immortal', 'Golden Crown', 'Demon Bell', 'Snow Heart', 'Ruyi Scepter', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, Crit', 'S3 Crit, Crit, Attack'],
 		allowedEquipments: ['Class Gear'],
 		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"'],
@@ -73,13 +73,13 @@ const seededHeroes = {
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"'],
 	},
 	'Emily': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Snow Heart', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, HP'],
 		allowedEquipments: ['Split HP'],
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"'],
 	},
 	'Faith Blade': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Staff Punisher of Immortal', 'Golden Crown', 'Demon Bell', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Staff Punisher of Immortal', 'Golden Crown', 'Demon Bell', 'Snow Heart', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, Crit', 'S3 HP, Attack', 'S3 HP, Attack, Holy'],
 		allowedEquipments: ['Class Gear'],
 		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"'],
@@ -115,7 +115,7 @@ const seededHeroes = {
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"'],
 	},
 	'Michelle': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Snow Heart', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, Attack', 'S3 Speed, Crit'],
 		allowedEquipments: ['Class Gear', 'Split HP'],
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"'],
@@ -133,7 +133,7 @@ const seededHeroes = {
 		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"'],
 	},
 	'Oberon': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Snow Heart', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, HP'],
 		allowedEquipments: ['Split HP'],
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"'],
@@ -145,13 +145,13 @@ const seededHeroes = {
 		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"', '"Vitality", "Vitality2", "Resilience", "Vitality", "UnbendingWill"'],
 	},
 	'Rogan': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Snow Heart', 'Ruyi Scepter', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, HP', 'S3 Speed, Attack', 'S3 HP, HP'],
 		allowedEquipments: ['Class Gear'],
 		allowedEnables: ['"Growth", "Vitality2", "Purify", "Growth", "UnbendingWill"', '"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"'],
 	},
 	'Russell': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Snow Heart', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, HP', 'S3 HP, Attack, Holy'],
 		allowedEquipments: ['Class Gear'],
 		allowedEnables: ['"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"', '"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"'],
@@ -247,13 +247,13 @@ const seededHeroes = {
 		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"', '"Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill"'],
 	},
 	'Morax': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Ruyi Scepter', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Snow Heart', 'Ruyi Scepter', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, Attack', 'S3 Attack, Attack, Holy'],
 		allowedEquipments: ['Class Gear', 'Split Attack'],
 		allowedEnables: ['"Growth", "Shelter", "Resilience", "Growth", "UnbendingWill"', '"Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill"'],
 	},
 	'Phorcys': {
-		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Wildfire Torch'],
+		allowedArtifacts: ['Augustus Magic Ball', 'Demon Bell', 'Golden Crown', 'Snow Heart', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, HP', 'S3 Speed, Attack'],
 		allowedEquipments: ['Class Gear'],
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"'],

@@ -7,7 +7,7 @@ import { stones } from './stone.js';
 import { armors, accessories, weapons, shoes, setBonus } from './equipment.js';
 import { guildTech } from './guildTech.js';
 import { triggerQueue, activeQueue, basicQueue, roundNum } from './simulation.js';
-import { random, getAllTargets, translate, isDot, isMonster, formatNum, isControlEffect, uuid, isDispellable } from './utilityFunctions.js';
+import { random, getAllTargets, translate, isDot, isMonster, formatNum, isControlEffect, uuid, isDispellable, isAttribute } from './utilityFunctions.js';
 
 
 let attMonsterName, defMonsterName, attFrame, defFrame;
@@ -784,11 +784,14 @@ class hero {
 			result = '<div>' + source.heroDesc() + ' healed ';
 
 			// prevent overheal
-			if (this._currentStats['totalHP'] + amountHealed > this._stats['totalHP']) {
-				this._currentStats['totalHP'] = this._stats['totalHP'];
+			const maxHP = this.getMaxHealableHP();
+
+			if (this._currentStats['totalHP'] + amountHealed > maxHP) {
+				this._currentStats['totalHP'] = maxHP;
 			} else {
 				this._currentStats['totalHP'] += amountHealed;
 			}
+
 
 			source._currentStats['damageHealed'] += amountHealed;
 
@@ -800,6 +803,20 @@ class hero {
 		}
 
 		return result;
+	}
+
+
+	getMaxHealableHP() {
+		const maxHP = this._stats.totalHP;
+		let soulCorruption = 0;
+
+		if ('Soul Corruption' in this._debuffs) {
+			for (const stack of Object.values(this._debuffs['Soul Corruption'])) {
+				soulCorruption += stack.effects.corruptedHP;
+			}
+		}
+
+		return Math.floor(maxHP * (1 - soulCorruption));
 	}
 
 
@@ -960,7 +977,15 @@ class hero {
 		}
 
 
-		if (unstackable && buffName in this._buffs) {
+		if (isAttribute(buffName, effects) && 'Curse of Decay' in this._debuffs) {
+			const curseKeys = Object.keys(this._debuffs['Curse of Decay']);
+			const curseKey = curseKeys[0];
+			const stack = this._debuffs['Curse of Decay'][curseKey];
+			result += `'<div><span class='skill'>Curse of Decay</span> prevented buff <span class='skill'>${buffName}</span>.</div>`;
+			result += this.takeDamage(stack.source, 'Curse of Decay', stack.effects.attackAmount);
+			result += this.removeDebuff('Curse of Decay', curseKey);
+
+		} else if (unstackable && buffName in this._buffs) {
 			const stackObj = Object.values(this._buffs[buffName])[0];
 			stackObj['duration'] = duration;
 
@@ -1835,8 +1860,10 @@ class hero {
 		result = '<div>' + source.heroDesc() + ' healed ';
 
 		// prevent overheal
-		if (this._currentStats['totalHP'] + amountHealed > this._stats['totalHP']) {
-			this._currentStats['totalHP'] = this._stats['totalHP'];
+		const maxHP = this.getMaxHealableHP();
+
+		if (this._currentStats['totalHP'] + amountHealed > maxHP) {
+			this._currentStats['totalHP'] = maxHP;
 		} else {
 			this._currentStats['totalHP'] += amountHealed;
 		}

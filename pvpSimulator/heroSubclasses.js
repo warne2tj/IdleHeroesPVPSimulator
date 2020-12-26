@@ -1523,8 +1523,6 @@ class FaithBlade extends hero {
 }
 
 
-// Gustin
-
 class Gustin extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -1638,7 +1636,7 @@ class Gustin extends hero {
 					let maxDispell = 2;
 
 					for (const d in allDebuffs) {
-						if (isDispellable(allDebuffs[d])) {
+						if (isDispellable(d)) {
 							listDebuffs.push([allDebuffs[d], random()]);
 						}
 					}
@@ -1701,11 +1699,13 @@ class Gustin extends hero {
 					buffRemoved = false;
 
 					for (const b in targets[i]._buffs) {
-						for (const s in targets[i]._buffs[b]) {
-							if (isAttribute(b, targets[i]._buffs[b][s]['effects'])) {
-								result += targets[i].removeBuff(b, s);
-								buffRemoved = true;
-								break;
+						if (isDispellable(b)) {
+							for (const s in targets[i]._buffs[b]) {
+								if (isAttribute(b, targets[i]._buffs[b][s]['effects'])) {
+									result += targets[i].removeBuff(b, s);
+									buffRemoved = true;
+									break;
+								}
 							}
 						}
 
@@ -5071,6 +5071,7 @@ class Morax extends hero {
 	startOfBattle() {
 		let result = this.getBuff(this, 'Extra Ammo', 15);
 		result += this.getBuff(this, 'Extra Ammo', 15);
+		result += this.battleFrenzy();
 		return result;
 	}
 
@@ -5138,8 +5139,20 @@ class Morax extends hero {
 		const allDamageReduceGained = 0.40 * currentHPPercent;
 		const allDamageDealtGained = 1.2 * currentHPPercent;
 
-		if ('Battle Frenzy' in this._buffs) this.removeBuff('Battle Frenzy');
-		result += this.getBuff(this, 'Battle Frenzy', 15, { allDamageReduce: allDamageReduceGained, allDamageDealt: allDamageDealtGained });
+		if ('Battle Frenzy' in this._buffs) {
+			const buffStack = Object.values(this._buffs['Battle Frenzy'])[0];
+
+			this._currentStats.allDamageReduce -= buffStack.effects.allDamageReduce;
+			this._currentStats.allDamageDealt -= buffStack.effects.allDamageDealt;
+
+			this._currentStats.allDamageReduce += allDamageReduceGained;
+			this._currentStats.allDamageDealt += allDamageDealtGained;
+			buffStack.effects.allDamageReduce = allDamageReduceGained;
+			buffStack.effects.allDamageDealt = allDamageDealtGained;
+		} else {
+			result += this.getBuff(this, 'Battle Frenzy', 127, { allDamageReduce: allDamageReduceGained, allDamageDealt: allDamageDealtGained });
+		}
+
 		return result;
 	}
 
@@ -5271,6 +5284,8 @@ class Phorcys extends hero {
 
 				const attributeBuffs = [];
 				for (const [buffName, buff] of Object.entries(target._buffs)) {
+					if (!isDispellable(buffName)) continue;
+
 					for (const stack of Object.values(buff)) {
 						if (isAttribute(buffName, stack.effects)) {
 							attributeBuffs.push(buffName);
@@ -5285,9 +5300,10 @@ class Phorcys extends hero {
 				}
 
 
-				result += target.getDebuff(this, 'Curse of Decay', 15);
-				result += target.getDebuff(this, 'Curse of Decay', 15);
-				result += target.getDebuff(this, 'Curse of Decay', 15);
+				const snapshotDamage = this.calcDamage(target, this._currentStats.totalAttack * 15, 'passive', 'normal');
+				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
+				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
+				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
 
 				activeQueue.push([this, target, damageResult.damageAmount, damageResult.critted]);
 			}

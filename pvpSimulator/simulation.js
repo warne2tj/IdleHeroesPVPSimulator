@@ -2,7 +2,7 @@ import { baseMonsterStats } from './baseMonsterStats.js';
 import { setTeamData } from './heroes.js';
 import { monsterMapping } from './monsters.js';
 import { artifacts } from './artifact.js';
-import { random, uuid, rng, logCombat, formatNum, speedSort, getAllTargets } from './utilityFunctions.js';
+import { random, uuid, rng, logCombat, formatNum, speedSort, getAllTargets, getHighestSpeedTargets } from './utilityFunctions.js';
 
 
 let attHeroes = [null, null, null, null, null, null];
@@ -94,31 +94,58 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 		}
 
 		// trigger start of battle abilities
-		for (const h in attHeroes) {
-			if ((attHeroes[h].isNotSealed() && attHeroes[h]._currentStats['totalHP'] > 0) || attHeroes[h]._currentStats['revive'] == 1) {
-				temp = attHeroes[h].startOfBattle();
+		for (const source of attHeroes) {
+			if ((source.isNotSealed() && source._currentStats['totalHP'] > 0) || source._currentStats['revive'] == 1) {
+				temp = source.startOfBattle();
 				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
 
 
-			if (attHeroes[h]._artifact.includes(' Golden Crown')) {
-				temp = attHeroes[h].getBuff(attHeroes[h], 'Golden Crown', 5, { allDamageReduce: artifacts[attHeroes[h]._artifact].enhance });
+			if (source._artifact.includes(' Golden Crown')) {
+				temp = source.getBuff(source, 'Golden Crown', 5, { allDamageReduce: artifacts[source._artifact].enhance });
+				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
+				logColor = (logColor + 1) % 2;
+			}
+
+
+			if (source._artifact.includes(' Snow Heart')) {
+				const targets = getHighestSpeedTargets(source, source._enemies, 1);
+
+				temp = `${source.heroDesc()} <span class='skill'>Snow Heart</span> triggered.`;
+				for (const target of targets) {
+					temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+				}
+
 				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
 		}
 
-		for (const h in defHeroes) {
-			if (defHeroes[h].isNotSealed() && defHeroes[h]._currentStats['totalHP'] > 0) {
-				temp = defHeroes[h].startOfBattle();
+
+		for (const source of defHeroes) {
+			if ((source.isNotSealed() && source._currentStats['totalHP'] > 0) || source._currentStats['revive'] == 1) {
+				temp = source.startOfBattle();
 				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
 
 
-			if (defHeroes[h]._artifact.includes(' Golden Crown')) {
-				temp = defHeroes[h].getBuff(defHeroes[h], 'Golden Crown', 5, { allDamageReduce: artifacts[defHeroes[h]._artifact].enhance });
+			if (source._artifact.includes(' Golden Crown')) {
+				temp = source.getBuff(source, 'Golden Crown', 5, { allDamageReduce: artifacts[source._artifact].enhance });
+				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
+				logColor = (logColor + 1) % 2;
+			}
+
+
+			if (source._artifact.includes(' Snow Heart')) {
+				const targets = getHighestSpeedTargets(source, source._enemies, 1);
+
+				temp = `${source.heroDesc()} <span class='skill'>Snow Heart</span> triggered.`;
+				for (const target of targets) {
+					temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+				}
+
 				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 				logColor = (logColor + 1) % 2;
 			}
@@ -324,77 +351,103 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 			if (roundNum < 127) {
 				temp = '';
 
-				for (const h in attHeroes) {
-					if (attHeroes[h]._currentStats['totalHP'] > 0) {
-						temp += attHeroes[h].tickBuffs();
-						temp += attHeroes[h].tickDebuffs();
+				for (const source of attHeroes) {
+					if (source._currentStats['totalHP'] > 0) {
+						temp += source.tickBuffs();
+						temp += source.tickDebuffs();
 					}
 				}
 
-				for (const h in defHeroes) {
-					if (defHeroes[h]._currentStats['totalHP'] > 0) {
-						temp += defHeroes[h].tickBuffs();
-						temp += defHeroes[h].tickDebuffs();
+				for (const source of defHeroes) {
+					if (source._currentStats['totalHP'] > 0) {
+						temp += source.tickBuffs();
+						temp += source.tickDebuffs();
 					}
 				}
 
 
-				for (const h in attHeroes) {
-					if ((attHeroes[h]._currentStats['totalHP'] > 0 && attHeroes[h].isNotSealed()) || attHeroes[h]._currentStats['revive'] == 1) {
-						temp += attHeroes[h].endOfRound(roundNum);
+				for (const source of attHeroes) {
+					if ((source._currentStats['totalHP'] > 0 && source.isNotSealed()) || source._currentStats['revive'] == 1) {
+						temp += source.endOfRound(roundNum);
 					}
 
 
-					if (attHeroes[h]._artifact.includes(' Golden Crown') && roundNum < 5) {
-						temp += attHeroes[h].removeBuff('Golden Crown');
-						const buffAmount = artifacts[attHeroes[h]._artifact].enhance * (5 - roundNum) * 0.2;
-						temp += attHeroes[h].getBuff(attHeroes[h], 'Golden Crown', 5 - roundNum, { allDamageReduce: buffAmount });
+					if (source._artifact.includes(' Golden Crown') && roundNum < 5 && 'Golden Crown' in source._buffs) {
+						const buffStack = Object.values(source._buffs['Golden Crown'])[0];
+						const buffAmount = artifacts[source._artifact].enhance * (5 - roundNum) * 0.2;
+
+						source._currentStats.allDamageReduce -= buffStack.effects.allDamageReduce;
+						source._currentStats.allDamageReduce += buffAmount;
+						buffStack.effects.allDamageReduce = buffAmount;
 					}
 
 
-					if (attHeroes[h]._currentStats['totalHP'] > 0 && attHeroes[h].isNotSealed()) {
-						temp += attHeroes[h].tickEnable3();
+					if (source._currentStats['totalHP'] > 0 && source.isNotSealed()) {
+						temp += source.tickEnable3();
 
 
-						if (attHeroes[h]._artifact.includes(' Antlers Cane')) {
-							temp += '<div>' + attHeroes[h].heroDesc() + ' gained increased damage from <span class=\'skill\'>' + attHeroes[h]._artifact + '</span>.</div>';
-							temp += attHeroes[h].getBuff(attHeroes[h], 'All Damage Dealt', 15, { allDamageDealt: artifacts[attHeroes[h]._artifact]['enhance'] });
+						if (source._artifact.includes(' Antlers Cane')) {
+							temp += '<div>' + source.heroDesc() + ' gained increased damage from <span class=\'skill\'>' + source._artifact + '</span>.</div>';
+							temp += source.getBuff(source, 'All Damage Dealt', 15, { allDamageDealt: artifacts[source._artifact]['enhance'] });
 						}
 
 
-						if (['Radiant Lucky Candy Bar', 'Splendid Lucky Candy Bar'].includes(attHeroes[h]._artifact) && attHeroes[h].isUnderControl()) {
-							temp += '<div><span class=\'skill\'>' + attHeroes[h]._artifact + '</span> triggered.</div>';
-							temp += attHeroes[h].getBuff(attHeroes[h], 'Hand of Fate', 1, { allDamageReduce: artifacts[attHeroes[h]._artifact]['enhance'] }, true);
+						if (['Radiant Lucky Candy Bar', 'Splendid Lucky Candy Bar'].includes(source._artifact) && source.isUnderControl()) {
+							temp += '<div><span class=\'skill\'>' + source._artifact + '</span> triggered.</div>';
+							temp += source.getBuff(source, 'Hand of Fate', 1, { allDamageReduce: artifacts[source._artifact]['enhance'] }, true);
+						}
+
+
+						if (source._artifact.includes(' Snow Heart')) {
+							const targets = getHighestSpeedTargets(source, source._enemies, 1);
+
+							temp += `<div>${source.heroDesc()} <span class='skill'>${source._artifact}</span> triggered.</div>`;
+							for (const target of targets) {
+								temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+							}
 						}
 					}
 				}
 
-				for (const h in defHeroes) {
-					if ((defHeroes[h]._currentStats['totalHP'] > 0 && defHeroes[h].isNotSealed()) || defHeroes[h]._currentStats['revive'] == 1) {
-						temp += defHeroes[h].endOfRound(roundNum);
+				for (const source of defHeroes) {
+					if ((source._currentStats['totalHP'] > 0 && source.isNotSealed()) || source._currentStats['revive'] == 1) {
+						temp += source.endOfRound(roundNum);
 					}
 
 
-					if (defHeroes[h]._artifact.includes(' Golden Crown') && roundNum < 5) {
-						temp += defHeroes[h].removeBuff('Golden Crown');
-						const buffAmount = artifacts[defHeroes[h]._artifact].enhance * (5 - roundNum) * 0.2;
-						temp += defHeroes[h].getBuff(defHeroes[h], 'Golden Crown', 5 - roundNum, { allDamageReduce: buffAmount });
+					if (source._artifact.includes(' Golden Crown') && roundNum < 5 && 'Golden Crown' in source._buffs) {
+						const buffStack = Object.values(source._buffs['Golden Crown'])[0];
+						const buffAmount = artifacts[source._artifact].enhance * (5 - roundNum) * 0.2;
+
+						source._currentStats.allDamageReduce -= buffStack.effects.allDamageReduce;
+						source._currentStats.allDamageReduce += buffAmount;
+						buffStack.effects.allDamageReduce = buffAmount;
 					}
 
 
-					if (defHeroes[h]._currentStats['totalHP'] > 0 && defHeroes[h].isNotSealed()) {
-						temp += defHeroes[h].tickEnable3();
+					if (source._currentStats['totalHP'] > 0 && source.isNotSealed()) {
+						temp += source.tickEnable3();
 
 
-						if (defHeroes[h]._artifact.includes(' Antlers Cane')) {
-							temp += '<div>' + defHeroes[h].heroDesc() + ' gained increased damage from <span class=\'skill\'>' + defHeroes[h]._artifact + '</span>.</div>';
-							temp += defHeroes[h].getBuff(defHeroes[h], 'All Damage Dealt', 15, { allDamageDealt: artifacts[defHeroes[h]._artifact]['enhance'] });
+						if (source._artifact.includes(' Antlers Cane')) {
+							temp += '<div>' + source.heroDesc() + ' gained increased damage from <span class=\'skill\'>' + source._artifact + '</span>.</div>';
+							temp += source.getBuff(source, 'All Damage Dealt', 15, { allDamageDealt: artifacts[source._artifact]['enhance'] });
 						}
 
 
-						if (['Radiant Lucky Candy Bar', 'Splendid Lucky Candy Bar'].includes(defHeroes[h]._artifact) && defHeroes[h].isUnderControl()) {
-							temp += '<div><span class=\'skill\'>' + defHeroes[h]._artifact + '</span> triggered.</div>';
-							temp += defHeroes[h].getBuff(defHeroes[h], 'Hand of Fate', 1, { allDamageReduce: artifacts[defHeroes[h]._artifact]['enhance'] }, true);
+						if (['Radiant Lucky Candy Bar', 'Splendid Lucky Candy Bar'].includes(source._artifact) && source.isUnderControl()) {
+							temp += '<div><span class=\'skill\'>' + source._artifact + '</span> triggered.</div>';
+							temp += source.getBuff(source, 'Hand of Fate', 1, { allDamageReduce: artifacts[source._artifact]['enhance'] }, true);
+						}
+
+
+						if (source._artifact.includes(' Snow Heart')) {
+							const targets = getHighestSpeedTargets(source, source._enemies, 1);
+
+							temp += `<div>${source.heroDesc()} <span class='skill'>${source._artifact}</span> triggered.</div>`;
+							for (const target of targets) {
+								temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+							}
 						}
 					}
 				}

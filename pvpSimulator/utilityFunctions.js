@@ -128,7 +128,7 @@ function isDispellable(strName) {
 	if (['Seal of Light', 'Power of Light', 'Ghost Possessed', 'Link of Souls',
 		'Demon Totem', 'Shrink', 'Shield', 'Feather Blade', 'Drake Break Defense',
 		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield', 'Battle Frenzy',
-		'Extra Ammo', 'Soul Corruption'].includes(strName)) {
+		'Extra Ammo', 'Soul Corruption', 'Golden Crown'].includes(strName)) {
 		return false;
 	} else {
 		return true;
@@ -137,11 +137,13 @@ function isDispellable(strName) {
 
 
 function isControlEffect(strName, effects = {}) {
-	if (['stun', 'petrify', 'freeze', 'twine', 'Silence', 'Seal of Light', 'Horrify', 'Shapeshift', 'Taunt', 'Dazzle'].includes(strName)) {
+	const arrControls = ['stun', 'petrify', 'freeze', 'twine', 'Silence', 'Seal of Light', 'Horrify', 'Shapeshift', 'Taunt', 'Dazzle'];
+
+	if (arrControls.includes(strName)) {
 		return true;
 	} else {
 		for (const e in effects) {
-			if (['burn', 'bleed', 'poison', 'dot', 'burnTrue', 'bleedTrue', 'poisonTrue'].includes(e)) {
+			if (arrControls.includes(e)) {
 				return true;
 			}
 		}
@@ -152,11 +154,13 @@ function isControlEffect(strName, effects = {}) {
 
 
 function isDot(strName, effects = {}) {
-	if (['Burn', 'Bleed', 'Poison', 'Dot', 'burn', 'bleed', 'poison', 'dot', 'Burn True', 'Bleed True', 'Poison True', 'burnTrue', 'bleedTrue', 'poisonTrue'].includes(strName)) {
+	const arrDots = ['Burn', 'Bleed', 'Poison', 'Dot', 'burn', 'bleed', 'poison', 'dot', 'Burn True', 'Bleed True', 'Poison True', 'burnTrue', 'bleedTrue', 'poisonTrue'];
+
+	if (arrDots.includes(strName)) {
 		return true;
 	} else {
 		for (const e in effects) {
-			if (['burn', 'bleed', 'poison', 'dot', 'burnTrue', 'bleedTrue', 'poisonTrue'].includes(e)) {
+			if (arrDots.includes(e)) {
 				return true;
 			}
 		}
@@ -645,9 +649,45 @@ function getHighestAttackTargets(source, arrTargets, num = 6) {
 }
 
 
+function getHighestSpeedTargets(source, arrTargets, num = 6) {
+	let copyTargets = [];
+	const copyTargets2 = [];
+	let count = 0;
+
+	copyTargets = getTauntedTargets(source, arrTargets, num);
+	if (copyTargets.length > 0) { return copyTargets; }
+
+	for (const t of arrTargets) {
+		if (t._currentStats.totalHP > 0) {
+			copyTargets.push(t);
+		}
+	}
+
+	copyTargets.sort(function(a, b) {
+		if (a._currentStats.speed > b._currentStats.speed) {
+			return -1;
+		} else if (a._currentStats.speed < b._currentStats.speed) {
+			return 1;
+		} else if (a._heroPos < b._heroPos) {
+			return -1;
+		} else {
+			return 1;
+		}
+	});
+
+	for (const t of copyTargets) {
+		copyTargets2.push(t);
+		count++;
+		if (count == num) { break; }
+	}
+
+	return copyTargets2;
+}
+
+
 export {
 	getHighestAttackTargets, getHighestHPTargets, getLowestHPPercentTargets, getLowestHPTargets,
 	getRandomTargets, getNearestTargets, getAllTargets, getBackTargets, getFrontTargets,
 	isAttribute, isDot, isBackLine, isFrontLine, isControlEffect, isDispellable, isMonster,
-	slotSort, speedSort, uuid, random, rng, logCombat, formatNum, translate,
+	slotSort, speedSort, uuid, random, rng, logCombat, formatNum, translate, getHighestSpeedTargets,
 };

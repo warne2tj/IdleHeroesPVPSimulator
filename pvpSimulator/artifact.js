@@ -190,6 +190,33 @@ const artifacts = {
 		limitStats: {},
 	},
 
+	'Snow Heart': {
+		stats: { controlImmune: 0.25, hpPercent: 0.18, energy: 50 },
+		limit: '',
+		limitStats: {},
+	},
+
+	'Glittery Snow Heart': {
+		stats: { controlImmune: 0.25, hpPercent: 0.18, energy: 50 },
+		limit: '',
+		limitStats: {},
+		enhance: 20,
+	},
+
+	'Radiant Snow Heart': {
+		stats: { controlImmune: 0.25, hpPercent: 0.18, energy: 50 },
+		limit: '',
+		limitStats: {},
+		enhance: 40,
+	},
+
+	'Splendid Snow Heart': {
+		stats: { controlImmune: 0.25, hpPercent: 0.18, energy: 50 },
+		limit: '',
+		limitStats: {},
+		enhance: 60,
+	},
+
 	'Staff Punisher of Immortal': {
 		stats: { attackPercent: 0.21, crit: 0.15, critDamage: 0.5 },
 		limit: '',
