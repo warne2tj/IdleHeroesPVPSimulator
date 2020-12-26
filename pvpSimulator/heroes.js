@@ -982,8 +982,8 @@ class hero {
 			const curseKey = curseKeys[0];
 			const stack = this._debuffs['Curse of Decay'][curseKey];
 			result += `'<div><span class='skill'>Curse of Decay</span> prevented buff <span class='skill'>${buffName}</span>.</div>`;
-			result += this.takeDamage(stack.source, 'Curse of Decay', stack.effects.attackAmount);
 			result += this.removeDebuff('Curse of Decay', curseKey);
+			triggerQueue.push([stack.source, 'addHurt', this, stack.effects.attackAmount, 'Curse of Decay']);
 
 		} else if (unstackable && buffName in this._buffs) {
 			const stackObj = Object.values(this._buffs[buffName])[0];
@@ -1648,7 +1648,7 @@ class hero {
 			}
 		}
 
-		if (!isWildfire && this._currentStats['unbendingWillStacks'] > 0 && damageResult['damageSource'] != 'mark') {
+		if (!isWildfire && this._currentStats['unbendingWillStacks'] > 0 && damageResult['damageSource'] != 'mark' && !strAttackDesc.includes('Curse')) {
 			this._currentStats['unbendingWillStacks'] -= 1;
 			this._currentStats['damageHealed'] += damageResult['damageAmount'];
 			result += '<div>' + formatNum(damageResult['damageAmount']) + ' damage prevented by <span class=\'skill\'>Unbending Will</span>.</div>';

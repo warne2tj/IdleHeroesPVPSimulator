@@ -5300,7 +5300,7 @@ class Phorcys extends hero {
 				}
 
 
-				const snapshotDamage = this.calcDamage(target, this._currentStats.totalAttack * 15, 'passive', 'normal');
+				const snapshotDamage = this._currentStats.totalAttack * 15;
 				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
 				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
 				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
