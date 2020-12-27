@@ -2664,12 +2664,8 @@ class Penny extends hero {
 			this._currentStats['damageHealed'] += tempDamageAmount;
 			triggerQueue.push([this, 'eventTookDamage', source, tempDamageAmount]);
 
-			const keyDelete = Object.keys(this._buffs['Reflection Armor']);
-			if (keyDelete.length <= 1) {
-				delete this._buffs['Reflection Armor'];
-			} else {
-				delete this._buffs['Reflection Armor'][keyDelete[0]];
-			}
+			const armorKeys = Object.keys(this._buffs['Reflection Armor']);
+			result += this.removeBuff('Reflection Armor', armorKeys[0]);
 
 		} else {
 			result += super.takeDamage(source, strAttackDesc, damageResult);
@@ -2714,12 +2710,8 @@ class Penny extends hero {
 				} else {
 					result += '<div>' + this.heroDesc() + ' consumed <span class=\'skill\'>Dynamite Armor</span> to resist <span class=\'skill\'>' + debuffName + '</span>.</div>';
 
-					const keyDelete = Object.keys(this._buffs['Dynamite Armor']);
-					if (keyDelete.length <= 1) {
-						delete this._buffs['Dynamite Armor'];
-					} else {
-						delete this._buffs['Dynamite Armor'][keyDelete[0]];
-					}
+					const armorKeys = Object.keys(this._buffs['Dynamite Armor']);
+					result += this.removeBuff('Dynamite Armor', armorKeys[0]);
 				}
 			}
 		} else {

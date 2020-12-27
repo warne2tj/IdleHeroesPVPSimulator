@@ -241,9 +241,9 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 									if (activeQueue[i][2] > 0) {
 										if (activeQueue[i][3] == true) {
 											// double energy on being critted
-											temp += activeQueue[i][1].getEnergy(activeQueue[i][1], 20);
+											temp += activeQueue[i][1].getEnergy(activeQueue[i][1], 20, true);
 										} else {
-											temp += activeQueue[i][1].getEnergy(activeQueue[i][1], 10);
+											temp += activeQueue[i][1].getEnergy(activeQueue[i][1], 10, true);
 										}
 									}
 								}
@@ -262,7 +262,7 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 							}
 
 							// hero gains 50 energy after doing basic
-							temp = currentHero.getEnergy(currentHero, 50);
+							temp = currentHero.getEnergy(currentHero, 50, true);
 							if(numSims == 1) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
 
 
@@ -285,9 +285,9 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 									if (basicQueue[i][2] > 0) {
 										if (basicQueue[i][3] == true) {
 											// double energy on being critted
-											temp += basicQueue[i][1].getEnergy(basicQueue[i][1], 20);
+											temp += basicQueue[i][1].getEnergy(basicQueue[i][1], 20, true);
 										} else {
-											temp += basicQueue[i][1].getEnergy(basicQueue[i][1], 10);
+											temp += basicQueue[i][1].getEnergy(basicQueue[i][1], 10, true);
 										}
 									}
 								}
@@ -619,7 +619,7 @@ function processQueue() {
 					}
 
 					for (const t in targets) {
-						temp += targets[t].getEnergy(copyQueue[t][0], energyGain);
+						temp += targets[t].getEnergy(copyQueue[t][0], energyGain, true);
 					}
 
 					result += '<div class=\'log' + logColor + '\'><p></p>' + temp + '</div>';

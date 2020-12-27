@@ -820,12 +820,20 @@ class hero {
 	}
 
 
-	getEnergy(source, amount) {
+	getEnergy(source, amount, bypassCurseOfDecay = false) {
 		if (this._currentStats['totalHP'] <= 0) { return ''; }
 
 		let result = '';
 
-		if (this._currentStats['totalHP'] > 0) {
+		if ('Curse of Decay' in this._debuffs && !bypassCurseOfDecay) {
+			const curseKeys = Object.keys(this._debuffs['Curse of Decay']);
+			const curseKey = curseKeys[0];
+			const stack = this._debuffs['Curse of Decay'][curseKey];
+			result += '<div><span class="skill">Curse of Decay</span> prevented energy gain.</div>';
+			result += this.removeDebuff('Curse of Decay', curseKey);
+			triggerQueue.push([stack.source, 'addHurt', this, stack.effects.attackAmount, 'Curse of Decay']);
+
+		} else {
 			if (this.heroDesc() == source.heroDesc()) {
 				result = '<div>' + this.heroDesc() + ' gained ' + formatNum(amount) + ' energy. Energy at ';
 			} else {
@@ -1504,7 +1512,7 @@ class hero {
 			const listDebuffs = [];
 
 			for (const d in this._debuffs) {
-				if (isDispellable(d)) {
+				if (isDispellable && (isDot(d) || isAttribute(d) || d.includes('Mark') || isControlEffect(d))) {
 					listDebuffs.push(d);
 				}
 			}
@@ -1641,11 +1649,7 @@ class hero {
 			damageResult['critted'] = false;
 			damageResult['blocked'] = false;
 
-			delete this._buffs['Guardian Shadow'][keyDelete[0]];
-
-			if (keyDelete.length <= 1) {
-				result += this.removeBuff('Guardian Shadow');
-			}
+			result += this.removeBuff('Guardian Shadow', keyDelete[0]);
 		}
 
 		if (!isWildfire && this._currentStats['unbendingWillStacks'] > 0 && damageResult['damageSource'] != 'mark' && !strAttackDesc.includes('Curse')) {
