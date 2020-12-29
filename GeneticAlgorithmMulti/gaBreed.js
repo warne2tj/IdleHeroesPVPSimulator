@@ -5,7 +5,7 @@ import { skins } from '../pvpSimulator/skin.js';
 import { stones } from '../pvpSimulator/stone.js';
 
 
-const artifactLevel = 'Glittery ';
+const artifactLevel = 'Splendid ';
 const numEnhancedArtifacts = 6;
 
 const heroNames = Object.keys(baseHeroStats).slice(1);
