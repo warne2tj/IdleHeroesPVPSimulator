@@ -159,7 +159,7 @@ const seededHeroes = {
 	'Sherlock': {
 		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Lucky Candy Bar', 'Ruyi Scepter', 'Wildfire Torch'],
 		allowedStones: ['S3 Speed, HP', 'S3 Speed, Attack'],
-		allowedEquipments: ['Class Gear', 'No Armor'],
+		allowedEquipments: ['Class Gear', 'Split HP'],
 		allowedEnables: ['"Growth", "Shelter", "Resilience", "Growth", "UnbendingWill"', '"Vitality", "Shelter", "Resilience", "Vitality", "UnbendingWill"'],
 	},
 	'Tara': {
