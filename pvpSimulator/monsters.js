@@ -26,14 +26,18 @@ class monster {
 
 	calcDamage(target, attackDamage, damageSource, damageType) {
 		let damageAmount = attackDamage;
-		const allDamageReduce = target._currentStats['allDamageReduce'];
+		let allDamageReduce = target._currentStats['allDamageReduce'];
 		let dotReduce = 0;
 
 		if (isDot(damageType)) {
 			dotReduce = target._currentStats['dotReduce'];
 		}
 
+		if (allDamageReduce > 1) allDamageReduce = 1;
+		if (dotReduce > 1) dotReduce = 1;
+
 		damageAmount = Math.floor(damageAmount * (1 - allDamageReduce) * (1 - dotReduce));
+		if (damageAmount < 1) damageAmount = 1;
 
 		return {
 			'damageAmount': damageAmount,

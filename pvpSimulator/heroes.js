@@ -636,6 +636,7 @@ class hero {
 		if (damageReduce > 0.75) { damageReduce = 0.75; }
 		if (damageReduce < 0) { damageReduce = 0; }
 		if (allDamageReduce < 0) { allDamageReduce = 0; }
+		if (allDamageReduce > 1) { allDamageReduce = 1; }
 		if (allDamageTaken < 0) { allDamageReduce = 0; }
 
 		let blockChance = canBlock * (target._currentStats['block'] - precision);
