@@ -22,6 +22,7 @@ class hero {
 		this._heroClass = baseHeroStats[sHeroName]['heroClass'];
 		this._starLevel = 0;
 		this._heroLevel = 0;
+		this._voidLevel = 0;
 
 		this._stats = {};
 		this._currentStats = {};
@@ -380,6 +381,7 @@ class hero {
 			Forest: 0,
 			Dark: 0,
 			Light: 0,
+			Transcendence: 0,
 		};
 
 		let heroCount = 0;
@@ -404,10 +406,58 @@ class hero {
 			this.applyStatChange({ hpPercent: factionHPBonus, attackPercent: factionAttackBonus }, 'factionAura');
 
 			const addBonuses = {
-				damageReduce: 0.02 * (factionCount['Shadow'] + factionCount['Fortress'] + factionCount['Abyss'] + factionCount['Forest']),
-				controlImmune: 0.04 * (factionCount['Light'] + factionCount['Dark']),
+				damageReduce: 0.02 * (factionCount['Shadow'] + factionCount['Fortress'] + factionCount['Abyss'] + factionCount['Forest']) + 0.015 * factionCount['Transcendence'],
+				controlImmune: 0.04 * (factionCount['Light'] + factionCount['Dark']) + 0.03 * factionCount['Transcendence'],
 			};
 			this.applyStatChange(addBonuses, 'auraAdditionalBonuses');
+		}
+
+
+		// apply void enable stat buffs
+		if (this._heroFaction == 'Transcendence' && this._heroLevel >= 310) {
+			// not implemented yet
+			if (this._voidLevel >= 4) {
+				this.applyStatChange({}, 'void4Node1');
+				this.applyStatChange({}, 'void4Node2');
+				this.applyStatChange({}, 'void4Node3');
+
+			} else if (this._voidLevel >= 3) {
+				this.applyStatChange({}, 'void3Node1');
+				this.applyStatChange({}, 'void3Node2');
+				this.applyStatChange({}, 'void3Node3');
+
+			} else if (this._voidLevel >= 2) {
+				this.applyStatChange({}, 'void2Node1');
+				this.applyStatChange({}, 'void2Node2');
+				this.applyStatChange({}, 'void2Node3');
+
+			} else if (this._voidLevel >= 1) {
+				this.applyStatChange({}, 'void1Node1');
+				this.applyStatChange({}, 'void1Node2');
+				this.applyStatChange({}, 'void1Node3');
+			}
+
+		} else if (this._heroLevel >= 310) {
+			if (this._voidLevel >= 4) {
+				this.applyStatChange({}, 'void4Node1');
+				this.applyStatChange({}, 'void4Node2');
+				this.applyStatChange({}, 'void4Node3');
+
+			} else if (this._voidLevel >= 3) {
+				this.applyStatChange({}, 'void3Node1');
+				this.applyStatChange({}, 'void3Node2');
+				this.applyStatChange({}, 'void3Node3');
+
+			} else if (this._voidLevel >= 2) {
+				this.applyStatChange({}, 'void2Node1');
+				this.applyStatChange({}, 'void2Node2');
+				this.applyStatChange({}, 'void2Node3');
+
+			} else if (this._voidLevel >= 1) {
+				this.applyStatChange({}, 'void1Node1');
+				this.applyStatChange({}, 'void1Node2');
+				this.applyStatChange({}, 'void1Node3');
+			}
 		}
 
 

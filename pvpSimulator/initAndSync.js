@@ -310,6 +310,7 @@ function updateHero(heroPos, prefix) {
 		}
 
 		arrToUse[heroPos]._heroLevel = document.getElementById(prefix + 'Hero' + heroPos + 'Level').value;
+		arrToUse[heroPos]._voidLevel = document.getElementById(prefix + 'Hero' + heroPos + 'VoidLevel').value;
 
 		arrToUse[heroPos]._weapon = document.getElementById(prefix + 'Hero' + heroPos + 'Weapon').value;
 		arrToUse[heroPos]._accessory = document.getElementById(prefix + 'Hero' + heroPos + 'Accessory').value;
