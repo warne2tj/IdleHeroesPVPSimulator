@@ -22,6 +22,7 @@ const baseHeroStats = {
 		className: 'Aida',
 		heroFaction: 'Light',
 		heroClass: 'Mage',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7234,
 			baseAttack: 512,
@@ -38,6 +39,7 @@ const baseHeroStats = {
 		className: 'AmenRa',
 		heroFaction: 'Dark',
 		heroClass: 'Priest',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8986,
 			baseAttack: 338,
@@ -118,6 +120,7 @@ const baseHeroStats = {
 		className: 'Carrie',
 		heroFaction: 'Dark',
 		heroClass: 'Ranger',
+		voidEnabled: true,
 		stats: {
 			baseHP: 9680,
 			baseAttack: 343,
@@ -182,6 +185,7 @@ const baseHeroStats = {
 		className: 'Delacium',
 		heroFaction: 'Abyss',
 		heroClass: 'Mage',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7587,
 			baseAttack: 433,
@@ -198,6 +202,7 @@ const baseHeroStats = {
 		className: 'Drake',
 		heroFaction: 'Dark',
 		heroClass: 'Assassin',
+		voidEnabled: true,
 		stats: {
 			baseHP: 10137,
 			baseAttack: 343,
@@ -262,6 +267,7 @@ const baseHeroStats = {
 		className: 'Flora',
 		heroFaction: 'Forest',
 		heroClass: 'Ranger',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7057,
 			baseAttack: 354,
@@ -358,6 +364,7 @@ const baseHeroStats = {
 		className: 'Ignis',
 		heroFaction: 'Abyss',
 		heroClass: 'Priest',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7587,
 			baseAttack: 433,
@@ -374,6 +381,7 @@ const baseHeroStats = {
 		className: 'Inosuke',
 		heroFaction: 'Fortress',
 		heroClass: 'Ranger',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8352,
 			baseAttack: 386,
@@ -390,6 +398,7 @@ const baseHeroStats = {
 		className: 'Ithaqua',
 		heroFaction: 'Shadow',
 		heroClass: 'Assassin',
+		voidEnabled: true,
 		stats: {
 			baseHP: 9436,
 			baseAttack: 478,
@@ -470,6 +479,7 @@ const baseHeroStats = {
 		className: 'Morax',
 		heroFaction: 'Abyss',
 		heroClass: 'Warrior',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8286,
 			baseAttack: 338,
@@ -550,6 +560,7 @@ const baseHeroStats = {
 		className: 'Phorcys',
 		heroFaction: 'Dark',
 		heroClass: 'Mage',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8352,
 			baseAttack: 386,
@@ -566,6 +577,7 @@ const baseHeroStats = {
 		className: 'Rogan',
 		heroFaction: 'Forest',
 		heroClass: 'Assassin',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7057,
 			baseAttack: 354,
@@ -582,6 +594,7 @@ const baseHeroStats = {
 		className: 'Russell',
 		heroFaction: 'Light',
 		heroClass: 'Ranger',
+		voidEnabled: true,
 		stats: {
 			baseHP: 9010,
 			baseAttack: 338,
@@ -598,6 +611,7 @@ const baseHeroStats = {
 		className: 'Sherlock',
 		heroFaction: 'Fortress',
 		heroClass: 'Mage',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7980,
 			baseAttack: 425,
@@ -630,6 +644,7 @@ const baseHeroStats = {
 		className: 'Tara',
 		heroFaction: 'Light',
 		heroClass: 'Warrior',
+		voidEnabled: true,
 		stats: {
 			baseHP: 9010,
 			baseAttack: 338,
@@ -646,6 +661,7 @@ const baseHeroStats = {
 		className: 'Tix',
 		heroFaction: 'Shadow',
 		heroClass: 'Mage',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7587,
 			baseAttack: 433,
@@ -662,6 +678,7 @@ const baseHeroStats = {
 		className: 'UniMax3000',
 		heroFaction: 'Fortress',
 		heroClass: 'Warrior',
+		voidEnabled: true,
 		stats: {
 			baseHP: 9100,
 			baseAttack: 306,

@@ -414,49 +414,63 @@ class hero {
 
 
 		// apply void enable stat buffs
-		if (this._heroFaction == 'Transcendence' && this._heroLevel >= 310) {
-			// not implemented yet
-			if (this._voidLevel >= 4) {
-				this.applyStatChange({}, 'void4Node1');
-				this.applyStatChange({}, 'void4Node2');
-				this.applyStatChange({}, 'void4Node3');
+		if (this._heroLevel >= 310 && baseHeroStats[this._heroName].voidEnabled) {
+			if (this._heroFaction == 'Transcendence') {
+				// not implemented yet
+				if (this._voidLevel >= 4) {
+					this.applyStatChange({ hp: 659400 }, 'void4Node1');
+					this.applyStatChange({ attack: 15600 }, 'void4Node2');
+					this.applyStatChange({ speed: 100 }, 'void4Node3');
 
-			} else if (this._voidLevel >= 3) {
-				this.applyStatChange({}, 'void3Node1');
-				this.applyStatChange({}, 'void3Node2');
-				this.applyStatChange({}, 'void3Node3');
+				}
 
-			} else if (this._voidLevel >= 2) {
-				this.applyStatChange({}, 'void2Node1');
-				this.applyStatChange({}, 'void2Node2');
-				this.applyStatChange({}, 'void2Node3');
+				if (this._voidLevel >= 3) {
+					this.applyStatChange({ hp: 412215 }, 'void3Node1');
+					this.applyStatChange({ attack: 9750 }, 'void3Node2');
+					this.applyStatChange({}, 'void3Node3');
 
-			} else if (this._voidLevel >= 1) {
-				this.applyStatChange({}, 'void1Node1');
-				this.applyStatChange({}, 'void1Node2');
-				this.applyStatChange({}, 'void1Node3');
-			}
+				}
 
-		} else if (this._heroLevel >= 310) {
-			if (this._voidLevel >= 4) {
-				this.applyStatChange({}, 'void4Node1');
-				this.applyStatChange({}, 'void4Node2');
-				this.applyStatChange({}, 'void4Node3');
+				if (this._voidLevel >= 2) {
+					this.applyStatChange({ hp: 329700 }, 'void2Node1');
+					this.applyStatChange({ attack: 7800 }, 'void2Node2');
+					this.applyStatChange({}, 'void2Node3');
 
-			} else if (this._voidLevel >= 3) {
-				this.applyStatChange({}, 'void3Node1');
-				this.applyStatChange({}, 'void3Node2');
-				this.applyStatChange({}, 'void3Node3');
+				}
 
-			} else if (this._voidLevel >= 2) {
-				this.applyStatChange({}, 'void2Node1');
-				this.applyStatChange({}, 'void2Node2');
-				this.applyStatChange({}, 'void2Node3');
+				if (this._voidLevel >= 1) {
+					this.applyStatChange({ hp: 247275 }, 'void1Node1');
+					this.applyStatChange({ attack: 5850 }, 'void1Node2');
+					this.applyStatChange({}, 'void1Node3');
+				}
 
-			} else if (this._voidLevel >= 1) {
-				this.applyStatChange({}, 'void1Node1');
-				this.applyStatChange({}, 'void1Node2');
-				this.applyStatChange({}, 'void1Node3');
+			} else {
+				if (this._voidLevel >= 4) {
+					this.applyStatChange({ hp: 330600 }, 'void4Node1');
+					this.applyStatChange({ attack: 7200 }, 'void4Node2');
+					this.applyStatChange({ speed: 100 }, 'void4Node3');
+
+				}
+
+				if (this._voidLevel >= 3) {
+					this.applyStatChange({ hp: 206625 }, 'void3Node1');
+					this.applyStatChange({ attack: 4500 }, 'void3Node2');
+					this.applyStatChange({ hp: 132240, attack: 2400 }, 'void3Node3');
+
+				}
+
+				if (this._voidLevel >= 2) {
+					this.applyStatChange({ hp: 165300 }, 'void2Node1');
+					this.applyStatChange({ attack: 3600 }, 'void2Node2');
+					this.applyStatChange({ hp: 110200, attack: 2000 }, 'void2Node3');
+
+				}
+
+				if (this._voidLevel >= 1) {
+					this.applyStatChange({ hp: 123975 }, 'void1Node1');
+					this.applyStatChange({ attack: 2700 }, 'void1Node2');
+					this.applyStatChange({ hp: 88160, attack: 1600 }, 'void1Node3');
+				}
 			}
 		}
 
@@ -686,7 +700,7 @@ class hero {
 		if (damageReduce > 0.75) { damageReduce = 0.75; }
 		if (damageReduce < 0) { damageReduce = 0; }
 		if (allDamageReduce < 0) { allDamageReduce = 0; }
-		if (allDamageReduce > 1) { allDamageReduce = 1; }
+		if (allDamageReduce > 0.75) { allDamageReduce = 0.75; }
 		if (allDamageTaken < 0) { allDamageReduce = 0; }
 
 		let blockChance = canBlock * (target._currentStats['block'] - precision);

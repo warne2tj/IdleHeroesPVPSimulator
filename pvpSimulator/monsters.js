@@ -33,7 +33,7 @@ class monster {
 			dotReduce = target._currentStats['dotReduce'];
 		}
 
-		if (allDamageReduce > 1) allDamageReduce = 1;
+		if (allDamageReduce > 0.75) allDamageReduce = 0.75;
 		if (dotReduce > 1) dotReduce = 1;
 
 		damageAmount = Math.floor(damageAmount * (1 - allDamageReduce) * (1 - dotReduce));
