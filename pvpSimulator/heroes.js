@@ -1830,9 +1830,14 @@ class hero {
 		}
 
 
-		if ('Black Hole Mark' in this._debuffs && ['active', 'basic'].includes(damageResult['damageSource'])) {
+		if ('Black Hole Mark' in this._debuffs && ['active', 'basic'].includes(damageResult.damageSource)) {
 			const key = Object.keys(this._debuffs['Black Hole Mark'])[0];
-			this._debuffs['Black Hole Mark'][key]['effects']['damageAmount'] += Math.floor(0.60 * damageResult['damageAmount']);
+			const stack = this._debuffs['Black Hole Mark'][key];
+
+			let damagePercent = 0.60;
+			if (stack.source._voidLevel >= 4) damagePercent = 0.70;
+
+			stack.effects.damageAmount += Math.floor(damagePercent * damageResult.damageAmount);
 		}
 
 

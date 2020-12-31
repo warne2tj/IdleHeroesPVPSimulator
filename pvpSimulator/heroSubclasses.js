@@ -54,18 +54,18 @@ class Aida extends hero {
 		let damageResult = {};
 		const targets = getAllTargets(this, this._enemies);
 
-		let attackPercent = 3;
+		let damagePercent = 3;
 		let healDebuff = 0.10;
 		let healPercent = 0.15;
 
 		if (this._voidLevel >= 3) {
-			attackPercent = 4;
+			damagePercent = 4;
 			healDebuff = 0.15;
 			healPercent = 0.20;
 		}
 
 		for (const i in targets) {
-			damageResult = this.calcDamage(this, targets[i]._currentStats['totalAttack'] * attackPercent, 'passive', 'true');
+			damageResult = this.calcDamage(this, targets[i]._currentStats['totalAttack'] * damagePercent, 'passive', 'true');
 			result += targets[i].takeDamage(this, 'Final Verdict', damageResult);
 			result += targets[i].getDebuff(this, 'Effect Being Healed', 15, { effectBeingHealed: healDebuff });
 		}
@@ -86,12 +86,12 @@ class Aida extends hero {
 		let healAmount = 0;
 		let targetLock;
 
-		let attackPercent = 1.2;
+		let damagePercent = 1.2;
 		let hpDamagePercent = 0.20;
 		let healPercent = 0.35;
 
 		if (this._voidLevel >= 2) {
-			attackPercent = 1.6;
+			damagePercent = 1.6;
 			hpDamagePercent = 0.25;
 			healPercent = 0.40;
 		}
@@ -101,7 +101,7 @@ class Aida extends hero {
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * attackPercent, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 				result = targets[i].takeDamage(this, 'Basic Attack', damageResult);
 
 
@@ -136,15 +136,15 @@ class Aida extends hero {
 		let targets = getRandomTargets(this, this._enemies, 4);
 		let targetLock;
 
-		let attackPercent = 2.68;
-		if (this._voidLevel >= 4) attackPercent = 3.76;
+		let damagePercent = 2.68;
+		if (this._voidLevel >= 4) damagePercent = 3.76;
 
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', attackPercent, 1, 0, 1, 0);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent, 1, 0, 1, 0);
 				result += targets[i].takeDamage(this, 'Order Restore', damageResult);
 				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -166,12 +166,14 @@ class Aida extends hero {
 }
 
 
-// Amen-Ra
-
 class AmenRa extends hero {
 	passiveStats() {
 		// apply Aura of Despair passive
-		this.applyStatChange({ hpPercent: 0.2, attackPercent: 0.25, damageReduce: 0.25 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.3, attackPercent: 0.35, damageReduce: 0.25 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.2, attackPercent: 0.25, damageReduce: 0.25 }, 'PassiveStats');
+		}
 	}
 
 
@@ -191,11 +193,14 @@ class AmenRa extends hero {
 		let damageResult = {};
 		let targets;
 
+		let damagePercent = 2;
+		if (this._voidLevel >= 2) damagePercent = 3;
+
 		for (let i = 1; i <= 3; i++) {
 			targets = getRandomTargets(this, this._enemies, 1);
 
 			if (targets.length > 0) {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * 2, 'passive', 'normal');
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'passive', 'normal');
 				result += targets[0].takeDamage(this, 'Terrible Feast', damageResult);
 			}
 		}
@@ -227,9 +232,12 @@ class AmenRa extends hero {
 		let result = '';
 		let targets;
 
+		let numTargets = 2;
+		if (this._voidLevel >= 3) numTargets = 3;
+
 		result = super.doBasic();
 
-		for (let i = 1; i <= 2; i++) {
+		for (let i = 1; i <= numTargets; i++) {
 			targets = getRandomTargets(this, this._enemies, 1);
 
 			if (targets.length > 0) {
@@ -247,14 +255,25 @@ class AmenRa extends hero {
 		let targets = getFrontTargets(this, this._enemies);
 		let targetLock;
 
+		let damagePercent = 2;
+		let petrifyChance = 0.70;
+		let extraShieldChance = 0;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 4;
+			petrifyChance = 0.80;
+			extraShieldChance = 0.30;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 2);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Shadow Defense', damageResult);
-				result += targets[i].getDebuff(this, 'petrify', 2, {}, false, '', 0.70);
+				result += targets[i].getDebuff(this, 'petrify', 2, {}, false, '', petrifyChance);
 				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
 		}
@@ -263,6 +282,7 @@ class AmenRa extends hero {
 		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Guardian Shadow', 15, {});
 			result += targets[i].getBuff(this, 'Guardian Shadow', 15, {});
+			if (random() < extraShieldChance) result += targets[i].getBuff(this, 'Guardian Shadow', 15, {});
 		}
 
 		return result;
@@ -616,8 +636,6 @@ class Belrain extends hero {
 }
 
 
-// Carrie
-
 class Carrie extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -628,7 +646,11 @@ class Carrie extends hero {
 
 	passiveStats() {
 		// apply Darkness Befall passive
-		this.applyStatChange({ attackPercent: 0.25, controlImmune: 0.3, speed: 60, dodge: 0.40 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.35, controlImmune: 0.3, speed: 80, dodge: 0.40 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.25, controlImmune: 0.3, speed: 60, dodge: 0.40 }, 'PassiveStats');
+		}
 	}
 
 
@@ -651,8 +673,12 @@ class Carrie extends hero {
 		let result = '';
 		let damageResult = {};
 
+		let damagePercent = 0.10;
+		if (this._voidLevel >= 4) damagePercent = 0.14;
+
+
 		// attack % per energy damage seems to be true damage
-		damageResult = this.calcDamage(target, attackAmount * 0.1 * energyAmount, 'mark', 'energy');
+		damageResult = this.calcDamage(target, attackAmount * damagePercent * energyAmount, 'mark', 'energy');
 		result = target.takeDamage(this, 'Devouring Mark', damageResult);
 
 		if (target._currentStats['totalHP'] > 0) {
@@ -690,7 +716,17 @@ class Carrie extends hero {
 			}
 
 
+			let reviveEnergy = 100;
+			let extraPowerChance = 0;
+
+			if (this._voidLevel >= 3) {
+				reviveEnergy = 150;
+				extraPowerChance = 0.30;
+			}
+
 			this._currentStats['spiritPowerStacks'] += 1;
+			if (random() < extraPowerChance) this._currentStats['spiritPowerStacks'] += 1;
+
 			if (this._currentStats['spiritPowerStacks'] >= 4) {
 				for (const b in this._buffs) {
 					this.removeBuff(b);
@@ -702,7 +738,7 @@ class Carrie extends hero {
 
 				this._currentStats['spiritPowerStacks'] = 0;
 				this._currentStats['totalHP'] = this._stats['totalHP'];
-				this._currentStats['energy'] = 100;
+				this._currentStats['energy'] = reviveEnergy;
 				result += '<div>' + this.heroDesc() + ' has revived with full health and energy.</div>';
 			}
 		}
@@ -731,17 +767,26 @@ class Carrie extends hero {
 		const targets = getRandomTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let damagePercent = 1.56;
+		let outburstPercent = 0.06;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 2.4;
+			outburstPercent = 0.08;
+		}
+
+
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * 1.56, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 				result = targets[0].takeDamage(this, 'Basic Attack', damageResult);
 
 				// attack % per energy damage seems to be true damage
 				if (targets[0]._currentStats['totalHP'] > 0) {
-					const additionalDamageAmount = this._currentStats['totalAttack'] * 0.06 * (targets[0]._currentStats['energy'] + 50);
+					const additionalDamageAmount = this._currentStats['totalAttack'] * outburstPercent * (targets[0]._currentStats['energy'] + 50);
 					additionalDamageResult = this.calcDamage(targets[0], additionalDamageAmount, 'basic', 'energy');
 					result += targets[0].takeDamage(this, 'Outburst of Magic', additionalDamageResult);
 				}
@@ -767,17 +812,26 @@ class Carrie extends hero {
 		const targets = getRandomTargets(this, this._enemies, 4);
 		let targetLock;
 
+		let damagePercent = 2.2;
+		let energyDamagePercent = 0.06;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 2.2;
+			energyDamagePercent = 0.06;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 2.2);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Energy Devouring', damageResult);
 
 				// attack % per energy damage seems to be true damage
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					const additionalDamageAmount = this._currentStats['totalAttack'] * 0.06 * targets[i]._currentStats['energy'];
+					const additionalDamageAmount = this._currentStats['totalAttack'] * energyDamagePercent * targets[i]._currentStats['energy'];
 					additionalDamageResult = this.calcDamage(targets[i], additionalDamageAmount, 'active', 'energy');
 					result += targets[i].takeDamage(this, 'Energy Oscillation', additionalDamageResult);
 				}
@@ -2987,16 +3041,16 @@ class Tara extends hero {
 		let damageResult = {};
 		const targets = getAllTargets(this, this._enemies);
 
-		let attackPercent = 4;
+		let damagePercent = 4;
 		let powerChance = 0.30;
 
 		if (this._voidLevel >= 3) {
-			attackPercent = 5.6;
+			damagePercent = 5.6;
 			powerChance = 0.40;
 		}
 
 		for (const i in targets) {
-			damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * attackPercent, 'passive', 'normal', 1, 1, 0, 1, 0);
+			damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * damagePercent, 'passive', 'normal', 1, 1, 0, 1, 0);
 			result += targets[i].takeDamage(this, 'Fluctuation of Light', damageResult);
 
 			if (random() < powerChance) {
@@ -3014,15 +3068,15 @@ class Tara extends hero {
 		const targets = getRandomTargets(this, this._enemies, 1);
 		let targetLock;
 
-		let attackPercent = 3;
-		if (this._voidLevel >= 2) attackPercent = 4.2;
+		let damagePercent = 3;
+		if (this._voidLevel >= 2) damagePercent = 4.2;
 
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * attackPercent, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 				result = targets[0].takeDamage(this, 'Basic Attack', damageResult);
 
 				result += targets[0].getDebuff(this, 'Power of Light', 15);
@@ -3042,12 +3096,12 @@ class Tara extends hero {
 		let damageDone = 0;
 		let targetLock;
 
-		let attackPercent = 3;
+		let damagePercent = 3;
 		let holyBuffPercent = 0.50;
 		let powerChance = 0.60;
 
 		if (this._voidLevel >= 4) {
-			attackPercent = 4.2;
+			damagePercent = 4.2;
 			holyBuffPercent = 0.60;
 			powerChance = 0.70;
 		}
@@ -3057,20 +3111,20 @@ class Tara extends hero {
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', attackPercent);
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				didCrit = didCrit || damageResult['critted'];
 				result += targets[0].takeDamage(this, 'Seal of Light', damageResult);
 				damageDone += damageResult['damageAmount'];
 
 				if (targets[0]._currentStats['totalHP'] > 0) {
-					damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', attackPercent);
+					damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 					didCrit = didCrit || damageResult['critted'];
 					result += targets[0].takeDamage(this, 'Seal of Light', damageResult);
 					damageDone += damageResult['damageAmount'];
 				}
 
 				if (targets[0]._currentStats['totalHP'] > 0 && random() < 0.5) {
-					damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', attackPercent);
+					damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 					didCrit = didCrit || damageResult['critted'];
 					result += targets[0].takeDamage(this, 'Seal of Light', damageResult);
 					damageDone += damageResult['damageAmount'];
@@ -3340,12 +3394,14 @@ class Asmodel extends hero {
 }
 
 
-// Drake
-
 class Drake extends hero {
 	passiveStats() {
 		// apply Power of Void passive
-		this.applyStatChange({ attackPercent: 0.40, critDamage: 0.50, skillDamage: 0.70, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.50, critDamage: 0.50, skillDamage: 1, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.40, critDamage: 0.50, skillDamage: 0.70, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
+		}
 	}
 
 
@@ -3361,7 +3417,9 @@ class Drake extends hero {
 
 
 	eventSelfActive() {
-		return this.getBuff(this, 'Shadow Lure', 1, { dodge: 0.60 }, true);
+		let dodgePercent = 0.60;
+		if (this._voidLevel >= 3) dodgePercent = 0.70;
+		return this.getBuff(this, 'Dodge', 1, { dodge: dodgePercent }, true);
 	}
 
 
@@ -3390,12 +3448,15 @@ class Drake extends hero {
 		const targets = getLowestHPTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let damagePercent = 2.2;
+		if (this._voidLevel >= 2) damagePercent = 4;
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 2.2, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 				result += targets[i].takeDamage(this, 'Deadly Strike', damageResult);
 
 				if ('Black Hole Mark' in targets[i]._debuffs) {
@@ -3426,16 +3487,25 @@ class Drake extends hero {
 		const targets = getRandomTargets(this, this._enemies, 2);
 		let targetLock;
 
+		let damagePercent = 4;
+		let hpDamagePercent = 0.20;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 7;
+			hpDamagePercent = 0.25;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 4, 'active', 'normal');
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Annihilating Meteor', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					hpDamage = 0.20 * targets[i]._stats['totalHP'];
+					hpDamage = hpDamagePercent * targets[i]._stats['totalHP'];
 					if (hpDamage > this._currentStats['totalAttack'] * 15) { hpDamage = this._currentStats['totalAttack'] * 15; }
 					hpDamageResult1 = this.calcDamage(targets[i], hpDamage, 'active', 'true');
 					result += targets[i].takeDamage(this, 'Annihilating Meteor - HP2', hpDamageResult1);
@@ -3502,8 +3572,8 @@ class Russell extends hero {
 		let damageResult;
 		let targets;
 
-		let attackPercent = 3;
-		if (this._voidLevel >= 4) attackPercent = 4;
+		let damagePercent = 3;
+		if (this._voidLevel >= 2) damagePercent = 4;
 
 		if ('Light Arrow' in this._buffs && !(this._currentStats['isCharging'])) {
 			// eslint-disable-next-line no-unused-vars
@@ -3511,7 +3581,7 @@ class Russell extends hero {
 				targets = getLowestHPTargets(this, this._enemies, 1);
 
 				for (const target of targets) {
-					damageResult = this.calcDamage(target, this._currentStats['totalAttack'] * attackPercent, 'passive', 'normal');
+					damageResult = this.calcDamage(target, this._currentStats['totalAttack'] * damagePercent, 'passive', 'normal');
 					result += target.takeDamage(this, 'Light Arrow', damageResult);
 				}
 			}
@@ -3604,11 +3674,11 @@ class Russell extends hero {
 	doActive() {
 		let result = '';
 		let damageReducePercent = 0.40;
-		let attackPercent = 16;
+		let damagePercent = 16;
 
 		if (this._voidLevel >= 4) {
 			damageReducePercent = 0.50;
-			attackPercent = 20;
+			damagePercent = 20;
 		}
 
 
@@ -3625,7 +3695,7 @@ class Russell extends hero {
 				result += targetLock;
 
 				if (targetLock == '') {
-					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', attackPercent);
+					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 					result += targets[i].takeDamage(this, 'Radiant Arrow', damageResult);
 					activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 				}
@@ -5274,7 +5344,11 @@ class Morax extends hero {
 class Phorcys extends hero {
 	passiveStats() {
 		// apply Necromancy passive
-		this.applyStatChange({ hpPercent: 0.20, attackPercent: 0.40, skillDamage: 0.70, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.30, attackPercent: 0.50, skillDamage: 0.90, controlImmune: 0.30, speed: 100 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.20, attackPercent: 0.40, skillDamage: 0.70, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
+		}
 	}
 
 
@@ -5283,15 +5357,18 @@ class Phorcys extends hero {
 		const maxDamage = this._currentStats.totalAttack * 15;
 		const targets = getAllTargets(this, this._enemies);
 
+		let damagePercent = 0.08;
+		if (this._voidLevel >= 3) damagePercent = 0.10;
+
 		for (const target of targets) {
-			let hpDamage = target._stats.totalHP * 0.08;
+			let hpDamage = target._stats.totalHP * damagePercent;
 			if (hpDamage > maxDamage) hpDamage = maxDamage;
 
 			const damageResult = this.calcDamage(target, hpDamage, 'passive', 'true');
 			result += target.takeDamage(this, 'Soul Resonance', damageResult);
 
 			if (this.getSoulCorruptionAmount(target) < 0.40) {
-				result += target.getDebuff(this, 'Soul Corruption', 6, { corruptedHP: 0.08 });
+				result += target.getDebuff(this, 'Soul Corruption', 6, { corruptedHP: damagePercent });
 			}
 		}
 
@@ -5317,14 +5394,23 @@ class Phorcys extends hero {
 		let damageResult;
 		const targets = getHighestAttackTargets(this, this._enemies, 1);
 
+		let damagePercent = 6;
+		let allDamageDealtPercentReduced = 0.25;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 8;
+			allDamageDealtPercentReduced = 0.30;
+		}
+
+
 		for (const target of targets) {
 			const targetLock = target.getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(target, this._currentStats.totalAttack * 6, 'basic', 'normal');
+				damageResult = this.calcDamage(target, this._currentStats.totalAttack * damagePercent, 'basic', 'normal');
 				result += target.takeDamage(this, 'Basic Attack', damageResult);
-				result += target.getDebuff(this, 'Dark Coil', 3, { allDamageDealt: 0.25 }, false, '', 0, true);
+				result += target.getDebuff(this, 'Dark Coil', 3, { allDamageDealt: allDamageDealtPercentReduced }, false, '', 0, true);
 				basicQueue.push([this, target, damageResult.damageAmount, damageResult.critted]);
 			}
 		}
@@ -5338,12 +5424,16 @@ class Phorcys extends hero {
 		let damageResult;
 		const targets = getRandomTargets(this, this._enemies, 4);
 
+		let damagePercent = 8;
+		if (this._voidLevel >= 4) damagePercent = 14;
+
+
 		for (const target of targets) {
 			const targetLock = target.getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(target, this._currentStats.totalAttack, 'active', 'normal', 8);
+				damageResult = this.calcDamage(target, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
 				result += target.takeDamage(this, 'Imminent Doom', damageResult);
 
 
