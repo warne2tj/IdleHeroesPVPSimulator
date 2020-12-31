@@ -20,7 +20,7 @@ const enables3 = ['Resilience', 'SharedFate', 'Purify'];
 const enables4 = ['Vitality', 'Mightiness', 'Growth'];
 const enables5 = ['BalancedStrike', 'UnbendingWill'];
 
-let isSeeded = false;
+let isSeeded = true;
 const lsPrefix = 'ga_';
 
 

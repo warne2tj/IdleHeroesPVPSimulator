@@ -110,11 +110,17 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 
 
 			if (source._artifact.includes(' Snow Heart')) {
-				const targets = getHighestSpeedTargets(source, source._enemies, 1);
+				const targets = getHighestSpeedTargets(source, source._enemies, 3);
+				const frostChances = [1, 0.66, 0.33];
+				let frostIndex = 0;
 
 				temp = `${source.heroDesc()} <span class='skill'>Snow Heart</span> triggered.`;
 				for (const target of targets) {
-					temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+					if (random() < frostChances[frostIndex]) {
+						temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+					}
+
+					frostIndex++;
 				}
 
 				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
@@ -139,11 +145,17 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 
 
 			if (source._artifact.includes(' Snow Heart')) {
-				const targets = getHighestSpeedTargets(source, source._enemies, 1);
+				const targets = getHighestSpeedTargets(source, source._enemies, 3);
+				const frostChances = [1, 0.66, 0.33];
+				let frostIndex = 0;
 
 				temp = `${source.heroDesc()} <span class='skill'>Snow Heart</span> triggered.`;
 				for (const target of targets) {
-					temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+					if (random() < frostChances[frostIndex]) {
+						temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+					}
+
+					frostIndex++;
 				}
 
 				if(numSims == 1 && temp.length > 0) logCombat('<div class=\'log' + logColor + '\'><p></p></div><div class=\'log' + logColor + '\'>' + temp + '</div>');
@@ -399,11 +411,17 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 
 
 						if (source._artifact.includes(' Snow Heart')) {
-							const targets = getHighestSpeedTargets(source, source._enemies, 1);
+							const targets = getHighestSpeedTargets(source, source._enemies, 3);
+							const frostChances = [1, 0.66, 0.33];
+							let frostIndex = 0;
 
 							temp += `<div>${source.heroDesc()} <span class='skill'>${source._artifact}</span> triggered.</div>`;
 							for (const target of targets) {
-								temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+								if (random() < frostChances[frostIndex]) {
+									temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+								}
+
+								frostIndex++;
 							}
 						}
 					}
@@ -442,11 +460,17 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 
 
 						if (source._artifact.includes(' Snow Heart')) {
-							const targets = getHighestSpeedTargets(source, source._enemies, 1);
+							const targets = getHighestSpeedTargets(source, source._enemies, 3);
+							const frostChances = [1, 0.66, 0.33];
+							let frostIndex = 0;
 
 							temp += `<div>${source.heroDesc()} <span class='skill'>${source._artifact}</span> triggered.</div>`;
 							for (const target of targets) {
-								temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+								if (random() < frostChances[frostIndex]) {
+									temp += target.getDebuff(source, 'Speed', 1, { speed: artifacts[source._artifact].enhance });
+								}
+
+								frostIndex++;
 							}
 						}
 					}

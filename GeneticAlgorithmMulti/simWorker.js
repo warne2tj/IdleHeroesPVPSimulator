@@ -110,6 +110,7 @@ function handleCall(e) {
 				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / 10), 'def');
 
 				tHero._heroLevel = 350;
+				tHero._voidLevel = 4;
 				tHero._skin = jsonConfig[t][p + 1];
 				tHero._stone = jsonConfig[t][p + 3];
 				tHero._artifact = jsonConfig[t][p + 4];

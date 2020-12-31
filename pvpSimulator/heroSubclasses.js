@@ -7,12 +7,14 @@ import {
 } from './utilityFunctions.js';
 
 
-// Aida
-
 class Aida extends hero {
 	passiveStats() {
 		// apply Blessing of Light passive
-		this.applyStatChange({ hpPercent: 0.4, holyDamage: 1.0, damageReduce: 0.3, speed: 80 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.5, holyDamage: 1.6, damageReduce: 0.3, speed: 100 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.4, holyDamage: 1.0, damageReduce: 0.3, speed: 80 }, 'PassiveStats');
+		}
 	}
 
 
@@ -31,7 +33,9 @@ class Aida extends hero {
 
 	balanceMark(target, attackAmount) {
 		let result = '';
-		let damageAmount = target._stats['totalHP'] * 0.25;
+		let hpDamagePercent = 0.25;
+		if (this._voidLevel >= 4) hpDamagePercent = 0.30;
+		let damageAmount = target._stats['totalHP'] * hpDamagePercent;
 
 		if (damageAmount > attackAmount * 30) {
 			damageAmount = attackAmount * 30;
@@ -50,13 +54,23 @@ class Aida extends hero {
 		let damageResult = {};
 		const targets = getAllTargets(this, this._enemies);
 
-		for (const i in targets) {
-			damageResult = this.calcDamage(this, targets[i]._currentStats['totalAttack'] * 3, 'passive', 'normal');
-			result += targets[i].takeDamage(this, 'Final Verdict', damageResult);
-			result += targets[i].getDebuff(this, 'Effect Being Healed', 15, { effectBeingHealed: 0.1 });
+		let attackPercent = 3;
+		let healDebuff = 0.10;
+		let healPercent = 0.15;
+
+		if (this._voidLevel >= 3) {
+			attackPercent = 4;
+			healDebuff = 0.15;
+			healPercent = 0.20;
 		}
 
-		healAmount = this.calcHeal(this, this._stats['totalHP'] * 0.15);
+		for (const i in targets) {
+			damageResult = this.calcDamage(this, targets[i]._currentStats['totalAttack'] * attackPercent, 'passive', 'true');
+			result += targets[i].takeDamage(this, 'Final Verdict', damageResult);
+			result += targets[i].getDebuff(this, 'Effect Being Healed', 15, { effectBeingHealed: healDebuff });
+		}
+
+		healAmount = this.calcHeal(this, this._stats['totalHP'] * healPercent);
 		result += this.getHeal(this, healAmount);
 
 		return result;
@@ -72,17 +86,27 @@ class Aida extends hero {
 		let healAmount = 0;
 		let targetLock;
 
+		let attackPercent = 1.2;
+		let hpDamagePercent = 0.20;
+		let healPercent = 0.35;
+
+		if (this._voidLevel >= 2) {
+			attackPercent = 1.6;
+			hpDamagePercent = 0.25;
+			healPercent = 0.40;
+		}
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 1.2, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * attackPercent, 'basic', 'normal');
 				result = targets[i].takeDamage(this, 'Basic Attack', damageResult);
 
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					additionalDamage = targets[i]._stats['totalHP'] * 0.2;
+					additionalDamage = targets[i]._stats['totalHP'] * hpDamagePercent;
 					if (additionalDamage > this._currentStats['totalAttack'] * 15) {
 						additionalDamage = this._currentStats['totalAttack'] * 15;
 					}
@@ -97,7 +121,7 @@ class Aida extends hero {
 
 
 		if (damageResult['damageAmount'] + additionalDamageResult['damageAmount'] > 0) {
-			healAmount = this.calcHeal(this, (damageResult['damageAmount'] + additionalDamageResult['damageAmount']) * 0.35);
+			healAmount = this.calcHeal(this, (damageResult['damageAmount'] + additionalDamageResult['damageAmount']) * healPercent);
 			result += this.getHeal(this, healAmount);
 		}
 
@@ -112,12 +136,15 @@ class Aida extends hero {
 		let targets = getRandomTargets(this, this._enemies, 4);
 		let targetLock;
 
+		let attackPercent = 2.68;
+		if (this._voidLevel >= 4) attackPercent = 3.76;
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 1, 1, 0, 1, 0);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', attackPercent, 1, 0, 1, 0);
 				result += targets[i].takeDamage(this, 'Order Restore', damageResult);
 				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -2933,12 +2960,14 @@ class Sherlock extends hero {
 }
 
 
-// Tara
-
 class Tara extends hero {
 	passiveStats() {
 		// apply Immense Power passive
-		this.applyStatChange({ hpPercent: 0.4, holyDamage: 0.7, controlImmune: 0.3, damageReduce: 0.3 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.5, holyDamage: 1.2, controlImmune: 0.3, damageReduce: 0.3 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.4, holyDamage: 0.7, controlImmune: 0.3, damageReduce: 0.3 }, 'PassiveStats');
+		}
 	}
 
 
@@ -2958,11 +2987,19 @@ class Tara extends hero {
 		let damageResult = {};
 		const targets = getAllTargets(this, this._enemies);
 
+		let attackPercent = 4;
+		let powerChance = 0.30;
+
+		if (this._voidLevel >= 3) {
+			attackPercent = 5.6;
+			powerChance = 0.40;
+		}
+
 		for (const i in targets) {
-			damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 4, 'passive', 'normal', 1, 1, 0, 1, 0);
+			damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * attackPercent, 'passive', 'normal', 1, 1, 0, 1, 0);
 			result += targets[i].takeDamage(this, 'Fluctuation of Light', damageResult);
 
-			if (random() < 0.3) {
+			if (random() < powerChance) {
 				result += targets[i].getDebuff(this, 'Power of Light', 15);
 			}
 		}
@@ -2977,12 +3014,15 @@ class Tara extends hero {
 		const targets = getRandomTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let attackPercent = 3;
+		if (this._voidLevel >= 2) attackPercent = 4.2;
+
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * 3, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * attackPercent, 'basic', 'normal');
 				result = targets[0].takeDamage(this, 'Basic Attack', damageResult);
 
 				result += targets[0].getDebuff(this, 'Power of Light', 15);
@@ -3002,25 +3042,35 @@ class Tara extends hero {
 		let damageDone = 0;
 		let targetLock;
 
+		let attackPercent = 3;
+		let holyBuffPercent = 0.50;
+		let powerChance = 0.60;
+
+		if (this._voidLevel >= 4) {
+			attackPercent = 4.2;
+			holyBuffPercent = 0.60;
+			powerChance = 0.70;
+		}
+
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', 3);
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', attackPercent);
 				didCrit = didCrit || damageResult['critted'];
 				result += targets[0].takeDamage(this, 'Seal of Light', damageResult);
 				damageDone += damageResult['damageAmount'];
 
 				if (targets[0]._currentStats['totalHP'] > 0) {
-					damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', 3);
+					damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', attackPercent);
 					didCrit = didCrit || damageResult['critted'];
 					result += targets[0].takeDamage(this, 'Seal of Light', damageResult);
 					damageDone += damageResult['damageAmount'];
 				}
 
 				if (targets[0]._currentStats['totalHP'] > 0 && random() < 0.5) {
-					damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', 3);
+					damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', attackPercent);
 					didCrit = didCrit || damageResult['critted'];
 					result += targets[0].takeDamage(this, 'Seal of Light', damageResult);
 					damageDone += damageResult['damageAmount'];
@@ -3045,13 +3095,13 @@ class Tara extends hero {
 			result += targetLock;
 
 			if (targetLock == '') {
-				if ('Power of Light' in targets[h]._debuffs && random() < 0.6) {
+				if ('Power of Light' in targets[h]._debuffs && random() < powerChance) {
 					result += targets[h].getDebuff(this, 'Power of Light', 15);
 				}
 			}
 		}
 
-		result += this.getBuff(this, 'Holy Damage', 15, { holyDamage: 0.5 });
+		result += this.getBuff(this, 'Holy Damage', 15, { holyDamage: holyBuffPercent });
 
 		return result;
 	}
@@ -3409,8 +3459,6 @@ class Drake extends hero {
 }
 
 
-// Russell
-
 class Russell extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -3420,7 +3468,11 @@ class Russell extends hero {
 
 	passiveStats() {
 		// apply Baptism of Light passive
-		this.applyStatChange({ attackPercent: 0.30, holyDamage: 0.80, critDamage: 0.40, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.40, holyDamage: 1, critDamage: 0.40, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.30, holyDamage: 0.80, critDamage: 0.40, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
+		}
 	}
 
 
@@ -3450,14 +3502,16 @@ class Russell extends hero {
 		let damageResult;
 		let targets;
 
-		if ('Light Arrow' in this._buffs && !(this._currentStats['isCharging'])) {
+		let attackPercent = 3;
+		if (this._voidLevel >= 4) attackPercent = 4;
 
+		if ('Light Arrow' in this._buffs && !(this._currentStats['isCharging'])) {
 			// eslint-disable-next-line no-unused-vars
 			for (const i in Object.keys(this._buffs['Light Arrow'])) {
 				targets = getLowestHPTargets(this, this._enemies, 1);
 
 				for (const target of targets) {
-					damageResult = this.calcDamage(target, this._currentStats['totalAttack'] * 3, 'passive', 'normal');
+					damageResult = this.calcDamage(target, this._currentStats['totalAttack'] * attackPercent, 'passive', 'normal');
 					result += target.takeDamage(this, 'Light Arrow', damageResult);
 				}
 			}
@@ -3471,8 +3525,11 @@ class Russell extends hero {
 		let result = '';
 		const targets = getLowestHPTargets(this, this._enemies, 2);
 
+		let dazzleDuration = 1;
+		if (this._voidLevel >= 3) dazzleDuration = 2;
+
 		for (const i in targets) {
-			result += targets[i].getDebuff(this, 'Dazzle', 1);
+			result += targets[i].getDebuff(this, 'Dazzle', dazzleDuration);
 		}
 
 		return result;
@@ -3481,16 +3538,24 @@ class Russell extends hero {
 
 	endOfRound() {
 		let result = '';
-		const healAmount = this.calcHeal(this, 4 * this._currentStats['totalAttack']);
-		const targets = getLowestHPTargets(this, this._enemies, 2);
 
+		let dazzleDuration = 1;
+		let healPercent = 4;
+
+		if (this._voidLevel >= 3) {
+			dazzleDuration = 2;
+			healPercent = 8;
+		}
+
+		const healAmount = this.calcHeal(this, healPercent * this._currentStats['totalAttack']);
+		const targets = getLowestHPTargets(this, this._enemies, 2);
 
 		result += this.getHeal(this, healAmount);
 		result += this.getBuff(this, 'Light Arrow', 4);
 		result += this.getBuff(this, 'Light Arrow', 4);
 
 		for (const i in targets) {
-			result += targets[i].getDebuff(this, 'Dazzle', 1);
+			result += targets[i].getDebuff(this, 'Dazzle', dazzleDuration);
 		}
 
 		return result;
@@ -3538,6 +3603,14 @@ class Russell extends hero {
 
 	doActive() {
 		let result = '';
+		let damageReducePercent = 0.40;
+		let attackPercent = 16;
+
+		if (this._voidLevel >= 4) {
+			damageReducePercent = 0.50;
+			attackPercent = 20;
+		}
+
 
 		if (this._currentStats['isCharging']) {
 			let damageResult = {};
@@ -3552,7 +3625,7 @@ class Russell extends hero {
 				result += targetLock;
 
 				if (targetLock == '') {
-					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 16);
+					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', attackPercent);
 					result += targets[i].takeDamage(this, 'Radiant Arrow', damageResult);
 					activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 				}
@@ -3568,7 +3641,7 @@ class Russell extends hero {
 		} else {
 			result += '<div>' + this.heroDesc() + ' starts charging Radiant Arrow.</div>';
 			result += this.getBuff(this, 'Crit', 2, { crit: 0.50 });
-			result += this.getBuff(this, 'Damage Reduce', 2, { damageReduce: 0.40 });
+			result += this.getBuff(this, 'Damage Reduce', 2, { damageReduce: damageReducePercent });
 
 			this._currentStats['isCharging'] = true;
 		}
