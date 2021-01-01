@@ -9,7 +9,6 @@ import {
 
 class Aida extends hero {
 	passiveStats() {
-		// apply Blessing of Light passive
 		if (this._voidLevel >= 1) {
 			this.applyStatChange({ hpPercent: 0.5, holyDamage: 1.6, damageReduce: 0.3, speed: 100 }, 'PassiveStats');
 		} else {
@@ -168,7 +167,6 @@ class Aida extends hero {
 
 class AmenRa extends hero {
 	passiveStats() {
-		// apply Aura of Despair passive
 		if (this._voidLevel >= 1) {
 			this.applyStatChange({ hpPercent: 0.3, attackPercent: 0.35, damageReduce: 0.25 }, 'PassiveStats');
 		} else {
@@ -290,11 +288,8 @@ class AmenRa extends hero {
 }
 
 
-// Amuvor
-
 class Amuvor extends hero {
 	passiveStats() {
-		// apply Journey of Soul passive
 		this.applyStatChange({ hpPercent: 0.3, speed: 60, attackPercent: 0.3, petrifyImmune: 1 }, 'PassiveStats');
 	}
 
@@ -395,11 +390,8 @@ class Amuvor extends hero {
 }
 
 
-// Aspen
-
 class Aspen extends hero {
 	passiveStats() {
-		// apply Dark Storm passive
 		this.applyStatChange({ hpPercent: 0.4, attackPercent: 0.2, crit: 0.35, armorBreak: 0.5 }, 'PassiveStats');
 	}
 
@@ -548,11 +540,8 @@ class Aspen extends hero {
 }
 
 
-// Belrain
-
 class Belrain extends hero {
 	passiveStats() {
-		// apply Divine Awakening passive
 		this.applyStatChange({ hpPercent: 0.3, attackPercent: 0.45, controlImmune: 0.3, healEffect: 0.4 }, 'PassiveStats');
 	}
 
@@ -645,7 +634,6 @@ class Carrie extends hero {
 
 
 	passiveStats() {
-		// apply Darkness Befall passive
 		if (this._voidLevel >= 1) {
 			this.applyStatChange({ attackPercent: 0.35, controlImmune: 0.3, speed: 80, dodge: 0.40 }, 'PassiveStats');
 		} else {
@@ -849,11 +837,8 @@ class Carrie extends hero {
 }
 
 
-// Cthugha
-
 class Cthugha extends hero {
 	passiveStats() {
-		// apply Demon Bloodline passive
 		this.applyStatChange({ attackPercent: 0.25, hpPercent: 0.2, damageReduce: 0.2 }, 'PassiveStats');
 	}
 
@@ -973,11 +958,8 @@ class Cthugha extends hero {
 }
 
 
-// Dark Arthindol
-
 class DarkArthindol extends hero {
 	passiveStats() {
-		// apply Black Hole passive
 		this.applyStatChange({ skillDamage: 1.0, hpPercent: 0.4, speed: 60 }, 'PassiveStats');
 	}
 
@@ -1058,12 +1040,14 @@ class DarkArthindol extends hero {
 }
 
 
-// Delacium
-
 class Delacium extends hero {
 	passiveStats() {
 		// apply Extreme Rage passive
-		this.applyStatChange({ attackPercent: 0.40, hpPercent: 0.30, crit: 0.35, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.50, hpPercent: 0.40, crit: 0.35, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.40, hpPercent: 0.30, crit: 0.35, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
+		}
 	}
 
 	endOfRound() {
@@ -1074,6 +1058,8 @@ class Delacium extends hero {
 		let maxStacks = 3;
 		let copyFrom = [];
 		let copyTo = [];
+
+		if (this._voidLevel >= 3) maxToCopy = 4;
 
 
 		for (const i in this._enemies) {
@@ -1104,7 +1090,7 @@ class Delacium extends hero {
 				if (d != 'Dot') {
 					effects = Object.values(targets[0]._debuffs[d])[0]['effects'];
 
-					if (isDot(d, effects) || isAttribute(d, effects)) {
+					if (isDot(d, effects) || isAttribute(d)) {
 						validDebuffs.push([d, targets[0]._debuffs[d], random()]);
 					}
 				}
@@ -1152,16 +1138,19 @@ class Delacium extends hero {
 		const targets = getRandomTargets(this, this._enemies, 3);
 		let targetLock;
 
+		let damagePercent = 2.5;
+		if (this._voidLevel >= 2) damagePercent = 3.5;
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 2.5, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 				result += targets[i].takeDamage(this, 'Basic Attack', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					additionalDamage = this._currentStats['totalAttack'] * 2.5 * (1 + Object.keys(targets[i]._debuffs).length);
+					additionalDamage = this._currentStats['totalAttack'] * damagePercent * (1 + Object.keys(targets[i]._debuffs).length);
 					additionalDamageResult = this.calcDamage(targets[i], additionalDamage, 'basic', 'normal', 1, 0);
 					result += targets[i].takeDamage(this, 'Durative Weakness', additionalDamageResult);
 				}
@@ -1173,6 +1162,7 @@ class Delacium extends hero {
 		return result;
 	}
 
+
 	doActive() {
 		let result = '';
 		let damageResult = {};
@@ -1181,16 +1171,20 @@ class Delacium extends hero {
 		const targets = getRandomTargets(this, this._enemies, 4);
 		let targetLock;
 
+		let damagePercent = 4;
+		if (this._voidLevel >= 4) damagePercent = 7;
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 4);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Ray of Delacium', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					additionalDamage = 4 * (1 + Object.keys(targets[i]._debuffs).length);
+					additionalDamage = damagePercent * (1 + Object.keys(targets[i]._debuffs).length);
 					additionalDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', additionalDamage, 0);
 					result += targets[i].takeDamage(this, 'Ray of Delacium 2', additionalDamageResult);
 				}
@@ -1215,11 +1209,8 @@ class Delacium extends hero {
 }
 
 
-// Elyvia
-
 class Elyvia extends hero {
 	passiveStats() {
-		// apply Nothing Scare Elyvia passive
 		this.applyStatChange({ hpPercent: 0.30, attackPercent: 0.25, effectBeingHealed: 0.30 }, 'PassiveStats');
 	}
 
@@ -1323,8 +1314,6 @@ class Elyvia extends hero {
 }
 
 
-// Emily
-
 class Emily extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -1355,7 +1344,6 @@ class Emily extends hero {
 
 
 	passiveStats() {
-		// apply Spiritual Blessing passive
 		this.applyStatChange({ hpPercent: 0.40, speed: 50 }, 'PassiveStats');
 	}
 
@@ -1411,11 +1399,8 @@ class Emily extends hero {
 }
 
 
-// Garuda
-
 class Garuda extends hero {
 	passiveStats() {
-		// apply Eagle Power passive
 		this.applyStatChange({ attackPercent: 0.25, hpPercent: 0.3, critDamage: 0.4, controlImmune: 0.3 }, 'PassiveStats');
 	}
 
@@ -1486,11 +1471,10 @@ class Garuda extends hero {
 			}
 		}
 
-		// Use up all Feather Blades
+
 		let featherTarget;
 		if ('Feather Blade' in this._buffs) {
 			const numBlades = Object.keys(this._buffs['Feather Blade']);
-
 
 			// eslint-disable-next-line no-unused-vars
 			for (const i in numBlades) {
@@ -1514,11 +1498,8 @@ class Garuda extends hero {
 }
 
 
-// Faith Blade
-
 class FaithBlade extends hero {
 	passiveStats() {
-		// apply Ultimate Faith passive
 		this.applyStatChange({ holyDamage: 0.70, speed: 60, crit: 0.30, stunImmune: 1 }, 'PassiveStats');
 	}
 
@@ -1612,7 +1593,6 @@ class Gustin extends hero {
 	}
 
 	passiveStats() {
-		// apply Shadow Imprint passive
 		this.applyStatChange({ hpPercent: 0.25, speed: 30, controlImmune: 0.3, effectBeingHealed: 0.3 }, 'PassiveStats');
 	}
 
@@ -1806,8 +1786,6 @@ class Gustin extends hero {
 }
 
 
-// Horus
-
 class Horus extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -1816,7 +1794,6 @@ class Horus extends hero {
 
 
 	passiveStats() {
-		// apply Corrupted Rebirth passive
 		this.applyStatChange({ hpPercent: 0.4, attackPercent: 0.3, armorBreak: 0.4, block: 0.6 }, 'PassiveStats');
 	}
 
@@ -1957,11 +1934,8 @@ class Horus extends hero {
 }
 
 
-// Ithaqua
-
 class Ithaqua extends hero {
 	passiveStats() {
-		// apply Ode to Shadow passive
 		this.applyStatChange({ attackPercent: 0.35, crit: 0.35, critDamage: 0.5, speed: 60, controlImmune: 0.3 }, 'PassiveStats');
 	}
 
@@ -2140,8 +2114,6 @@ class Ithaqua extends hero {
 }
 
 
-// Kroos
-
 class Kroos extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -2150,7 +2122,6 @@ class Kroos extends hero {
 
 
 	passiveStats() {
-		// apply Flame Power passive
 		this.applyStatChange({ hpPercent: 0.30, speed: 60, damageReduce: 0.20 }, 'PassiveStats');
 	}
 
@@ -2231,8 +2202,6 @@ class Kroos extends hero {
 }
 
 
-// Michelle
-
 class Michelle extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -2241,7 +2210,6 @@ class Michelle extends hero {
 
 
 	passiveStats() {
-		// apply Redemption of Michelle and Light Will passive
 		this.applyStatChange({ controlImmune: 1.0, holyDamage: 0.60, attackPercent: 0.30, speed: 40 }, 'PassiveStats');
 	}
 
@@ -2356,11 +2324,8 @@ class Michelle extends hero {
 }
 
 
-// Mihm
-
 class Mihm extends hero {
 	passiveStats() {
-		// apply Unreal Instinct passive
 		this.applyStatChange({ hpPercent: 0.4, damageReduce: 0.3, speed: 60, controlImmune: 1.0 }, 'PassiveStats');
 	}
 
@@ -2445,11 +2410,8 @@ class Mihm extends hero {
 }
 
 
-// Nakia
-
 class Nakia extends hero {
 	passiveStats() {
-		// apply Arachnid Madness passive
 		this.applyStatChange({ attackPercent: 0.35, crit: 0.35, controlImmune: 0.3, speed: 30, damageAgainstBleed: 0.80 }, 'PassiveStats');
 	}
 
@@ -2565,11 +2527,8 @@ class Nakia extends hero {
 }
 
 
-// Oberon
-
 class Oberon extends hero {
 	passiveStats() {
-		// apply Strength of Elf passive
 		this.applyStatChange({ attackPercent: 0.3, hpPercent: 0.35, speed: 40, effectBeingHealed: 0.3 }, 'PassiveStats');
 	}
 
@@ -2667,11 +2626,8 @@ class Oberon extends hero {
 }
 
 
-// Penny
-
 class Penny extends hero {
 	passiveStats() {
-		// apply Troublemaker Gene passive
 		this.applyStatChange({ attackPercent: 0.3, hpPercent: 0.25, crit: 0.3, precision: 1.0 }, 'PassiveStats');
 	}
 
@@ -2856,8 +2812,6 @@ class Penny extends hero {
 }
 
 
-// Sherlock
-
 class Sherlock extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -2866,8 +2820,11 @@ class Sherlock extends hero {
 
 
 	passiveStats() {
-		// apply Source of Magic passive
-		this.applyStatChange({ attackPercent: 0.25, hpPercent: 0.30, speed: 40, damageReduce: 0.30 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.35, hpPercent: 0.40, speed: 60, damageReduce: 0.30 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.25, hpPercent: 0.30, speed: 40, damageReduce: 0.30 }, 'PassiveStats');
+		}
 	}
 
 
@@ -2910,7 +2867,13 @@ class Sherlock extends hero {
 		let result = '';
 		const targets = getHighestHPTargets(this, this._enemies, 1);
 
-		this._currentStats['wellCalculatedStacks'] -= 2;
+		let layersConsumed = 2;
+		if (this._voidLevel >= 3) {
+			if (random() < 0.25) layersConsumed = 1;
+		}
+
+
+		this._currentStats['wellCalculatedStacks'] -= layersConsumed;
 
 		if (targets.length > 0) {
 			if (targets[0]._currentStats['totalHP'] > this._currentStats['totalHP']) {
@@ -2933,8 +2896,11 @@ class Sherlock extends hero {
 
 	endOfRound() {
 		let result = '';
+		let extraLayerChance = 0.50;
+		if (this._voidLevel >= 2) extraLayerChance = 0.50;
 
-		if(random() < 0.5) {
+
+		if(random() < extraLayerChance) {
 			result = '<div>' + this.heroDesc() + ' gained <span class=\'num\'>2</span> stacks of <span class=\'skill\'>Well-Calculated</span>.</div>';
 			this._currentStats['wellCalculatedStacks'] += 2;
 		} else {
@@ -2967,6 +2933,10 @@ class Sherlock extends hero {
 		const targets = getRandomTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let shapeshiftChance = 0.50;
+		if (this._voidLevel >= 2) shapeshiftChance = 0.60;
+
+
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
@@ -2974,7 +2944,7 @@ class Sherlock extends hero {
 			if (targetLock == '') {
 				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'basic', 'normal');
 				result += targets[0].takeDamage(this, 'Basic Attack', damageResult);
-				result += targets[0].getDebuff(this, 'Shapeshift', 15, { stacks: 3 }, false, '', 0.50, true);
+				result += targets[0].getDebuff(this, 'Shapeshift', 15, { stacks: 3 }, false, '', shapeshiftChance, true);
 
 				basicQueue.push([this, targets[0], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -2991,23 +2961,34 @@ class Sherlock extends hero {
 		let ccChance = 1.0;
 		let targetLock;
 
+		let damagePercent = 3;
+		let ccReducedChance = 0.35;
+		let layersGained = 2;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 8;
+			ccReducedChance = 0.30;
+			if (random() < 0.25) layersGained = 3;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 3);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Master Showman', damageResult);
 				result += targets[i].getDebuff(this, 'Shapeshift', 15, { stacks: 3 }, false, '', ccChance, true);
 
 				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
 
-			ccChance -= 0.35;
+			ccChance -= ccReducedChance;
 		}
 
-		result += '<div>' + this.heroDesc() + ' gained <span class=\'num\'>2</span> stacks of <span class=\'skill\'>Well-Calculated</span>.</div>';
-		this._currentStats['wellCalculatedStacks'] += 2;
+		result += `<div>${this.heroDesc()} gained <span class='num'>${layersGained}</span> stacks of <span class='skill'>Well-Calculated</span>.</div>`;
+		this._currentStats['wellCalculatedStacks'] += layersGained;
 
 		return result;
 	}
@@ -3016,7 +2997,6 @@ class Sherlock extends hero {
 
 class Tara extends hero {
 	passiveStats() {
-		// apply Immense Power passive
 		if (this._voidLevel >= 1) {
 			this.applyStatChange({ hpPercent: 0.5, holyDamage: 1.2, controlImmune: 0.3, damageReduce: 0.3 }, 'PassiveStats');
 		} else {
@@ -3162,12 +3142,13 @@ class Tara extends hero {
 }
 
 
-// Unimax-3000
-
 class UniMax3000 extends hero {
 	passiveStats() {
-		// apply Machine Forewarning passive
-		this.applyStatChange({ armorPercent: 0.3, hpPercent: 0.4, attackPercent: 0.25, controlImmune: 0.3, energy: 50 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ armorPercent: 0.4, hpPercent: 0.5, attackPercent: 0.35, controlImmune: 0.3, energy: 100 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ armorPercent: 0.3, hpPercent: 0.4, attackPercent: 0.25, controlImmune: 0.3, energy: 50 }, 'PassiveStats');
+		}
 	}
 
 
@@ -3186,16 +3167,24 @@ class UniMax3000 extends hero {
 
 	eventEnemyActive(target, e) {
 		let result = '';
+		let attackPercentStolen = 0.20;
+		let tauntChance = 0.30;
+
+		if (this._voidLevel >= 2) {
+			attackPercentStolen = 0.25;
+			tauntChance = 0.40;
+		}
+
 
 		if (target._currentStats['totalHP'] > 0) {
 			for (const i in e) {
 				if (this.heroDesc() == e[i][1].heroDesc()) {
-					const attackStolen = Math.floor(target._currentStats['totalAttack'] * 0.2);
+					const attackStolen = Math.floor(target._currentStats['totalAttack'] * attackPercentStolen);
 
 					result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Frenzied Taunt</span> triggered.</div>';
 					result += target.getDebuff(this, 'Fixed Attack', 2, { fixedAttack: attackStolen });
 					result += this.getBuff(this, 'Fixed Attack', 2, { fixedAttack: attackStolen });
-					result += target.getDebuff(this, 'Taunt', 2, {}, false, '', 0.30);
+					result += target.getDebuff(this, 'Taunt', 2, {}, false, '', tauntChance);
 
 					break;
 				}
@@ -3208,7 +3197,16 @@ class UniMax3000 extends hero {
 
 	endOfRound(roundNum) {
 		let result = '';
-		const healAmount = this.calcHeal(this, this._currentStats['totalAttack'] * 1.2);
+		let healPercent = 1.2;
+		let critDamageGained = 0.50;
+
+		if (this._voidLevel >= 3) {
+			healPercent = 2;
+			critDamageGained = 1;
+		}
+
+
+		const healAmount = this.calcHeal(this, this._currentStats['totalAttack'] * healPercent);
 
 		result += this.getHeal(this, healAmount);
 		result += this.getHeal(this, healAmount);
@@ -3221,7 +3219,7 @@ class UniMax3000 extends hero {
 				}
 			}
 
-			result += this.getBuff(this, 'Crit Damage', 15, { critDamage: 0.5 });
+			result += this.getBuff(this, 'Crit Damage', 15, { critDamage: critDamageGained });
 			result += this.getBuff(this, 'Rampage', 15);
 		}
 
@@ -3244,7 +3242,10 @@ class UniMax3000 extends hero {
 
 	eventSelfBasic() {
 		let result = '';
-		const healAmount = this.calcHeal(this, this._currentStats['totalAttack'] * 1.5);
+		let healPercent = 1.5;
+		if (this._voidLevel >= 2) healPercent = 2.5;
+
+		const healAmount = this.calcHeal(this, this._currentStats['totalAttack'] * healPercent);
 		result += this.getBuff(this, 'Heal', 2, { heal: healAmount });
 		return result;
 	}
@@ -3257,37 +3258,45 @@ class UniMax3000 extends hero {
 		const targets = getBackTargets(this, this._enemies);
 		let targetLock;
 
+		let damagePercent = 4.2;
+		let tauntChance = 0.50;
+		let allDamageReduceGained = 0.20;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 6.4;
+			tauntChance = 0.70;
+			allDamageReduceGained = 0.30;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 4.2);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Iron Whirlwind', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					damageResult2 = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 4.2);
+					damageResult2 = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 					result += targets[i].takeDamage(this, 'Iron Whirlwind 2', damageResult2);
 				}
 
-				result += targets[i].getDebuff(this, 'Taunt', 2, {}, false, '', 0.50);
+				result += targets[i].getDebuff(this, 'Taunt', 2, {}, false, '', tauntChance);
 
 				activeQueue.push([this, targets[i], damageResult['damageAmount'] + damageResult2['damageAmount'], damageResult['critted'] || damageResult2['critted']]);
 			}
 		}
 
-		result += this.getBuff(this, 'All Damage Reduce', 2, { allDamageReduce: 0.2 });
+		result += this.getBuff(this, 'All Damage Reduce', 2, { allDamageReduce: allDamageReduceGained });
 
 		return result;
 	}
 }
 
 
-// Asmodel
-
 class Asmodel extends hero {
 	passiveStats() {
-		// apply Asmodeus passive
 		this.applyStatChange({ hpPercent: 0.40, attackPercent: 0.35, holyDamage: 0.50, crit: 0.35, controlImmune: 0.30 }, 'PassiveStats');
 	}
 
@@ -3396,7 +3405,6 @@ class Asmodel extends hero {
 
 class Drake extends hero {
 	passiveStats() {
-		// apply Power of Void passive
 		if (this._voidLevel >= 1) {
 			this.applyStatChange({ attackPercent: 0.50, critDamage: 0.50, skillDamage: 1, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
 		} else {
@@ -3537,7 +3545,6 @@ class Russell extends hero {
 
 
 	passiveStats() {
-		// apply Baptism of Light passive
 		if (this._voidLevel >= 1) {
 			this.applyStatChange({ attackPercent: 0.40, holyDamage: 1, critDamage: 0.40, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
 		} else {
@@ -3721,11 +3728,8 @@ class Russell extends hero {
 }
 
 
-// Valkryie
-
 class Valkryie extends hero {
 	passiveStats() {
-		// apply Unparalleled Brave passive
 		this.applyStatChange({ hpPercent: 0.35, attackPercent: 0.25, crit: 0.30 }, 'PassiveStats');
 	}
 
@@ -3826,8 +3830,6 @@ class Valkryie extends hero {
 }
 
 
-// Ormus
-
 class Ormus extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
 		super(sHeroName, iHeroPos, attOrDef);
@@ -3836,7 +3838,6 @@ class Ormus extends hero {
 
 
 	passiveStats() {
-		// apply Power of Ormus passive
 		this.applyStatChange({ hpPercent: 0.35, attackPercent: 0.25, healEffect: 0.50 }, 'PassiveStats');
 	}
 
@@ -3937,11 +3938,8 @@ class Ormus extends hero {
 }
 
 
-// Rogan
-
 class Rogan extends hero {
 	passiveStats() {
-		// apply Wolfish Blood passive
 		this.applyStatChange({ attackPercent:0.30, hpPercent: 0.25, critDamage: 0.40, damageReduce: 0.30, speed: 60 }, 'PassiveStats');
 	}
 
@@ -4106,11 +4104,8 @@ class Rogan extends hero {
 }
 
 
-// Gerke
-
 class Gerke extends hero {
 	passiveStats() {
-		// apply Heavenly Order passive
 		this.applyStatChange({ holyDamage: 0.60, attackPercent: 0.25, hpPercent: 0.20, crit: 0.20 }, 'PassiveStats');
 	}
 
@@ -4188,8 +4183,6 @@ class Gerke extends hero {
 	}
 }
 
-
-// Sleepless
 
 class Sleepless extends hero {
 	constructor(sHeroName, iHeroPos, attOrDef) {
@@ -4317,11 +4310,8 @@ class Sleepless extends hero {
 }
 
 
-// Das Moge
-
 class DasMoge extends hero {
 	passiveStats() {
-		// apply Dark Insight passive
 		this.applyStatChange({ skillDamage: 0.625, attackPercent: 0.30, hpPercent: 0.40 }, 'PassiveStats');
 	}
 
@@ -4390,12 +4380,13 @@ class DasMoge extends hero {
 }
 
 
-// Ignis
-
 class Ignis extends hero {
 	passiveStats() {
-		// apply Blood of Dragons passive
-		this.applyStatChange({ hpPercent: 0.40, damageReduce: 0.30, healEffect: 0.25, speed: 60 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.50, damageReduce: 0.30, healEffect: 0.35, speed: 80 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.40, damageReduce: 0.30, healEffect: 0.25, speed: 60 }, 'PassiveStats');
+		}
 	}
 
 
@@ -4414,6 +4405,15 @@ class Ignis extends hero {
 
 	eventSelfBasic() {
 		let result = '';
+		let healPercent = 0.25;
+		let damageReduceGained = 0.15;
+
+		if (this._voidLevel >= 2) {
+			healPercent = 0.30;
+			damageReduceGained = 0.20;
+		}
+
+
 		const lostAmount = Math.floor(this._currentStats['totalHP'] * 0.25);
 		let healAmount = 0;
 
@@ -4424,9 +4424,9 @@ class Ignis extends hero {
 		const targets = getLowestHPTargets(this, this._allies, 3);
 
 		for (const i in targets) {
-			healAmount = this.calcHeal(targets[i], this._stats['totalHP'] * 0.25);
+			healAmount = this.calcHeal(targets[i], this._stats['totalHP'] * healPercent);
 			result += targets[i].getHeal(this, healAmount);
-			result += targets[i].getBuff(this, 'Damage Reduce', 2, { damageReduce: 0.15 });
+			result += targets[i].getBuff(this, 'Damage Reduce', 2, { damageReduce: damageReduceGained });
 		}
 
 		return result;
@@ -4437,11 +4437,20 @@ class Ignis extends hero {
 		let result = '';
 		const targets = getNearestTargets(this, this._allies, 1);
 
+		let energyGained = 100;
+		let controlImmuneGained = 1;
+
+		if (this._voidLevel >= 3) {
+			energyGained = 100;
+			controlImmuneGained = 1;
+		}
+
+
 		for (const i in targets) {
 			const healAmount = this.calcHeal(targets[i], targets[i]._stats['totalHP']);
 			result += targets[i].getHeal(this, healAmount);
-			result += targets[i].getEnergy(this, 100);
-			result += targets[i].getBuff(this, 'Control Immune', 15, { controlImmune: 1.0 });
+			result += targets[i].getEnergy(this, energyGained);
+			result += targets[i].getBuff(this, 'Control Immune', 15, { controlImmune: controlImmuneGained });
 		}
 
 		return result;
@@ -4454,12 +4463,23 @@ class Ignis extends hero {
 		let targets = getFrontTargets(this, this._enemies);
 		let targetLock;
 
+		let damagePercent = 2.28;
+		let healPercent = 0.50;
+		let energyGained = 100;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 4;
+			healPercent = 0.60;
+			energyGained = 150;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 2.28);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Blessing of Dragonflame', damageResult);
 				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -4468,7 +4488,7 @@ class Ignis extends hero {
 
 		targets = getLowestHPTargets(this, this._allies, 1);
 		for (const i in targets) {
-			const healAmount = this.calcHeal(targets[i], this._currentStats['totalHP'] * 0.50);
+			const healAmount = this.calcHeal(targets[i], this._currentStats['totalHP'] * healPercent);
 			result += targets[i].getHeal(this, healAmount);
 		}
 
@@ -4476,7 +4496,7 @@ class Ignis extends hero {
 		targets = getNearestTargets(this, this._allies, 1);
 		for (const i in targets) {
 			result += targets[i].getBuff(this, 'Damage Reduce', 3, { damageReduce: 0.40 });
-			result += targets[i].getEnergy(this, 100);
+			result += targets[i].getEnergy(this, energyGained);
 		}
 
 		return result;
@@ -4484,11 +4504,8 @@ class Ignis extends hero {
 }
 
 
-// Heart Watcher
-
 class HeartWatcher extends hero {
 	passiveStats() {
-		// apply Tough Heart passive
 		this.applyStatChange({ attackPercent: 0.30, crit: 0.30, hpPercent: 0.20 }, 'PassiveStats');
 	}
 
@@ -4591,11 +4608,8 @@ class HeartWatcher extends hero {
 }
 
 
-// King Barton
-
 class KingBarton extends hero {
 	passiveStats() {
-		// apply King's Demeanor passive
 		this.applyStatChange({ hpPercent: 0.40, attackPercent: 0.35, controlImmune: 0.35, damageAgainstStun: 1.0 }, 'PassiveStats');
 	}
 
@@ -4693,11 +4707,8 @@ class KingBarton extends hero {
 }
 
 
-// Xia
-
 class Xia extends hero {
 	passiveStats() {
-		// apply Shadow Step passive
 		this.applyStatChange({ attackPercent: 0.35, crit: 0.35, block: 0.70, controlImmune: 0.35, speed: 30 }, 'PassiveStats');
 	}
 
@@ -4802,7 +4813,6 @@ class Xia extends hero {
 
 class Tix extends hero {
 	passiveStats() {
-		// apply Coffin of Nothingness passive
 		this.applyStatChange({ hpPercent: 0.35, crit: 0.30, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
 	}
 
@@ -4925,11 +4935,8 @@ class Tix extends hero {
 }
 
 
-// Flora
-
 class Flora extends hero {
 	passiveStats() {
-		// apply Blessings of Nature passive
 		this.applyStatChange({ hpPercent: 0.40, attackPercent: 0.25, crit: 0.30, speed: 60 }, 'PassiveStats');
 	}
 
@@ -5052,17 +5059,21 @@ class Flora extends hero {
 }
 
 
-// Inosuke
-// eslint-disable-next-line no-undef, no-unused-vars
 class Inosuke extends hero {
 	passiveStats() {
-		// apply passive
-		this.applyStatChange({ hpPercent: 0.25, attackPercent: 0.35, controlImmune: 0.30, speed: 60, critDamageReduce: 0.25 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.35, attackPercent: 0.45, controlImmune: 0.30, speed: 80, critDamageReduce: 0.30 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.25, attackPercent: 0.35, controlImmune: 0.30, speed: 60, critDamageReduce: 0.25 }, 'PassiveStats');
+		}
 	}
 
 
 	endOfRound() {
 		let result = '';
+		let hpDamagePercent = 0.40;
+		if (this._voidLevel >= 3) hpDamagePercent = 0.50;
+
 
 		if ('Swordwind Shield' in this._buffs) {
 			// eslint-disable-next-line no-undef
@@ -5070,7 +5081,7 @@ class Inosuke extends hero {
 			const maxDamage = this._currentStats.totalAttack * 15;
 
 			for (const t of targets) {
-				let damageAmount = t._currentStats.totalHP * 0.40;
+				let damageAmount = t._currentStats.totalHP * hpDamagePercent;
 				if (damageAmount > maxDamage) damageAmount = maxDamage;
 
 				const damageResult = this.calcDamage(this, damageAmount, 'passive', 'normal');
@@ -5085,26 +5096,37 @@ class Inosuke extends hero {
 	doBasic() {
 		let result = '';
 		let damageResult;
-		// eslint-disable-next-line no-undef
 		const targets = getRandomTargets(this, this._enemies, 3);
 		const maxShield = this._currentStats.totalAttack * 50;
 		let damageDealt = 0;
+
+		let damagePercent = 3;
+		let shieldPercent = 0.50;
+		let attackPercentGained = 0.30;
+		let critDamageGained = 0.20;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 6;
+			shieldPercent = 0.60;
+			attackPercentGained = 0.35;
+			critDamageGained = 0.25;
+		}
+
 
 		for (const t of targets) {
 			const targetLock = t.getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(t, this._currentStats.totalAttack * 3, 'basic', 'normal');
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack * damagePercent, 'basic', 'normal');
 				result += t.takeDamage(this, 'Basic Attack', damageResult);
 				damageDealt += damageResult.damageAmount;
-				// eslint-disable-next-line no-undef
 				basicQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
 			}
 		}
 
 
-		let shieldAmount = Math.floor(damageDealt * 0.50);
+		let shieldAmount = Math.floor(damageDealt * shieldPercent);
 
 		if ('Swordwind Shield' in this._buffs) {
 			const buffStack = Object.values(this._buffs['Swordwind Shield'])[0];
@@ -5118,12 +5140,12 @@ class Inosuke extends hero {
 			if (shieldAmount > maxShield) shieldAmount = maxShield;
 
 			if (shieldAmount > 0) {
-				result += this.getBuff(this, 'Swordwind Shield', 15, { attackAmount: shieldAmount });
+				result += this.getBuff(this, 'Swordwind Shield', 127, { attackAmount: shieldAmount });
 			}
 		}
 
-		result += this.getBuff(this, 'Attack Percent', 4, { attackPercent: 0.30 });
-		result += this.getBuff(this, 'Crit Damage', 4, { critDamage: 0.20 });
+		result += this.getBuff(this, 'Attack Percent', 4, { attackPercent: attackPercentGained });
+		result += this.getBuff(this, 'Crit Damage', 4, { critDamage: critDamageGained });
 
 		return result;
 	}
@@ -5132,7 +5154,6 @@ class Inosuke extends hero {
 	doActive() {
 		let result = '';
 		let damageResult;
-		// eslint-disable-next-line no-undef
 		const targets = getRandomTargets(this, this._enemies, 3);
 		const maxShield = this._currentStats.totalAttack * 50;
 		let damageDealt = 0;
@@ -5145,35 +5166,48 @@ class Inosuke extends hero {
 			extraHit = true;
 		}
 
+		let damagePercent = 12;
+		let shieldPercent = 0.50;
+		let hpDamagePercent = 0.80;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 20;
+			shieldPercent = 0.60;
+			hpDamagePercent = 0.90;
+		}
+
 
 		for (const t of targets) {
 			const targetLock = t.getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', 12, canCrit);
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent, canCrit);
 				result += t.takeDamage(this, 'Justicial Strike', damageResult);
 				damageDealt += damageResult.damageAmount;
-
-				if (extraHit) {
-					const maxHPDamage = this._currentStats.totalAttack * 50;
-					let hpDamage = Math.floor(t._currentStats.totalHP * 0.80);
-
-					if (hpDamage > maxHPDamage) hpDamage = maxHPDamage;
-					hpDamageResult = this.calcDamage(t, hpDamage, 'active', 'true', 1);
-					extraHit = false;
-
-					result += t.takeDamage(this, 'Justicial Strike HP', hpDamageResult);
-					damageDealt += hpDamageResult.damageAmount;
-				}
-
-				// eslint-disable-next-line no-undef
 				activeQueue.push([this, t, damageResult.damageAmount + hpDamageResult.damageAmount, damageResult.critted]);
 			}
 		}
 
 
-		let shieldAmount = Math.floor(damageDealt * 0.50);
+		if (extraHit) {
+			const target = getRandomTargets(this, targets, 1);
+
+			if (target.length > 0) {
+				const maxHPDamage = this._currentStats.totalAttack * 50;
+				let hpDamage = Math.floor(target[0]._currentStats.totalHP * hpDamagePercent);
+
+				if (hpDamage > maxHPDamage) hpDamage = maxHPDamage;
+				hpDamageResult = this.calcDamage(target[0], hpDamage, 'active', 'true', 1);
+				extraHit = false;
+
+				result += target[0].takeDamage(this, 'Justicial Strike HP', hpDamageResult);
+				damageDealt += hpDamageResult.damageAmount;
+			}
+		}
+
+
+		let shieldAmount = Math.floor(damageDealt * shieldPercent);
 
 		if ('Swordwind Shield' in this._buffs) {
 			const buffStack = Object.values(this._buffs['Swordwind Shield'])[0];
@@ -5187,7 +5221,7 @@ class Inosuke extends hero {
 			if (shieldAmount > maxShield) shieldAmount = maxShield;
 
 			if (shieldAmount > 0) {
-				result += this.getBuff(this, 'Swordwind Shield', 15, { attackAmount: shieldAmount });
+				result += this.getBuff(this, 'Swordwind Shield', 127, { attackAmount: shieldAmount });
 			}
 		}
 
@@ -5198,8 +5232,11 @@ class Inosuke extends hero {
 
 class Morax extends hero {
 	passiveStats() {
-		// apply Tough Guy passive
-		this.applyStatChange({ attackPercent: 0.30, hpPercent: 0.40, crit: 0.30, precision: 0.70, effectBeingHealed: 0.40 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.40, hpPercent: 0.50, crit: 0.30, precision: 0.90, effectBeingHealed: 0.50 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.30, hpPercent: 0.40, crit: 0.30, precision: 0.70, effectBeingHealed: 0.40 }, 'PassiveStats');
+		}
 	}
 
 
@@ -5224,8 +5261,12 @@ class Morax extends hero {
 
 	eventSelfBasic() {
 		let result = '';
+		let extraAmmoChance = 0;
+		if (this._voidLevel >= 2) extraAmmoChance = 0.50;
+
 		result += this.getBuff(this, 'Extra Ammo', 15);
 		result += this.getBuff(this, 'Extra Ammo', 15);
+		if (random() < extraAmmoChance) result += this.getBuff(this, 'Extra Ammo', 15);
 
 
 		const listDebuffs = [];
@@ -5270,9 +5311,17 @@ class Morax extends hero {
 
 	battleFrenzy() {
 		let result = '';
+		let maxADD = 1.2;
+		let maxADR = 0.40;
+
+		if (this._voidLevel >= 3) {
+			maxADD = 1.6;
+			maxADR = 0.50;
+		}
+
 		const currentHPPercent = 1 - (this._currentStats.totalHP / this._stats.totalHP);
-		const allDamageReduceGained = 0.40 * currentHPPercent;
-		const allDamageDealtGained = 1.2 * currentHPPercent;
+		const allDamageReduceGained = maxADR * currentHPPercent;
+		const allDamageDealtGained = maxADD * currentHPPercent;
 
 		if ('Battle Frenzy' in this._buffs) {
 			const buffStack = Object.values(this._buffs['Battle Frenzy'])[0];
@@ -5297,6 +5346,14 @@ class Morax extends hero {
 		let numAttacks = 1;
 		const alreadyTargeted = {};
 
+		let damagePercent = 6;
+		let burnDamageTakenGained = -0.30;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 8;
+			burnDamageTakenGained = -0.40;
+		}
+
 
 		if ('Extra Ammo' in this._buffs) {
 			numAttacks += Object.keys(this._buffs['Extra Ammo']).length;
@@ -5312,13 +5369,13 @@ class Morax extends hero {
 				result += targetLock;
 
 				if (targetLock == '') {
-					const damageResult = this.calcDamage(t, this._currentStats['totalAttack'], 'active', 'normal', 6);
+					const damageResult = this.calcDamage(t, this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 					result += t.takeDamage(this, 'Hellish Smash', damageResult);
 
-					const burnDamageResult = this.calcDamage(t, this._currentStats['totalAttack'], 'active', 'burn', 6, 0, 2);
+					const burnDamageResult = this.calcDamage(t, this._currentStats['totalAttack'], 'active', 'burn', damagePercent, 0, 2);
 					result += t.getDebuff(this, 'Burn', 2, { burn: burnDamageResult['damageAmount'] });
 
-					result += t.getDebuff(this, 'Burn Damage Taken', 2, { burnDamageTaken: -0.30 });
+					result += t.getDebuff(this, 'Burn Damage Taken', 2, { burnDamageTaken: burnDamageTakenGained });
 
 
 					if (t._heroPos in alreadyTargeted) {
@@ -5343,7 +5400,6 @@ class Morax extends hero {
 
 class Phorcys extends hero {
 	passiveStats() {
-		// apply Necromancy passive
 		if (this._voidLevel >= 1) {
 			this.applyStatChange({ hpPercent: 0.30, attackPercent: 0.50, skillDamage: 0.90, controlImmune: 0.30, speed: 100 }, 'PassiveStats');
 		} else {
