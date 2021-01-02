@@ -10,6 +10,21 @@ import { triggerQueue, activeQueue, basicQueue, roundNum } from './simulation.js
 import { random, getAllTargets, translate, isDot, isMonster, formatNum, isControlEffect, uuid, isDispellable, isAttribute } from './utilityFunctions.js';
 
 
+const voidPurpleNodes = {
+	'None': { },
+	'armorPercent': { armorPercent: 0.08 },
+	'armorBreak': { armorBreak: 0.08 },
+	'precision': { precision: 0.06 },
+	'block': { block: 0.07 },
+	'controlImmune': { controlImmune: 0.035 },
+	'damageReduce': { damageReduce: 0.035 },
+	'crit': { crit: 0.035 },
+	'critDamage': { critDamage: 0.06 },
+	'holyDamage': { holyDamage: 0.03 },
+	'skillDamage': { skillDamage: 0.10 },
+};
+
+
 let attMonsterName, defMonsterName, attFrame, defFrame;
 
 // base hero class, extend this class for each hero
@@ -47,6 +62,9 @@ class hero {
 		this._enable3 = 'None';
 		this._enable4 = 'None';
 		this._enable5 = 'None';
+		this._voidEnable1 = 'None';
+		this._voidEnable2 = 'None';
+		this._voidEnable3 = 'None';
 
 		// dictionary to track buffs and debuffs during combat
 		this._buffs = {};
@@ -427,21 +445,21 @@ class hero {
 				if (this._voidLevel >= 3) {
 					this.applyStatChange({ hp: 412215 }, 'void3Node1');
 					this.applyStatChange({ attack: 9750 }, 'void3Node2');
-					this.applyStatChange({}, 'void3Node3');
+					this.applyStatChange(voidPurpleNodes[this._voidEnable3], 'void3Node3');
 
 				}
 
 				if (this._voidLevel >= 2) {
 					this.applyStatChange({ hp: 329700 }, 'void2Node1');
 					this.applyStatChange({ attack: 7800 }, 'void2Node2');
-					this.applyStatChange({}, 'void2Node3');
+					this.applyStatChange(voidPurpleNodes[this._voidEnable2], 'void2Node3');
 
 				}
 
 				if (this._voidLevel >= 1) {
 					this.applyStatChange({ hp: 247275 }, 'void1Node1');
 					this.applyStatChange({ attack: 5850 }, 'void1Node2');
-					this.applyStatChange({}, 'void1Node3');
+					this.applyStatChange(voidPurpleNodes[this._voidEnable1], 'void1Node3');
 				}
 
 			} else {
@@ -1595,6 +1613,7 @@ class hero {
 	eventEnemyBasic() { return ''; }
 	eventAllyActive() { return ''; }
 	eventEnemyActive() { return ''; }
+	eventSelfDied() { return ''; }
 	eventAllyDied() { return ''; }
 	eventEnemyDied() { return ''; }
 	eventGotCC() { return ''; }
@@ -1619,6 +1638,9 @@ class hero {
 
 		} else if (['eventSelfBasic', 'eventSelfActive'].includes(trigger[1]) && 'Bloodthirsty' in this._buffs && this._currentStats['totalHP'] > 0) {
 			return this.eventBloodthirsty(trigger[2]);
+
+		} else if (trigger[1] == 'eventSelfDied' && 'Revenging Wraith' in this._debuffs) {
+			return this.eventRevengingWraith();
 
 		}
 
@@ -1976,23 +1998,21 @@ class hero {
 	}
 
 
-	eventSelfDied() {
+	eventRevengingWraith() {
 		let result = '';
 
-		if ('Revenging Wraith' in this._debuffs) {
-			for (const debuffStack of Object.values(this._debuffs['Revenging Wraith'])) {
-				const targets = getAllTargets(this, this._allies);
-				let hpDamagePercent = 0.30;
-				if (debuffStack.source._voidLevel >= 3) hpDamagePercent = 0.35;
+		for (const debuffStack of Object.values(this._debuffs['Revenging Wraith'])) {
+			const targets = getAllTargets(this, this._allies);
+			let hpDamagePercent = 0.30;
+			if (debuffStack.source._voidLevel >= 3) hpDamagePercent = 0.35;
 
-				for (const t of targets) {
-					let damageAmount = Math.floor(t._stats.totalHP * hpDamagePercent);
-					const maxDamage = debuffStack.effects.attackAmount * 25;
-					if (damageAmount > maxDamage) damageAmount = maxDamage;
+			for (const t of targets) {
+				let damageAmount = Math.floor(t._stats.totalHP * hpDamagePercent);
+				const maxDamage = debuffStack.effects.attackAmount * 25;
+				if (damageAmount > maxDamage) damageAmount = maxDamage;
 
-					const damageResult = debuffStack.source.calcDamage(t, damageAmount, 'passive', 'true');
-					result += t.takeDamage(debuffStack.source, 'Revenging Wraith', damageResult);
-				}
+				const damageResult = debuffStack.source.calcDamage(t, damageAmount, 'passive', 'true');
+				result += t.takeDamage(debuffStack.source, 'Revenging Wraith', damageResult);
 			}
 		}
 

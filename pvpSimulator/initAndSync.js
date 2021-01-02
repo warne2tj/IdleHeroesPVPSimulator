@@ -326,6 +326,10 @@ function updateHero(heroPos, prefix) {
 		arrToUse[heroPos]._enable4 = document.getElementById(prefix + 'Hero' + heroPos + 'Enable4').value;
 		arrToUse[heroPos]._enable5 = document.getElementById(prefix + 'Hero' + heroPos + 'Enable5').value;
 
+		arrToUse[heroPos]._voidEnable1 = document.getElementById(prefix + 'Hero' + heroPos + 'VoidEnable1').value;
+		arrToUse[heroPos]._voidEnable2 = document.getElementById(prefix + 'Hero' + heroPos + 'VoidEnable2').value;
+		arrToUse[heroPos]._voidEnable3 = document.getElementById(prefix + 'Hero' + heroPos + 'VoidEnable3').value;
+
 		arrToUse[heroPos].updateCurrentStats();
 		cHeroSheet.innerHTML = arrToUse[heroPos].getHeroSheet();
 	}
