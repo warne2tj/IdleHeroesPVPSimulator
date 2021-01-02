@@ -1512,23 +1512,15 @@ class hero {
 
 							if (b == 'Revenging Wraith') {
 								const debuffStack = this._debuffs[b][s];
-								let damageAmount = Math.floor(this._stats.totalHP * 0.30);
+								let hpDamagePercent = 0.30;
+								if (debuffStack.source._voidLevel >= 3) hpDamagePercent = 0.35;
+
+
+								let damageAmount = Math.floor(this._stats.totalHP * hpDamagePercent);
 								if (damageAmount > debuffStack.effects.attackAmount * 25) damageAmount = debuffStack.effects.attackAmount * 25;
 
 								damageResult = debuffStack.source.calcDamage(this, damageAmount, 'passive', 'true');
 								result += this.takeDamage(debuffStack.source, 'Revenging Wraith', damageResult);
-
-								if (this._currentStats.totalHP <= 0) {
-									const targets = getAllTargets(this, this._allies);
-
-									for (const t of targets) {
-										damageAmount = Math.floor(t._stats.totalHP * 0.30);
-										if (damageAmount > debuffStack.effects.attackAmount * 25) damageAmount = debuffStack.effects.attackAmount * 25;
-
-										damageResult = debuffStack.source.calcDamage(t, damageAmount, 'passive', 'true');
-										result += t.takeDamage(debuffStack.source, 'Revenging Wraith', damageResult);
-									}
-								}
 							}
 						}
 					}
@@ -1603,7 +1595,6 @@ class hero {
 	eventEnemyBasic() { return ''; }
 	eventAllyActive() { return ''; }
 	eventEnemyActive() { return ''; }
-	eventSelfDied() { return ''; }
 	eventAllyDied() { return ''; }
 	eventEnemyDied() { return ''; }
 	eventGotCC() { return ''; }
@@ -1956,20 +1947,53 @@ class hero {
 
 	eventBloodthirsty(targets) {
 		let result = '';
+		const buffStack = Object.values(this._buffs['Bloodthirsty'])[0];
 		let damageResult = {};
 		let hpDamage = 0;
 		let maxDamage = 15 * this._currentStats['totalAttack'];
 
+		let hpDamagePercent = 0.20;
+		let healPercent = 0.30;
+
+		if (buffStack.source._voidLevel >= 4) {
+			hpDamagePercent = 0.25;
+			healPercent = 0.40;
+		}
+
 		for (const i in targets) {
-			hpDamage = 0.20 * (targets[i][1]._stats['totalHP'] - targets[i][1]._currentStats['totalHP']);
+			hpDamage = hpDamagePercent * (targets[i][1]._stats['totalHP'] - targets[i][1]._currentStats['totalHP']);
 			maxDamage = 15 * this._currentStats['totalAttack'];
 			if (hpDamage > maxDamage) { hpDamage = maxDamage; }
 
 			damageResult = this.calcDamage(targets[i][1], hpDamage, 'passive', 'true');
 			result += targets[i][1].takeDamage(this, 'Bloodthirsty', damageResult);
 
-			const healAmount = this.calcHeal(this, 0.30 * damageResult['damageAmount']);
+			const healAmount = this.calcHeal(this, healPercent * damageResult['damageAmount']);
 			result += this.getHeal(this, healAmount);
+		}
+
+		return result;
+	}
+
+
+	eventSelfDied() {
+		let result = '';
+
+		if ('Revenging Wraith' in this._debuffs) {
+			for (const debuffStack of Object.values(this._debuffs['Revenging Wraith'])) {
+				const targets = getAllTargets(this, this._allies);
+				let hpDamagePercent = 0.30;
+				if (debuffStack.source._voidLevel >= 3) hpDamagePercent = 0.35;
+
+				for (const t of targets) {
+					let damageAmount = Math.floor(t._stats.totalHP * hpDamagePercent);
+					const maxDamage = debuffStack.effects.attackAmount * 25;
+					if (damageAmount > maxDamage) damageAmount = maxDamage;
+
+					const damageResult = debuffStack.source.calcDamage(t, damageAmount, 'passive', 'true');
+					result += t.takeDamage(debuffStack.source, 'Revenging Wraith', damageResult);
+				}
+			}
 		}
 
 		return result;

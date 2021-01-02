@@ -1936,7 +1936,11 @@ class Horus extends hero {
 
 class Ithaqua extends hero {
 	passiveStats() {
-		this.applyStatChange({ attackPercent: 0.35, crit: 0.35, critDamage: 0.5, speed: 60, controlImmune: 0.3 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.45, crit: 0.35, critDamage: 0.5, speed: 80, controlImmune: 0.3 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.35, crit: 0.35, critDamage: 0.5, speed: 60, controlImmune: 0.3 }, 'PassiveStats');
+		}
 	}
 
 
@@ -1957,11 +1961,14 @@ class Ithaqua extends hero {
 		let result = '';
 		const targets = getRandomTargets(this, this._enemies, 1);
 
+		let debuffDuration = 3;
+		if (this._voidLevel >= 2) debuffDuration = 4;
+
 		if (targets.length > 0) {
-			result += targets[0].getDebuff(this, 'Ghost Possessed', 3, {}, false, '', 1, true);
+			result += targets[0].getDebuff(this, 'Ghost Possessed', debuffDuration, {}, false, '', 1, true);
 		}
 
-		result += this.getBuff(this, 'Armor Break', 3, { armorBreak: 1.0 });
+		result += this.getBuff(this, 'Armor Break', debuffDuration, { armorBreak: 1.0 });
 		return result;
 	}
 
@@ -1970,13 +1977,17 @@ class Ithaqua extends hero {
 		let result = '';
 		let damageResult = {};
 
+		let dotPercent = 0.50;
+		if (this._voidLevel >= 2) dotPercent = 0.60;
+
+
 		for (const i in e) {
 			if (e[i][1]._currentStats['totalHP'] > 0) {
-				damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, 'passive', 'poisonTrue', 1, 1, 2);
+				damageResult = this.calcDamage(e[i][1], e[i][2] * dotPercent, 'passive', 'poisonTrue', 1, 1, 2);
 				result += e[i][1].getDebuff(this, 'Poison True', 2, { poisonTrue: damageResult['damageAmount'] }, false, 'passive');
 
 				if (e[i][1]._currentStats['totalHP'] > 0 && e[i][3] == true) {
-					damageResult = this.calcDamage(e[i][1], e[i][2] * 0.25, 'passive', 'bleedTrue', 1, 1, 2);
+					damageResult = this.calcDamage(e[i][1], e[i][2] * dotPercent, 'passive', 'bleedTrue', 1, 1, 2);
 					result += e[i][1].getDebuff(this, 'Bleed True', 2, { bleedTrue: damageResult['damageAmount'] }, false, 'passive');
 				}
 			}
@@ -1994,6 +2005,12 @@ class Ithaqua extends hero {
 		let targetLock;
 		const alreadyTargeted = {};
 
+		let damagePercent = 1.8;
+		let healPercent = 1;
+		if (this._voidLevel >= 3) damagePercent = 2.4;
+		if (this._voidLevel >= 4) healPercent = 1.5;
+
+
 		for (const i in targets) {
 			if (targets[i]._currentStats['totalHP'] > 0) {
 				targetLock = targets[i].getTargetLock(this);
@@ -2001,11 +2018,11 @@ class Ithaqua extends hero {
 
 				if (targetLock == '') {
 					if ('Ghost Possessed' in this._enemies[i]._debuffs) {
-						damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 1.8, 'basic', 'normal');
+						damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 						result += targets[i].takeDamage(this, 'GP - Basic Attack', damageResult);
 						alreadyTargeted[targets[i]._heroPos] = [this, targets[i], damageResult['damageAmount'], damageResult['critted']];
 
-						healAmount = this.calcHeal(this, damageResult['damageAmount']);
+						healAmount = this.calcHeal(this, damageResult['damageAmount'] * healPercent);
 						result += this.getHeal(this, healAmount);
 					}
 				}
@@ -2019,7 +2036,7 @@ class Ithaqua extends hero {
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * 1.8, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 				result += targets[0].takeDamage(this, 'Basic Attack', damageResult);
 				result += targets[0].getDebuff(this, 'Ghost Possessed', 3, {}, false, '', 1, true);
 
@@ -2051,23 +2068,34 @@ class Ithaqua extends hero {
 		let targetLock;
 		const alreadyTargeted = {};
 
+		let damagePercent = 4.4;
+		let hpDamagePercent = 0.10;
+		let healPercent = 1;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 8;
+			hpDamagePercent = 0.12;
+			healPercent = 1.5;
+		}
+
+
 		for (const i in targets) {
 			if ('Ghost Possessed' in targets[i]._debuffs) {
 				targetLock = targets[i].getTargetLock(this);
 				result += targetLock;
 
 				if (targetLock == '') {
-					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 4.4);
+					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 					result += targets[i].takeDamage(this, 'GP - Ghost Possession', damageResult);
 
 					if (targets[i]._currentStats['totalHP'] > 0) {
-						hpDamage = targets[i]._stats['totalHP'] * 0.10;
+						hpDamage = targets[i]._stats['totalHP'] * hpDamagePercent;
 						if (hpDamage > this._currentStats['totalAttack'] * 15) { hpDamage = this._currentStats['totalAttack'] * 15; }
 						hpDamageResult = this.calcDamage(targets[i], hpDamage, 'active', 'true');
 						result += targets[i].takeDamage(this, 'GP - Ghost Possession HP', hpDamageResult);
 					}
 
-					healAmount = this.calcHeal(this, damageResult['damageAmount'] + hpDamageResult['damageAmount']);
+					healAmount = this.calcHeal(this, (damageResult['damageAmount'] + hpDamageResult['damageAmount']) * healPercent);
 					result += this.getHeal(this, healAmount);
 
 					alreadyTargeted[targets[i]._heroPos] = [this, targets[i], damageResult['damageAmount'] + hpDamageResult['damageAmount'], damageResult['critted']];
@@ -2082,11 +2110,11 @@ class Ithaqua extends hero {
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', 4.4);
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[0].takeDamage(this, 'Ghost Possession', damageResult);
 
 				if (targets[0]._currentStats['totalHP'] > 0) {
-					hpDamage = targets[0]._stats['totalHP'] * 0.10;
+					hpDamage = targets[0]._stats['totalHP'] * hpDamagePercent;
 					if (hpDamage > this._currentStats['totalAttack'] * 15) { hpDamage = this._currentStats['totalAttack'] * 15; }
 					hpDamageResult = this.calcDamage(targets[0], hpDamage, 'active', 'true');
 					result += targets[0].takeDamage(this, 'Ghost Possession HP', hpDamageResult);
@@ -3940,7 +3968,11 @@ class Ormus extends hero {
 
 class Rogan extends hero {
 	passiveStats() {
-		this.applyStatChange({ attackPercent:0.30, hpPercent: 0.25, critDamage: 0.40, damageReduce: 0.30, speed: 60 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent:0.40, hpPercent: 0.35, critDamage: 0.40, damageReduce: 0.30, speed: 80 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent:0.30, hpPercent: 0.25, critDamage: 0.40, damageReduce: 0.30, speed: 60 }, 'PassiveStats');
+		}
 	}
 
 
@@ -3948,13 +3980,21 @@ class Rogan extends hero {
 		let result = '';
 		const targets = getAllTargets(this, this._allies);
 
+		let speedGained = 20;
+		let critDamageGained = 0.20;
+
+		if (this._voidLevel >= 3) {
+			speedGained = 30;
+			critDamageGained = 0.25;
+		}
+
 		for (const i in targets) {
 			if (targets[i]._heroClass == 'Assassin') {
-				result += targets[i].getBuff(this, 'Speed', 2, { speed: 40 });
-				result += targets[i].getBuff(this, 'Crit Damage', 2, { critDamage: 0.40 });
+				result += targets[i].getBuff(this, 'Speed', 2, { speed: speedGained * 2 });
+				result += targets[i].getBuff(this, 'Crit Damage', 2, { critDamage: critDamageGained * 2 });
 			} else {
-				result += targets[i].getBuff(this, 'Speed', 2, { speed: 20 });
-				result += targets[i].getBuff(this, 'Crit Damage', 2, { critDamage: 0.20 });
+				result += targets[i].getBuff(this, 'Speed', 2, { speed: speedGained });
+				result += targets[i].getBuff(this, 'Crit Damage', 2, { critDamage: critDamageGained });
 			}
 		}
 
@@ -3966,12 +4006,15 @@ class Rogan extends hero {
 		let result = '';
 		const targets = getAllTargets(this, this._allies);
 
+		let attackPercentGained = 0.20;
+		if (this._voidLevel >= 3) attackPercentGained = 0.30;
+
 		for (const i in targets) {
 			if (targets[i]._heroClass == 'Assassin') {
-				result += targets[i].getBuff(this, 'attackPercent', 2, { attackPercent: 0.40 });
+				result += targets[i].getBuff(this, 'attackPercent', 2, { attackPercent: attackPercentGained * 2 });
 				result += targets[i].getBuff(this, 'Crit', 2, { crit: 0.20 });
 			} else {
-				result += targets[i].getBuff(this, 'attackPercent', 2, { attackPercent: 0.20 });
+				result += targets[i].getBuff(this, 'attackPercent', 2, { attackPercent: attackPercentGained });
 				result += targets[i].getBuff(this, 'Crit', 2, { crit: 0.10 });
 			}
 		}
@@ -3989,6 +4032,17 @@ class Rogan extends hero {
 		const targets = getLowestHPTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let damagePercent = 2.6;
+		let hpDamagePercent = 0.20;
+		let healPercent = 0.30;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 4;
+			hpDamagePercent = 0.25;
+			healPercent = 0.40;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
@@ -3999,11 +4053,11 @@ class Rogan extends hero {
 					canCrit = 2;
 				}
 
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 2.6, 'basic', 'normal', 1, canCrit);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal', 1, canCrit);
 				result += targets[i].takeDamage(this, 'Savagery', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					hpDamage = 0.20 * (targets[i]._stats['totalHP'] - targets[i]._currentStats['totalHP']);
+					hpDamage = hpDamagePercent * (targets[i]._stats['totalHP'] - targets[i]._currentStats['totalHP']);
 					maxDamage = 15 * this._currentStats['totalAttack'];
 					if (hpDamage > maxDamage) { hpDamage = maxDamage; }
 
@@ -4011,7 +4065,7 @@ class Rogan extends hero {
 					result += targets[i].takeDamage(this, 'Savagery HP', hpDamageResult);
 				}
 
-				const healAmount = this.calcHeal(this, 0.30 * (damageResult['damageAmount'] + hpDamageResult['damageAmount']));
+				const healAmount = this.calcHeal(this, healPercent * (damageResult['damageAmount'] + hpDamageResult['damageAmount']));
 				result += this.getHeal(this, healAmount);
 
 				basicQueue.push([this, targets[i], damageResult['damageAmount'] + hpDamageResult['damageAmount'], damageResult['critted']]);
@@ -4033,6 +4087,14 @@ class Rogan extends hero {
 		let targets = getLowestHPTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let damagePercent = 3;
+		let hpDamagePercent = 0.30;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 5.6;
+			hpDamagePercent = 0.40;
+		}
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
@@ -4048,7 +4110,7 @@ class Rogan extends hero {
 					canCrit = 1;
 				}
 
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 3, canCrit);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent, canCrit);
 				result += targets[i].takeDamage(this, 'Bloodthirsty Predator 1', damageResult);
 				totalDamage += damageResult['damageAmount'];
 				didCrit = didCrit || damageResult['critted'];
@@ -4060,14 +4122,14 @@ class Rogan extends hero {
 						canCrit = 1;
 					}
 
-					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 3, canCrit);
+					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent, canCrit);
 					result += targets[i].takeDamage(this, 'Bloodthirsty Predator 2', damageResult);
 					totalDamage += damageResult['damageAmount'];
 					didCrit = didCrit || damageResult['critted'];
 				}
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					hpDamage = 0.20 * (targets[i]._stats['totalHP'] - targets[i]._currentStats['totalHP']);
+					hpDamage = hpDamagePercent * (targets[i]._stats['totalHP'] - targets[i]._currentStats['totalHP']);
 					maxDamage = 15 * this._currentStats['totalAttack'];
 					if (hpDamage > maxDamage) { hpDamage = maxDamage; }
 
@@ -4813,7 +4875,11 @@ class Xia extends hero {
 
 class Tix extends hero {
 	passiveStats() {
-		this.applyStatChange({ hpPercent: 0.35, crit: 0.30, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.45, crit: 0.30, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.35, crit: 0.30, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
+		}
 	}
 
 
@@ -4866,21 +4932,32 @@ class Tix extends hero {
 		let damageResult2 = { damageAmount: 0, critted: false };
 		const targets = getHighestAttackTargets(this, this._enemies, 1);
 
+		let damagePercent = 1.8;
+		let targetDamagePercent = 6;
+		let reducePercent = 0.40;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 4;
+			targetDamagePercent = 10;
+			reducePercent = 0.50;
+		}
+
+
 		for (const t of targets) {
 			const targetLock = t.getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(t, this._currentStats.totalAttack * 1.8, 'basic', 'normal');
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack * damagePercent, 'basic', 'normal');
 				result += t.takeDamage(this, 'Basic Attack', damageResult);
 
 				if (t._currentStats.totalHP > 0) {
-					damageResult2 = this.calcDamage(t, t._currentStats.totalAttack * 6, 'basic', 'true');
+					damageResult2 = this.calcDamage(t, t._currentStats.totalAttack * targetDamagePercent, 'basic', 'true');
 					result += t.takeDamage(this, 'Basic Attack 2', damageResult2);
 				}
 
 				if (t._currentStats.totalHP > 0) {
-					const reduceAttackAmount = Math.floor(0.40 * t._stats.attack);
+					const reduceAttackAmount = Math.floor(reducePercent * t._stats.attack);
 					result += t.getDebuff(this, 'Attack', 2, { attack: reduceAttackAmount });
 				}
 
@@ -4898,16 +4975,25 @@ class Tix extends hero {
 		let damageResult2 = { damageAmount: 0, critted: false };
 		const targets = getRandomTargets(this, this._enemies, 4);
 
+		let damagePercent = 8;
+		let ccChance = 0.50;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 12;
+			ccChance = 0.60;
+		}
+
+
 		for (const t of targets) {
 			const targetLock = t.getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', 8);
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
 				result += t.takeDamage(this, 'Soul Explosion', damageResult);
 
 				if (t._currentStats.totalHP > 0) {
-					damageResult2 = this.calcDamage(t, t._currentStats.totalAttack, 'active', 'true', 8);
+					damageResult2 = this.calcDamage(t, t._currentStats.totalAttack, 'active', 'true', damagePercent);
 					result += t.takeDamage(this, 'Soul Explosion 2', damageResult2);
 				}
 
@@ -4919,11 +5005,11 @@ class Tix extends hero {
 
 
 				if (t._currentStats.energy >= 90) {
-					result += t.getDebuff(this, 'Silence', 2, {}, false, '', 0.50);
+					result += t.getDebuff(this, 'Silence', 2, {}, false, '', ccChance);
 				}
 
 				if (t._currentStats.energy < 90) {
-					result += t.getDebuff(this, 'Horrify', 2, {}, false, '', 0.50);
+					result += t.getDebuff(this, 'Horrify', 2, {}, false, '', ccChance);
 				}
 
 				activeQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount, damageResult.critted || damageResult2.critted]);
@@ -4937,7 +5023,11 @@ class Tix extends hero {
 
 class Flora extends hero {
 	passiveStats() {
-		this.applyStatChange({ hpPercent: 0.40, attackPercent: 0.25, crit: 0.30, speed: 60 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.50, attackPercent: 0.35, crit: 0.30, speed: 80 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.40, attackPercent: 0.25, crit: 0.30, speed: 60 }, 'PassiveStats');
+		}
 	}
 
 
@@ -4954,6 +5044,16 @@ class Flora extends hero {
 
 	eventEnemyActive(target, e) {
 		let result = '';
+		let allDamageDealtLost = 0.10;
+		let attackPercentGained = 0.15;
+		let maxStackCount = 3;
+
+		if (this._voidLevel >= 3) {
+			allDamageDealtLost = 0.15;
+			attackPercentGained = 0.20;
+			maxStackCount = 2;
+		}
+
 
 		if (target._currentStats['totalHP'] > 0) {
 			for (const source of e) {
@@ -4964,8 +5064,8 @@ class Flora extends hero {
 						stackCount = Object.keys(target._debuffs['All Damage Dealt']).length;
 					}
 
-					if (stackCount < 3) {
-						result += target.getDebuff(this, 'All Damage Dealt', 4, { allDamageDealt: 0.10 });
+					if (stackCount < maxStackCount) {
+						result += target.getDebuff(this, 'All Damage Dealt', 4, { allDamageDealt: allDamageDealtLost });
 					}
 
 					break;
@@ -4973,7 +5073,7 @@ class Flora extends hero {
 			}
 		}
 
-		result += this.getBuff(this, 'Attack Percent', 4, { attackPercent: 0.15 });
+		result += this.getBuff(this, 'Attack Percent', 4, { attackPercent: attackPercentGained });
 
 		return result;
 	}
@@ -4986,16 +5086,27 @@ class Flora extends hero {
 		const targets = getRandomTargets(this, this._enemies, 2);
 		const maxPoison = this._currentStats.totalAttack * 15;
 
+		let damagePercent = 1.6;
+		let poisonPercent = 0.15;
+		let healPercent = 0.15;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 3;
+			poisonPercent = 0.18;
+			healPercent = 0.18;
+		}
+
+
 		for (const t of targets) {
 			const targetLock = t.getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(t, this._currentStats.totalAttack * 1.6, 'basic', 'normal');
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack * damagePercent, 'basic', 'normal');
 				result += t.takeDamage(this, 'Basic Attack', damageResult);
 
 				if (t._currentStats.totalHP > 0) {
-					let poisonAmount = t._stats.totalHP * 0.15;
+					let poisonAmount = t._stats.totalHP * poisonPercent;
 					if (poisonAmount > maxPoison) poisonAmount = maxPoison;
 
 					damageResult2 = this.calcDamage(t, poisonAmount, 'basic', 'poisonTrue', 1, 1, 2);
@@ -5007,7 +5118,7 @@ class Flora extends hero {
 		}
 
 
-		const healAmount = this.calcHeal(this, this._stats.totalHP * 0.15);
+		const healAmount = this.calcHeal(this, this._stats.totalHP * healPercent);
 		result += this.getBuff(this, 'Heal', 2, { heal: healAmount });
 
 		return result;
@@ -5016,10 +5127,19 @@ class Flora extends hero {
 
 	doActive() {
 		let result = '';
-		let damageMult = 4;
-		let twineChance = 0.30;
 		let damageResult;
 		let lastTarget = 0;
+
+		let damagePercent = 4;
+		let twineChance = 0.30;
+		let damagePercentIncrease = 1;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 5;
+			twineChance = 0.45;
+			damagePercentIncrease = 1.2;
+		}
+
 
 		for (let i = 1; i <= 6; i++) {
 			const targets = getRandomTargets(this, this._enemies, 2);
@@ -5042,7 +5162,7 @@ class Flora extends hero {
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(target, this._currentStats.totalAttack, 'active', 'normal', damageMult);
+				damageResult = this.calcDamage(target, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
 				result += target.takeDamage(this, 'Flora\'s Pixie', damageResult);
 				result += target.getDebuff(this, 'twine', 2, {}, false, '', twineChance);
 
@@ -5050,7 +5170,7 @@ class Flora extends hero {
 			}
 
 			lastTarget = target._heroPos;
-			damageMult += 1;
+			damagePercent += damagePercentIncrease;
 			twineChance += 0.05;
 		}
 
