@@ -125,10 +125,10 @@ function isMonster(source) {
 
 
 function isDispellable(strName) {
-	if (['Power of Light', 'Ghost Possessed', 'Link of Souls',
+	if (['Power of Light', 'Ghost Possessed', 'Link of Souls', 'Sharpness',
 		'Demon Totem', 'Shrink', 'Shield', 'Feather Blade', 'Drake Break Defense',
 		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield', 'Battle Frenzy',
-		'Extra Ammo', 'Soul Corruption', 'Golden Crown'].includes(strName)) {
+		'Extra Ammo', 'Soul Corruption', 'Golden Crown', 'Impeccable Flow'].includes(strName)) {
 		return false;
 	} else {
 		return true;
@@ -609,6 +609,7 @@ const translate = {
 	'damageAgainstStun': 'Damage Dealt to Stunned Targets',
 	'burnDamageTaken': 'Damage Taken from Burn',
 	'corruptedHP': 'Corrupted HP Percent',
+	'blockDodgeCount': 'Block and Dodge Count',
 };
 
 

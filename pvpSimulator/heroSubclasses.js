@@ -5646,18 +5646,19 @@ class Phorcys extends hero {
 
 
 class SwordFlashXia extends hero {
-	passiveStats() {
-		this.applyStatChange({ attackPercent: 0.35, crit: 0.35, block: 0.70, controlImmune: 0.35, speed: 30 }, 'PassiveStats');
+	constructor(sHeroName, iHeroPos, attOrDef) {
+		super(sHeroName, iHeroPos, attOrDef);
+		this._stats['blockDodgeCount'] = 0;
 	}
 
 
 	handleTrigger(trigger) {
 		let result = super.handleTrigger(trigger);
 
-		if (trigger[1] == 'eventSelfActive' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+		if (['eventSelfActive', 'eventSelfBasic'].includes(trigger[1]) && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
 			result += this.eventSelfActive();
-		} else if (trigger[1] == 'eventSelfBasic' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
-			result += this.eventSelfBasic();
+		} else if (trigger[1] == 'eventSharpness' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			result += this.eventSharpness();
 		} else if (trigger[1] == 'eventEnemyDied' && trigger[2].heroDesc() == this.heroDesc() && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
 			result += this.eventEnemyDied();
 		}
@@ -5666,34 +5667,38 @@ class SwordFlashXia extends hero {
 	}
 
 
-	eventSelfBasic() {
-		let result = '';
-		result += this.getBuff(this, 'Aggression', 4, {});
-		result += this.getBuff(this, 'Aggression', 4, {});
+	eventSelfActive() {
+		return this.getBuff(this, 'Sharpness', 15, { dodge: 1 });
+	}
+
+
+	eventEnemyDied() {
+		return this.getBuff(this, 'Impeccable Flow', 15);
+	}
+
+
+	takeDamage(source, strAttackDesc, damageResult) {
+		let result = super.takeDamage(source, strAttackDesc, damageResult);
+
+		if (damageResult.blocked) {
+			result += this.willOfTheSword();
+			// triggerQueue.push([this, 'eventTookDamage']);
+		}
+
 		return result;
 	}
 
 
-	eventSelfActive() {
-		let result = '';
-		let targets;
-		let damageResult;
+	getTargetLock(source) {
+		let result = super.getTargetLock(source);
 
-		if ('Aggression' in this._buffs) {
+		if (result != '') {
+			result += this.willOfTheSword();
 
-			// eslint-disable-next-line no-unused-vars
-			for (const s of Object.values(this._buffs['Aggression'])) {
-				targets = getLowestHPTargets(this, this._enemies, 1);
-
-				for (const i in targets) {
-					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 2.38, 'passive', 'normal');
-					result += targets[i].takeDamage(this, 'Aggression', damageResult);
-
-					if (targets[i]._currentStats['totalHP'] > 0) {
-						damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 1.76, 'passive', 'bleed', 1, 1, 2);
-						result += targets[i].getDebuff(this, 'Bleed', 2, { bleed: damageResult['damageAmount'] }, false, 'passive');
-					}
-				}
+			if ('Sharpness' in this._buffs) {
+				const stackKey = Object.keys(this._buffs['Sharpness'])[0];
+				result += this.removeBuff('Sharpness', stackKey);
+				triggerQueue.push([this, 'eventSharpness']);
 			}
 		}
 
@@ -5701,18 +5706,107 @@ class SwordFlashXia extends hero {
 	}
 
 
-	eventEnemyDied() {
-		const healAmount = this.calcHeal(this, this._stats['totalHP']);
-		const result = this.getHeal(this, healAmount);
+	eventSharpness() {
+		let result = '';
+		let targets = getLowestHPPercentTargets(this, this._enemies, 1);
+
+		let damagePercent = 7.5;
+		let hpDamagePercent = 0.15;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 1;
+			hpDamagePercent = 0.25;
+		}
+
+
+		for (const target of targets) {
+			const damageResult = this.calcDamage(target, this._currentStats.totalAttack * damagePercent, 'passive', 'normal', undefined, undefined, undefined, undefined, 0);
+			result += target.takeDamage(this, 'Retaliation Strike', damageResult);
+
+			if (target._currentStats.totalHP > 0) {
+				result += target.takeDamage(this, 'Retaliation Strike', damageResult);
+			}
+		}
+
+
+		if (random() < 0.33) {
+			let hpDamage = hpDamagePercent * this._stats.totalHP;
+			const maxDamage = 15 * this._currentStats.totalAttack;
+			if (hpDamage > maxDamage) hpDamage = maxDamage;
+			targets = getAllTargets(this, this._enemies);
+
+			for (const target of targets) {
+				const damageResult = this.calcDamage(target, hpDamage, 'passive', 'true');
+				result += target.takeDamage(this, 'Retaliation Strike - HP', damageResult);
+			}
+		}
+
 		return result;
 	}
 
 
-	takeDamage(source, strAttackDesc, damageResult) {
-		let result = super.takeDamage(source, strAttackDesc, damageResult);
+	willOfTheSword() {
+		let result = '';
+		let countTrigger = 8;
 
-		if (damageResult['blocked'] == true && this.isNotSealed()) {
-			result += this.getBuff(this, 'Aggression', 4, {});
+		if (this._voidLevel >= 3) countTrigger = 6;
+		this._currentStats.blockDodgeCount++;
+
+
+		while (this._currentStats.blockDodgeCount >= countTrigger) {
+			this._currentStats.blockDodgeCount -= countTrigger;
+			result = this.getBuff(this, 'Impeccable Flow', 15);
+		}
+
+		return result;
+	}
+
+
+	doBasic() {
+		let result = '';
+		let stackKey = null;
+		const targets = getLowestHPPercentTargets(this, this._enemies, 1);
+		let damagePercent = 1.6;
+		let healPercent = 0.75;
+		let damageDealt = 0;
+		let critted = false;
+
+		if (this._voidLevel >= 1) {
+			damagePercent = 2;
+			healPercent = 1;
+		}
+
+
+		if ('Impeccable Flow' in this._buffs) {
+			stackKey = Object.keys(this._buffs['Impeccable Flow']);
+			damagePercent *= 2;
+		}
+
+
+		for (const target of targets) {
+			const targetLock = target.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				for (let i = 1; i <= 5; i++) {
+					if (target._currentStats.totalHP > 0) {
+						const damageResult = this.calcDamage(target, this._currentStats.totalAttack * damagePercent, 'basic', 'normal', undefined, undefined, undefined, undefined, 0);
+						result += target.takeDamage(this, 'Glowing Blade', damageResult);
+						damageDealt += damageResult.damageAmount;
+						critted = critted || damageResult.critted;
+					}
+				}
+
+				basicQueue.push([this, target, damageDealt, critted]);
+			}
+		}
+
+
+		if (stackKey) {
+			const healAmount = healPercent * damageDealt;
+			const healResult = this.calcHeal(this, healAmount);
+			result += this.getHeal(this, healResult);
+			result += this.removeBuff('Impeccable Flow', stackKey);
 		}
 
 		return result;
@@ -5721,27 +5815,53 @@ class SwordFlashXia extends hero {
 
 	doActive() {
 		let result = '';
-		let damageResult = {};
-		let bleedDamageResult = { damageAmount: 0 };
-		const targets = getLowestHPTargets(this, this._enemies, 1);
-		let targetLock;
+		let stackKey = null;
+		let targets;
+		let baseDamagePercent = 3.2;
+		let damageDealt = 0;
+
+		if (this._voidLevel >= 4) baseDamagePercent = 4;
 
 
-		for (const i in targets) {
-			targetLock = targets[i].getTargetLock(this);
-			result += targetLock;
+		if ('Impeccable Flow' in this._buffs) {
+			stackKey = Object.keys(this._buffs['Impeccable Flow']);
+			targets = getLowestHPPercentTargets(this, this._enemies);
+		} else {
+			targets = getLowestHPPercentTargets(this, this._enemies, 1);
+		}
 
-			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 3.96);
-				result += targets[i].takeDamage(this, 'Whirlwind Sweep', damageResult);
 
-				if (targets[i]._currentStats['totalHP'] > 0) {
-					bleedDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'bleed', 2.9, 1, 2);
-					result += targets[i].getDebuff(this, 'Bleed', 2, { bleed: bleedDamageResult['damageAmount'] }, false, 'active');
+		for (const target of targets) {
+			let critted = false;
+			let heroDamageDealt = 0;
+			let damagePercent = baseDamagePercent;
+
+			for (let i = 1; i <= 3; i++) {
+				if (target._currentStats.totalHP <= 0) break;
+
+				const targetLock = target.getTargetLock(this);
+				result += targetLock;
+
+				if (targetLock == '') {
+					const damageResult = this.calcDamage(target, this._currentStats.totalAttack, 'active', 'normal', damagePercent, undefined, undefined, undefined, 0);
+					result += target.takeDamage(this, 'Void Crusher', damageResult);
+					damageDealt += damageResult.damageAmount;
+					heroDamageDealt += damageResult.damageAmount;
+					critted = critted || damageResult.critted;
 				}
 
-				activeQueue.push([this, targets[i], damageResult['damageAmount'] + bleedDamageResult['damageAmount'], damageResult['critted']]);
+				damagePercent *= 2;
 			}
+
+			activeQueue.push([this, target, heroDamageDealt, critted]);
+		}
+
+
+		if (stackKey) {
+			const healAmount = 0.30 * damageDealt;
+			const healResult = this.calcHeal(this, healAmount);
+			result += this.getHeal(this, healResult);
+			result += this.removeBuff('Impeccable Flow', stackKey);
 		}
 
 		return result;
