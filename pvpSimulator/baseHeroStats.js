@@ -723,6 +723,23 @@ const baseHeroStats = {
 		},
 	},
 
+	'Scarlet Queen Halora': {
+		className: 'ScarletQueenHalora',
+		heroFaction: 'Transcendence',
+		heroClass: 'Ranger',
+		voidEnabled: true,
+		stats: {
+			baseHP: 15000,
+			baseAttack: 900,
+			baseArmor: 60,
+			baseSpeed: 310,
+			growHP: 1500,
+			growAttack: 90,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
 	'Sword Flash Xia': {
 		className: 'SwordFlashXia',
 		heroFaction: 'Transcendence',

@@ -128,7 +128,8 @@ function isDispellable(strName) {
 	if (['Power of Light', 'Ghost Possessed', 'Link of Souls', 'Sharpness',
 		'Demon Totem', 'Shrink', 'Shield', 'Feather Blade', 'Drake Break Defense',
 		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield', 'Battle Frenzy',
-		'Extra Ammo', 'Soul Corruption', 'Golden Crown', 'Impeccable Flow'].includes(strName)) {
+		'Extra Ammo', 'Soul Corruption', 'Golden Crown', 'Impeccable Flow',
+		'Royal Guard', 'Abyssal Corruption'].includes(strName)) {
 		return false;
 	} else {
 		return true;

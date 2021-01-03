@@ -266,6 +266,11 @@ const skins = {
 		'Placeholder': { },
 		'Legendary Placeholder': { },
 	},
+
+	'Scarlet Queen Halora': {
+		'Christmas Queen': { controlImmune: 0.05, hpPercent: 0.05, attackPercent: 0.03 },
+		'Legendary Christmas Queen': { controlImmune: 0.06, hpPercent: 0.08, attackPercent: 0.06 },
+	},
 };
 
 

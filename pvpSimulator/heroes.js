@@ -681,7 +681,7 @@ class hero {
 		let allDamageTaken = 1 + target._currentStats['allDamageTaken'];
 
 		// mitigation stats
-		const critDamageReduce = target._currentStats['critDamageReduce'];
+		let critDamageReduce = target._currentStats['critDamageReduce'];
 		let classDamageReduce = target._currentStats[this._heroClass.toLowerCase() + 'Reduce'];
 		let damageReduce = target._currentStats['damageReduce'];
 		let allDamageReduce = target._currentStats['allDamageReduce'];
@@ -711,6 +711,7 @@ class hero {
 		// caps and min
 		if (critDamage > 4.5) { critDamage = 4.5; }
 		if (critChance < 0) { critChance = 0; }
+		if (critDamageReduce > 1) { critDamageReduce = 1; }
 		if (precision < 0) { precision = 0; }
 		if (precisionDamageIncrease < 1) { precisionDamageIncrease = 1; }
 		if (precisionDamageIncrease > 1.45) { precisionDamageIncrease = 1.45; }

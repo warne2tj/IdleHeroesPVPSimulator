@@ -264,6 +264,12 @@ const seededHeroes = {
 		allowedEquipments: ['Class Gear', 'Split Attack'],
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"', '"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"'],
 	},
+	'Scarlet Queen Halora': {
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Demon Bell', 'Magic Stone Sword', 'Wildfire Torch', 'Snow Heart'],
+		allowedStones: ['S3 Speed, Attack', 'S3 Attack, Attack, Holy', 'S3 Attack, Attack'],
+		allowedEquipments: ['Class Gear', 'Split Attack'],
+		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"', '"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"'],
+	},
 };
 
 

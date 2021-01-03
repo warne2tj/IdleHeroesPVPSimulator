@@ -5833,6 +5833,7 @@ class SwordFlashXia extends hero {
 
 		for (const target of targets) {
 			let critted = false;
+			let didLock = false;
 			let heroDamageDealt = 0;
 			let damagePercent = baseDamagePercent;
 
@@ -5848,12 +5849,13 @@ class SwordFlashXia extends hero {
 					damageDealt += damageResult.damageAmount;
 					heroDamageDealt += damageResult.damageAmount;
 					critted = critted || damageResult.critted;
+					didLock = true;
 				}
 
 				damagePercent *= 2;
 			}
 
-			activeQueue.push([this, target, heroDamageDealt, critted]);
+			if (didLock)	activeQueue.push([this, target, heroDamageDealt, critted]);
 		}
 
 
@@ -5862,6 +5864,104 @@ class SwordFlashXia extends hero {
 			const healResult = this.calcHeal(this, healAmount);
 			result += this.getHeal(this, healResult);
 			result += this.removeBuff('Impeccable Flow', stackKey);
+		}
+
+		return result;
+	}
+}
+
+
+class ScarletQueenHalora extends hero {
+	endOfRound() {
+		let result = '';
+		let healPercent = 0.04;
+		let numAlive = 0;
+
+		if (this._voidLevel >= 2) healPercent = 0.06;
+
+
+		for (const ally of this._allies) {
+			if (ally._currentStats.totalHP > 0) numAlive++;
+		}
+
+
+		if (numAlive > 0) {
+			const healAmount = this.calcHeal(this, this._stats['totalHP'] * healPercent * numAlive);
+			result += this.getHeal(this, healAmount);
+		}
+
+		return result;
+	}
+
+
+	doBasic() {
+		let result = '';
+		const targets = getRandomTargets(this, this._enemies, 3);
+		let damagePercent = 8;
+		let critLost = 0.20;
+		let critGained = 0.10;
+		let critDamageGained = 0.10;
+
+		if (this._voidLevel >= 1) {
+			damagePercent = 10;
+			critLost = 0.25;
+			critGained = 0.20;
+			critDamageGained = 0.15;
+		}
+
+
+		for (const target of targets) {
+			const targetLock = target.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				const damageResult = this.calcDamage(target, this._currentStats.totalAttack * damagePercent, 'basic', 'normal');
+				result += target.takeDamage(this, 'Queen\'s Edict', damageResult);
+				result += target.getDebuff(this, 'Crit', 2, { crit: critLost });
+				basicQueue.push([this, target, damageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+		result += this.getBuff(this, 'Crit', 4, { crit: critGained });
+		result += this.getBuff(this, 'Crit Damage', 4, { critDamage: critDamageGained });
+
+		return result;
+	}
+
+
+	doActive() {
+		let result = '';
+		const targets = getAllTargets(this, this._enemies);
+		let damagePercent = 12.8;
+		let critDamageLost = 0.10;
+		let critDamageReduceLost = 0.15;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 16;
+			critDamageLost = 0.20;
+			critDamageReduceLost = 0.20;
+		}
+
+
+		for (const target of targets) {
+			const targetLock = target.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				const damageResult = this.calcDamage(target, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
+				let bleedDamageResult = { damageAmount: 0 };
+
+				result += target.takeDamage(this, 'Crimson Abyss', damageResult);
+
+				if (target._currentStats.totalHP > 0) {
+					bleedDamageResult = this.calcDamage(target, this._currentStats.totalAttack, 'active', 'bleeed', damagePercent, undefined, 2);
+					result += target.getDebuff(this, 'Bleed', 2, { bleed: bleedDamageResult.damageAmount }, undefined, 'active');
+				}
+
+				result += target.getDebuff(this, 'Abyssal Corruption', 15, { critDamage: critDamageLost, critDamageReduce: critDamageReduceLost });
+
+				activeQueue.push([this, target, damageResult.damageAmount + bleedDamageResult.damageAmount, damageResult.critted]);
+			}
 		}
 
 		return result;
@@ -5915,6 +6015,7 @@ const heroMapping = {
 	'Morax': Morax,
 	'Phorcys': Phorcys,
 	'SwordFlashXia': SwordFlashXia,
+	'ScarletQueenHalora': ScarletQueenHalora,
 };
 
 
