@@ -261,6 +261,11 @@ const skins = {
 		'Placeholder': { },
 		'Legendary Placeholder': { },
 	},
+
+	'Sword Flash Xia': {
+		'Placeholder': { },
+		'Legendary Placeholder': { },
+	},
 };
 
 

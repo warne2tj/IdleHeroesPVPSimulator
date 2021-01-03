@@ -1,4 +1,4 @@
-import { evolve, createRandomTeams, heroNames } from './gaBreed.js';
+import { evolve, createRandomTeams, heroNames, numGenes, dnaLength } from './gaBreed.js';
 
 
 let allTeams = {};
@@ -105,7 +105,7 @@ function runMassLoop() {
 			allTeams[teamIndex] = {};
 			allTeams[teamIndex]['dna'] = jsonConfig[t];
 			allTeams[teamIndex]['teamName'] = t;
-			allTeams[teamIndex]['pet'] = jsonConfig[t][60];
+			allTeams[teamIndex]['pet'] = jsonConfig[t][dnaLength];
 			allTeams[teamIndex]['attWins'] = 0;
 			allTeams[teamIndex]['defWins'] = 0;
 			allTeams[teamIndex]['weakAgainst'] = 'None';
@@ -113,7 +113,7 @@ function runMassLoop() {
 
 			let p;
 			species = '';
-			for (p = 0; p < 60; p += 10) {
+			for (p = 0; p < dnaLength; p += numGenes) {
 				species += jsonConfig[t][p] + ', ';
 			}
 			species += jsonConfig[t][p];
@@ -211,7 +211,7 @@ function processWorker(e) {
 						tempTeam = Object.assign({}, heroCount);
 						diffFound = true;
 
-						for (let g = 0; g < 60; g += 10) {
+						for (let g = 0; g < dnaLength; g += numGenes) {
 							tempTeam[teamDNA[g]]++;
 						}
 

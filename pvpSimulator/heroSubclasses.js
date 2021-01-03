@@ -5645,6 +5645,110 @@ class Phorcys extends hero {
 }
 
 
+class SwordFlashXia extends hero {
+	passiveStats() {
+		this.applyStatChange({ attackPercent: 0.35, crit: 0.35, block: 0.70, controlImmune: 0.35, speed: 30 }, 'PassiveStats');
+	}
+
+
+	handleTrigger(trigger) {
+		let result = super.handleTrigger(trigger);
+
+		if (trigger[1] == 'eventSelfActive' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			result += this.eventSelfActive();
+		} else if (trigger[1] == 'eventSelfBasic' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			result += this.eventSelfBasic();
+		} else if (trigger[1] == 'eventEnemyDied' && trigger[2].heroDesc() == this.heroDesc() && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			result += this.eventEnemyDied();
+		}
+
+		return result;
+	}
+
+
+	eventSelfBasic() {
+		let result = '';
+		result += this.getBuff(this, 'Aggression', 4, {});
+		result += this.getBuff(this, 'Aggression', 4, {});
+		return result;
+	}
+
+
+	eventSelfActive() {
+		let result = '';
+		let targets;
+		let damageResult;
+
+		if ('Aggression' in this._buffs) {
+
+			// eslint-disable-next-line no-unused-vars
+			for (const s of Object.values(this._buffs['Aggression'])) {
+				targets = getLowestHPTargets(this, this._enemies, 1);
+
+				for (const i in targets) {
+					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 2.38, 'passive', 'normal');
+					result += targets[i].takeDamage(this, 'Aggression', damageResult);
+
+					if (targets[i]._currentStats['totalHP'] > 0) {
+						damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 1.76, 'passive', 'bleed', 1, 1, 2);
+						result += targets[i].getDebuff(this, 'Bleed', 2, { bleed: damageResult['damageAmount'] }, false, 'passive');
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
+
+	eventEnemyDied() {
+		const healAmount = this.calcHeal(this, this._stats['totalHP']);
+		const result = this.getHeal(this, healAmount);
+		return result;
+	}
+
+
+	takeDamage(source, strAttackDesc, damageResult) {
+		let result = super.takeDamage(source, strAttackDesc, damageResult);
+
+		if (damageResult['blocked'] == true && this.isNotSealed()) {
+			result += this.getBuff(this, 'Aggression', 4, {});
+		}
+
+		return result;
+	}
+
+
+	doActive() {
+		let result = '';
+		let damageResult = {};
+		let bleedDamageResult = { damageAmount: 0 };
+		const targets = getLowestHPTargets(this, this._enemies, 1);
+		let targetLock;
+
+
+		for (const i in targets) {
+			targetLock = targets[i].getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 3.96);
+				result += targets[i].takeDamage(this, 'Whirlwind Sweep', damageResult);
+
+				if (targets[i]._currentStats['totalHP'] > 0) {
+					bleedDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'bleed', 2.9, 1, 2);
+					result += targets[i].getDebuff(this, 'Bleed', 2, { bleed: bleedDamageResult['damageAmount'] }, false, 'active');
+				}
+
+				activeQueue.push([this, targets[i], damageResult['damageAmount'] + bleedDamageResult['damageAmount'], damageResult['critted']]);
+			}
+		}
+
+		return result;
+	}
+}
+
+
 const heroMapping = {
 	'hero': hero,
 	'Carrie': Carrie,
@@ -5690,6 +5794,7 @@ const heroMapping = {
 	'FaithBlade': FaithBlade,
 	'Morax': Morax,
 	'Phorcys': Phorcys,
+	'SwordFlashXia': SwordFlashXia,
 };
 
 

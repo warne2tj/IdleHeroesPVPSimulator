@@ -5,21 +5,24 @@ import { skins } from '../pvpSimulator/skin.js';
 import { stones } from '../pvpSimulator/stone.js';
 
 
-const artifactLevel = 'Splendid ';
-const numEnhancedArtifacts = 6;
-
 const heroNames = Object.keys(baseHeroStats).slice(1);
 const stoneNames = Object.keys(stones).slice(1);
 const monsterNames = Object.keys(baseMonsterStats).slice(1);
 const artifactNames = ['Antlers Cane', 'Demon Bell', 'Staff Punisher of Immortal', 'Magic Stone Sword', 'Augustus Magic Ball',
-	'The Kiss of Ghost', 'Lucky Candy Bar', 'Wildfire Torch', 'Golden Crown', 'Ruyi Scepter'];
+	'The Kiss of Ghost', 'Lucky Candy Bar', 'Wildfire Torch', 'Golden Crown', 'Ruyi Scepter', 'Snow Heart'];
 const equipments = ['Class Gear', 'Split HP', 'Split Attack', 'No Armor'];
 const enables1 = ['Vitality', 'Mightiness', 'Growth'];
 const enables2 = ['Shelter', 'LethalFightback', 'Vitality2'];
 const enables3 = ['Resilience', 'SharedFate', 'Purify'];
 const enables4 = ['Vitality', 'Mightiness', 'Growth'];
 const enables5 = ['BalancedStrike', 'UnbendingWill'];
+const voidEnables = ['armorPercent', 'armorBreak', 'precision', 'block', 'controlImmune', 'damageReduce', 'crit', 'critDamage', 'holyDamage', 'skillDamage'];
 
+
+const artifactLevel = 'Splendid ';
+const numEnhancedArtifacts = 6;
+const numGenes = 13;
+const dnaLength = numGenes * 6;
 let isSeeded = true;
 const lsPrefix = 'ga_';
 
@@ -28,6 +31,13 @@ function getHero(heroName) {
 	const skinNames = Object.keys(skins[heroName]);
 	const legendarySkins = [];
 	const sHero = seededHeroes[heroName];
+	let shuffleVoidEnables;
+
+	if (baseHeroStats[heroName].heroFaction == 'Transcendence') {
+		shuffleVoidEnables = shuffle(voidEnables).slice(0, 3);
+	} else {
+		shuffleVoidEnables = ['None', 'None', 'None'];
+	}
 
 
 	for (const s in skinNames) {
@@ -44,7 +54,11 @@ function getHero(heroName) {
 		value += '"' + sHero.allowedEquipments[Math.floor(Math.random() * sHero.allowedEquipments.length)] + '", ';
 		value += '"' + sHero.allowedStones[Math.floor(Math.random() * sHero.allowedStones.length)] + '", ';
 		value += '"' + artifactLevel + sHero.allowedArtifacts[Math.floor(Math.random() * sHero.allowedArtifacts.length)] + '", ';
-		value += sHero.allowedEnables[Math.floor(Math.random() * sHero.allowedEnables.length)] + ',\n';
+		value += sHero.allowedEnables[Math.floor(Math.random() * sHero.allowedEnables.length)] + ', ';
+
+		value += '"' + shuffleVoidEnables[0] + '", ';
+		value += '"' + shuffleVoidEnables[1] + '", ';
+		value += '"' + shuffleVoidEnables[2] + '",\n';
 
 	} else {
 		value += '"' + equipments[Math.floor(Math.random() * equipments.length)] + '", ';
@@ -55,7 +69,11 @@ function getHero(heroName) {
 		value += '"' + enables2[Math.floor(Math.random() * enables2.length)] + '", ';
 		value += '"' + enables3[Math.floor(Math.random() * enables3.length)] + '", ';
 		value += '"' + enables4[Math.floor(Math.random() * enables4.length)] + '", ';
-		value += '"' + enables5[Math.floor(Math.random() * enables5.length)] + '",\n';
+		value += '"' + enables5[Math.floor(Math.random() * enables5.length)] + '",';
+
+		value += '"' + shuffleVoidEnables[0] + '", ';
+		value += '"' + shuffleVoidEnables[1] + '", ';
+		value += '"' + shuffleVoidEnables[2] + '",\n';
 
 	}
 
@@ -64,24 +82,37 @@ function getHero(heroName) {
 
 
 function createRandomTeams(seeded) {
-	let heroName = '';
 	const oConfig = document.getElementById('configText');
 	const numCreate = parseInt(document.getElementById('numCreate').value);
-	let strHero;
 	let arrEnhArtifacts = [1, 2, 3, 4, 5, 6];
-	let tempEnhArtifacts;
+	let heroName, strHero, tempEnhArtifacts, arrTranscendence;
 
 	isSeeded = seeded;
 
 	oConfig.value = '{\n';
 	for(let i = 0; i < numCreate; i++) {
+		arrTranscendence = [];
 		arrEnhArtifacts = shuffle(arrEnhArtifacts);
 		tempEnhArtifacts = arrEnhArtifacts.slice(0, numEnhancedArtifacts);
 
 		oConfig.value += '"' + i + '": [\n';
 
 		for (let h = 1; h <= 6; h++) {
-			heroName = heroNames[Math.floor(Math.random() * heroNames.length)];
+			heroName = '';
+
+			do {
+				heroName = heroNames[Math.floor(Math.random() * heroNames.length)];
+
+				if (baseHeroStats[heroName].heroFaction == 'Transcendence') {
+					if (arrTranscendence.includes(heroName)) {
+						heroName = '';
+					} else {
+						arrTranscendence.push(heroName);
+					}
+				}
+			} while (heroName == '');
+
+
 			strHero = getHero(heroName);
 
 			if (!(tempEnhArtifacts.includes(h))) {
@@ -140,8 +171,8 @@ function evolve(allTeams, teamKeys) {
 		for (let h = 0; h < 6; h++) {
 			dnaString1 += ' ';
 
-			for (let g = 0; g < 10; g++) {
-				dnaString1 += ' "' + dna1[h * 10 + g] + '",';
+			for (let g = 0; g < numGenes; g++) {
+				dnaString1 += ' "' + dna1[h * numGenes + g] + '",';
 			}
 
 			dnaString1 += '\n';
@@ -149,13 +180,13 @@ function evolve(allTeams, teamKeys) {
 
 
 		tempTeam = Object.assign({}, heroCount);
-		for (let g = 0; g < 60; g += 10) {
+		for (let g = 0; g < dnaLength; g += numGenes) {
 			tempTeam[dna1[g]]++;
 		}
 		arrTeams.push(tempTeam);
 
 
-		dnaString1 += '  "' + dna1[60] + '"\n],\n';
+		dnaString1 += '  "' + dna1[dnaLength] + '"\n],\n';
 		oConfig.value += dnaString1;
 	}
 
@@ -168,7 +199,7 @@ function evolve(allTeams, teamKeys) {
 		tempTeam = Object.assign({}, heroCount);
 		speciesCount = 0;
 
-		for (let g = 0; g < 60; g += 10) {
+		for (let g = 0; g < dnaLength; g += numGenes) {
 			tempTeam[teamDNA[g]]++;
 		}
 
@@ -212,10 +243,8 @@ function evolve(allTeams, teamKeys) {
 
 function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 	const child1 = [];
-	let dnaString1;
-	let crossOver;
-	let skinNames;
-	let legendarySkins;
+	const arrTranscendence = [];
+	let dnaString1, skinNames, legendarySkins;
 
 
 	const parentA = Math.floor(Math.pow(Math.random(), 1.2) * (end - start)) + start;
@@ -225,31 +254,51 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 	const dna2 = allTeams[teamKeys[parentB]]['dna'];
 
 
-	// breed
-	crossOver = Math.floor(Math.random() * 60) + 1;
-	if (crossOver % 10 == 1) { crossOver++; }
+	// randomly pick one of the heroes from the 2 teams
+	for (let h = 0; h < 6; h++) {
+		let chosenDna, otherDna;
 
-	for (let g = 0; g < crossOver; g++) {
-		child1.push(dna1[g]);
+		if (Math.random() < 0.50) {
+			chosenDna = dna1;
+			otherDna = dna2;
+		} else {
+			chosenDna = dna2;
+			otherDna = dna1;
+		}
+
+		const chosenHero = chosenDna[h * numGenes];
+		if (baseHeroStats[chosenHero].heroFaction == 'Transcendence') {
+			if (arrTranscendence.includes(chosenHero)) {
+				chosenDna = otherDna;
+			} else {
+				arrTranscendence.push(chosenHero);
+			}
+		}
+
+		for (let g = 0; g < numGenes; g++) {
+			child1.push(chosenDna[h * numGenes + g]);
+		}
 	}
 
-	for (let g = crossOver; g < 60; g++) {
-		child1.push(dna2[g]);
-	}
-
-	if (crossOver == 60) {
-		child1.push(dna2[60]);
+	// randomly pick one of the pets
+	if (Math.random() < 0.50) {
+		child1.push(dna1[dnaLength]);
 	} else {
-		child1.push(dna1[60]);
+		child1.push(dna2[dnaLength]);
 	}
 
 
 	// mutate child 1 genes
-	for (let g = 0; g < 60; g++) {
+	let currentHero, newHero;
+
+	for (let g = 0; g < dnaLength; g++) {
+		if (g % numGenes == 0) currentHero = baseHeroStats[child1[g]];
+
 		if (Math.random() < mutationRate) {
-			switch(g % 10) {
+			switch(g % numGenes) {
 			case 0:
-				child1[g] = heroNames[Math.floor(Math.random() * heroNames.length)];
+				newHero = heroNames[Math.floor(Math.random() * heroNames.length)];
+				child1[g] = newHero;
 
 				skinNames = Object.keys(skins[child1[g]]);
 				legendarySkins = [];
@@ -260,6 +309,19 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 				}
 
 				child1[g + 1] = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
+
+
+				if (currentHero.heroFaction == 'Transcendence' && baseHeroStats[newHero].heroFaction != 'Transcendence') {
+					child1[g + 10] = 'None';
+					child1[g + 11] = 'None';
+					child1[g + 12] = 'None';
+				} else if (currentHero.heroFaction != 'Transcendence' && baseHeroStats[newHero].heroFaction == 'Transcendence') {
+					child1[g + 10] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+					child1[g + 11] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+					child1[g + 12] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+				}
+
+				currentHero = baseHeroStats[newHero];
 				break;
 
 			case 1:
@@ -305,13 +367,25 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 			case 9:
 				child1[g] = enables5[Math.floor(Math.random() * enables5.length)];
 				break;
+
+			case 10:
+				if (currentHero.heroFaction == 'Transcendence') child1[g] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+				break;
+
+			case 11:
+				if (currentHero.heroFaction == 'Transcendence') child1[g] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+				break;
+
+			case 12:
+				if (currentHero.heroFaction == 'Transcendence') child1[g] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+				break;
 			}
 		}
 	}
 
 	// mutate child 1 pet
 	if (Math.random() < posSwapRate) {
-		child1[60] = monsterNames[Math.floor(Math.random() * monsterNames.length)];
+		child1[dnaLength] = monsterNames[Math.floor(Math.random() * monsterNames.length)];
 	}
 
 	// swap hero positions
@@ -319,21 +393,20 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 		const swap1 = Math.floor(Math.random() * 6);
 		const swap2 = Math.floor(Math.random() * 6);
 
-		const tempHero = child1[swap1 * 10];
-		const tempSkin = child1[swap1 * 10 + 1];
-
-		child1[swap1 * 10] = child1[swap2 * 10];
-		child1[swap2 * 10] = tempHero;
-
-		child1[swap1 * 10 + 1] = child1[swap2 * 10 + 1];
-		child1[swap2 * 10 + 1] = tempSkin;
+		if (swap1 != swap2) {
+			for (let g = 0; g < numGenes; g++) {
+				const tempGene = child1[swap1 * numGenes + g];
+				child1[swap1 * numGenes + g] = child1[swap2 * numGenes + g];
+				child1[swap2 * numGenes + g] = tempGene;
+			}
+		}
 	}
 
 
 	// check for seeded
 	if (isSeeded) {
 		for (let i = 0; i < 6; i++) {
-			const g = i * 10;
+			const g = i * numGenes;
 
 			if (child1[g] in seededHeroes) {
 				const sHero = seededHeroes[child1[g]];
@@ -368,7 +441,7 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 	// limit enhanced artifacts
 	let arrPotentialArtifacts = [];
 	for (let h = 0; h < 6; h++) {
-		const g = h * 10 + 4;
+		const g = h * numGenes + 4;
 
 		if (child1[g].includes(artifactLevel)) {
 			arrPotentialArtifacts.push(g);
@@ -388,11 +461,11 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 	for (let h = 0; h < 6; h++) {
 		dnaString1 += '\n ';
 
-		for (let g = 0; g < 10; g++) {
-			dnaString1 += ' "' + child1[h * 10 + g] + '",';
+		for (let g = 0; g < numGenes; g++) {
+			dnaString1 += ' "' + child1[h * numGenes + g] + '",';
 		}
 	}
-	dnaString1 += '\n  "' + child1[60] + '"';
+	dnaString1 += '\n  "' + child1[dnaLength] + '"';
 
 	return [child1, dnaString1];
 }
@@ -418,4 +491,4 @@ function shuffle(array) {
 }
 
 
-export { createRandomTeams, evolve, heroNames };
+export { createRandomTeams, evolve, heroNames, numGenes, dnaLength };

@@ -258,6 +258,12 @@ const seededHeroes = {
 		allowedEquipments: ['Class Gear', 'Split HP'],
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"', '"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"'],
 	},
+	'Sword Flash Xia': {
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Magic Stone Sword', 'Ruyi Scepter', 'Wildfire Torch'],
+		allowedStones: ['S3 Speed, HP', 'S3 Speed, Attack', 'S3 Attack, Attack'],
+		allowedEquipments: ['Class Gear', 'Split Attack'],
+		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"', '"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"'],
+	},
 };
 
 

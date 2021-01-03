@@ -722,6 +722,23 @@ const baseHeroStats = {
 			growSpeed: 2,
 		},
 	},
+
+	'Sword Flash Xia': {
+		className: 'SwordFlashXia',
+		heroFaction: 'Transcendence',
+		heroClass: 'Assassin',
+		voidEnabled: true,
+		stats: {
+			baseHP: 14000,
+			baseAttack: 1075,
+			baseArmor: 60,
+			baseSpeed: 306,
+			growHP: 1400,
+			growAttack: 109.7,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
 };
 
 

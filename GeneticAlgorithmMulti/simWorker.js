@@ -17,6 +17,7 @@ import { classGearMapping } from '../pvpSimulator/equipment.js';
 import { baseHeroStats } from '../pvpSimulator/baseHeroStats.js';
 import { heroMapping } from '../pvpSimulator/heroSubclasses.js';
 import { runSim } from '../pvpSimulator/simulation.js';
+import { numGenes, dnaLength } from './gaBreed.js';
 
 
 const attFrame = 'Royal Amethyst +9';
@@ -54,13 +55,14 @@ function handleCall(e) {
 		for (const t in jsonConfig) {
 			// add team as attacker
 			allAttTeams[teamIndex] = {};
-			allAttTeams[teamIndex]['pet'] = jsonConfig[t][60];
+			allAttTeams[teamIndex]['pet'] = jsonConfig[t][dnaLength];
 			team = [];
 
-			for (let p = 0; p < 60; p += 10) {
+			for (let p = 0; p < dnaLength; p += numGenes) {
 				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / 10), 'att');
 
 				tHero._heroLevel = 350;
+				tHero._voidLevel = 4;
 				tHero._skin = jsonConfig[t][p + 1];
 				tHero._stone = jsonConfig[t][p + 3];
 				tHero._artifact = jsonConfig[t][p + 4];
@@ -69,6 +71,9 @@ function handleCall(e) {
 				tHero._enable3 = jsonConfig[t][p + 7];
 				tHero._enable4 = jsonConfig[t][p + 8];
 				tHero._enable5 = jsonConfig[t][p + 9];
+				tHero._voidEnable1 = jsonConfig[t][p + 10];
+				tHero._voidEnable2 = jsonConfig[t][p + 11];
+				tHero._voidEnable3 = jsonConfig[t][p + 12];
 
 				if (jsonConfig[t][p + 2] == 'Class Gear') {
 					tHero._weapon = classGearMapping[tHero._heroClass]['weapon'];
@@ -103,10 +108,10 @@ function handleCall(e) {
 
 			// add team as defender
 			allDefTeams[teamIndex] = {};
-			allDefTeams[teamIndex]['pet'] = jsonConfig[t][60];
+			allDefTeams[teamIndex]['pet'] = jsonConfig[t][dnaLength];
 			team = [];
 
-			for (let p = 0; p < 60; p += 10) {
+			for (let p = 0; p < dnaLength; p += numGenes) {
 				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / 10), 'def');
 
 				tHero._heroLevel = 350;
@@ -119,6 +124,9 @@ function handleCall(e) {
 				tHero._enable3 = jsonConfig[t][p + 7];
 				tHero._enable4 = jsonConfig[t][p + 8];
 				tHero._enable5 = jsonConfig[t][p + 9];
+				tHero._voidEnable1 = jsonConfig[t][p + 10];
+				tHero._voidEnable2 = jsonConfig[t][p + 11];
+				tHero._voidEnable3 = jsonConfig[t][p + 12];
 
 				if (jsonConfig[t][p + 2] == 'Class Gear') {
 					tHero._weapon = classGearMapping[tHero._heroClass]['weapon'];
