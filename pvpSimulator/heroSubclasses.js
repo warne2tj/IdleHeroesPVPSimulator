@@ -5872,6 +5872,59 @@ class SwordFlashXia extends hero {
 
 
 class ScarletQueenHalora extends hero {
+	handleTrigger(trigger) {
+		let result = super.handleTrigger(trigger);
+
+
+		if (['eventEnemyActive', 'eventEnemyBasic'].includes(trigger[1])) {
+			result += this.eventEnemyActive(trigger[2], trigger[3]);
+		}
+
+		return result;
+	}
+
+
+	eventEnemyActive(target, events) {
+		let result = '';
+		let damagePercent = 8;
+		if (this._voidLevel >= 3) damagePercent = 10;
+
+
+		for (const e of events) {
+			if (e[1].heroDesc() != this.heroDesc()) continue;
+
+			const allies = getAllTargets(this, this._allies);
+			for (const ally of allies) {
+				if (!('Queen\'s Guard' in ally._buffs)) continue;
+
+				const damageResult = ally.calcDamage(target, ally._currentStats['totalAttack'] * damagePercent, 'passive', 'normal');
+				result += target.takeDamage(ally, 'Queen\'s Guard', damageResult);
+			}
+
+			break;
+		}
+
+		return result;
+	}
+
+
+	startOfBattle() {
+		let result = '';
+		let allDamageDealtGained = 0.15;
+		if (this._voidLevel >= 3) allDamageDealtGained = 0.20;
+
+		const allies = getAllTargets(this, this._allies);
+		for (const ally of allies) {
+			if (ally.heroDesc() != this.heroDesc()) {
+				result += ally.getBuff(this, 'Queen\'s Guard', 127);
+				result += ally.getBuff(this, 'All Damage Dealt', 127, { allDamageDealt: allDamageDealtGained });
+			}
+		}
+
+		return result;
+	}
+
+
 	endOfRound() {
 		let result = '';
 		let healPercent = 0.04;
@@ -5879,8 +5932,8 @@ class ScarletQueenHalora extends hero {
 
 		if (this._voidLevel >= 2) healPercent = 0.06;
 
-
-		for (const ally of this._allies) {
+		const allies = getAllTargets(this, this._allies);
+		for (const ally of allies) {
 			if (ally._currentStats.totalHP > 0) numAlive++;
 		}
 
