@@ -915,7 +915,7 @@ class hero {
 			const stack = this._debuffs['Curse of Decay'][curseKey];
 			result += '<div><span class="skill">Curse of Decay</span> prevented energy gain.</div>';
 			result += this.removeDebuff('Curse of Decay', curseKey);
-			triggerQueue.push([stack.source, 'addHurt', this, stack.effects.attackAmount, 'Curse of Decay']);
+			triggerQueue.push([stack.source, 'curseOfDecay', this, stack.effects.attackAmount, 'Curse of Decay']);
 
 		} else {
 			if (this.heroDesc() == source.heroDesc()) {
@@ -1075,7 +1075,7 @@ class hero {
 			const stack = this._debuffs['Curse of Decay'][curseKey];
 			result += `'<div><span class='skill'>Curse of Decay</span> prevented buff <span class='skill'>${buffName}</span>.</div>`;
 			result += this.removeDebuff('Curse of Decay', curseKey);
-			triggerQueue.push([stack.source, 'addHurt', this, stack.effects.attackAmount, 'Curse of Decay']);
+			triggerQueue.push([stack.source, 'curseOfDecay', this, stack.effects.attackAmount, 'Curse of Decay']);
 
 		} else if (unstackable && buffName in this._buffs) {
 			const stackObj = Object.values(this._buffs[buffName])[0];
@@ -1588,7 +1588,9 @@ class hero {
 			const listDebuffs = [];
 
 			for (const d in this._debuffs) {
-				if (isDispellable && (isDot(d) || isAttribute(d) || d.includes('Mark') || isControlEffect(d))) {
+				const firstStack = Object.values(this._debuffs[d])[0];
+
+				if (isDispellable(d) && (isDot(d) || isAttribute(d, firstStack) || d.includes('Mark') || isControlEffect(d))) {
 					listDebuffs.push(d);
 				}
 			}
@@ -1628,6 +1630,12 @@ class hero {
 		if (trigger[1] == 'addHurt' && this._currentStats['totalHP'] > 0) {
 			if (trigger[2]._currentStats['totalHP'] > 0) {
 				const damageResult = this.calcDamage(trigger[2], trigger[3], 'passive', 'true');
+				return trigger[2].takeDamage(this, trigger[4], damageResult);
+			}
+
+		} else if (trigger[1] == 'curseOfDecay' && this._currentStats['totalHP'] > 0) {
+			if (trigger[2]._currentStats['totalHP'] > 0) {
+				const damageResult = this.calcDamage(trigger[2], trigger[3], 'passive', 'normal');
 				return trigger[2].takeDamage(this, trigger[4], damageResult);
 			}
 

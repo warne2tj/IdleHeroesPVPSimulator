@@ -5601,7 +5601,12 @@ class Phorcys extends hero {
 		const targets = getRandomTargets(this, this._enemies, 4);
 
 		let damagePercent = 8;
-		if (this._voidLevel >= 4) damagePercent = 14;
+		let codPercent = 15;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 14;
+			codPercent = 25;
+		}
 
 
 		for (const target of targets) {
@@ -5631,10 +5636,11 @@ class Phorcys extends hero {
 				}
 
 
-				const snapshotDamage = this._currentStats.totalAttack * 15;
+				const snapshotDamage = this._currentStats.totalAttack * codPercent;
 				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
 				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
 				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
+
 
 				activeQueue.push([this, target, damageResult.damageAmount, damageResult.critted]);
 			}
