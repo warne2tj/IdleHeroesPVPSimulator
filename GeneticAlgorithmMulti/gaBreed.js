@@ -289,16 +289,23 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 
 
 	// mutate child 1 genes
-	let currentHero, newHero;
+	let currentHeroName, currentHero, newHeroName, newHero;
 
 	for (let g = 0; g < dnaLength; g++) {
-		if (g % numGenes == 0) currentHero = baseHeroStats[child1[g]];
+		if (g % numGenes == 0) {
+			currentHeroName = child1[g];
+			currentHero = baseHeroStats[currentHeroName];
+		}
+
 
 		if (Math.random() < mutationRate) {
 			switch(g % numGenes) {
 			case 0:
-				newHero = heroNames[Math.floor(Math.random() * heroNames.length)];
-				child1[g] = newHero;
+				newHeroName = heroNames[Math.floor(Math.random() * heroNames.length)];
+				if (arrTranscendence.includes(newHeroName)) break;
+
+				newHero = baseHeroStats[newHeroName];
+				if (newHero.heroFaction == 'Transcendence') arrTranscendence.push(newHeroName);
 
 				skinNames = Object.keys(skins[child1[g]]);
 				legendarySkins = [];
@@ -308,20 +315,28 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 					}
 				}
 
+
+				child1[g] = newHeroName;
 				child1[g + 1] = legendarySkins[Math.floor(Math.random() * legendarySkins.length)];
 
+				if (currentHero.heroFaction == 'Transcendence') {
+					if (newHero.heroFaction == 'Transcendence') {
+						const index = arrTranscendence.indexOf(currentHeroName);
+						if (index > -1) arrTranscendence.splice(index, 1);
+					}
 
-				if (currentHero.heroFaction == 'Transcendence' && baseHeroStats[newHero].heroFaction != 'Transcendence') {
-					child1[g + 10] = 'None';
-					child1[g + 11] = 'None';
-					child1[g + 12] = 'None';
-				} else if (currentHero.heroFaction != 'Transcendence' && baseHeroStats[newHero].heroFaction == 'Transcendence') {
+					if (newHero.heroFaction != 'Transcendence') {
+						child1[g + 10] = 'None';
+						child1[g + 11] = 'None';
+						child1[g + 12] = 'None';
+					}
+				} else if (currentHero.heroFaction != 'Transcendence' && newHero.heroFaction == 'Transcendence') {
 					child1[g + 10] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
 					child1[g + 11] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
 					child1[g + 12] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
 				}
 
-				currentHero = baseHeroStats[newHero];
+				currentHero = newHero;
 				break;
 
 			case 1:
