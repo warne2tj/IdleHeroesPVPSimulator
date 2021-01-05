@@ -255,6 +255,7 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 
 
 	// randomly pick one of the heroes from the 2 teams
+	let sqhCount = 0;
 	for (let h = 0; h < 6; h++) {
 		let chosenDna, otherDna;
 
@@ -276,6 +277,7 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 		}
 
 		for (let g = 0; g < numGenes; g++) {
+			if (chosenDna[h * numGenes + g] == 'Scarlet Queen Halora') sqhCount++;
 			child1.push(chosenDna[h * numGenes + g]);
 		}
 	}
@@ -337,6 +339,7 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 				}
 
 				currentHero = newHero;
+				if (newHeroName == 'Scarlet Queen Halora') sqhCount++;
 				break;
 
 			case 1:
@@ -482,6 +485,9 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 	}
 	dnaString1 += '\n  "' + child1[dnaLength] + '"';
 
+	if (sqhCount > 1) {
+		throw new Error('Too many Halora');
+	}
 	return [child1, dnaString1];
 }
 
