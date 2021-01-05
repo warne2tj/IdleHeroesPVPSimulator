@@ -1,3 +1,5 @@
+import { calcEV } from './exactMemo.js';
+
 let oBin1;
 let oBin2;
 let oBin3;
@@ -23,11 +25,14 @@ let startMoveBackwards;
 let startDoubleStars;
 let startDoubleNextRoll;
 let startRollTwice;
+const startBoardState = [0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0];
 
+let firstDecision;
 let simRunning = false;
 const totalSims = 1000000;
 
 const lsPrefix = 'imp_';
+
 
 function init() {
 	const acc = document.getElementsByClassName('accordion');
@@ -147,6 +152,8 @@ function runImpSim() {
 			break;
 		}
 
+
+		firstDecision = getStrat(startOrdDice, startLuckDice, startStars, startPos, startDoubleNextRoll, startRollTwice, startMoveBackwards, startBoardState, startDoubleStars);
 		setTimeout(nextSimBlock, 1);
 	}
 }
@@ -160,7 +167,6 @@ function nextSimBlock() {
 		let stars;
 		let pos;
 		let tarot;
-		let potentials;
 		let doubleNextRoll;
 		let moveBackwards;
 		let doubleStars;
@@ -169,16 +175,17 @@ function nextSimBlock() {
 		let decision;
 
 
-		const boardState = [0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0];
-
 		// simulate
 		for (let i = 0; i < 1000; i++) {
+			let doFirstDecision = true;
+
 			// reset starting conditions
 			ordDice = startOrdDice;
 			luckDice = startLuckDice;
 			stars = startStars;
 			pos = startPos;
 
+			const boardState = [...startBoardState];
 			boardState[4] = 2 + startMushroom1;
 			boardState[11] = 2 + startMushroom2;
 			boardState[18] = 2 + startMushroom3;
@@ -191,7 +198,14 @@ function nextSimBlock() {
 
 			// simulate
 			while (ordDice > 0 || luckDice > 0) {
-				decision = getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState);
+
+				if (doFirstDecision) {
+					decision = firstDecision;
+					doFirstDecision = false;
+				} else {
+					decision = getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars);
+				}
+
 
 				if (decision[2] == 0) { break; }
 				rollTwice = false;
@@ -253,7 +267,7 @@ function nextSimBlock() {
 
 						if (tarot == 1) {
 							/* this tarot doesn't affect starry mushroom?
-							potentials = [];
+							let potentials = [];
 
 							for (let p = 1; p <= 20; p++) {
 								if (boardState[p] < 5 && (p % 5) != 0) potentials.push([p, Math.random()]);
@@ -273,7 +287,7 @@ function nextSimBlock() {
 							*/
 						} else if (tarot == 2) {
 							/* this tarot doesn't affect starry mushroom?
-							potentials = [];
+							let potentials = [];
 
 							for (let p = 1; p <= 20; p++) {
 								if (boardState[p] > 3 && (p % 5) != 0) potentials.push([p, Math.random()]);
@@ -389,7 +403,35 @@ function updateValues() {
 }
 
 
-function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState) {
+function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars) {
+	// use recursion if number of dice is small enough
+	if (luckDice > 0 && ordDice + luckDice <= 7) {
+		const exactStrat = calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, [...boardState]);
+
+		if (exactStrat[1] == 'Let dice convert.') {
+			return [ordDice, luckDice, 0];
+		} else if (exactStrat[1] == 'Use ordinary dice.') {
+			return [ordDice - 1, luckDice, 0];
+		} else {
+
+			const re = /Use lucky dice to roll (\d)\./;
+			const matches = re.exec(exactStrat[1]);
+			let roll = 0;
+
+			if (matches !== null) {
+				if (matches[1] !== undefined) {
+					roll = parseInt(matches[1]);
+				}
+
+				return [ordDice, luckDice - 1, roll];
+			} else {
+				console.log('Invalid return from calcEV');
+				console.log(exactStrat);
+			}
+		}
+
+	}
+
 	let nextTier;
 	let roll = 0;
 
@@ -548,6 +590,7 @@ function updateStrat() {
 	let moveBackwards = false;
 	let doubleNextRoll = false;
 	let rollTwice = false;
+	let doubleStars = false;
 	const boardState = [0, 0, 0, 0, 2 + mushroom1, 0, 0, 0, 0, 0, 0, 2 + mushroom2, 0, 0, 0, 0, 0, 0, 2 + mushroom3, 0, 0];
 
 	switch (document.getElementById('activeTarot').value) {
@@ -562,9 +605,13 @@ function updateStrat() {
 	case 'RollTwice':
 		rollTwice = true;
 		break;
+
+	case 'DoubleStars':
+		doubleStars = true;
+		break;
 	}
 
-	const decision = getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState);
+	const decision = getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars);
 
 	if (decision[2] == 0) {
 		document.getElementById('strategy').innerHTML = 'Simulator\'s Next Move: Don\'t use any dice and let them convert to stars';
@@ -574,3 +621,10 @@ function updateStrat() {
 		document.getElementById('strategy').innerHTML = 'Simulator\'s Next Move: Use lucky dice to roll ' + decision[2].toString();
 	}
 }
+
+
+window.init = init;
+window.storeLocal = storeLocal;
+window.runImpSim = runImpSim;
+window.updateStrat = updateStrat;
+window.updateValues = updateValues;

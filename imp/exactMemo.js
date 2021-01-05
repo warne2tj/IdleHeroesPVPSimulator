@@ -1,15 +1,15 @@
 // node --max-old-space-size=4096 --expose-gc .\imp\exactMemo.js
-const startOrdDice = 6;
-const startLuckDice = 1;
-const startStars = 0;
-const startPos = 0;
+const startOrdDice = 1;
+const startLuckDice = 0;
+const startStars = 198;
+const startPos = 5;
 const startDoubleNextRoll = false;
 const startMoveBackwards = false;
 const startDoubleStars = false;
 const startRollTwice = false;
-const startMushroom1 = 1;
-const startMushroom2 = 1;
-const startMushroom3 = 1;
+const startMushroom1 = 3;
+const startMushroom2 = 3;
+const startMushroom3 = 3;
 const startBoardState = [0, 3, 3, 3, 2 + startMushroom1, 0, 3, 3, 3, 3, 0, 2 + startMushroom2, 3, 3, 3, 0, 3, 3, 2 + startMushroom3, 3, 0];
 
 const importantTarot = [3, 5, 6, 7, 9];
@@ -19,22 +19,16 @@ const twoDiceDist = [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 5], [9,
 const maxDice = 32;
 
 
-const maxRss = 0;
-const maxHeapTotal = 0;
-const maxHeapUsed = 0;
-/*
-for (let i = 27; i <= maxDice; i++) {
-	gc();
-	maxRss = 0;
-	maxHeapTotal = 0;
-	maxHeapUsed = 0;
-*/
-const start = new Date();
+// const maxRss = 0;
+// const maxHeapTotal = 0;
+// const maxHeapUsed = 0;
+
+// const start = new Date();
+// eslint-disable-next-line no-unused-vars
 const expectedValue = calcEV(startOrdDice, startLuckDice, startStars, startPos, startDoubleNextRoll, startMoveBackwards, startDoubleStars, startRollTwice, [...startBoardState]);
-const end = new Date();
-const secondsTaken = (end - start) / 1000;
-console.log(expectedValue, secondsTaken, maxRss / 1024 / 1024, maxHeapTotal / 1024 / 1024, maxHeapUsed / 1024 / 1024);
-// }
+// const end = new Date();
+// const secondsTaken = (end - start) / 1000;
+// console.log(expectedValue, secondsTaken, maxRss / 1024 / 1024, maxHeapTotal / 1024 / 1024, maxHeapUsed / 1024 / 1024);
 
 
 function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, boardState, memo = new Map(), level = 0) {
@@ -174,7 +168,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					}, [0, 'Use lucky dice.', 0]);
 
 					tarotResults[0] /= tarotEV.length;
-					tarotResults[1] = `Use lucky to roll ${roll}.`;
+					tarotResults[1] = `Use lucky dice to roll ${roll}.`;
 					tarotResults[2] /= tarotEV.length;
 					luckyEV.push(tarotResults);
 
@@ -449,3 +443,6 @@ function calcTier(stars) {
 		return 0;
 	}
 }
+
+
+export { calcEV };
