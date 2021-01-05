@@ -43,10 +43,17 @@
   <div class="panel">
     <div>
       <div>
+        <label for="numWorkers">Number of Worker Threads to Use (Recommended Number of Cores - 2):</label>
+        <input type="text" id="numWorkers" size="1" value="6" onchange="storeLocal(this);" />
+        <input type="submit" value="Create Worker Threads" onclick="createWorkerThreads();"></input>
+      </div>
+
+      <div>
         <label for="numCreate">Number of Random Teams to Create:</label>
         <input type="text" id="numCreate" size="3" value="100" onchange="storeLocal(this);" />
-        <input type="submit" value="Create Random Teams" onclick="createRandomTeams(false);"></input>
-        <input type="submit" value="Create Random Seeded Teams" onclick="createRandomTeams(true);"></input>
+
+        <input type="checkbox" checked id="useSeed" onchange="storeLocal(this);">Use Seeded Heroes</input>
+        <input type="submit" value="Create Random Teams" onclick="callCreateRandomTeams();"></input>
       </div>
       
       <div>Put data of teams into text area below or generate them randomly.</div>

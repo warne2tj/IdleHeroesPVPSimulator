@@ -8,14 +8,8 @@ let attIndex = 0;
 let defIndex = 0;
 const lsPrefix = 'ga_';
 
-
-let w0;
-let w1;
-let w2;
-let w3;
-let w4;
-let w5;
-let workerStatus;
+let numWorkers = 6;
+let workerStatus = [];
 
 function initialize() {
 	const acc = document.getElementsByClassName('colorC');
@@ -38,49 +32,65 @@ function initialize() {
 
 	// check local storage
 	if (typeof (Storage) !== 'undefined') {
-		if (localStorage.getItem(lsPrefix + 'numSims') !== null) {
+		if (localStorage.getItem(lsPrefix + 'numWorkers') !== null) {
 			document.getElementById('numSims').value = localStorage.getItem(lsPrefix + 'numSims');
 			document.getElementById('genCount').value = localStorage.getItem(lsPrefix + 'genCount');
 			document.getElementById('numCreate').value = localStorage.getItem(lsPrefix + 'numCreate');
 			document.getElementById('configText').value = localStorage.getItem(lsPrefix + 'configText');
+			document.getElementById('numWorkers').value = localStorage.getItem(lsPrefix + 'numWorkers');
+			document.getElementById('useSeed').checked = localStorage.getItem(lsPrefix + 'useSeed');
+
 		} else {
 			localStorage.setItem(lsPrefix + 'numSims', document.getElementById('numSims').value);
 			localStorage.setItem(lsPrefix + 'genCount', document.getElementById('genCount').value);
 			localStorage.setItem(lsPrefix + 'numCreate', document.getElementById('numCreate').value);
 			localStorage.setItem(lsPrefix + 'configText', document.getElementById('configText').value);
+			localStorage.setItem(lsPrefix + 'useSeed', document.getElementById('useSeed').checked);
+			localStorage.setItem(lsPrefix + 'numWorkers', document.getElementById('numWorkers').value);
 		}
 	}
 
+	createWorkerThreads();
+}
+
+
+function createWorkerThreads() {
+	const log = document.getElementById('summaryLog');
+
+	if (simRunning) {
+		log.innerHTML = 'Simulation currently running, stop simulation first.';
+		return;
+	}
+
+
+	numWorkers = Number.parseInt(document.getElementById('numWorkers').value);
 
 	if (typeof (Worker) !== 'undefined') {
-		w0 = new Worker('./simWorker.js', { type: 'module' });
-		w0.onmessage = processWorker;
+		for (const worker of workerStatus) {
+			worker[0].terminate();
+		}
 
-		w1 = new Worker('./simWorker.js', { type: 'module' });
-		w1.onmessage = processWorker;
+		workerStatus = [];
 
-		w2 = new Worker('./simWorker.js', { type: 'module' });
-		w2.onmessage = processWorker;
-
-		w3 = new Worker('./simWorker.js', { type: 'module' });
-		w3.onmessage = processWorker;
-
-		w4 = new Worker('./simWorker.js', { type: 'module' });
-		w4.onmessage = processWorker;
-
-		w5 = new Worker('./simWorker.js', { type: 'module' });
-		w5.onmessage = processWorker;
-
-		workerStatus = [[w0, false], [w1, false], [w2, false], [w3, false], [w4, false], [w5, false]];
+		for (let i = 1; i <= numWorkers; i++) {
+			const worker = new Worker('./simWorker.js', { type: 'module' });
+			worker.onmessage = processWorker;
+			workerStatus.push([worker, false]);
+		}
 	} else {
-		document.getElementById('summaryLog').innerHTML = 'Browser does not support web workers.';
+		log.innerHTML = 'Browser does not support web workers.';
 	}
+
 }
 
 
 function storeLocal(i) {
 	if (typeof (Storage) !== 'undefined') {
-		localStorage.setItem(lsPrefix + i.id, i.value);
+		if (i.id == 'useSeed') {
+			localStorage.setItem(lsPrefix + i.id, i.checked);
+		} else {
+			localStorage.setItem(lsPrefix + i.id, i.value);
+		}
 	}
 }
 
@@ -303,13 +313,20 @@ function processWorker(e) {
 }
 
 
+function callCreateRandomTeams() {
+	const seeded = document.getElementById('useSeed').checked;
+	createRandomTeams(seeded);
+}
+
+
 function setStopLoop() {
 	stopLoop = true;
 }
 
 
-window.createRandomTeams = createRandomTeams;
+window.callCreateRandomTeams = callCreateRandomTeams;
 window.initialize = initialize;
 window.storeLocal = storeLocal;
 window.runMassLoop = runMassLoop;
 window.setStopLoop = setStopLoop;
+window.createWorkerThreads = createWorkerThreads;
