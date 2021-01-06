@@ -403,31 +403,19 @@ function updateValues() {
 }
 
 
-function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars, getFirstDecision = false) {
+function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars, getFirstDecision = false, stratOnly = false) {
 	// use recursion if number of dice is small enough
-	if (getFirstDecision && luckDice > 0 && ordDice + luckDice <= 17) {
+	const totalDice = ordDice + luckDice;
+
+	if (luckDice > 0 && ((getFirstDecision && totalDice <= 7) || (stratOnly && totalDice <= 20))) {
 		const exactStrat = calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, [...boardState]);
 
-		if (exactStrat[1] == 'Let dice convert.') {
+		if (exactStrat[1] == -1) {
 			return [ordDice, luckDice, 0];
-		} else if (exactStrat[1] == 'Use ordinary dice.') {
+		} else if (exactStrat[1] == 0) {
 			return [ordDice - 1, luckDice, 0];
 		} else {
-
-			const re = /Use lucky dice to roll (\d+)\./;
-			const matches = re.exec(exactStrat[1]);
-			let roll = 0;
-
-			if (matches !== null) {
-				if (matches[1] !== undefined) {
-					roll = parseInt(matches[1]);
-				}
-
-				return [ordDice, luckDice - 1, roll];
-			} else {
-				console.log('Invalid return from calcEV');
-				console.log(exactStrat);
-			}
+			return [ordDice, luckDice - 1, exactStrat[1]];
 		}
 
 	}
