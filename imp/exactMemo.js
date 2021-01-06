@@ -1,7 +1,7 @@
 // node --max-old-space-size=4096 --expose-gc .\imp\exactMemo.js
 const startOrdDice = 1;
-const startLuckDice = 0;
-const startStars = 198;
+const startLuckDice = 1;
+const startStars = 170;
 const startPos = 5;
 const startDoubleNextRoll = false;
 const startMoveBackwards = false;

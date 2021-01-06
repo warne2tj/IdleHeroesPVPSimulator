@@ -153,7 +153,7 @@ function runImpSim() {
 		}
 
 
-		firstDecision = getStrat(startOrdDice, startLuckDice, startStars, startPos, startDoubleNextRoll, startRollTwice, startMoveBackwards, startBoardState, startDoubleStars);
+		firstDecision = getStrat(startOrdDice, startLuckDice, startStars, startPos, startDoubleNextRoll, startRollTwice, startMoveBackwards, [...startBoardState], startDoubleStars, true);
 		setTimeout(nextSimBlock, 1);
 	}
 }
@@ -403,9 +403,9 @@ function updateValues() {
 }
 
 
-function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars) {
+function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars, getFirstDecision = false) {
 	// use recursion if number of dice is small enough
-	if (luckDice > 0 && ordDice + luckDice <= 7) {
+	if (getFirstDecision && luckDice > 0 && ordDice + luckDice <= 17) {
 		const exactStrat = calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, [...boardState]);
 
 		if (exactStrat[1] == 'Let dice convert.') {
@@ -414,7 +414,7 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 			return [ordDice - 1, luckDice, 0];
 		} else {
 
-			const re = /Use lucky dice to roll (\d)\./;
+			const re = /Use lucky dice to roll (\d+)\./;
 			const matches = re.exec(exactStrat[1]);
 			let roll = 0;
 
@@ -611,9 +611,9 @@ function updateStrat() {
 		break;
 	}
 
-	const decision = getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars);
+	const decision = getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars, true);
 
-	if (decision[2] == 0) {
+	if (decision[0] == ordDice && decision[1] == luckDice) {
 		document.getElementById('strategy').innerHTML = 'Simulator\'s Next Move: Don\'t use any dice and let them convert to stars';
 	} else if (decision[1] == luckDice) {
 		document.getElementById('strategy').innerHTML = 'Simulator\'s Next Move: Use ordinary dice';
