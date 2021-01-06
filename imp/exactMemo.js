@@ -5,13 +5,13 @@ const importantTarot = [3, 5, 6, 7, 9];
 const twoDiceDist = [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 5], [9, 4], [10, 3], [11, 2], [12, 1]];
 
 
-// const startOrdDice = 4;
+// const startOrdDice = 29;
 // const startLuckDice = 1;
-// const startStars = 60;
+// const startStars = 80;
 // const startPos = 14;
-// const startMushroom1 = 3;
-// const startMushroom2 = 3;
-// const startMushroom3 = 3;
+// const startMushroom1 = 1;
+// const startMushroom2 = 1;
+// const startMushroom3 = 1;
 // const startDoubleNextRoll = false;
 // const startMoveBackwards = false;
 // const startDoubleStars = false;
@@ -28,15 +28,12 @@ const twoDiceDist = [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 5], [9,
 function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, boardState, memo = new Map(), level = 0) {
 	const totalDice = ordDice + luckDice;
 
-
 	// recurse ending condition
 	if (ordDice <= 0 && luckDice <= 0) {
 		const endTier = calcTier(stars);
-		return [stars, 'No dice left.', endTier];
+		return [stars, endTier, -2];
 	}
 
-
-	// check stars needed for next tier
 	// end recursion if next tier can be reached by letting dice convert
 	const starMod = stars % 300;
 	let nextTier;
@@ -62,19 +59,17 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 	if (totalDice == Math.ceil(nextTier / 2)) {
 		const finalStars = stars + totalDice * 2;
 		const endTier = calcTier(finalStars);
-		return [finalStars, -1, endTier];
+		return [finalStars, endTier, -1];
 	}
-
 
 	// check memo
 	const memoKey = `${ordDice},${luckDice},${stars},${pos},${doubleNextRoll},${moveBackwards},${doubleStars},${rollTwice},${boardState[4]},${boardState[11]},${boardState[18]}`;
 	const memoValue = memo.get(memoKey);
-	if (memoValue) return memoValue;
+	if (memoValue) return [memoValue[0], memoValue[1], 0];
 
 
 	const luckyEV = [];
 	const ordinaryEV = [];
-
 
 	// EV of lucky dice
 	if (luckDice > 0) {
@@ -98,7 +93,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					level + 1,
 				);
 
-				rollEV[1] = roll;
+				rollEV[2] = roll;
 				luckyEV.push(rollEV);
 			}
 		} else {
@@ -156,12 +151,12 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					}
 
 					const tarotResults = tarotEV.reduce((prev, curr) => {
-						return [curr[0] + prev[0], roll, curr[2] + prev[2]];
-					}, [0, roll, 0]);
+						return [curr[0] + prev[0], curr[1] + prev[1], roll];
+					}, [0, 0, roll]);
 
 					tarotResults[0] /= tarotEV.length;
-					tarotResults[1] = roll;
-					tarotResults[2] /= tarotEV.length;
+					tarotResults[1] /= tarotEV.length;
+					tarotResults[2] = roll;
 					luckyEV.push(tarotResults);
 
 				} else {
@@ -181,7 +176,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 						level + 1,
 					);
 
-					rollEV[1] = roll;
+					rollEV[2] = roll;
 					luckyEV.push(rollEV);
 				}
 			}
@@ -208,8 +203,6 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					memo,
 					level + 1,
 				);
-
-				tempEV[1] = 0;
 
 				for (let y = 0; y < roll[1]; y++) {
 					ordinaryEV.push(tempEV);
@@ -258,12 +251,11 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					}
 
 					const tarotResults = tarotEV.reduce((prev, curr) => {
-						return [curr[0] + prev[0], 0, curr[2] + prev[2]];
+						return [curr[0] + prev[0], curr[1] + prev[1], 0];
 					}, [0, 0, 0]);
 
 					tarotResults[0] /= tarotEV.length;
-					tarotResults[1] = 0;
-					tarotResults[2] /= tarotEV.length;
+					tarotResults[1] /= tarotEV.length;
 					ordinaryEV.push(tarotResults);
 
 				} else {
@@ -283,7 +275,6 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 						level + 1,
 					);
 
-					rollEV[1] = 0;
 					ordinaryEV.push(rollEV);
 				}
 			}
@@ -293,39 +284,36 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 	// get max for lucky, avg for ordinary
 	const luckyResults = luckyEV.reduce((prev, curr) => {
-		if (curr[2] > prev[2]) {
+		if (curr[1] > prev[1]) {
 			return curr;
-		}if (curr[2] == prev[2] && curr[0] >= prev[0]) {
+		}if (curr[1] == prev[1] && curr[0] >= prev[0]) {
 			return curr;
 		} else {
 			return prev;
 		}
-	}, [0, 'No lucky dice.', 0]);
+	}, [0, 0, 0]);
 
 
 	let ordinaryResults = [0, 0, 0];
 	if (ordinaryEV.length > 0) {
 		ordinaryResults = ordinaryEV.reduce((prev, curr) => {
-			return [curr[0] + prev[0], 0, curr[2] + prev[2]];
+			return [curr[0] + prev[0], curr[1] + prev[1], 0];
 		}, [0, 0, 0]);
 		ordinaryResults[0] /= ordinaryEV.length;
-		ordinaryResults[2] /= ordinaryEV.length;
+		ordinaryResults[1] /= ordinaryEV.length;
 	}
 
 
 	// change results to [starsGained, -1/0/1-12 (convert/ordinary/lucky roll)]
-	if (ordinaryResults[2] > luckyResults[2]) {
-		memo.set(memoKey, ordinaryResults);
-		return ordinaryResults;
-
-	} else if (ordinaryResults[2] == luckyResults[2] && ordinaryResults[0] >= luckyResults[0]) {
-		memo.set(memoKey, ordinaryResults);
+	if (ordinaryResults[1] > luckyResults[1] || (ordinaryResults[1] == luckyResults[1] && ordinaryResults[0] >= luckyResults[0])) {
+		if (level == 0) console.log(memo.size);
+		memo.set(memoKey, [ordinaryResults[0], ordinaryResults[1]]);
 		return ordinaryResults;
 
 	} else {
-		memo.set(memoKey, luckyResults);
+		if (level == 0) console.log(memo.size);
+		memo.set(memoKey, [luckyResults[0], luckyResults[1]]);
 		return luckyResults;
-
 	}
 }
 

@@ -403,19 +403,19 @@ function updateValues() {
 }
 
 
-function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars, getFirstDecision = false, stratOnly = false) {
+function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars, getFirstDecision = false) {
 	// use recursion if number of dice is small enough
 	const totalDice = ordDice + luckDice;
 
-	if (luckDice > 0 && ((getFirstDecision && totalDice <= 7) || (stratOnly && totalDice <= 20))) {
+	if (luckDice > 0 && getFirstDecision && totalDice <= 7) {
 		const exactStrat = calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, [...boardState]);
 
-		if (exactStrat[1] == -1) {
+		if (exactStrat[2] == -1) {
 			return [ordDice, luckDice, 0];
-		} else if (exactStrat[1] == 0) {
+		} else if (exactStrat[2] == 0) {
 			return [ordDice - 1, luckDice, 0];
 		} else {
-			return [ordDice, luckDice - 1, exactStrat[1]];
+			return [ordDice, luckDice - 1, exactStrat[2]];
 		}
 
 	}
