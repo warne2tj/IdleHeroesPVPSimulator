@@ -29,7 +29,7 @@ const startBoardState = [0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 3, 3
 
 let firstDecision;
 let simRunning = false;
-const totalSims = 1000000;
+const totalSims = 100000;
 
 const lsPrefix = 'imp_';
 
@@ -153,7 +153,10 @@ function runImpSim() {
 		}
 
 
-		firstDecision = getStrat(startOrdDice, startLuckDice, startStars, startPos, startDoubleNextRoll, startRollTwice, startMoveBackwards, [...startBoardState], startDoubleStars, true);
+		startBoardState[4] = 2 + startMushroom1;
+		startBoardState[11] = 2 + startMushroom2;
+		startBoardState[18] = 2 + startMushroom3;
+		firstDecision = getStrat(startOrdDice, startLuckDice, startStars, startPos, startDoubleNextRoll, startRollTwice, startMoveBackwards, startBoardState, startDoubleStars, true);
 		setTimeout(nextSimBlock, 1);
 	}
 }
@@ -172,7 +175,6 @@ function nextSimBlock() {
 		let doubleStars;
 		let rollTwice;
 		let roll;
-		let decision;
 
 
 		// simulate
@@ -186,9 +188,6 @@ function nextSimBlock() {
 			pos = startPos;
 
 			const boardState = [...startBoardState];
-			boardState[4] = 2 + startMushroom1;
-			boardState[11] = 2 + startMushroom2;
-			boardState[18] = 2 + startMushroom3;
 
 			doubleNextRoll = startDoubleNextRoll;
 			moveBackwards = startMoveBackwards;
@@ -198,10 +197,20 @@ function nextSimBlock() {
 
 			// simulate
 			while (ordDice > 0 || luckDice > 0) {
+				let decision;
 
 				if (doFirstDecision) {
-					decision = firstDecision;
 					doFirstDecision = false;
+					decision = firstDecision;
+
+					if (decision[1] == luckDice) {
+						decision[2] = Math.floor(Math.random() * 6 + 1);
+
+						if (rollTwice) {
+							decision[2] += Math.floor(Math.random() * 6 + 1);
+						}
+					}
+
 				} else {
 					decision = getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, moveBackwards, boardState, doubleStars);
 				}
@@ -356,7 +365,7 @@ function nextSimBlock() {
 		let percent;
 		for (let i = 0; i < 9; i++) {
 			percent = 100.0 * arrResults[i] / totalSims;
-			arrBins[i].innerHTML = percent.toFixed(4) + '%&nbsp;';
+			arrBins[i].innerHTML = percent.toFixed(3) + '%&nbsp;';
 
 			if (Math.round(percent) < 1) {
 				arrBins[i].style.width = '1%';
@@ -374,11 +383,11 @@ function nextSimBlock() {
 		let runningSum = 0;
 		for (let i = 8; i > 0; i--) {
 			runningSum += arrResults[i];
-			document.getElementById('chance' + i).innerHTML = (runningSum / totalSims * 100).toFixed(4);
+			document.getElementById('chance' + i).innerHTML = (runningSum / totalSims * 100).toFixed(3);
 		}
 
 		updateValues();
-		document.getElementById('avgStars').innerHTML = (1.0 * totalStars / totalSims).toFixed(4);
+		document.getElementById('avgStars').innerHTML = (1.0 * totalStars / totalSims).toFixed(3);
 	}
 }
 
@@ -407,13 +416,21 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 	// use recursion if number of dice is small enough
 	const totalDice = ordDice + luckDice;
 
-	if (luckDice > 0 && getFirstDecision && totalDice <= 7) {
+	if (luckDice > 0 && ((getFirstDecision && totalDice <= 7) || (totalDice <= 3))) {
 		const exactStrat = calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, [...boardState]);
 
 		if (exactStrat[2] == -1) {
 			return [ordDice, luckDice, 0];
+
 		} else if (exactStrat[2] == 0) {
-			return [ordDice - 1, luckDice, 0];
+			exactStrat[2] = Math.floor(Math.random() * 6 + 1);
+
+			if (rollTwice) {
+				exactStrat[2] += Math.floor(Math.random() * 6 + 1);
+			}
+
+			return [ordDice - 1, luckDice, exactStrat[2]];
+
 		} else if (exactStrat[2] > 0) {
 			return [ordDice, luckDice - 1, exactStrat[2]];
 		} else {

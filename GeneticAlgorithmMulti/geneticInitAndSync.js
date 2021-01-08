@@ -282,9 +282,18 @@ function processWorker(e) {
 					summary += 'Weakest against team ' + allTeams[teamKeys[p]]['weakAgainst'] + ' (' + Math.round(allTeams[teamKeys[p]]['weakAgainstWins'] / numSims * 100, 2) + '%)\n';
 				}
 
-				document.getElementById('generationLog').value += 'Generation ' + document.getElementById('genCount').value + ' summary.\n' + summary + '\n';
+
+				const generationLog = document.getElementById('generationLog');
+				let strGenerationLog = generationLog.value;
+				if (strGenerationLog.length > 200000) {
+					strGenerationLog = strGenerationLog.slice(20000);
+				}
+
+				generationLog.value = strGenerationLog + 'Generation ' + document.getElementById('genCount').value + ' summary.\n' + summary + '\n';
+
 
 				evolve(allTeams, teamKeys);
+
 
 				document.getElementById('genCount').value = parseInt(document.getElementById('genCount').value) + 1;
 				if (typeof (Storage) !== 'undefined') {
