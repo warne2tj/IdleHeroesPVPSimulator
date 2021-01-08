@@ -3,6 +3,29 @@
 
 const importantTarot = [3, 5, 6, 7, 9];
 const twoDiceDist = [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 5], [9, 4], [10, 3], [11, 2], [12, 1]];
+const luckyChoices = [
+	[4, 5, 6],
+	[3, 4, 6],
+	[2, 3, 6],
+	[1, 2, 6],
+	[1, 5, 6],
+	[5, 6],
+	[4, 5, 6],
+	[3, 4, 6],
+	[3, 6],
+	[2, 5, 6],
+	[1, 6],
+	[6],
+	[6],
+	[5, 6],
+	[4, 6],
+	[2, 4, 5, 6],
+	[2, 4],
+	[1, 3],
+	[2, 6],
+	[1, 5, 6],
+	[4, 5, 6],
+];
 
 
 // const startOrdDice = 29;
@@ -36,10 +59,8 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 	// check memo
 	const memoKey = `${ordDice},${luckDice},${stars},${pos},${doubleNextRoll ? 1 : 0}${moveBackwards ? 1 : 0}${doubleStars ? 1 : 0}${rollTwice ? 1 : 0}${boardState[4]}${boardState[11]}${boardState[18]}`;
-	if (memo.has(memoKey)) {
-		const memoValue = memo.get(memoKey);
-		return [memoValue[0], memoValue[1], 0];
-	}
+	const memoValue = memo.get(memoKey);
+	if (memo.has(memoKey)) return [memoValue[0], memoValue[1], 0];
 
 
 	// calc ev of letting dice convert
@@ -50,8 +71,6 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 	const luckyEV = [0, 0, 6];
 	const ordinaryEV = [0, 0, 0];
-	const luckyDetail = [];
-	const ordinaryDetail = [];
 
 
 	// EV of lucky dice
@@ -68,10 +87,8 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 			rollChoices = [8, 10];
 		} else if (rollTwice) {
 			rollChoices = [10];
-		} else if (pos == 15) {
-			rollChoices = [2, 4, 5, 6];
 		} else {
-			rollChoices = [1, 2, 3, 4, 5, 6];
+			rollChoices = luckyChoices[pos];
 		}
 
 
@@ -130,9 +147,6 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					luckyEV[2] = roll;
 				}
 
-				tarotEV[2] = roll;
-				luckyDetail.push(tarotEV);
-
 			} else {
 				const rollResults = resolveRoll(ordDice, luckDice - 1, stars, pos, doubleNextRoll, moveBackwards, doubleStars, false, [...boardState], roll, 0);
 
@@ -156,9 +170,6 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					luckyEV[1] = rollEV[1];
 					luckyEV[2] = roll;
 				}
-
-				rollEV[2] = roll;
-				luckyDetail.push(rollEV);
 			}
 		}
 	}
@@ -186,8 +197,6 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 				ordinaryEV[0] += rollEV[0] * mult;
 				ordinaryEV[1] += rollEV[1] * mult;
-
-				ordinaryDetail.push(rollEV);
 			}
 
 			ordinaryEV[0] = ordinaryEV[0] / 36;
@@ -242,9 +251,6 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 					ordinaryEV[0] += tarotEV[0] / 9;
 					ordinaryEV[1] += tarotEV[1] / 9;
-
-					tarotEV[2] = roll;
-					ordinaryDetail.push(tarotEV);
 				} else {
 					const rollResults = resolveRoll(ordDice - 1, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, false, [...boardState], roll, 0);
 
@@ -264,8 +270,6 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 					ordinaryEV[0] += rollEV[0];
 					ordinaryEV[1] += rollEV[1];
-
-					ordinaryDetail.push(rollEV);
 				}
 			}
 
@@ -276,17 +280,17 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 
 	if ((convertEV[1] > luckyEV[1] && convertEV[1] > ordinaryEV[1]) || (convertEV[1] >= luckyEV[1] && convertEV[1] >= ordinaryEV[1] && convertEV[0] >= luckyEV[0] && convertEV[0] >= ordinaryEV[0])) {
-		if (level == 0) console.log(memo.size);
+		// if (level == 0) console.log(memo.size);
 		memo.set(memoKey, [convertEV[0], convertEV[1]]);
 		return convertEV;
 
 	} else if (ordinaryEV[1] > luckyEV[1] || (ordinaryEV[1] == luckyEV[1] && ordinaryEV[0] >= luckyEV[0])) {
-		if (level == 0) console.log(memo.size);
+		// if (level == 0) console.log(memo.size);
 		memo.set(memoKey, [ordinaryEV[0], ordinaryEV[1]]);
 		return ordinaryEV;
 
 	} else {
-		if (level == 0) console.log(memo.size);
+		// if (level == 0) console.log(memo.size);
 		memo.set(memoKey, [luckyEV[0], luckyEV[1]]);
 		return luckyEV;
 	}
@@ -300,7 +304,7 @@ function resolveRoll(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackward
 	}
 
 	// resolve roll
-	if (pos == 15 && roll % 2 == 1) {
+	if (pos == 15 && (roll % 2) == 1) {
 		// odd number on karma
 		pos -= roll;
 
@@ -310,14 +314,16 @@ function resolveRoll(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackward
 		pos -= roll;
 
 	} else {
+		const newPos = pos + roll;
+
 		// check starry mushrooms
-		if (pos < 4 && pos + roll >= 4) {
+		if (pos < 4 && (newPos >= 4)) {
 			stars += boardState[4];
-		} else if(pos >= 18 && roll >= (6 - pos + 18)) {
+		} else if (pos >= 18 && newPos >= 24) {
 			stars += boardState[4];
 		}
 
-		if (pos < 11 && pos + roll >= 11) {
+		if (pos < 11 && newPos >= 11) {
 			stars += boardState[11];
 
 			if (doubleStars) {
@@ -326,14 +332,15 @@ function resolveRoll(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackward
 			}
 		}
 
-		if (pos < 18 && pos + roll >= 18) {
+		if (pos < 18 && newPos >= 18) {
 			stars += boardState[18];
 		}
 
 		// resolve current location
-		pos = ((pos + roll - 1) % 20) + 1;
+		pos = ((newPos - 1) % 20) + 1;
 
-		if ((pos % 5) != 0) {
+		// if ((pos % 5) != 0) {
+		if (pos == 4 || pos == 11 || pos == 18) {
 			if (boardState[pos] < 5) { boardState[pos]++; }
 		}
 

@@ -414,8 +414,10 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 			return [ordDice, luckDice, 0];
 		} else if (exactStrat[2] == 0) {
 			return [ordDice - 1, luckDice, 0];
-		} else {
+		} else if (exactStrat[2] > 0) {
 			return [ordDice, luckDice - 1, exactStrat[2]];
+		} else {
+			console.log(exactStrat);
 		}
 
 	}
