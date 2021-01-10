@@ -5129,6 +5129,7 @@ class Flora extends hero {
 		let result = '';
 		let damageResult;
 		let lastTarget = 0;
+		const alreadyTargeted = {};
 
 		let damagePercent = 4;
 		let twineChance = 0.30;
@@ -5166,12 +5167,22 @@ class Flora extends hero {
 				result += target.takeDamage(this, 'Flora\'s Pixie', damageResult);
 				result += target.getDebuff(this, 'twine', 2, {}, false, '', twineChance);
 
-				activeQueue.push([this, target, damageResult.damageAmount, damageResult.critted]);
+				if (target._heroPos in alreadyTargeted) {
+					alreadyTargeted[target._heroPos][2] += damageResult['damageAmount'];
+					alreadyTargeted[target._heroPos][3] = alreadyTargeted[target._heroPos][3] || damageResult['critted'];
+				} else {
+					alreadyTargeted[target._heroPos] = [this, target, damageResult['damageAmount'], damageResult['critted']];
+				}
 			}
 
 			lastTarget = target._heroPos;
 			damagePercent += damagePercentIncrease;
 			twineChance += 0.05;
+		}
+
+
+		for (const i in alreadyTargeted) {
+			activeQueue.push(alreadyTargeted[i]);
 		}
 
 		return result;
@@ -5196,7 +5207,6 @@ class Inosuke extends hero {
 
 
 		if ('Swordwind Shield' in this._buffs) {
-			// eslint-disable-next-line no-undef
 			const targets = getRandomTargets(this, this._enemies, 1);
 			const maxDamage = this._currentStats.totalAttack * 15;
 
@@ -5720,7 +5730,7 @@ class SwordFlashXia extends hero {
 		let hpDamagePercent = 0.15;
 
 		if (this._voidLevel >= 2) {
-			damagePercent = 1;
+			damagePercent = 10;
 			hpDamagePercent = 0.25;
 		}
 
