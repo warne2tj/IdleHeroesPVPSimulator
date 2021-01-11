@@ -85,20 +85,20 @@ function createRandomTeams(seeded) {
 	const oConfig = document.getElementById('configText');
 	const numCreate = parseInt(document.getElementById('numCreate').value);
 	let arrEnhArtifacts = [1, 2, 3, 4, 5, 6];
-	let heroName, strHero, tempEnhArtifacts, arrTranscendence;
 
 	isSeeded = seeded;
 
+
 	oConfig.value = '{\n';
 	for(let i = 0; i < numCreate; i++) {
-		arrTranscendence = [];
+		const arrTranscendence = [];
 		arrEnhArtifacts = shuffle(arrEnhArtifacts);
-		tempEnhArtifacts = arrEnhArtifacts.slice(0, numEnhancedArtifacts);
+		const tempEnhArtifacts = arrEnhArtifacts.slice(0, numEnhancedArtifacts);
 
 		oConfig.value += '"' + i + '": [\n';
 
 		for (let h = 1; h <= 6; h++) {
-			heroName = '';
+			let heroName = '';
 
 			do {
 				heroName = heroNames[Math.floor(Math.random() * heroNames.length)];
@@ -113,7 +113,7 @@ function createRandomTeams(seeded) {
 			} while (heroName == '');
 
 
-			strHero = getHero(heroName);
+			let strHero = getHero(heroName);
 
 			if (!(tempEnhArtifacts.includes(h))) {
 				strHero = strHero.replace(artifactLevel, '');
@@ -244,7 +244,7 @@ function evolve(allTeams, teamKeys) {
 function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 	const child1 = [];
 	const arrTranscendence = [];
-	let dnaString1, skinNames, legendarySkins;
+	let skinNames, legendarySkins;
 
 
 	const parentA = Math.floor(Math.pow(Math.random(), 1.2) * (end - start)) + start;
@@ -256,27 +256,47 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 
 	// randomly pick one of the heroes from the 2 teams
 	for (let h = 0; h < 6; h++) {
-		let chosenDna, otherDna;
+		let chosenDna;
 
 		if (Math.random() < 0.50) {
 			chosenDna = dna1;
-			otherDna = dna2;
 		} else {
 			chosenDna = dna2;
-			otherDna = dna1;
 		}
 
 		const chosenHero = chosenDna[h * numGenes];
+
 		if (baseHeroStats[chosenHero].heroFaction == 'Transcendence') {
 			if (arrTranscendence.includes(chosenHero)) {
-				chosenDna = otherDna;
+				const heroPositions = shuffle([0, 1, 2, 3, 4, 5]);
+
+				for (let rndPos = 0; rndPos < 6; rndPos++) {
+					const diffHeroPos = heroPositions[rndPos];
+					const diffHeroName = chosenDna[diffHeroPos * numGenes];
+					const diffHero = baseHeroStats[diffHeroName];
+
+					if (diffHero.heroFaction != 'Transcendence' || (diffHero.heroFaction == 'Transcendence' && !arrTranscendence.includes(diffHeroName))) {
+						if (diffHero.heroFaction == 'Transcendence') arrTranscendence.push(diffHero);
+
+						for (let g = 0; g < numGenes; g++) {
+							child1.push(chosenDna[diffHeroPos * numGenes + g]);
+						}
+						break;
+					}
+				}
+
 			} else {
 				arrTranscendence.push(chosenHero);
-			}
-		}
 
-		for (let g = 0; g < numGenes; g++) {
-			child1.push(chosenDna[h * numGenes + g]);
+				for (let g = 0; g < numGenes; g++) {
+					child1.push(chosenDna[h * numGenes + g]);
+				}
+			}
+
+		} else {
+			for (let g = 0; g < numGenes; g++) {
+				child1.push(chosenDna[h * numGenes + g]);
+			}
 		}
 	}
 
@@ -472,8 +492,12 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 
 
 	// output child genes
-	dnaString1 = '';
+	let dnaString1 = '';
+	let sqhCount = 0;
+
 	for (let h = 0; h < 6; h++) {
+		if (child1[h * numGenes] == 'Scarlet Queen Halora') sqhCount++;
+
 		dnaString1 += '\n ';
 
 		for (let g = 0; g < numGenes; g++) {
@@ -481,7 +505,9 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 		}
 	}
 	dnaString1 += '\n  "' + child1[dnaLength] + '"';
-
+	if (sqhCount > 1) {
+		throw new Error('too many sqh');
+	}
 	return [child1, dnaString1];
 }
 
