@@ -392,7 +392,11 @@ class Amuvor extends hero {
 
 class Aspen extends hero {
 	passiveStats() {
-		this.applyStatChange({ hpPercent: 0.4, attackPercent: 0.2, crit: 0.35, armorBreak: 0.5 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.50, attackPercent: 0.30, crit: 0.35, armorBreak: 0.65 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.40, attackPercent: 0.20, crit: 0.35, armorBreak: 0.50 }, 'PassiveStats');
+		}
 	}
 
 
@@ -411,18 +415,42 @@ class Aspen extends hero {
 
 	enemyHorrified() {
 		let result = '';
-		const healAmount = this.calcHeal(this, this._currentStats['totalAttack'] * 1.5);
+		let healPercent = 1.5;
+		let controlImmuneGained = 0.20;
+		let damageReduceGained = 0.06;
+
+		if (this._voidLevel >= 3) {
+			healPercent = 2;
+			controlImmuneGained = 0.25;
+			damageReduceGained = 0.07;
+		}
+
+
+		const healAmount = this.calcHeal(this, this._currentStats['totalAttack'] * healPercent);
 		result += this.getHeal(this, healAmount);
-		result += this.getBuff(this, 'Shield', 15, { controlImmune: 0.2, damageReduce: 0.06 });
+		result += this.getBuff(this, 'Shield', 15, { controlImmune: controlImmuneGained, damageReduce: damageReduceGained });
 		return result;
 	}
 
 
 	eventSelfBasic() {
 		let result = '';
-		result += this.getBuff(this, 'Attack Percent', 15, { attackPercent: 0.15 });
-		result += this.getBuff(this, 'Crit Damage', 15, { critDamage: 0.15 });
-		result += this.getBuff(this, 'Shield', 15, { controlImmune: 0.2, damageReduce: 0.06 });
+		let attackPercentGained = 0.15;
+		let critDamageGained = 0.15;
+		let controlImmuneGained = 0.20;
+		let damageReduceGained = 0.06;
+
+		if (this._voidLevel >= 3) {
+			attackPercentGained = 0.20;
+			critDamageGained = 0.20;
+			controlImmuneGained = 0.25;
+			damageReduceGained = 0.07;
+		}
+
+
+		result += this.getBuff(this, 'Attack Percent', 15, { attackPercent: attackPercentGained });
+		result += this.getBuff(this, 'Crit Damage', 15, { critDamage: critDamageGained });
+		result += this.getBuff(this, 'Shield', 15, { controlImmune: controlImmuneGained, damageReduce: damageReduceGained });
 		return result;
 	}
 
@@ -451,16 +479,29 @@ class Aspen extends hero {
 		const targets = getLowestHPTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let damagePercent = 2;
+		let hpDamagePercent = 0.15;
+		let hpThreshholdPercent = 0.35;
+		let additionalDamagePercent = 1.6;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 4;
+			hpDamagePercent = 0.20;
+			hpThreshholdPercent = 0.40;
+			additionalDamagePercent = 2;
+		}
+
+
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * 2, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 				result += targets[0].takeDamage(this, 'Basic Attack', damageResult);
 
 				if (targets[0]._currentStats['totalHP'] > 0) {
-					hpDamage = 0.15 * (targets[0]._stats['totalHP'] - targets[0]._currentStats['totalHP']);
+					hpDamage = hpDamagePercent * (targets[0]._stats['totalHP'] - targets[0]._currentStats['totalHP']);
 					maxDamage = 15 * this._currentStats['totalAttack'];
 					if (hpDamage > maxDamage) { hpDamage = maxDamage; }
 
@@ -471,8 +512,8 @@ class Aspen extends hero {
 				if (targets[0]._currentStats['totalHP'] > 0) {
 					result += targets[0].getDebuff(this, 'Horrify', 2);
 
-					if (targets[0]._currentStats['totalHP'] > 0 && (targets[0]._currentStats['totalHP'] / targets[0]._stats['totalHP']) < 0.35) {
-						additionalDamage = 1.6 * (damageResult['damageAmount'] + hpDamageResult['damageAmount']);
+					if (targets[0]._currentStats['totalHP'] > 0 && (targets[0]._currentStats['totalHP'] / targets[0]._stats['totalHP']) < hpThreshholdPercent) {
+						additionalDamage = additionalDamagePercent * (damageResult['damageAmount'] + hpDamageResult['damageAmount']);
 						additionalDamageResult = this.calcDamage(targets[0], additionalDamage, 'basic', 'true');
 						result += targets[0].takeDamage(this, 'Rage of Shadow Below 35%', additionalDamageResult);
 
@@ -499,17 +540,33 @@ class Aspen extends hero {
 		let additionalDamageResult = { damageAmount: 0 };
 		const targets = getRandomTargets(this, this._enemies, 4);
 		let targetLock;
+		let damageDealt = 0;
+
+		let damagePercent = 2.6;
+		let hpDamagePercent = 0.20;
+		let horrifyChance = 0.50;
+		let hpThreshholdPercent = 0.35;
+		let additionalDamagePercent = 2.2;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 5.2;
+			hpDamagePercent = 0.25;
+			horrifyChance = 0.60;
+			hpThreshholdPercent = 0.40;
+			additionalDamagePercent = 2.5;
+		}
+
 
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 2.6);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Dread\'s Coming', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					hpDamage = 0.2 * targets[i]._currentStats['totalHP'];
+					hpDamage = hpDamagePercent * targets[i]._currentStats['totalHP'];
 					maxDamage = 15 * this._currentStats['totalAttack'];
 					if (hpDamage > maxDamage) { hpDamage = maxDamage; }
 
@@ -518,21 +575,26 @@ class Aspen extends hero {
 				}
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					result += targets[i].getDebuff(this, 'Horrify', 2, {}, false, '', 0.50);
+					result += targets[i].getDebuff(this, 'Horrify', 2, {}, false, '', horrifyChance);
 
-					if (targets[i]._currentStats['totalHP'] > 0 && (targets[i]._currentStats['totalHP'] / targets[i]._stats['totalHP']) < 0.35) {
-						additionalDamage = 2.2 * (damageResult['damageAmount'] + hpDamageResult['damageAmount']);
+					if (targets[i]._currentStats['totalHP'] > 0 && (targets[i]._currentStats['totalHP'] / targets[i]._stats['totalHP']) < hpThreshholdPercent) {
+						additionalDamage = additionalDamagePercent * (damageResult['damageAmount'] + hpDamageResult['damageAmount']);
 
 						additionalDamageResult = this.calcDamage(targets[i], additionalDamage, 'active', 'true');
 						result += targets[i].takeDamage(this, 'Dread\'s Coming Below 35%', additionalDamageResult);
 
-						const healAmount = this.calcHeal(this, additionalDamageResult['damageAmount']);
-						result += this.getHeal(this, healAmount);
+						damageDealt += additionalDamageResult['damageAmount'];
 					}
 				}
 
 				activeQueue.push([this, targets[i], damageResult['damageAmount'] + hpDamageResult['damageAmount'] + additionalDamageResult['damageAmount'], damageResult['critted']]);
 			}
+		}
+
+
+		if (damageDealt > 0) {
+			const healAmount = this.calcHeal(this, damageDealt);
+			result += this.getHeal(this, healAmount);
 		}
 
 		return result;
@@ -2408,7 +2470,11 @@ class Michelle extends hero {
 
 class Mihm extends hero {
 	passiveStats() {
-		this.applyStatChange({ hpPercent: 0.4, damageReduce: 0.3, speed: 60, controlImmune: 1.0 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.50, damageReduce: 0.30, speed: 80, controlImmune: 1.0 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.40, damageReduce: 0.30, speed: 60, controlImmune: 1.0 }, 'PassiveStats');
+		}
 	}
 
 
@@ -2426,10 +2492,13 @@ class Mihm extends hero {
 	eventEnemyDied() {
 		let result = '';
 		const targets = getAllTargets(this, this._enemies);
-		let damageResult = {};
+
+		let damagePercent = 2;
+		if (this._voidLevel >= 3) damagePercent = 3;
+
 
 		for (const i in targets) {
-			damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 2, 'passive', 'dot', 1, 1, 1);
+			const damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * damagePercent, 'passive', 'dot', 1, 1, 1);
 			result += targets[i].getDebuff(this, 'Dot', 2, { dot: damageResult['damageAmount'] }, false, 'passive');
 		}
 
@@ -2443,14 +2512,23 @@ class Mihm extends hero {
 		const targets = getLowestHPTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let damagePercent = 1.4;
+		let energyReduced = 60;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 3;
+			energyReduced = 80;
+		}
+
+
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * 1.4, 'basic', 'normal');
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 				result += targets[0].takeDamage(this, 'Energy Absorbing', damageResult);
-				result += targets[0].loseEnergy(this, 60);
+				result += targets[0].loseEnergy(this, energyReduced);
 				basicQueue.push([this, targets[0], damageResult['damageAmount'], damageResult['critted']]);
 			}
 		}
@@ -2465,22 +2543,35 @@ class Mihm extends hero {
 		const targets = getRandomTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let damagePercent = 4;
+		let armorLost = 0.75;
+		let attackPercentLost = 0.30;
+		let speedLost = 80;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 6;
+			armorLost = 1;
+			attackPercentLost = 0.40;
+			speedLost = 100;
+		}
+
+
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', 4);
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[0].takeDamage(this, 'Collapse Rays', damageResult);
 
 				if (targets[0]._currentStats['totalHP'] > 0 && isFrontLine(targets[0], this._enemies)) {
-					result += targets[0].getDebuff(this, 'Armor Percent', 3, { armorPercent: 0.75 });
+					result += targets[0].getDebuff(this, 'Armor Percent', 3, { armorPercent: armorLost });
 					result += targets[0].getDebuff(this, 'petrify', 2);
 				}
 
 				if (targets[0]._currentStats['totalHP'] > 0 && isBackLine(targets[0], this._enemies)) {
-					result += targets[0].getDebuff(this, 'Attack Percent', 3, { attackPercent: 0.30 });
-					result += targets[0].getDebuff(this, 'Speed', 3, { speed: 80 });
+					result += targets[0].getDebuff(this, 'Attack Percent', 3, { attackPercent: attackPercentLost });
+					result += targets[0].getDebuff(this, 'Speed', 3, { speed: speedLost });
 				}
 
 				activeQueue.push([this, targets[0], damageResult['damageAmount'], damageResult['critted']]);
