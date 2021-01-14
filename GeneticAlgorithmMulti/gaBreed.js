@@ -276,7 +276,7 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 					const diffHero = baseHeroStats[diffHeroName];
 
 					if (diffHero.heroFaction != 'Transcendence' || (diffHero.heroFaction == 'Transcendence' && !arrTranscendence.includes(diffHeroName))) {
-						if (diffHero.heroFaction == 'Transcendence') arrTranscendence.push(diffHero);
+						if (diffHero.heroFaction == 'Transcendence') arrTranscendence.push(diffHeroName);
 
 						for (let g = 0; g < numGenes; g++) {
 							child1.push(chosenDna[diffHeroPos * numGenes + g]);
@@ -493,21 +493,18 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 
 	// output child genes
 	let dnaString1 = '';
-	let sqhCount = 0;
 
 	for (let h = 0; h < 6; h++) {
-		if (child1[h * numGenes] == 'Scarlet Queen Halora') sqhCount++;
-
 		dnaString1 += '\n ';
 
 		for (let g = 0; g < numGenes; g++) {
 			dnaString1 += ' "' + child1[h * numGenes + g] + '",';
 		}
 	}
+
 	dnaString1 += '\n  "' + child1[dnaLength] + '"';
-	if (sqhCount > 1) {
-		throw new Error('too many sqh');
-	}
+
+
 	return [child1, dnaString1];
 }
 

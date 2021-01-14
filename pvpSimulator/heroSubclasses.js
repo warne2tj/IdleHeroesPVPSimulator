@@ -542,7 +542,11 @@ class Aspen extends hero {
 
 class Belrain extends hero {
 	passiveStats() {
-		this.applyStatChange({ hpPercent: 0.3, attackPercent: 0.45, controlImmune: 0.3, healEffect: 0.4 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.40, attackPercent: 0.55, controlImmune: 0.30, healEffect: 0.50 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.30, attackPercent: 0.45, controlImmune: 0.30, healEffect: 0.40 }, 'PassiveStats');
+		}
 	}
 
 
@@ -564,8 +568,12 @@ class Belrain extends hero {
 		let healAmount;
 		const targets = getLowestHPTargets(this, this._allies, 3);
 
+		let healPercent = 2.5;
+		if (this._voidLevel >= 2) healPercent = 5;
+
+
 		for (const i in targets) {
-			healAmount = this.calcHeal(targets[i], this._currentStats['totalAttack'] * 2.5);
+			healAmount = this.calcHeal(targets[i], this._currentStats['totalAttack'] * healPercent);
 			result += targets[i].getBuff(this, 'Heal', 2, { heal: healAmount });
 		}
 
@@ -575,12 +583,15 @@ class Belrain extends hero {
 
 	eventSelfDied() {
 		let result = '';
-
 		const targets = getAllTargets(this, this._allies);
 		let healAmount;
 
+		let healPercent = 4;
+		if (this._voidLevel >= 3) healPercent = 8;
+
+
 		for (const i in targets) {
-			healAmount = this.calcHeal(targets[i], this._currentStats['totalAttack'] * 4);
+			healAmount = this.calcHeal(targets[i], this._currentStats['totalAttack'] * healPercent);
 			result += targets[i].getBuff(this, 'Heal', 4, { heal: healAmount });
 		}
 
@@ -594,12 +605,27 @@ class Belrain extends hero {
 		let targets = getRandomTargets(this, this._enemies, 4);
 		let targetLock;
 
+		let damagePercent = 1.82;
+		let attackPercentGained = 0.30;
+		let speedGained = 30;
+		let effectBeingHealedGained = 0.20;
+		let dispelChance = 0.40;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 3.6;
+			attackPercentGained = 0.40;
+			speedGained = 40;
+			effectBeingHealedGained = 0.30;
+			dispelChance = 0.50;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 1.82);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Holylight Sparkle', damageResult);
 				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -607,11 +633,11 @@ class Belrain extends hero {
 
 		targets = getRandomTargets(this, this._allies, 4);
 		for (const i in targets) {
-			result += targets[i].getBuff(this, 'Attack Percent', 3, { attackPercent: 0.3 });
-			result += targets[i].getBuff(this, 'Speed', 3, { speed: 30 });
-			result += targets[i].getBuff(this, 'Effect Being Healed', 3, { effectBeingHealed: 0.2 });
+			result += targets[i].getBuff(this, 'Attack Percent', 3, { attackPercent: attackPercentGained });
+			result += targets[i].getBuff(this, 'Speed', 3, { speed: speedGained });
+			result += targets[i].getBuff(this, 'Effect Being Healed', 3, { effectBeingHealed: effectBeingHealedGained });
 
-			if (random() < 0.4) {
+			if (random() < dispelChance) {
 				for (const d in this._debuffs) {
 					if (isControlEffect(d)) {
 						result += this.removeDebuff(d);
@@ -1500,7 +1526,11 @@ class Garuda extends hero {
 
 class FaithBlade extends hero {
 	passiveStats() {
-		this.applyStatChange({ holyDamage: 0.70, speed: 60, crit: 0.30, stunImmune: 1 }, 'PassiveStats');
+		if (this._voidLevel >= 3) {
+			this.applyStatChange({ holyDamage: 0.90, speed: 80, crit: 0.30, stunImmune: 1 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ holyDamage: 0.70, speed: 60, crit: 0.30, stunImmune: 1 }, 'PassiveStats');
+		}
 	}
 
 
@@ -1517,8 +1547,17 @@ class FaithBlade extends hero {
 
 	eventEnemyDied() {
 		let result = '';
-		result += this.getEnergy(this, 100);
-		result += this.getBuff(this, 'Holy Damage', 3, { holyDamage: 0.30 });
+		let energyGained = 100;
+		let holyDamageGained = 0.30;
+
+		if (this._voidLevel >= 2) {
+			energyGained = 120;
+			holyDamageGained = 0.40;
+		}
+
+
+		result += this.getEnergy(this, energyGained);
+		result += this.getBuff(this, 'Holy Damage', 3, { holyDamage: holyDamageGained });
 		return result;
 	}
 
@@ -1529,12 +1568,16 @@ class FaithBlade extends hero {
 		const targets = getLowestHPTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let damagePercent = 2;
+		if (this._voidLevel >= 1) damagePercent = 4;
+
+
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * 2, 'basic', 'normal', 1, 1, 0, 1, 0);
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal', 1, 1, 0, 1, 0);
 				result += targets[0].takeDamage(this, 'Basic Attack', damageResult);
 				basicQueue.push([this, targets[0], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -1553,6 +1596,17 @@ class FaithBlade extends hero {
 		const targets = getLowestHPTargets(this, this._enemies, 2);
 		let targetLock;
 
+		let damagePercent = 3;
+		let additionalDamagePercent = 1.08;
+		let hpDamagePercent = 0.20;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 6;
+			additionalDamagePercent = 2.2;
+			hpDamagePercent = 0.25;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
@@ -1560,19 +1614,19 @@ class FaithBlade extends hero {
 			if (targetLock == '') {
 				result += targets[i].getDebuff(this, 'stun', 2);
 
-				hpDamage = 0.20 * (targets[i]._stats['totalHP'] - targets[i]._currentStats['totalHP']);
+				hpDamage = hpDamagePercent * (targets[i]._stats['totalHP'] - targets[i]._currentStats['totalHP']);
 				if (hpDamage > this._currentStats['totalAttack'] * 15) { hpDamage = this._currentStats['totalAttack'] * 15; }
 				hpDamageResult = this.calcDamage(targets[i], hpDamage, 'active', 'true');
 				result += targets[i].takeDamage(this, 'Blade Assault HP', hpDamageResult);
 
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 3);
+					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 					result += targets[i].takeDamage(this, 'Blade Assault', damageResult);
 				}
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					additionalDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 1.08, 1, 0, 1, 0);
+					additionalDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', additionalDamagePercent, 1, 0, 1, 0);
 					result += targets[i].takeDamage(this, 'Blade Assault 2', additionalDamageResult);
 				}
 

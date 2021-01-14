@@ -178,7 +178,7 @@ function nextSimBlock() {
 
 
 		// simulate
-		for (let i = 0; i < 1000; i++) {
+		for (let i = 0; i < 100; i++) {
 			let doFirstDecision = true;
 
 			// reset starting conditions
@@ -203,7 +203,7 @@ function nextSimBlock() {
 					doFirstDecision = false;
 					decision = firstDecision;
 
-					if (decision[1] == luckDice) {
+					if (decision[0] == ordDice - 1 && decision[1] == luckDice) {
 						decision[2] = Math.floor(Math.random() * 6 + 1);
 
 						if (rollTwice) {
