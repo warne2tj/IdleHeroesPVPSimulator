@@ -443,7 +443,7 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 	let roll = 0;
 
 	// check stars needed for next tier
-	if (ordDice + luckDice < 9) {
+	if (ordDice + luckDice < 8) {
 		const starMod = stars % 300;
 
 		if (starMod < 200) {
@@ -457,13 +457,15 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 		}
 
 		if ((ordDice + luckDice) * 2 >= nextTier) {
-			return [ordDice, luckDice, roll];
+			if ((ordDice + luckDice) * 2 == nextTier + (nextTier % 2)) {
+				return [ordDice, luckDice, roll];
+			}
 		} else if (luckDice > 0) {
 			if (pos < 4) {
 				if (((ordDice + luckDice) * 2 + boardState[4]) >= nextTier) {
 					return [ordDice, luckDice - 1, 5 - pos];
 				}
-			} else if (pos >= 5 && pos < 11 && pos != 10) {
+			} else if (pos >= 5 && pos < 11 && !moveBackwards && !rollTwice && !doubleNextRoll) {
 				if (((ordDice + luckDice - 1) * 2 + boardState[11]) >= nextTier) {
 					return [ordDice, luckDice - 1, 6];
 				}
@@ -548,7 +550,7 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 
 	} else if (ordDice == 0) {
 		// out of ordinary dice
-		if (pos == 10 && moveBackwards) {
+		if (moveBackwards) {
 			if (luckDice > 1) {
 				// move backwards tarot active, minimize damage
 				roll = 1;
@@ -559,12 +561,15 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 		} else if (pos == 20) {
 			// get free ordinary
 			roll = 5;
-		} else if (pos < 5) {
+		} else if (pos < 4) {
 			// get free ordinary
 			roll = 5 - pos;
-		} else if (luckDice > 1 || (pos != 4 && pos != 11)) {
+		} else if ((luckDice > 1 || (pos != 4 && pos != 11)) && pos != 9) {
 			// move as far as possible
 			roll = 6;
+		} else if ((luckDice > 1 || (pos != 4 && pos != 11)) && pos == 9) {
+			// move as far as possible
+			roll = 5;
 		} else {
 			// no progress can be made, just save last dice
 			return [ordDice, luckDice, roll];

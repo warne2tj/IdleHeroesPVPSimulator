@@ -1299,7 +1299,11 @@ class Delacium extends hero {
 
 class Elyvia extends hero {
 	passiveStats() {
-		this.applyStatChange({ hpPercent: 0.30, attackPercent: 0.25, effectBeingHealed: 0.30 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.40, attackPercent: 0.35, effectBeingHealed: 0.40 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.30, attackPercent: 0.25, effectBeingHealed: 0.30 }, 'PassiveStats');
+		}
 	}
 
 
@@ -1320,8 +1324,16 @@ class Elyvia extends hero {
 		let result = '';
 		const targets = getRandomTargets(this, this._enemies, 1);
 
+		let allDamageTakenGained = -0.30;
+		let allDamageDealtLost = 0.50;
+
+		if (this._voidLevel >= 2) {
+			allDamageTakenGained = -0.40;
+			allDamageDealtLost = 0.60;
+		}
+
 		if (targets.length > 0) {
-			result += targets[0].getDebuff(this, 'Shrink', 2, { allDamageTaken: -0.30, allDamageDealt: 0.50 }, false, '', 1, true);
+			result += targets[0].getDebuff(this, 'Shrink', 2, { allDamageTaken: allDamageTakenGained, allDamageDealt: allDamageDealtLost }, false, '', 1, true);
 		}
 
 		return result;
@@ -1330,13 +1342,21 @@ class Elyvia extends hero {
 
 	eventEnemyBasic(source, e) {
 		let result = '';
+		let damagePercent = 3;
+		let healPercent = 1.5;
+
+		if (this._voidLevel >= 3) {
+			damagePercent = 4;
+			healPercent = 2;
+		}
+
 
 		for (const i in e) {
 			if ('Fairy\'s Guard' in e[i][1]._buffs) {
-				const damageResult = e[i][1].calcDamage(source, e[i][1]._currentStats['totalAttack'] * 3, 'passive', 'normal', 1, 1, 0, 1, 0);
+				const damageResult = e[i][1].calcDamage(source, e[i][1]._currentStats['totalAttack'] * damagePercent, 'passive', 'normal', 1, 1, 0, 1, 0);
 				result += source.takeDamage(e[i][1], 'Fairy\'s Guard', damageResult);
 
-				const healAmount = e[i][1].calcHeal(e[i][1], e[i][1]._currentStats['totalAttack'] * 1.5);
+				const healAmount = e[i][1].calcHeal(e[i][1], e[i][1]._currentStats['totalAttack'] * healPercent);
 				result += e[i][1].getHeal(e[i][1], healAmount);
 			}
 		}
@@ -1381,14 +1401,26 @@ class Elyvia extends hero {
 		let targets = getRandomTargets(this, this._enemies, 1);
 		let targetLock;
 
+		let allDamageTakenGained = -0.30;
+		let allDamageDealtLost = 0.50;
+		let damagePercent = 4;
+
+		if (this._voidLevel >= 4) damagePercent = 8;
+
+		if (this._voidLevel >= 2) {
+			allDamageTakenGained = -0.40;
+			allDamageDealtLost = 0.60;
+		}
+
+
 		if (targets.length > 0) {
 			targetLock = targets[0].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', 4);
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[0].takeDamage(this, 'You Miss Lilliput?!', damageResult);
-				result += targets[0].getDebuff(this, 'Shrink', 2, { allDamageTaken: -0.30, allDamageDealt: 0.50 }, false, '', 1, true);
+				result += targets[0].getDebuff(this, 'Shrink', 2, { allDamageTaken: allDamageTakenGained, allDamageDealt: allDamageDealtLost }, false, '', 1, true);
 			}
 		}
 
@@ -1489,7 +1521,11 @@ class Emily extends hero {
 
 class Garuda extends hero {
 	passiveStats() {
-		this.applyStatChange({ attackPercent: 0.25, hpPercent: 0.3, critDamage: 0.4, controlImmune: 0.3 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.35, hpPercent: 0.40, critDamage: 0.40, controlImmune: 0.30 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.25, hpPercent: 0.30, critDamage: 0.40, controlImmune: 0.30 }, 'PassiveStats');
+		}
 	}
 
 
@@ -1511,18 +1547,27 @@ class Garuda extends hero {
 	eventAllyBasic(e) {
 		let result = '';
 		let damageResult = {};
+		let damagePercent = 2.5;
+		let critGained = 0.05;
+		let damageReduceGained = 0.04;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 3.6;
+			critGained = 0.06;
+			damageReduceGained = 0.05;
+		}
 
 		result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Instinct of Hunt</span> passive triggered.</div>';
 
 		for (const i in e) {
 			if (e[i][1]._currentStats['totalHP'] > 0) {
-				damageResult = this.calcDamage(e[i][1], this._currentStats['totalAttack'] * 2.5, 'passive', 'normal');
+				damageResult = this.calcDamage(e[i][1], this._currentStats['totalAttack'] * damagePercent, 'passive', 'normal');
 				result += e[i][1].takeDamage(this, 'Instinct of Hunt', damageResult);
 			}
 		}
 
-		result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: 0.04 });
-		result += this.getBuff(this, 'Crit', 2, { crit: 0.05 });
+		result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: damageReduceGained });
+		result += this.getBuff(this, 'Crit', 2, { crit: critGained });
 
 		return result;
 	}
@@ -1530,13 +1575,23 @@ class Garuda extends hero {
 
 	eventAllyDied() {
 		let result = '';
+		let healPercent = 0.30;
+		let damageReduceGained = 0.04;
+
+		if (this._voidLevel >= 2) damageReduceGained = 0.05;
+		if (this._voidLevel >= 3) healPercent = 0.35;
+
 
 		result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Unbeatable Force</span> passive triggered.</div>';
 
-		const healAmount = this.calcHeal(this, this._stats['totalHP'] * 0.3);
+		const healAmount = this.calcHeal(this, this._stats['totalHP'] * healPercent);
 		result += this.getHeal(this, healAmount);
-		result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: 0.04 });
-		result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: 0.04 });
+		result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: damageReduceGained });
+		result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: damageReduceGained });
+
+		if (this._voidLevel >= 3) {
+			result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: damageReduceGained });
+		}
 
 		return result;
 	}
@@ -1548,12 +1603,21 @@ class Garuda extends hero {
 		const targets = getRandomTargets(this, this._enemies, 3);
 		let targetLock;
 
+		let damagePercent = 4.8;
+		let featherDamagePercent = 3.2;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 7.2;
+			featherDamagePercent = 4.8;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 4.8);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Fatal Feather', damageResult);
 				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -1573,11 +1637,12 @@ class Garuda extends hero {
 					result += targetLock;
 
 					if (targetLock == '') {
-						damageResult = this.calcDamage(featherTarget[0], this._currentStats['totalAttack'], 'active', 'normal', 3.2);
+						damageResult = this.calcDamage(featherTarget[0], this._currentStats['totalAttack'], 'active', 'normal', featherDamagePercent);
 						result += featherTarget[0].takeDamage(this, 'Feather Blade', damageResult);
 					}
 				}
 			}
+
 			result += this.removeBuff('Feather Blade');
 		}
 
