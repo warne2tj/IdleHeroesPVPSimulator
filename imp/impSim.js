@@ -443,7 +443,7 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 	let roll = 0;
 
 	// check stars needed for next tier
-	if (ordDice + luckDice < 8) {
+	if (totalDice <= 7) {
 		const starMod = stars % 300;
 
 		if (starMod < 200) {
@@ -456,44 +456,59 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 			nextTier = 300 - starMod;
 		}
 
-		if ((ordDice + luckDice) * 2 >= nextTier) {
-			if ((ordDice + luckDice) * 2 == nextTier + (nextTier % 2)) {
+		if (totalDice * 2 >= nextTier) {
+			// letting dice convert will just reach next tier
+			if (totalDice * 2 == nextTier + (nextTier % 2)) {
 				return [ordDice, luckDice, roll];
 			}
 		} else if (luckDice > 0) {
-			if (pos < 4) {
-				if (((ordDice + luckDice) * 2 + boardState[4]) >= nextTier) {
+			// see if using lucky dice first to reach next starry mushroom and letting rest convert will reach next tier
+			if (pos < 3 || (pos == 3 && ordDice == 0)) {
+				if ((totalDice * 2 + boardState[4]) >= nextTier) {
 					return [ordDice, luckDice - 1, 5 - pos];
 				}
-			} else if (pos >= 5 && pos < 11 && !moveBackwards && !rollTwice && !doubleNextRoll) {
-				if (((ordDice + luckDice - 1) * 2 + boardState[11]) >= nextTier) {
+			} else if (pos >= 19) {
+				if ((totalDice * 2 + boardState[4]) >= nextTier) {
+					return [ordDice, luckDice - 1, 20 - pos + 5];
+				}
+			} else if (pos == 18) {
+				if (((totalDice - 1) * 2 + boardState[4]) >= nextTier) {
 					return [ordDice, luckDice - 1, 6];
 				}
-			} else if (pos >= 12 && pos < 18) {
-				if (((ordDice + luckDice - 1) * 2 + boardState[18]) >= nextTier) {
+			} else if (pos == 9) {
+				if (((totalDice - 1) * 2 + boardState[11]) >= nextTier) {
+					return [ordDice, luckDice - 1, 5];
+				}
+			} else if ((pos >= 5 && pos < 9) || (pos == 10 && ordDice == 0 && !moveBackwards && !rollTwice && !doubleNextRoll)) {
+				if (((totalDice - 1) * 2 + boardState[11]) >= nextTier) {
+					return [ordDice, luckDice - 1, 6];
+				}
+			} else if ((pos >= 12 && pos < 14) || pos == 15) {
+				if (((totalDice - 1) * 2 + boardState[18]) >= nextTier) {
 					return [ordDice, luckDice - 1, 6];
 				}
 			}
 		}
 	}
 
+
 	// decide which dice to use
-	if (luckDice > 1 && boardState[18] < 5 && pos < 18 && pos >= 12 && pos != 15) {
+	if (luckDice > 1 && boardState[18] < 5 && pos < 18 && pos >= 12 && pos != 15 && totalDice >= 17) {
 		// use lucky to upgrade mushroom 3
 		luckDice--;
 		roll = 18 - pos;
 
-	} else if (luckDice > 1 && boardState[18] == 5 && boardState[11] < 5 && pos < 11 && pos >= 5) {
+	} else if (luckDice > 1 && boardState[18] == 5 && boardState[11] < 5 && pos < 11 && pos >= 5 && totalDice >= 17 && !moveBackwards && !doubleNextRoll && !rollTwice) {
 		// use lucky to upgrade mushroom 2 if mushroom 3 is maxed
 		luckDice--;
 		roll = 11 - pos;
 
-	} else if (luckDice > 1 && boardState[18] == 5 && boardState[4] < 5 && pos < 4) {
+	} else if (luckDice > 1 && boardState[18] == 5 && boardState[4] < 5 && pos < 4 && totalDice >= 17) {
 		// use lucky to upgrade mushroom 1 if mushroom 3 is maxed
 		luckDice--;
 		roll = 4 - pos;
 
-	} else if (luckDice > 1 && boardState[18] == 5 && boardState[4] < 5 && pos >= 19) {
+	} else if (luckDice > 1 && boardState[18] == 5 && boardState[4] < 5 && pos >= 19 && totalDice >= 17) {
 		// use lucky to upgrade mushroom 1 if mushroom 3 is maxed
 		luckDice--;
 		roll = 20 - pos + 4;
@@ -558,18 +573,18 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 				// no progress can be made, just save last dice
 				return [ordDice, luckDice, roll];
 			}
-		} else if (pos == 20) {
+		} else if (pos >= 19) {
 			// get free ordinary
-			roll = 5;
+			roll = 20 - pos + 5;
 		} else if (pos < 4) {
 			// get free ordinary
 			roll = 5 - pos;
-		} else if ((luckDice > 1 || (pos != 4 && pos != 11)) && pos != 9) {
-			// move as far as possible
-			roll = 6;
-		} else if ((luckDice > 1 || (pos != 4 && pos != 11)) && pos == 9) {
+		} else if (pos == 9) {
 			// move as far as possible
 			roll = 5;
+		} else if ((luckDice > 1 || (pos != 4 && pos != 11))) {
+			// move as far as possible
+			roll = 6;
 		} else {
 			// no progress can be made, just save last dice
 			return [ordDice, luckDice, roll];
