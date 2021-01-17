@@ -1793,10 +1793,15 @@ class Gustin extends hero {
 		super(sHeroName, iHeroPos, attOrDef);
 		this._stats['linkCount'] = 0;
 		this._stats['reflectAmount'] = 0;
+		this._stats['demonTotemStacks'] = 0;
 	}
 
 	passiveStats() {
-		this.applyStatChange({ hpPercent: 0.25, speed: 30, controlImmune: 0.3, effectBeingHealed: 0.3 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.35, speed: 40, controlImmune: 0.30, effectBeingHealed: 0.40 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.25, speed: 30, controlImmune: 0.30, effectBeingHealed: 0.30 }, 'PassiveStats');
+		}
 	}
 
 
@@ -1848,13 +1853,25 @@ class Gustin extends hero {
 	endOfRound() {
 		let result = '';
 		let targets = [];
+		let energyLost = 30;
+		let healPercent = 0.25;
+		let totemStacks = 4;
+
+		if (this._voidLevel >= 2) energyLost = 40;
+		if (this._voidLevel >= 4) {
+			healPercent = 0.30;
+			totemStacks = 5;
+		}
+
 
 		if ('Demon Totem' in this._buffs) {
 			targets = getLowestHPTargets(this, this._allies, 1);
 			if (targets.length > 0) {
-				const healAmount = this.calcHeal(this, 0.25 * targets[0]._stats['totalHP']);
+				const healAmount = this.calcHeal(this, healPercent * targets[0]._stats['totalHP']);
 				result += targets[0].getHeal(this, healAmount);
 			}
+
+			this._currentStats.demonTotemStacks = totemStacks;
 		}
 
 
@@ -1862,7 +1879,7 @@ class Gustin extends hero {
 			targets = getRandomTargets(this, this._enemies, 2);
 			for (const i in targets) {
 				result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Cloak of Fog</span> drained ' + targets[i].heroDesc() + ' energy.</div>';
-				result += targets[i].loseEnergy(this, 30);
+				result += targets[i].loseEnergy(this, energyLost);
 			}
 		}
 
@@ -1888,10 +1905,12 @@ class Gustin extends hero {
 
 	eventEnemyBasic(e) {
 		let result = '';
+		let dispelChance = 0.60;
+		if (this._voidLevel >= 4) dispelChance = 0.70;
 
 		if ('Demon Totem' in this._buffs) {
 			for (const i in e) {
-				if (this._currentStats['demonTotemStacks'] > 0 && random() < 0.6) {
+				if (this._currentStats['demonTotemStacks'] > 0 && random() < dispelChance) {
 					this._currentStats['demonTotemStacks']--;
 					result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Demon Totem</span> triggered dispell.</div>';
 
@@ -1929,11 +1948,13 @@ class Gustin extends hero {
 	takeDamage(source, strAttackDesc, damageResult) {
 		let result = '';
 		const preHP = this._currentStats['totalHP'];
+		let reflectPercent = 0.70;
+		if (this._voidLevel >= 3) reflectPercent = 0.80;
 
 		result += super.takeDamage(source, strAttackDesc, damageResult);
 
 		const postHP = this._currentStats['totalHP'];
-		const damageAmount = 0.70 * (preHP - postHP);
+		const damageAmount = reflectPercent * (preHP - postHP);
 
 		if (damageAmount > 0 && !(isMonster(source))) {
 			this._currentStats['reflectAmount'] += damageAmount;
@@ -1951,15 +1972,26 @@ class Gustin extends hero {
 		let buffRemoved;
 		let targetLock;
 
+		let damagePercent = 2;
+		let dispelChance = 0.60;
+		let totemStacks = 4;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 5;
+			dispelChance = 0.80;
+			totemStacks = 5;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 2);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Demon Totem', damageResult);
 
-				if (targets[i]._currentStats['totalHP'] > 0 && random() < 0.60) {
+				if (targets[i]._currentStats['totalHP'] > 0 && random() < dispelChance) {
 					buffRemoved = false;
 
 					for (const b in targets[i]._buffs) {
@@ -1982,7 +2014,7 @@ class Gustin extends hero {
 		}
 
 		result += this.getBuff(this, 'Demon Totem', 3, {}, false);
-		this._currentStats['demonTotemStacks'] = 4;
+		this._currentStats['demonTotemStacks'] = totemStacks;
 
 		return result;
 	}
@@ -1997,7 +2029,11 @@ class Horus extends hero {
 
 
 	passiveStats() {
-		this.applyStatChange({ hpPercent: 0.4, attackPercent: 0.3, armorBreak: 0.4, block: 0.6 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ hpPercent: 0.50, attackPercent: 0.40, armorBreak: 0.50, block: 0.70 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ hpPercent: 0.40, attackPercent: 0.30, armorBreak: 0.40, block: 0.60 }, 'PassiveStats');
+		}
 	}
 
 
@@ -2016,6 +2052,14 @@ class Horus extends hero {
 
 	eventTookDamage() {
 		let result = '';
+		let hpDamagePercent = 0.20;
+		let healPercent = 0.40;
+
+		if (this._voidLevel >= 3) {
+			hpDamagePercent = 0.25;
+			healPercent = 0.50;
+		}
+
 
 		if (this._currentStats['blockCount'] >= 3) {
 			this._currentStats['blockCount'] = 0;
@@ -2027,22 +2071,21 @@ class Horus extends hero {
 			}
 
 
-			let damageAmount = this._stats['totalHP'] * 0.2;
+			let damageAmount = this._stats['totalHP'] * hpDamagePercent;
 			const maxDamage = this._currentStats['totalAttack'] * 25;
-
 			if (damageAmount > maxDamage) { damageAmount = maxDamage; }
 
-			let damageResult;
 			const targets = getRandomTargets(this, this._enemies, 3);
 			let totalDamage = 0;
 
 			for (const i in targets) {
-				damageResult = this.calcDamage(targets[i], damageAmount, 'passive', 'true');
+				const damageResult = this.calcDamage(targets[i], damageAmount, 'passive', 'true');
 				result += targets[i].takeDamage(this, 'Crimson Contract', damageResult);
 				totalDamage += damageResult['damageAmount'];
 			}
 
-			const healAmount = this.calcHeal(this, totalDamage * 0.4);
+
+			const healAmount = this.calcHeal(this, totalDamage * healPercent);
 			result += this.getHeal(this, healAmount);
 		}
 
@@ -2052,8 +2095,16 @@ class Horus extends hero {
 
 	eventEnemyActive() {
 		let result = '';
-		result += this.getBuff(this, 'Attack Percent', 15, { attackPercent: 0.05 });
-		result += this.getBuff(this, 'Crit Damage', 15, { critDamage:0.02 });
+		let attackPercentGained = 0.05;
+		let critDamageGained = 0.02;
+
+		if (this._voidLevel >= 2) {
+			attackPercentGained = 0.06;
+			critDamageGained = 0.03;
+		}
+
+		result += this.getBuff(this, 'Attack Percent', 15, { attackPercent: attackPercentGained });
+		result += this.getBuff(this, 'Crit Damage', 15, { critDamage: critDamageGained });
 		return result;
 	}
 
@@ -2080,21 +2131,34 @@ class Horus extends hero {
 		const targets = getRandomTargets(this, this._enemies, 3);
 		let targetLock;
 
+		let damagePercent = 2.06;
+		let bleedPercent = 1;
+		let hpDamagePercent = 0.15;
+		let critDamagePercent = 1.08;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 6;
+			bleedPercent = 3;
+			hpDamagePercent = 0.20;
+			critDamagePercent = 3;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 2.06);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Torment of Flesh and Soul', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					bleedDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'bleed', 1, 3);
+					bleedDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'bleed', bleedPercent, 3);
 					result += targets[i].getDebuff(this, 'Bleed', 3, { bleed: bleedDamageResult['damageAmount'] }, false, 'active');
 				}
 
 				if (targets[i]._currentStats['totalHP'] > 0 && isFrontLine(targets[i], this._enemies)) {
-					hpDamage = targets[i]._stats['totalHP'] * 0.15;
+					hpDamage = targets[i]._stats['totalHP'] * hpDamagePercent;
 					const maxDamage = this._currentStats['totalAttack'] * 15;
 					if (hpDamage > maxDamage) { hpDamage = maxDamage; }
 
@@ -2103,7 +2167,7 @@ class Horus extends hero {
 				}
 
 				if (targets[i]._currentStats['totalHP'] > 0 && isBackLine(targets[i], this._enemies)) {
-					additionalDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 1.08, 2);
+					additionalDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', critDamagePercent, 2);
 					result += targets[i].takeDamage(this, 'Torment of Flesh and Soul Back Line', additionalDamageResult);
 				}
 
