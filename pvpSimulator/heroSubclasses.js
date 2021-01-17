@@ -927,7 +927,11 @@ class Carrie extends hero {
 
 class Cthugha extends hero {
 	passiveStats() {
-		this.applyStatChange({ attackPercent: 0.25, hpPercent: 0.2, damageReduce: 0.2 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.35, hpPercent: 0.30, damageReduce: 0.20 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.25, hpPercent: 0.20, damageReduce: 0.20 }, 'PassiveStats');
+		}
 	}
 
 
@@ -935,25 +939,34 @@ class Cthugha extends hero {
 		let result = super.handleTrigger(trigger);
 
 		if (trigger[1] == 'eventTookDamage' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			let dotPercent = 0.50;
+			if (this._voidLevel >= 2) dotPercent = 0.70;
+
 			let burnDamageResult = {};
 			let bleedDamageResult = {};
 			const targets = getRandomTargets(this, this._enemies, 3);
 
 			for (const i in targets) {
-				burnDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 0.5, 'passive', 'burn', 1, 1, 3);
-				bleedDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 0.5, 'passive', 'bleed', 1, 1, 3);
+				burnDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * dotPercent, 'passive', 'burn', 1, 1, 3);
+				bleedDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * dotPercent, 'passive', 'bleed', 1, 1, 3);
 
 				result += targets[i].getDebuff(this, 'Burn', 3, { burn: burnDamageResult['damageAmount'] }, false, 'passive');
 				result += targets[i].getDebuff(this, 'Bleed', 3, { bleed: bleedDamageResult['damageAmount'] }, false, 'passive');
 			}
 
 		} else if (trigger[1] == 'eventTookDamageFromBurning' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			let attackPercentGained = 0.10;
+			if (this._voidLevel >= 3) attackPercentGained = 0.15;
+
 			result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Soul Shackle</span> triggered.</div>';
-			result += this.getBuff(this, 'Attack Percent', 3, { attackPercent: 0.10 });
+			result += this.getBuff(this, 'Attack Percent', 3, { attackPercent: attackPercentGained });
 
 		} else if (trigger[1] == 'eventTookDamageFromBleeding' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			let healPercent = 0.60;
+			if (this._voidLevel >= 3) healPercent = 0.70;
+
 			result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Soul Shackle</span> triggered.</div>';
-			const healAmount = this.calcHeal(this, this._currentStats['totalAttack'] * 0.6);
+			const healAmount = this.calcHeal(this, this._currentStats['totalAttack'] * healPercent);
 			result += this.getBuff(this, 'Heal', 3, { heal: healAmount });
 
 		}
@@ -998,12 +1011,21 @@ class Cthugha extends hero {
 		let isBleedOrBurn = false;
 		let targetLock;
 
+		let damagePercent = 2.36;
+		let detonatePercent = 1.2;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 4.72;
+			detonatePercent = 1.5;
+		}
+
+
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 2.36);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Terror Blade', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
@@ -1027,7 +1049,7 @@ class Cthugha extends hero {
 					}
 
 					if (detonateDamage > 0) {
-						detonateDamage *= 1.2;
+						detonateDamage *= detonatePercent;
 						if (detonateDamage > this._currentStats['totalAttack'] * 20) {
 							detonateDamage = this._currentStats['totalAttack'] * 20;
 						}
@@ -2650,7 +2672,11 @@ class Mihm extends hero {
 
 class Nakia extends hero {
 	passiveStats() {
-		this.applyStatChange({ attackPercent: 0.35, crit: 0.35, controlImmune: 0.3, speed: 30, damageAgainstBleed: 0.80 }, 'PassiveStats');
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.45, crit: 0.35, controlImmune: 0.30, speed: 40, damageAgainstBleed: 1 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.35, crit: 0.35, controlImmune: 0.30, speed: 30, damageAgainstBleed: 0.80 }, 'PassiveStats');
+		}
 	}
 
 
@@ -2672,10 +2698,19 @@ class Nakia extends hero {
 		let damageResult;
 		const targets = getBackTargets(this, this._enemies);
 
+		let bleedPercent = 1;
+		let speedLost = 30;
+
+		if (this._voidLevel >= 2) {
+			bleedPercent = 2.5;
+			speedLost = 40;
+		}
+
+
 		for (const i in targets) {
-			damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'passive', 'bleed', 1, 1, 3);
+			damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * bleedPercent, 'passive', 'bleed', 1, 1, 3);
 			result += targets[i].getDebuff(this, 'Bleed', 3, { bleed: damageResult['damageAmount'] }, false, 'passive');
-			result += targets[i].getDebuff(this, 'Speed', 3, { speed: 30 });
+			result += targets[i].getDebuff(this, 'Speed', 3, { speed: speedLost });
 		}
 
 		result += this.eventSelfActive(e);
@@ -2690,13 +2725,17 @@ class Nakia extends hero {
 		const targets = getAllTargets(this, this._enemies);
 		let didCrit = false;
 
+		let bleedPercent = 1;
+		if (this._voidLevel >= 3) bleedPercent = 2.5;
+
+
 		for (const i in e) {
 			if (e[i][3] == true) { didCrit = true; }
 		}
 
 		for (const i in targets) {
 			if ('Bleed' in targets[i]._debuffs) {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'passive', 'bleed', 1, 1, 3);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * bleedPercent, 'passive', 'bleed', 1, 1, 3);
 				result += targets[i].getDebuff(this, 'Bleed', 3, { bleed: damageResult['damageAmount'] }, false, 'passive');
 
 				if (didCrit) {
@@ -2734,21 +2773,30 @@ class Nakia extends hero {
 		let result = '';
 		let damageResult = {};
 		let bleedDamageResult = { damageAmount: 0 };
-		let targets = getBackTargets(this, this._enemies);
 		let targetLock;
 
+		let targets = getBackTargets(this, this._enemies);
 		targets = getRandomTargets(this, targets, 2);
+
+		let damagePercent = 2.3;
+		let bleedPercent = 1.98;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 5.75;
+			bleedPercent = 5;
+		}
+
 
 		for (const i in targets) {
 			targetLock = targets[i].getTargetLock(this);
 			result += targetLock;
 
 			if (targetLock == '') {
-				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', 2.3);
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Ferocious Bite', damageResult);
 
 				if (targets[i]._currentStats['totalHP'] > 0) {
-					bleedDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'bleed', 1.98, 1, 15);
+					bleedDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'bleed', bleedPercent, 1, 15);
 					result += targets[i].getDebuff(this, 'Bleed', 15, { bleed: bleedDamageResult['damageAmount'] }, false, 'active');
 				}
 
