@@ -1,5 +1,6 @@
-// node --max-old-space-size=4096 --expose-gc .\imp\exactMemo.js
-// 32 dice takes roughly 6 minutes, anything more runs out of heap space
+// need additional heap space if calculating large numbers of dice
+// 48 dice takes roughly 15 minutes, anything more runs out of heap space
+// node --max-old-space-size=10000 --expose-gc .\imp\exactMemo.js
 
 const importantTarot = [3, 5, 6, 7, 9];
 const twoDiceDist = [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 5], [9, 4], [10, 3], [11, 2], [12, 1]];
@@ -28,10 +29,10 @@ const luckyChoices = [
 ];
 
 
-// const startOrdDice = 29;
-// const startLuckDice = 1;
-// const startStars = 80;
-// const startPos = 14;
+// const startOrdDice = 48;
+// const startLuckDice = 0;
+// const startStars = 0;
+// const startPos = 0;
 // const startMushroom1 = 1;
 // const startMushroom2 = 1;
 // const startMushroom3 = 1;
@@ -48,7 +49,7 @@ const luckyChoices = [
 // console.log(expectedValue, secondsTaken);
 
 
-function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, boardState, memo = new Map(), level = 0) {
+function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, boardState, memos = [new Map()], level = 0) {
 	const totalDice = ordDice + luckDice;
 
 	// recurse ending condition
@@ -59,8 +60,11 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 	// check memo
 	const memoKey = `${ordDice},${luckDice},${stars},${pos},${doubleNextRoll ? 1 : 0}${moveBackwards ? 1 : 0}${doubleStars ? 1 : 0}${rollTwice ? 1 : 0}${boardState[4]}${boardState[11]}${boardState[18]}`;
-	const memoValue = memo.get(memoKey);
-	if (memo.has(memoKey)) return [memoValue[0], memoValue[1], 0];
+
+	for (const memo of memos) {
+		const memoValue = memo.get(memoKey);
+		if (memoValue) return [memoValue[0], memoValue[1], 0];
+	}
 
 
 	// calc ev of letting dice convert
@@ -109,7 +113,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					unimportantRollResults.doubleStars,
 					unimportantRollResults.rollTwice,
 					unimportantRollResults.boardState,
-					memo,
+					memos,
 					level + 1,
 				);
 
@@ -130,7 +134,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 						rollResults.doubleStars,
 						rollResults.rollTwice,
 						rollResults.boardState,
-						memo,
+						memos,
 						level + 1,
 					);
 
@@ -160,10 +164,9 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					rollResults.doubleStars,
 					rollResults.rollTwice,
 					rollResults.boardState,
-					memo,
+					memos,
 					level + 1,
 				);
-
 
 				if (rollEV[1] > luckyEV[1] || (rollEV[1] == luckyEV[1] && rollEV[0] >= luckyEV[0])) {
 					luckyEV[0] = rollEV[0];
@@ -191,7 +194,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 					rollResults.doubleStars,
 					rollResults.rollTwice,
 					rollResults.boardState,
-					memo,
+					memos,
 					level + 1,
 				);
 
@@ -220,7 +223,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 						unimportantRollResults.doubleStars,
 						unimportantRollResults.rollTwice,
 						unimportantRollResults.boardState,
-						memo,
+						memos,
 						level + 1,
 					);
 
@@ -241,7 +244,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 							rollResults.doubleStars,
 							rollResults.rollTwice,
 							rollResults.boardState,
-							memo,
+							memos,
 							level + 1,
 						);
 
@@ -264,7 +267,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 						rollResults.doubleStars,
 						rollResults.rollTwice,
 						rollResults.boardState,
-						memo,
+						memos,
 						level + 1,
 					);
 
@@ -279,18 +282,20 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 	}
 
 
+	const memo = memos[memos.length - 1];
+	if (memo.size >= 14999999) memos.push(new Map());
+	// if (level == 0) console.log(ordinaryEV, luckyEV, memos.length, memo.size);
+
+
 	if ((convertEV[1] > luckyEV[1] && convertEV[1] > ordinaryEV[1]) || (convertEV[1] >= luckyEV[1] && convertEV[1] >= ordinaryEV[1] && convertEV[0] >= luckyEV[0] && convertEV[0] >= ordinaryEV[0])) {
-		// if (level == 0) console.log(memo.size);
 		memo.set(memoKey, [convertEV[0], convertEV[1]]);
 		return convertEV;
 
 	} else if (ordinaryEV[1] > luckyEV[1] || (ordinaryEV[1] == luckyEV[1] && ordinaryEV[0] >= luckyEV[0])) {
-		// if (level == 0) console.log(memo.size);
 		memo.set(memoKey, [ordinaryEV[0], ordinaryEV[1]]);
 		return ordinaryEV;
 
 	} else {
-		// if (level == 0) console.log(memo.size);
 		memo.set(memoKey, [luckyEV[0], luckyEV[1]]);
 		return luckyEV;
 	}
