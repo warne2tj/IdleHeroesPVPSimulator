@@ -88,6 +88,7 @@ const baseHeroStats = {
 		className: 'Aspen',
 		heroFaction: 'Dark',
 		heroClass: 'Warrior',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8986,
 			baseAttack: 338,
@@ -104,6 +105,7 @@ const baseHeroStats = {
 		className: 'Belrain',
 		heroFaction: 'Light',
 		heroClass: 'Priest',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7127,
 			baseAttack: 386,
@@ -137,6 +139,7 @@ const baseHeroStats = {
 		className: 'Cthugha',
 		heroFaction: 'Abyss',
 		heroClass: 'Ranger',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7486,
 			baseAttack: 447,
@@ -219,6 +222,7 @@ const baseHeroStats = {
 		className: 'Elyvia',
 		heroFaction: 'Forest',
 		heroClass: 'Priest',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7057,
 			baseAttack: 354,
@@ -251,6 +255,7 @@ const baseHeroStats = {
 		className: 'FaithBlade',
 		heroFaction: 'Light',
 		heroClass: 'Assassin',
+		voidEnabled: true,
 		stats: {
 			baseHP: 9147,
 			baseAttack: 507,
@@ -284,6 +289,7 @@ const baseHeroStats = {
 		className: 'Garuda',
 		heroFaction: 'Forest',
 		heroClass: 'Warrior',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8202,
 			baseAttack: 353,
@@ -316,6 +322,7 @@ const baseHeroStats = {
 		className: 'Gustin',
 		heroFaction: 'Shadow',
 		heroClass: 'Priest',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8252,
 			baseAttack: 343,
@@ -348,6 +355,7 @@ const baseHeroStats = {
 		className: 'Horus',
 		heroFaction: 'Shadow',
 		heroClass: 'Warrior',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8252,
 			baseAttack: 343,
@@ -463,6 +471,7 @@ const baseHeroStats = {
 		className: 'Mihm',
 		heroFaction: 'Dark',
 		heroClass: 'Mage',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7134,
 			baseAttack: 402,
@@ -496,6 +505,7 @@ const baseHeroStats = {
 		className: 'Nakia',
 		heroFaction: 'Abyss',
 		heroClass: 'Assassin',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8473,
 			baseAttack: 456,
@@ -544,6 +554,7 @@ const baseHeroStats = {
 		className: 'Penny',
 		heroFaction: 'Fortress',
 		heroClass: 'Ranger',
+		voidEnabled: true,
 		stats: {
 			baseHP: 7937,
 			baseAttack: 397,
@@ -711,6 +722,7 @@ const baseHeroStats = {
 		className: 'Xia',
 		heroFaction: 'Fortress',
 		heroClass: 'Assassin',
+		voidEnabled: true,
 		stats: {
 			baseHP: 8573,
 			baseAttack: 528,
