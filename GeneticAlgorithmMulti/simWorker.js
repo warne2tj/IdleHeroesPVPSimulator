@@ -20,6 +20,8 @@ import { runSim } from '../pvpSimulator/simulation.js';
 import { numGenes, dnaLength } from './gaBreed.js';
 
 
+const heroLevel = 350;
+const heroVoidLevel = 4;
 const attFrame = 'Royal Amethyst +9';
 const defFrame = 'Royal Amethyst +9';
 let allAttTeams = {};
@@ -59,10 +61,10 @@ function handleCall(e) {
 			team = [];
 
 			for (let p = 0; p < dnaLength; p += numGenes) {
-				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / 10), 'att');
+				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / numGenes), 'att');
 
-				tHero._heroLevel = 350;
-				tHero._voidLevel = 4;
+				tHero._heroLevel = heroLevel;
+				tHero._voidLevel = heroVoidLevel;
 				tHero._skin = jsonConfig[t][p + 1];
 				tHero._stone = jsonConfig[t][p + 3];
 				tHero._artifact = jsonConfig[t][p + 4];
@@ -112,10 +114,10 @@ function handleCall(e) {
 			team = [];
 
 			for (let p = 0; p < dnaLength; p += numGenes) {
-				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / 10), 'def');
+				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / numGenes), 'def');
 
-				tHero._heroLevel = 350;
-				tHero._voidLevel = 4;
+				tHero._heroLevel = heroLevel;
+				tHero._voidLevel = heroVoidLevel;
 				tHero._skin = jsonConfig[t][p + 1];
 				tHero._stone = jsonConfig[t][p + 3];
 				tHero._artifact = jsonConfig[t][p + 4];
@@ -162,6 +164,11 @@ function handleCall(e) {
 		}
 	}
 
-	const numWins = runSim(allAttTeams[e.data[1]]['team'], allDefTeams[e.data[2]]['team'], allAttTeams[e.data[1]]['pet'], allDefTeams[e.data[2]]['pet'], attFrame, defFrame, numSims);
+
+	const attHeroes = allAttTeams[e.data[1]]['team'];
+	const defHeroes = allDefTeams[e.data[2]]['team'];
+	const attMonsterName = allAttTeams[e.data[1]]['pet'];
+	const defMonsterName = allDefTeams[e.data[2]]['pet'];
+	const numWins = runSim(attHeroes, defHeroes, attMonsterName, defMonsterName, attFrame, defFrame, numSims);
 	postMessage([wid, e.data[1], e.data[2], numWins]);
 }
