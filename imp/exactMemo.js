@@ -1,5 +1,5 @@
+// 48 dice takes roughly 22 minutes, anything more runs out of heap space
 // need additional heap space if calculating large numbers of dice
-// 48 dice takes roughly 15 minutes, anything more runs out of heap space
 // node --max-old-space-size=10000 --expose-gc .\imp\exactMemo.js
 
 const importantTarot = [3, 5, 6, 7, 9];
@@ -29,24 +29,28 @@ const luckyChoices = [
 ];
 
 
-// const startOrdDice = 48;
-// const startLuckDice = 0;
-// const startStars = 0;
-// const startPos = 0;
-// const startMushroom1 = 1;
-// const startMushroom2 = 1;
-// const startMushroom3 = 1;
-// const startDoubleNextRoll = false;
-// const startMoveBackwards = false;
-// const startDoubleStars = false;
-// const startRollTwice = false;
-// const startBoardState = [0, 3, 3, 3, 2 + startMushroom1, 0, 3, 3, 3, 3, 0, 2 + startMushroom2, 3, 3, 3, 0, 3, 3, 2 + startMushroom3, 3, 0];
+const nodeJSMode = typeof window === 'undefined' ? true : false;
 
-// const start = new Date();
-// const expectedValue = calcEV(startOrdDice, startLuckDice, startStars, startPos, startDoubleNextRoll, startMoveBackwards, startDoubleStars, startRollTwice, [...startBoardState]);
-// const end = new Date();
-// const secondsTaken = (end - start) / 1000;
-// console.log(expectedValue, secondsTaken);
+if (nodeJSMode) {
+	const startOrdDice = 1;
+	const startLuckDice = 1;
+	const startStars = 81;
+	const startPos = 17;
+	const startMushroom1 = 2;
+	const startMushroom2 = 3;
+	const startMushroom3 = 2;
+	const startDoubleNextRoll = false;
+	const startMoveBackwards = false;
+	const startDoubleStars = false;
+	const startRollTwice = false;
+	const startBoardState = [0, 3, 3, 3, 2 + startMushroom1, 0, 3, 3, 3, 3, 0, 2 + startMushroom2, 3, 3, 3, 0, 3, 3, 2 + startMushroom3, 3, 0];
+
+	const start = new Date();
+	const expectedValue = calcEV(startOrdDice, startLuckDice, startStars, startPos, startDoubleNextRoll, startMoveBackwards, startDoubleStars, startRollTwice, [...startBoardState]);
+	const end = new Date();
+	const secondsTaken = (end - start) / 1000;
+	console.log(expectedValue, secondsTaken);
+}
 
 
 function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, doubleStars, rollTwice, boardState, memos = [new Map()], level = 0) {
@@ -284,7 +288,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 	const memo = memos[memos.length - 1];
 	if (memo.size >= 14999999) memos.push(new Map());
-	// if (level == 0) console.log(ordinaryEV, luckyEV, memos.length, memo.size);
+	if (nodeJSMode && level == 0) console.log(ordinaryEV, luckyEV, memos.length, memo.size);
 
 
 	if ((convertEV[1] > luckyEV[1] && convertEV[1] > ordinaryEV[1]) || (convertEV[1] >= luckyEV[1] && convertEV[1] >= ordinaryEV[1] && convertEV[0] >= luckyEV[0] && convertEV[0] >= ordinaryEV[0])) {
