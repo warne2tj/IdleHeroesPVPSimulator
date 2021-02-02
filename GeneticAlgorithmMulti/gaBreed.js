@@ -3,28 +3,28 @@ import { baseMonsterStats } from '../pvpSimulator/baseMonsterStats.js';
 import { seededHeroes } from './seededHeroes.js';
 import { skins } from '../pvpSimulator/skin.js';
 import { stones } from '../pvpSimulator/stone.js';
+import { artifacts } from '../pvpSimulator/artifact.js';
+import { voidPurpleNodes } from '../pvpSimulator/heroes.js';
+import { numGenes, dnaLength } from '../pvpSimulator/utilityFunctions.js';
+
+
+const artifactLevel = 'Splendid ';
+const numEnhancedArtifacts = 6;
+let isSeeded = true;
+const lsPrefix = 'ga_';
 
 
 const heroNames = Object.keys(baseHeroStats).slice(1);
 const stoneNames = Object.keys(stones).slice(1);
 const monsterNames = Object.keys(baseMonsterStats).slice(1);
-const artifactNames = ['Antlers Cane', 'Demon Bell', 'Staff Punisher of Immortal', 'Magic Stone Sword', 'Augustus Magic Ball',
-	'The Kiss of Ghost', 'Lucky Candy Bar', 'Wildfire Torch', 'Golden Crown', 'Ruyi Scepter', 'Snow Heart'];
+const artifactNames = Object.keys(artifacts).filter(a => a.startsWith(artifactLevel));
 const equipments = ['Class Gear', 'Split HP', 'Split Attack', 'No Armor'];
 const enables1 = ['Vitality', 'Mightiness', 'Growth'];
 const enables2 = ['Shelter', 'LethalFightback', 'Vitality2'];
 const enables3 = ['Resilience', 'SharedFate', 'Purify'];
 const enables4 = ['Vitality', 'Mightiness', 'Growth'];
 const enables5 = ['BalancedStrike', 'UnbendingWill'];
-const voidEnables = ['armorPercent', 'armorBreak', 'precision', 'block', 'controlImmune', 'damageReduce', 'crit', 'critDamage', 'holyDamage', 'skillDamage'];
-
-
-const artifactLevel = 'Splendid ';
-const numEnhancedArtifacts = 6;
-const numGenes = 13;
-const dnaLength = numGenes * 6;
-let isSeeded = true;
-const lsPrefix = 'ga_';
+const voidEnables = Object.keys(voidPurpleNodes).slice(1);
 
 
 function getHero(heroName) {
@@ -180,13 +180,13 @@ function evolve(allTeams, teamKeys) {
 
 
 		tempTeam = Object.assign({}, heroCount);
-		for (let g = 0; g < dnaLength; g += numGenes) {
+		for (let g = 0; g < dnaLength - 1; g += numGenes) {
 			tempTeam[dna1[g]]++;
 		}
 		arrTeams.push(tempTeam);
 
 
-		dnaString1 += '  "' + dna1[dnaLength] + '"\n],\n';
+		dnaString1 += '  "' + dna1[dnaLength - 1] + '"\n],\n';
 		oConfig.value += dnaString1;
 	}
 
@@ -199,7 +199,7 @@ function evolve(allTeams, teamKeys) {
 		tempTeam = Object.assign({}, heroCount);
 		speciesCount = 0;
 
-		for (let g = 0; g < dnaLength; g += numGenes) {
+		for (let g = 0; g < dnaLength - 1; g += numGenes) {
 			tempTeam[teamDNA[g]]++;
 		}
 
@@ -302,19 +302,21 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 
 	// randomly pick one of the pets
 	if (Math.random() < 0.50) {
-		child1.push(dna1[dnaLength]);
+		child1.push(dna1[dnaLength - 1]);
 	} else {
-		child1.push(dna2[dnaLength]);
+		child1.push(dna2[dnaLength - 1]);
 	}
 
 
 	// mutate child 1 genes
-	let currentHeroName, currentHero, newHeroName, newHero;
+	let currentHeroName, currentHero, newHeroName, newHero, availableVoidEnables;
 
-	for (let g = 0; g < dnaLength; g++) {
+	for (let g = 0; g < dnaLength - 1; g++) {
 		if (g % numGenes == 0) {
 			currentHeroName = child1[g];
 			currentHero = baseHeroStats[currentHeroName];
+
+			availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g + 10] && e != child1[g + 11] && e != child1[g + 12]));
 		}
 
 
@@ -404,15 +406,15 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 				break;
 
 			case 10:
-				if (currentHero.heroFaction == 'Transcendence') child1[g] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+				if (currentHero.heroFaction == 'Transcendence') child1[g] = availableVoidEnables[Math.floor(Math.random() * availableVoidEnables.length)];
 				break;
 
 			case 11:
-				if (currentHero.heroFaction == 'Transcendence') child1[g] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+				if (currentHero.heroFaction == 'Transcendence') child1[g] = availableVoidEnables[Math.floor(Math.random() * availableVoidEnables.length)];
 				break;
 
 			case 12:
-				if (currentHero.heroFaction == 'Transcendence') child1[g] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+				if (currentHero.heroFaction == 'Transcendence') child1[g] = availableVoidEnables[Math.floor(Math.random() * availableVoidEnables.length)];
 				break;
 			}
 		}
@@ -420,7 +422,7 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 
 	// mutate child 1 pet
 	if (Math.random() < posSwapRate) {
-		child1[dnaLength] = monsterNames[Math.floor(Math.random() * monsterNames.length)];
+		child1[dnaLength - 1] = monsterNames[Math.floor(Math.random() * monsterNames.length)];
 	}
 
 	// swap hero positions
@@ -502,7 +504,7 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 		}
 	}
 
-	dnaString1 += '\n  "' + child1[dnaLength] + '"';
+	dnaString1 += '\n  "' + child1[dnaLength - 1] + '"';
 
 
 	return [child1, dnaString1];
@@ -529,4 +531,4 @@ function shuffle(array) {
 }
 
 
-export { createRandomTeams, evolve, heroNames, numGenes, dnaLength };
+export { createRandomTeams, evolve, heroNames };

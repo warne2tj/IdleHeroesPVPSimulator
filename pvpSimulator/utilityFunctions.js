@@ -1,3 +1,7 @@
+const numGenes = 13;
+const dnaLength = 6 * numGenes + 1;
+
+
 function formatNum(num) {
 	return '<span class =\'num\'>' + num.toLocaleString() + '</span>';
 }
@@ -692,4 +696,5 @@ export {
 	getRandomTargets, getNearestTargets, getAllTargets, getBackTargets, getFrontTargets,
 	isAttribute, isDot, isBackLine, isFrontLine, isControlEffect, isDispellable, isMonster,
 	slotSort, speedSort, uuid, random, rng, logCombat, formatNum, translate, getHighestSpeedTargets,
+	numGenes, dnaLength,
 };

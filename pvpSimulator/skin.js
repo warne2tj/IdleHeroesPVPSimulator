@@ -57,6 +57,8 @@ const skins = {
 	'Delacium': {
 		'Jellybane': { hpPercent: 0.03, attackPercent: 0.03, crit: 0.2 },
 		'Legendary Jellybane': { hpPercent: 0.06, attackPercent: 0.06, crit: 0.3 },
+		'Legion Priest': { hpPercent: 0.03, controlImmune: 0.05, speed: 6 },
+		'Legendary Legion Priest': { hpPercent: 0.06, controlImmune: 0.06, speed: 6 },
 	},
 
 	'Elyvia': {

@@ -32,10 +32,10 @@ const luckyChoices = [
 const nodeJSMode = typeof window === 'undefined' ? true : false;
 
 if (nodeJSMode) {
-	const startOrdDice = 1;
+	const startOrdDice = 25;
 	const startLuckDice = 1;
-	const startStars = 81;
-	const startPos = 17;
+	const startStars = 111;
+	const startPos = 19;
 	const startMushroom1 = 2;
 	const startMushroom2 = 3;
 	const startMushroom3 = 2;

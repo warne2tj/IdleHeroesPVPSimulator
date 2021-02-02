@@ -2038,4 +2038,4 @@ function setTeamData(strAttMonsterName, strDefMonsterName, strAttFrame, strDefFr
 }
 
 
-export { hero, setTeamData };
+export { hero, setTeamData, voidPurpleNodes };

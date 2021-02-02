@@ -1,23 +1,8 @@
-/*
-self.importScripts('../pvpSimulator/artifact.js');
-self.importScripts('../pvpSimulator/avatarFrame.js');
-self.importScripts('../pvpSimulator/equipment.js');
-self.importScripts('../pvpSimulator/guildTech.js');
-self.importScripts('../pvpSimulator/skin.js');
-self.importScripts('../pvpSimulator/stone.js');
-self.importScripts('../pvpSimulator/utilityFunctions.js');
-self.importScripts('../pvpSimulator/heroes.js');
-self.importScripts('../pvpSimulator/heroSubclasses.js');
-self.importScripts('../pvpSimulator/baseHeroStats.js');
-self.importScripts('../pvpSimulator/monsters.js');
-self.importScripts('../pvpSimulator/baseMonsterStats.js');
-self.importScripts('../pvpSimulator/simulation.js');
-*/
 import { classGearMapping } from '../pvpSimulator/equipment.js';
 import { baseHeroStats } from '../pvpSimulator/baseHeroStats.js';
 import { heroMapping } from '../pvpSimulator/heroSubclasses.js';
 import { runSim } from '../pvpSimulator/simulation.js';
-import { numGenes, dnaLength } from './gaBreed.js';
+import { numGenes, dnaLength } from '../pvpSimulator/utilityFunctions.js';
 
 
 const heroLevel = 350;
@@ -57,10 +42,10 @@ function handleCall(e) {
 		for (const t in jsonConfig) {
 			// add team as attacker
 			allAttTeams[teamIndex] = {};
-			allAttTeams[teamIndex]['pet'] = jsonConfig[t][dnaLength];
+			allAttTeams[teamIndex]['pet'] = jsonConfig[t][dnaLength - 1];
 			team = [];
 
-			for (let p = 0; p < dnaLength; p += numGenes) {
+			for (let p = 0; p < dnaLength - 1; p += numGenes) {
 				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / numGenes), 'att');
 
 				tHero._heroLevel = heroLevel;
@@ -110,10 +95,10 @@ function handleCall(e) {
 
 			// add team as defender
 			allDefTeams[teamIndex] = {};
-			allDefTeams[teamIndex]['pet'] = jsonConfig[t][dnaLength];
+			allDefTeams[teamIndex]['pet'] = jsonConfig[t][dnaLength - 1];
 			team = [];
 
-			for (let p = 0; p < dnaLength; p += numGenes) {
+			for (let p = 0; p < dnaLength - 1; p += numGenes) {
 				tHero = new heroMapping[baseHeroStats[jsonConfig[t][p]]['className']](jsonConfig[t][p], Math.floor(p / numGenes), 'def');
 
 				tHero._heroLevel = heroLevel;

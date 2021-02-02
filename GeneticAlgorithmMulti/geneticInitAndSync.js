@@ -1,4 +1,5 @@
-import { evolve, createRandomTeams, heroNames, numGenes, dnaLength } from './gaBreed.js';
+import { evolve, createRandomTeams, heroNames } from './gaBreed.js';
+import { numGenes, dnaLength } from '../pvpSimulator/utilityFunctions.js';
 
 
 let allTeams = {};
@@ -115,7 +116,7 @@ function runMassLoop() {
 			allTeams[teamIndex] = {};
 			allTeams[teamIndex]['dna'] = jsonConfig[t];
 			allTeams[teamIndex]['teamName'] = t;
-			allTeams[teamIndex]['pet'] = jsonConfig[t][dnaLength];
+			allTeams[teamIndex]['pet'] = jsonConfig[t][dnaLength - 1];
 			allTeams[teamIndex]['attWins'] = 0;
 			allTeams[teamIndex]['defWins'] = 0;
 			allTeams[teamIndex]['weakAgainst'] = 'None';
@@ -123,7 +124,7 @@ function runMassLoop() {
 
 			let p;
 			species = '';
-			for (p = 0; p < dnaLength; p += numGenes) {
+			for (p = 0; p < dnaLength - 1; p += numGenes) {
 				species += jsonConfig[t][p] + ', ';
 			}
 			species += jsonConfig[t][p];
@@ -221,7 +222,7 @@ function processWorker(e) {
 						tempTeam = Object.assign({}, heroCount);
 						diffFound = true;
 
-						for (let g = 0; g < dnaLength; g += numGenes) {
+						for (let g = 0; g < dnaLength - 1; g += numGenes) {
 							tempTeam[teamDNA[g]]++;
 						}
 
