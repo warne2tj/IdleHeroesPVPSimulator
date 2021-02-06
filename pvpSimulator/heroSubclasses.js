@@ -6286,7 +6286,7 @@ class ScarletQueenHalora extends hero {
 
 			const allies = getAllTargets(this, this._allies);
 			for (const ally of allies) {
-				if (!('Queen\'s Guard' in ally._buffs)) continue;
+				if (!('Queen\'s Guard' in ally._buffs && !(ally.isUnderStandardControl()) && ally.isNotSealed())) continue;
 
 				const damageResult = ally.calcDamage(target, ally._currentStats['totalAttack'] * damagePercent, 'passive', 'normal');
 				result += target.takeDamage(ally, 'Queen\'s Guard', damageResult);
