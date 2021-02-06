@@ -6483,12 +6483,19 @@ class Tussilago extends hero {
 			result += targetLock;
 
 			if (targetLock == '') {
-				const damageMult = 'Sacred Emblem Mark' in t._debuffs ? 2 : 1;
-				const damageResult = this.calcDamage(t, this._currentStats.totalAttack * damagePercent * damageMult, 'basic', 'normal');
-				result += t.takeDamage(this, 'Justice Shall Prevail', damageResult);
-				result += t.getDebuff(this, 'Sacred Emblem Mark', 15);
+				const markCount = 'Sacred Emblem Mark' in t._debuffs ? Object.keys(t._debuffs['Sacred Emblem Mark']).length : 0;
+				let damageResult2 = { damageAmount: 0, critted: false };
 
-				basicQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
+				const damageResult = this.calcDamage(t, this._currentStats.totalAttack * damagePercent, 'basic', 'normal');
+				result += t.takeDamage(this, 'Justice Shall Prevail', damageResult);
+
+				if (t._currentStats.totalHP > 0 && markCount >= 1) {
+					damageResult2 = this.calcDamage(t, this._currentStats.totalAttack * damagePercent, 'basic', 'normal');
+					result += t.takeDamage(this, 'Justice Shall Prevail 2', damageResult2);
+				}
+
+				result += t.getDebuff(this, 'Sacred Emblem Mark', 15);
+				basicQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount, damageResult.critted || damageResult2.critted]);
 			}
 		}
 
@@ -6515,23 +6522,29 @@ class Tussilago extends hero {
 			if (targetLock == '') {
 				const markCount = 'Sacred Emblem Mark' in t._debuffs ? Object.keys(t._debuffs['Sacred Emblem Mark']).length : 0;
 				let damageResult2 = { damageAmount: 0, critted: false };
-				const damageResult3 = { damageAmount: 0, critted: false, blocked: false, damageSource: 'mark', damageType: 'true' };
+				let damageResult3 = { damageAmount: 0, critted: false };
+				const damageResult4 = { damageAmount: 0, critted: false, blocked: false, damageSource: 'mark', damageType: 'true' };
 
-				const damageMult = markCount > 0 ? 2 : 1;
-				const damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent * damageMult);
+				const damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
 				result += t.takeDamage(this, 'Punish the Sinners', damageResult);
 
-				if (t._currentStats.totalHP > 0 && markCount >= 3) {
+				if (t._currentStats.totalHP > 0 && markCount >= 1) {
 					damageResult2 = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
 					result += t.takeDamage(this, 'Punish the Sinners 2', damageResult2);
 				}
 
-				if (t._currentStats.totalHP > 0 && markCount >= 5) {
-					damageResult3.damageAmount = divinePercent * this._currentStats.totalAttack;
-					result += t.takeDamage(this, 'Divine Retribution', damageResult3, true);
+				if (t._currentStats.totalHP > 0 && markCount >= 3) {
+					damageResult3 = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
+					result += t.takeDamage(this, 'Punish the Sinners 3', damageResult3);
 				}
 
-				activeQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount + damageResult3.damageAmount, damageResult.critted || damageResult2.critted]);
+				if (t._currentStats.totalHP > 0 && markCount >= 5) {
+					damageResult4.damageAmount = divinePercent * this._currentStats.totalAttack;
+					result += t.takeDamage(this, 'Divine Retribution', damageResult4, true);
+					result += t.removeDebuff('Sacred Emblem Mark');
+				}
+
+				activeQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount + damageResult3.damageAmount + damageResult4.damageAmount, damageResult.critted || damageResult2.critted || damageResult3.critted]);
 			}
 		}
 

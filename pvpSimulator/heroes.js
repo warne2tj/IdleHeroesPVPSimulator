@@ -1629,7 +1629,7 @@ class hero {
 	handleTrigger(trigger) {
 		if (trigger[1] == 'addHurt' && this._currentStats['totalHP'] > 0) {
 			if (trigger[2]._currentStats['totalHP'] > 0) {
-				const damageResult = this.calcDamage(trigger[2], trigger[3], 'passive', 'true');
+				const damageResult = { damageAmount: trigger[3], critted: false, blocked: false, damageSource: 'passive', damageType: 'true' };
 				return trigger[2].takeDamage(this, trigger[4], damageResult);
 			}
 
