@@ -260,18 +260,23 @@ const skins = {
 	},
 
 	'Phorcys': {
-		'Placeholder': { },
-		'Legendary Placeholder': { },
+		'Sweetheart Delivery': { attackPercent: 0.03, controlImmune: 0.05, speed: 4 },
+		'Legendary Sweetheart Delivery': { attackPercent: 0.06, controlImmune: 0.06, speed: 6 },
 	},
 
 	'Sword Flash Xia': {
-		'Placeholder': { },
-		'Legendary Placeholder': { },
+		'Emerald Clouds': { controlImmune: 0.05, crit: 0.02, attackPercent: 0.03 },
+		'Legendary Emerald Clouds': { controlImmune: 0.06, crit: 0.03, attackPercent: 0.06 },
 	},
 
 	'Scarlet Queen Halora': {
 		'Christmas Queen': { controlImmune: 0.05, hpPercent: 0.05, attackPercent: 0.03 },
 		'Legendary Christmas Queen': { controlImmune: 0.06, hpPercent: 0.08, attackPercent: 0.06 },
+	},
+
+	'Tussilago': {
+		'Placeholder': { },
+		'Legendary Placeholder': { },
 	},
 };
 

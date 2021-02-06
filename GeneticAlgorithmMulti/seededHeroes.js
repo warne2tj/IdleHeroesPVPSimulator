@@ -270,6 +270,12 @@ const seededHeroes = {
 		allowedEquipments: ['Class Gear', 'Split Attack'],
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"', '"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"'],
 	},
+	'Tussilago': {
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Wildfire Torch'],
+		allowedStones: ['S3 Speed, HP', 'S3 Speed, Attack', 'S3 Attack, Attack, Holy', 'S3 HP, HP'],
+		allowedEquipments: ['Class Gear', 'Split Attack'],
+		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"', '"Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill"'],
+	},
 };
 
 

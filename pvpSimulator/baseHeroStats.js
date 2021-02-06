@@ -685,6 +685,23 @@ const baseHeroStats = {
 		},
 	},
 
+	'Tussilago': {
+		className: 'Tussilago',
+		heroFaction: 'Light',
+		heroClass: 'Assassin',
+		voidEnabled: true,
+		stats: {
+			baseHP: 10400,
+			baseAttack: 478,
+			baseArmor: 60,
+			baseSpeed: 235,
+			growHP: 1040,
+			growAttack: 47.8,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
 	'UniMax-3000': {
 		className: 'UniMax3000',
 		heroFaction: 'Fortress',

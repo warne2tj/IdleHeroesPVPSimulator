@@ -1,7 +1,7 @@
 import { hero } from './heroes.js';
 import { triggerQueue, activeQueue, basicQueue } from './simulation.js';
 import {
-	random, formatNum, isDot, isMonster, isControlEffect, isDispellable, isAttribute,
+	random, formatNum, isDot, isMonster, isControlEffect, isDispellable, isAttribute, getMostSacredEmblemTargets,
 	isFrontLine, isBackLine, getBackTargets, getHighestAttackTargets, getNearestTargets, getFrontTargets,
 	getAllTargets, getHighestHPTargets, getLowestHPTargets, getLowestHPPercentTargets, getRandomTargets,
 } from './utilityFunctions.js';
@@ -6413,6 +6413,133 @@ class ScarletQueenHalora extends hero {
 }
 
 
+class Tussilago extends hero {
+	passiveStats() {
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.40, crit: 0.30, holyDamage: 1, controlImmune: 0.30, speed: 80 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.30, crit: 0.30, holyDamage: 0.80, controlImmune: 0.30, speed: 60 }, 'PassiveStats');
+		}
+	}
+
+
+	handleTrigger(trigger) {
+		let result = super.handleTrigger(trigger);
+
+		if (['eventAllyActive', 'eventAllyBasic'].includes(trigger[1]) && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			result += this.eventAllyActive(trigger[3]);
+		} else if (['eventSelfBasic', 'eventSelfActive'].includes(trigger[1]) && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			result += this.eventAllyActive(trigger[2]);
+		}
+
+		return result;
+	}
+
+
+	eventAllyActive(e) {
+		let result = '';
+		let didCrit = false;
+		let healPercent = 2;
+		let debuffChance = 0.70;
+
+		if (this._voidLevel >= 3) {
+			healPercent = 3;
+			debuffChance = 0.80;
+		}
+
+
+		for (const i in e) {
+			if (e[i][3] == true) didCrit = true;
+		}
+
+
+		if (didCrit) {
+			const healAmount = this.calcHeal(this, this._currentStats.totalAttack * healPercent);
+			result += this.getHeal(this, healAmount);
+		}
+
+
+		if (random() < debuffChance) {
+			const targets = getLowestHPPercentTargets(this, this._enemies, 2);
+
+			for (const t of targets) {
+				result += t.getDebuff(this, 'Sacred Emblem Mark', 15);
+			}
+		}
+
+		return result;
+	}
+
+
+	doBasic() {
+		let result = '';
+		const targets = getLowestHPPercentTargets(this, this._enemies, 1);
+		let damagePercent = 2;
+		if (this._voidLevel >= 2) damagePercent = 2.4;
+
+
+		for (const t of targets) {
+			const targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				const damageMult = 'Sacred Emblem Mark' in t._debuffs ? 2 : 1;
+				const damageResult = this.calcDamage(t, this._currentStats.totalAttack * damagePercent * damageMult, 'basic', 'normal');
+				result += t.takeDamage(this, 'Justice Shall Prevail', damageResult);
+				result += t.getDebuff(this, 'Sacred Emblem Mark', 15);
+
+				basicQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+		return result;
+	}
+
+
+	doActive() {
+		let result = '';
+		const targets = getMostSacredEmblemTargets(this, this._enemies, 2);
+		let damagePercent = 3.2;
+		let divinePercent = 10;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 4;
+			divinePercent = 12.5;
+		}
+
+
+		for (const t of targets) {
+			const targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				const markCount = 'Sacred Emblem Mark' in t._debuffs ? Object.keys(t._debuffs['Sacred Emblem Mark']).length : 0;
+				let damageResult2 = { damageAmount: 0, critted: false };
+				const damageResult3 = { damageAmount: 0, critted: false, blocked: false, damageSource: 'mark', damageType: 'true' };
+
+				const damageMult = markCount > 0 ? 2 : 1;
+				const damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent * damageMult);
+				result += t.takeDamage(this, 'Punish the Sinners', damageResult);
+
+				if (t._currentStats.totalHP > 0 && markCount >= 3) {
+					damageResult2 = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
+					result += t.takeDamage(this, 'Punish the Sinners 2', damageResult2);
+				}
+
+				if (t._currentStats.totalHP > 0 && markCount >= 5) {
+					damageResult3.damageAmount = divinePercent * this._currentStats.totalAttack;
+					result += t.takeDamage(this, 'Divine Retribution', damageResult3, true);
+				}
+
+				activeQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount + damageResult3.damageAmount, damageResult.critted || damageResult2.critted]);
+			}
+		}
+
+		return result;
+	}
+}
+
+
 const heroMapping = {
 	'hero': hero,
 	'Carrie': Carrie,
@@ -6460,6 +6587,7 @@ const heroMapping = {
 	'Phorcys': Phorcys,
 	'SwordFlashXia': SwordFlashXia,
 	'ScarletQueenHalora': ScarletQueenHalora,
+	'Tussilago': Tussilago,
 };
 
 
