@@ -359,26 +359,39 @@ class hero {
 
 
 		// celestial island statues
-		let statuePrefix = this._attOrDef;
-		if (['Light', 'Forest', 'Fortress'].includes(this._heroFaction)) {
-			statuePrefix += 'Holy';
-		} else {
-			statuePrefix += 'Evil';
+		if (['Light', 'Forest', 'Fortress', 'Transcendence'].includes(this._heroFaction)) {
+			const statuePrefix = this._attOrDef + 'Holy';
+			const statueStats = {};
+
+			if (typeof document !== 'undefined') {
+				statueStats['speed'] = 2 * document.getElementById(statuePrefix + 'speed').value;
+				statueStats['hpPercent'] = 0.01 * document.getElementById(statuePrefix + 'hpPercent').value;
+				statueStats['attackPercent'] = 0.005 * document.getElementById(statuePrefix + 'attackPercent').value;
+			} else {
+				statueStats['speed'] = 2 * 30;
+				statueStats['hpPercent'] = 0.01 * 30;
+				statueStats['attackPercent'] = 0.005 * 30;
+			}
+
+			this.applyStatChange(statueStats, 'statueHoly');
 		}
 
-		const statueStats = {};
+		if (['Dark', 'Abyss', 'Shadow', 'Transcendence'].includes(this._heroFaction)) {
+			const statuePrefix = this._attOrDef + 'Evil';
+			const statueStats = {};
 
-		if (typeof document !== 'undefined') {
-			statueStats['speed'] = 2 * document.getElementById(statuePrefix + 'speed').value;
-			statueStats['hpPercent'] = 0.01 * document.getElementById(statuePrefix + 'hpPercent').value;
-			statueStats['attackPercent'] = 0.005 * document.getElementById(statuePrefix + 'attackPercent').value;
-		} else {
-			statueStats['speed'] = 2 * 30;
-			statueStats['hpPercent'] = 0.01 * 30;
-			statueStats['attackPercent'] = 0.005 * 30;
+			if (typeof document !== 'undefined') {
+				statueStats['speed'] = 2 * document.getElementById(statuePrefix + 'speed').value;
+				statueStats['hpPercent'] = 0.01 * document.getElementById(statuePrefix + 'hpPercent').value;
+				statueStats['attackPercent'] = 0.005 * document.getElementById(statuePrefix + 'attackPercent').value;
+			} else {
+				statueStats['speed'] = 2 * 30;
+				statueStats['hpPercent'] = 0.01 * 30;
+				statueStats['attackPercent'] = 0.005 * 30;
+			}
+
+			this.applyStatChange(statueStats, 'statueEvil');
 		}
-
-		this.applyStatChange(statueStats, 'statue');
 
 
 		// aura
