@@ -329,7 +329,7 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 				newHero = baseHeroStats[newHeroName];
 				if (newHero.heroFaction == 'Transcendence') arrTranscendence.push(newHeroName);
 
-				skinNames = Object.keys(skins[child1[g]]);
+				skinNames = Object.keys(skins[newHeroName]);
 				legendarySkins = [];
 				for (const s in skinNames) {
 					if (skinNames[s].substring(0, 9) == 'Legendary') {
