@@ -32,13 +32,13 @@ const luckyChoices = [
 const nodeJSMode = typeof window === 'undefined' ? true : false;
 
 if (nodeJSMode) {
-	const startOrdDice = 25;
+	const startOrdDice = 7;
 	const startLuckDice = 1;
-	const startStars = 111;
-	const startPos = 19;
-	const startMushroom1 = 2;
+	const startStars = 182;
+	const startPos = 20;
+	const startMushroom1 = 3;
 	const startMushroom2 = 3;
-	const startMushroom3 = 2;
+	const startMushroom3 = 3;
 	const startDoubleNextRoll = false;
 	const startMoveBackwards = false;
 	const startDoubleStars = false;
@@ -288,7 +288,7 @@ function calcEV(ordDice, luckDice, stars, pos, doubleNextRoll, moveBackwards, do
 
 	const memo = memos[memos.length - 1];
 	if (memo.size >= 14999999) memos.push(new Map());
-	if (nodeJSMode && level == 0) console.log(ordinaryEV, luckyEV, memos.length, memo.size);
+	if (nodeJSMode && level == 0) console.log(ordinaryEV, luckyEV, convertEV, memos.length, memo.size);
 
 
 	if ((convertEV[1] > luckyEV[1] && convertEV[1] > ordinaryEV[1]) || (convertEV[1] >= luckyEV[1] && convertEV[1] >= ordinaryEV[1] && convertEV[0] >= luckyEV[0] && convertEV[0] >= ordinaryEV[0])) {
@@ -393,15 +393,15 @@ function calcTier(stars) {
 	} else if (stars >= 260) {
 		return 7;
 	} else if (stars >= 230) {
-		return 6;
+		return 5;
 	} else if (stars >= 200) {
 		return 5;
 	} else if (stars >= 170) {
 		return 4;
 	} else if (stars >= 140) {
-		return 3;
+		return 1;
 	} else if (stars >= 110) {
-		return 2;
+		return 1;
 	} else if (stars >= 80) {
 		return 1;
 	} else {

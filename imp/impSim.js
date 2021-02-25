@@ -463,7 +463,7 @@ function getStrat(ordDice, luckDice, stars, pos, doubleNextRoll, rollTwice, move
 			}
 		} else if (luckDice > 0) {
 			// see if using lucky dice first to reach next starry mushroom and letting rest convert will reach next tier
-			if (pos < 3 || (pos == 3 && ordDice == 0)) {
+			if (pos < 4) {
 				if ((totalDice * 2 + boardState[4]) >= nextTier) {
 					return [ordDice, luckDice - 1, 5 - pos];
 				}
