@@ -84,6 +84,23 @@ const baseHeroStats = {
 		},
 	},
 
+	'Asmodel the Dauntless': {
+		className: 'AsmodelTheDauntless',
+		heroFaction: 'Transcendence',
+		heroClass: 'Warrior',
+		voidEnabled: true,
+		stats: {
+			baseHP: 16000,
+			baseAttack: 800,
+			baseArmor: 60,
+			baseSpeed: 302,
+			growHP: 1600,
+			growAttack: 80,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
 	'Aspen': {
 		className: 'Aspen',
 		heroFaction: 'Dark',
@@ -776,11 +793,11 @@ const baseHeroStats = {
 		voidEnabled: true,
 		stats: {
 			baseHP: 14000,
-			baseAttack: 1075,
+			baseAttack: 1000,
 			baseArmor: 60,
 			baseSpeed: 306,
 			growHP: 1400,
-			growAttack: 109.7,
+			growAttack: 110,
 			growArmor: 6,
 			growSpeed: 2,
 		},

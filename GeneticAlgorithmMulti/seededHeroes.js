@@ -276,6 +276,12 @@ const seededHeroes = {
 		allowedEquipments: ['Class Gear', 'Split Attack'],
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"', '"Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill"'],
 	},
+	'Asmodel the Dauntless': {
+		allowedArtifacts: ['Augustus Magic Ball', 'Golden Crown', 'Magic Stone Sword', 'Snow Heart'],
+		allowedStones: ['S3 Speed, HP', 'S3 Speed, Attack', 'S3 Attack, Attack, Holy'],
+		allowedEquipments: ['Class Gear'],
+		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"', '"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"'],
+	},
 };
 
 

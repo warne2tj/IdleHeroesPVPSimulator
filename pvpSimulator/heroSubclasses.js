@@ -6169,7 +6169,7 @@ class SwordFlashXia extends hero {
 
 
 		if ('Impeccable Flow' in this._buffs) {
-			stackKey = Object.keys(this._buffs['Impeccable Flow']);
+			stackKey = Object.keys(this._buffs['Impeccable Flow'][0]);
 			damagePercent *= 2;
 		}
 
@@ -6215,8 +6215,8 @@ class SwordFlashXia extends hero {
 
 
 		if ('Impeccable Flow' in this._buffs) {
-			stackKey = Object.keys(this._buffs['Impeccable Flow']);
-			targets = getLowestHPPercentTargets(this, this._enemies);
+			stackKey = Object.keys(this._buffs['Impeccable Flow'])[0];
+			targets = getAllTargets(this, this._enemies);
 		} else {
 			targets = getLowestHPPercentTargets(this, this._enemies, 1);
 		}
@@ -6267,7 +6267,7 @@ class ScarletQueenHalora extends hero {
 		let result = super.handleTrigger(trigger);
 
 
-		if (['eventEnemyActive', 'eventEnemyBasic'].includes(trigger[1])) {
+		if (['eventEnemyActive', 'eventEnemyBasic'].includes(trigger[1]) && this._currentStats.totalHP > 0 && this.isNotSealed()) {
 			result += this.eventEnemyActive(trigger[2], trigger[3]);
 		}
 
@@ -6286,7 +6286,7 @@ class ScarletQueenHalora extends hero {
 
 			const allies = getAllTargets(this, this._allies);
 			for (const ally of allies) {
-				if (!('Queen\'s Guard' in ally._buffs && !(ally.isUnderStandardControl()) && ally.isNotSealed())) continue;
+				if (!('Queen\'s Guard' in ally._buffs && ally.isNotSealed())) continue;
 
 				const damageResult = ally.calcDamage(target, ally._currentStats['totalAttack'] * damagePercent, 'passive', 'normal');
 				result += target.takeDamage(ally, 'Queen\'s Guard', damageResult);
@@ -6553,6 +6553,210 @@ class Tussilago extends hero {
 }
 
 
+class AsmodelTheDauntless extends hero {
+	handleTrigger(trigger) {
+		let result = super.handleTrigger(trigger);
+
+		if (['eventEnemyActive', 'eventEnemyBasic'].includes(trigger[1]) && this._currentStats.totalHP > 0 && this.isNotSealed()) {
+			result += this.eventEnemyActive(trigger[2]);
+		} else if (trigger[1] == 'eventAllyDied' && this._currentStats.totalHP > 0 && this.isNotSealed() && !isMonster(trigger[2])) {
+			result += this.eventAllyDied(trigger[2]);
+		}
+
+		return result;
+	}
+
+
+	eventAllyDied(source) {
+		let result = '';
+		let healPercent = 0.12;
+		let allDamageDealtGained = 0.12;
+
+		if (this._voidLevel >= 2) {
+			healPercent = 0.15;
+			allDamageDealtGained = 0.15;
+		}
+
+
+		const healAmount = this.calcHeal(this, this._stats.totalHP * healPercent);
+		result += this.getHeal(this, healAmount);
+		result += this.getHeal(this, healAmount);
+		result += this.getBuff(this, 'All Damage Dealt', 127, { allDamageDealt: allDamageDealtGained });
+
+		result += source.getDebuff(this, 'Revenge', 127);
+		result += source.getDebuff(this, 'Revenge', 127);
+
+		return result;
+	}
+
+
+	eventEnemyActive(source) {
+		let result = '';
+		let critGained = 0.08;
+		if (this._voidLevel >= 3) critGained = 0.10;
+
+		result += source.getDebuff(this, 'Revenge', 127);
+		result += this.getBuff(this, 'Crit', 3, { crit: critGained });
+
+		return result;
+	}
+
+
+	startOfBattle() {
+		let result = '';
+		let allDamageReduceGained = 0.25;
+		if (this._voidLevel >= 3) allDamageReduceGained = 0.35;
+
+		const targets = getLowestHPPercentTargets(this, this._allies, 1);
+
+		for (const t of targets) {
+			result += t.getBuff(this, 'Glorious Support', 1, { allDamageReduce: allDamageReduceGained });
+		}
+
+		return result;
+	}
+
+
+	endOfRound() {
+		return this.startOfBattle();
+	}
+
+
+	doBasic() {
+		let result = '';
+		let damageResult = {};
+		let hpDamageResult = { damageAmount: 0 };
+		const targets = getFrontTargets(this, this._enemies);
+		let targetLock;
+		const maxHPDamage = 15 * this._currentStats.totalAttack;
+
+		let damagePercent = 6;
+		let hpDamagePercent = 0.12;
+		let controlImmuneGained = 0.15;
+
+		if (this._voidLevel >= 1) {
+			damagePercent = 7.5;
+			hpDamagePercent = 0.15;
+			controlImmuneGained = 0.20;
+		}
+
+
+		for (const t of targets) {
+			targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack * damagePercent, 'basic', 'normal');
+				result += t.takeDamage(this, 'Basic Attack', damageResult);
+
+				if (t._currentStats.totalHP > 0) {
+					let hpDamageAmount = t._stats.totalHP * hpDamagePercent;
+					if (hpDamageAmount > maxHPDamage) hpDamageAmount = maxHPDamage;
+
+					hpDamageResult = this.calcDamage(t, hpDamageAmount, 'basic', 'true');
+					result += t.takeDamage(this, 'Basic Attack - HP', damageResult);
+				}
+
+				basicQueue.push([this, t, damageResult.damageAmount + hpDamageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+
+		result += this.getBuff(this, 'Control Immune', 3, { controlImmune: controlImmuneGained });
+		return result;
+	}
+
+
+	doActive() {
+		let result = '';
+		const alreadyTargeted = {};
+		let damageResult = {};
+		let targets = getBackTargets(this, this._enemies);
+		let targetLock;
+
+		let damagePercent = 8;
+		let armorLost = 0.35;
+		let speedLost = 50;
+		let chariotDamagePercent = 6.4;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 10;
+			armorLost = 0.50;
+			speedLost = 80;
+			chariotDamagePercent = 8;
+		}
+
+
+		for (const t of targets) {
+			targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
+				result += t.takeDamage(this, 'Dauntless Smash', damageResult);
+
+				result += t.getDebuff(this, 'Armor Percent', 4, { armorPercent: armorLost });
+				result += t.getDebuff(this, 'Speed', 4, { speed: speedLost });
+
+				alreadyTargeted[t._heroPos] = [this, t, damageResult.damageAmount, damageResult.critted];
+			}
+		}
+
+
+		targets = getAllTargets(this, this._enemies);
+
+		for (const t of targets) {
+			targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				let damageDone = 0;
+				let didCrit = false;
+
+				let chariotDamageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', chariotDamagePercent);
+				result += t.takeDamage(this, 'Heavenly Chariot', chariotDamageResult);
+				damageDone += chariotDamageResult.damageAmount;
+				didCrit = didCrit || chariotDamageResult.critted;
+
+
+				if ('Revenge' in t._debuffs) {
+					const chariotKeys = Object.keys(t._debuffs['Revenge']);
+					let chariotCount = 0;
+
+					for (const chariotKey of chariotKeys) {
+						if (t._currentStats.totalHP <= 0) break;
+
+						chariotDamageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', chariotDamagePercent);
+						result += t.takeDamage(this, 'Heavenly Chariot', chariotDamageResult);
+						damageDone += chariotDamageResult.damageAmount;
+						didCrit = didCrit || chariotDamageResult.critted;
+						result += t.removeDebuff('Revenge', chariotKey);
+
+						chariotCount++;
+						if (chariotCount >= 3) break;
+					}
+				}
+
+
+				if (t._heroPos in alreadyTargeted) {
+					alreadyTargeted[t._heroPos][2] += damageDone;
+					alreadyTargeted[t._heroPos][3] = alreadyTargeted[t._heroPos][3] || didCrit;
+				} else {
+					alreadyTargeted[t._heroPos] = [this, t, damageDone, didCrit];
+				}
+			}
+		}
+
+
+		for (const i in alreadyTargeted) {
+			activeQueue.push(alreadyTargeted[i]);
+		}
+
+		return result;
+	}
+}
+
+
 const heroMapping = {
 	'hero': hero,
 	'Carrie': Carrie,
@@ -6601,6 +6805,7 @@ const heroMapping = {
 	'SwordFlashXia': SwordFlashXia,
 	'ScarletQueenHalora': ScarletQueenHalora,
 	'Tussilago': Tussilago,
+	'AsmodelTheDauntless': AsmodelTheDauntless,
 };
 
 

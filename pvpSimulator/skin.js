@@ -278,6 +278,11 @@ const skins = {
 		'Placeholder': { },
 		'Legendary Placeholder': { },
 	},
+
+	'Asmodel the Dauntless': {
+		'Placeholder': { },
+		'Legendary Placeholder': { },
+	},
 };
 
 

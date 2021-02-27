@@ -133,7 +133,8 @@ function isDispellable(strName) {
 		'Demon Totem', 'Shrink', 'Shield', 'Feather Blade', 'Drake Break Defense',
 		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield', 'Battle Frenzy',
 		'Extra Ammo', 'Soul Corruption', 'Golden Crown', 'Impeccable Flow',
-		'Royal Guard', 'Abyssal Corruption', 'Sacred Emblem Mark'].includes(strName)) {
+		'Royal Guard', 'Abyssal Corruption', 'Sacred Emblem Mark', 'Revenge',
+		'Glorious Support'].includes(strName)) {
 		return false;
 	} else {
 		return true;

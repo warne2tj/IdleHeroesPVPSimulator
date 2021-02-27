@@ -1658,11 +1658,14 @@ class hero {
 		} else if (trigger[1] == 'getHeal' && this._currentStats['totalHP'] > 0) {
 			return this.getHeal(trigger[2], Math.floor(trigger[3]));
 
-		} else if (['eventSelfBasic', 'eventSelfActive'].includes(trigger[1]) && 'Bloodthirsty' in this._buffs && this._currentStats['totalHP'] > 0) {
+		} else if (['eventSelfBasic', 'eventSelfActive'].includes(trigger[1]) && 'Bloodthirsty' in this._buffs && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
 			return this.eventBloodthirsty(trigger[2]);
 
 		} else if (trigger[1] == 'eventSelfDied' && 'Revenging Wraith' in this._debuffs) {
 			return this.eventRevengingWraith();
+
+		} else if (['eventEnemyBasic', 'eventEnemyActive'].includes(trigger[1]) && 'Glorious Support' in this._buffs && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			return this.eventGloriousSupport(trigger[2]);
 
 		}
 
@@ -2048,6 +2051,20 @@ class hero {
 				result += t.takeDamage(debuffStack.source, 'Revenging Wraith', damageResult);
 			}
 		}
+
+		return result;
+	}
+
+
+	eventGloriousSupport(source) {
+		let result = '';
+		let precisionGained = 0.12;
+
+		const buffStackSource = this._buffs['Glorious Support'][Object.keys(this._buffs['Glorious Support'])[0]].source;
+		if (buffStackSource._voidLevel >= 3) precisionGained = 0.15;
+
+		result += buffStackSource.getBuff(this, 'Precision', 3, { precision: precisionGained });
+		result += source.getDebuff(this, 'Revenge', 127);
 
 		return result;
 	}

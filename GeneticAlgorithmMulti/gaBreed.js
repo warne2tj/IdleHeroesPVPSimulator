@@ -34,7 +34,7 @@ function getHero(heroName) {
 	let shuffleVoidEnables;
 
 	if (baseHeroStats[heroName].heroFaction == 'Transcendence') {
-		shuffleVoidEnables = shuffle(voidEnables).slice(0, 3);
+		shuffleVoidEnables = ['damageReduce', 'controlImmune', shuffle(voidEnables.filter(i => i != 'damageReduce' && i != 'controlImmune'))[0]];
 	} else {
 		shuffleVoidEnables = ['None', 'None', 'None'];
 	}
@@ -309,14 +309,12 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 
 
 	// mutate child 1 genes
-	let currentHeroName, currentHero, newHeroName, newHero, availableVoidEnables;
+	let currentHeroName, currentHero, newHeroName, newHero;
 
 	for (let g = 0; g < dnaLength - 1; g++) {
 		if (g % numGenes == 0) {
 			currentHeroName = child1[g];
 			currentHero = baseHeroStats[currentHeroName];
-
-			availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g + 10] && e != child1[g + 11] && e != child1[g + 12]));
 		}
 
 
@@ -406,16 +404,26 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 				break;
 
 			case 10:
-				if (currentHero.heroFaction == 'Transcendence') child1[g] = availableVoidEnables[Math.floor(Math.random() * availableVoidEnables.length)];
+				if (currentHero.heroFaction == 'Transcendence') {
+					const availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g + 10] && e != child1[g + 11] && e != child1[g + 12]));
+					child1[g] = availableVoidEnables[0];
+				}
 				break;
 
 			case 11:
-				if (currentHero.heroFaction == 'Transcendence') child1[g] = availableVoidEnables[Math.floor(Math.random() * availableVoidEnables.length)];
+				if (currentHero.heroFaction == 'Transcendence') {
+					const availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g + 10] && e != child1[g + 11] && e != child1[g + 12]));
+					child1[g] = availableVoidEnables[0];
+				}
 				break;
 
 			case 12:
-				if (currentHero.heroFaction == 'Transcendence') child1[g] = availableVoidEnables[Math.floor(Math.random() * availableVoidEnables.length)];
+				if (currentHero.heroFaction == 'Transcendence') {
+					const availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g + 10] && e != child1[g + 11] && e != child1[g + 12]));
+					child1[g] = availableVoidEnables[0];
+				}
 				break;
+
 			}
 		}
 	}
