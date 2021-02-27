@@ -6169,7 +6169,7 @@ class SwordFlashXia extends hero {
 
 
 		if ('Impeccable Flow' in this._buffs) {
-			stackKey = Object.keys(this._buffs['Impeccable Flow'][0]);
+			stackKey = Object.keys(this._buffs['Impeccable Flow'])[0];
 			damagePercent *= 2;
 		}
 
