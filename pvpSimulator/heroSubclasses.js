@@ -66,7 +66,7 @@ class Aida extends hero {
 		for (const i in targets) {
 			damageResult = this.calcDamage(this, targets[i]._currentStats['totalAttack'] * damagePercent, 'passive', 'true');
 			result += targets[i].takeDamage(this, 'Final Verdict', damageResult);
-			result += targets[i].getDebuff(this, 'Effect Being Healed', 15, { effectBeingHealed: healDebuff });
+			result += targets[i].getDebuff(this, 'Effect Being Healed', 127, { effectBeingHealed: healDebuff });
 		}
 
 		healAmount = this.calcHeal(this, this._stats['totalHP'] * healPercent);
@@ -239,7 +239,7 @@ class AmenRa extends hero {
 			targets = getRandomTargets(this, this._enemies, 1);
 
 			if (targets.length > 0) {
-				result += targets[0].getDebuff(this, 'Healing Curse', 15);
+				result += targets[0].getDebuff(this, 'Healing Curse', 127);
 			}
 		}
 
@@ -278,9 +278,9 @@ class AmenRa extends hero {
 
 		targets = getAllTargets(this, this._allies);
 		for (const i in targets) {
-			result += targets[i].getBuff(this, 'Guardian Shadow', 15, {});
-			result += targets[i].getBuff(this, 'Guardian Shadow', 15, {});
-			if (random() < extraShieldChance) result += targets[i].getBuff(this, 'Guardian Shadow', 15, {});
+			result += targets[i].getBuff(this, 'Guardian Shadow', 127, {});
+			result += targets[i].getBuff(this, 'Guardian Shadow', 127, {});
+			if (random() < extraShieldChance) result += targets[i].getBuff(this, 'Guardian Shadow', 127, {});
 		}
 
 		return result;
@@ -428,7 +428,7 @@ class Aspen extends hero {
 
 		const healAmount = this.calcHeal(this, this._currentStats['totalAttack'] * healPercent);
 		result += this.getHeal(this, healAmount);
-		result += this.getBuff(this, 'Shield', 15, { controlImmune: controlImmuneGained, damageReduce: damageReduceGained });
+		result += this.getBuff(this, 'Shield', 127, { controlImmune: controlImmuneGained, damageReduce: damageReduceGained });
 		return result;
 	}
 
@@ -448,9 +448,9 @@ class Aspen extends hero {
 		}
 
 
-		result += this.getBuff(this, 'Attack Percent', 15, { attackPercent: attackPercentGained });
-		result += this.getBuff(this, 'Crit Damage', 15, { critDamage: critDamageGained });
-		result += this.getBuff(this, 'Shield', 15, { controlImmune: controlImmuneGained, damageReduce: damageReduceGained });
+		result += this.getBuff(this, 'Attack Percent', 127, { attackPercent: attackPercentGained });
+		result += this.getBuff(this, 'Crit Damage', 127, { critDamage: critDamageGained });
+		result += this.getBuff(this, 'Shield', 127, { controlImmune: controlImmuneGained, damageReduce: damageReduceGained });
 		return result;
 	}
 
@@ -913,7 +913,7 @@ class Carrie extends hero {
 				}
 
 				if (targets[i]._currentStats['totalHP'] > 0 && random() < 0.7) {
-					result += targets[i].getDebuff(this, 'Devouring Mark', 15, { attackAmount: this._currentStats['totalAttack'] });
+					result += targets[i].getDebuff(this, 'Devouring Mark', 127, { attackAmount: this._currentStats['totalAttack'] });
 				}
 
 				activeQueue.push([this, targets[i], damageResult['damageAmount'] + additionalDamageResult['damageAmount'], damageResult['critted']]);
@@ -1588,7 +1588,7 @@ class Garuda extends hero {
 			}
 		}
 
-		result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: damageReduceGained });
+		result += this.getBuff(this, 'Feather Blade', 127, { damageReduce: damageReduceGained });
 		result += this.getBuff(this, 'Crit', 2, { crit: critGained });
 
 		return result;
@@ -1608,11 +1608,11 @@ class Garuda extends hero {
 
 		const healAmount = this.calcHeal(this, this._stats['totalHP'] * healPercent);
 		result += this.getHeal(this, healAmount);
-		result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: damageReduceGained });
-		result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: damageReduceGained });
+		result += this.getBuff(this, 'Feather Blade', 127, { damageReduce: damageReduceGained });
+		result += this.getBuff(this, 'Feather Blade', 127, { damageReduce: damageReduceGained });
 
 		if (this._voidLevel >= 3) {
-			result += this.getBuff(this, 'Feather Blade', 15, { damageReduce: damageReduceGained });
+			result += this.getBuff(this, 'Feather Blade', 127, { damageReduce: damageReduceGained });
 		}
 
 		return result;
@@ -2103,8 +2103,8 @@ class Horus extends hero {
 			critDamageGained = 0.03;
 		}
 
-		result += this.getBuff(this, 'Attack Percent', 15, { attackPercent: attackPercentGained });
-		result += this.getBuff(this, 'Crit Damage', 15, { critDamage: critDamageGained });
+		result += this.getBuff(this, 'Attack Percent', 127, { attackPercent: attackPercentGained });
+		result += this.getBuff(this, 'Crit Damage', 127, { critDamage: critDamageGained });
 		return result;
 	}
 
@@ -3037,8 +3037,8 @@ class Penny extends hero {
 				}
 			}
 
-			result += this.getBuff(this, 'Dynamite Armor', 15, {});
-			result += this.getBuff(this, 'Reflection Armor', 15, {});
+			result += this.getBuff(this, 'Dynamite Armor', 127, {});
+			result += this.getBuff(this, 'Reflection Armor', 127, {});
 		}
 
 		return result;
@@ -3147,7 +3147,7 @@ class Penny extends hero {
 		}
 
 		result += this.getBuff(this, 'Crit Damage', 2, { critDamage: critDamageGained });
-		result += this.getBuff(this, 'Reflection Armor', 15, {});
+		result += this.getBuff(this, 'Reflection Armor', 127, {});
 
 		return result;
 	}
@@ -3184,7 +3184,7 @@ class Penny extends hero {
 			}
 		}
 
-		result += this.getBuff(this, 'Dynamite Armor', 15, {});
+		result += this.getBuff(this, 'Dynamite Armor', 127, {});
 
 		return result;
 	}
@@ -3323,7 +3323,7 @@ class Sherlock extends hero {
 			if (targetLock == '') {
 				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'], 'basic', 'normal');
 				result += targets[0].takeDamage(this, 'Basic Attack', damageResult);
-				result += targets[0].getDebuff(this, 'Shapeshift', 15, { stacks: 3 }, false, '', shapeshiftChance, true);
+				result += targets[0].getDebuff(this, 'Shapeshift', 127, { stacks: 3 }, false, '', shapeshiftChance, true);
 
 				basicQueue.push([this, targets[0], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -3358,7 +3358,7 @@ class Sherlock extends hero {
 			if (targetLock == '') {
 				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 				result += targets[i].takeDamage(this, 'Master Showman', damageResult);
-				result += targets[i].getDebuff(this, 'Shapeshift', 15, { stacks: 3 }, false, '', ccChance, true);
+				result += targets[i].getDebuff(this, 'Shapeshift', 127, { stacks: 3 }, false, '', ccChance, true);
 
 				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -3413,7 +3413,7 @@ class Tara extends hero {
 			result += targets[i].takeDamage(this, 'Fluctuation of Light', damageResult);
 
 			if (random() < powerChance) {
-				result += targets[i].getDebuff(this, 'Power of Light', 15);
+				result += targets[i].getDebuff(this, 'Power of Light', 127);
 			}
 		}
 
@@ -3438,7 +3438,7 @@ class Tara extends hero {
 				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
 				result = targets[0].takeDamage(this, 'Basic Attack', damageResult);
 
-				result += targets[0].getDebuff(this, 'Power of Light', 15);
+				result += targets[0].getDebuff(this, 'Power of Light', 127);
 				basicQueue.push([this, targets[0], damageResult['damageAmount'], damageResult['critted']]);
 			}
 		}
@@ -3496,7 +3496,7 @@ class Tara extends hero {
 					damageDone += damageResult['damageAmount'];
 				}
 
-				result += targets[0].getDebuff(this, 'Power of Light', 15);
+				result += targets[0].getDebuff(this, 'Power of Light', 127);
 				activeQueue.push([this, targets[0], damageDone, didCrit]);
 			}
 		}
@@ -3509,12 +3509,12 @@ class Tara extends hero {
 
 			if (targetLock == '') {
 				if ('Power of Light' in targets[h]._debuffs && random() < powerChance) {
-					result += targets[h].getDebuff(this, 'Power of Light', 15);
+					result += targets[h].getDebuff(this, 'Power of Light', 127);
 				}
 			}
 		}
 
-		result += this.getBuff(this, 'Holy Damage', 15, { holyDamage: holyBuffPercent });
+		result += this.getBuff(this, 'Holy Damage', 127, { holyDamage: holyBuffPercent });
 
 		return result;
 	}
@@ -3598,8 +3598,8 @@ class UniMax3000 extends hero {
 				}
 			}
 
-			result += this.getBuff(this, 'Crit Damage', 15, { critDamage: critDamageGained });
-			result += this.getBuff(this, 'Rampage', 15);
+			result += this.getBuff(this, 'Crit Damage', 127, { critDamage: critDamageGained });
+			result += this.getBuff(this, 'Rampage', 127);
 		}
 
 		return result;
@@ -3705,7 +3705,7 @@ class Asmodel extends hero {
 
 				for (const i in targets) {
 					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 1.8, 'mark', 'normal');
-					result += targets[i].getDebuff(this, 'Crit Mark', 15, { attackAmount: damageResult });
+					result += targets[i].getDebuff(this, 'Crit Mark', 127, { attackAmount: damageResult });
 				}
 
 				break;
@@ -3741,7 +3741,7 @@ class Asmodel extends hero {
 				result += targets[i].takeDamage(this, 'Basic Attack', damageResult);
 
 				markDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 2.5, 'mark', 'normal');
-				result += targets[i].getDebuff(this, 'Crit Mark', 15, { attackAmount: markDamageResult });
+				result += targets[i].getDebuff(this, 'Crit Mark', 127, { attackAmount: markDamageResult });
 
 				basicQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -3769,7 +3769,7 @@ class Asmodel extends hero {
 				result += targets[i].takeDamage(this, 'Divine Burst', damageResult);
 
 				markDamageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'] * 3, 'mark', 'normal');
-				result += targets[i].getDebuff(this, 'Crit Mark', 15, { attackAmount: markDamageResult });
+				result += targets[i].getDebuff(this, 'Crit Mark', 127, { attackAmount: markDamageResult });
 
 				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 			}
@@ -4266,7 +4266,7 @@ class Ormus extends hero {
 			const healAmount = this.calcHeal(targets[i], 3 * this._currentStats['totalAttack']);
 
 			result += targets[i].getBuff(this, 'Effect Being Healed', 3, { effectBeingHealed: 0.20 });
-			result += targets[i].getBuff(this, 'Rescue Mark', 15, { attackAmount: healAmount });
+			result += targets[i].getBuff(this, 'Rescue Mark', 127, { attackAmount: healAmount });
 
 			if (targets[i]._currentStats['totalHP'] <= targets[i]._stats['totalHP'] * 0.3) {
 				result += targets[i].removeBuff('Rescue Mark');
@@ -4304,7 +4304,7 @@ class Ormus extends hero {
 			result += targets[i].getHeal(this, healAmount);
 
 			healAmount = this.calcHeal(targets[i], this._currentStats['totalAttack'] * 5);
-			result += targets[i].getBuff(this, 'Rescue Mark', 15, { attackAmount: healAmount });
+			result += targets[i].getBuff(this, 'Rescue Mark', 127, { attackAmount: healAmount });
 
 			if (targets[i]._currentStats['totalHP'] <= targets[i]._stats['totalHP'] * 0.3) {
 				result += targets[i].removeBuff('Rescue Mark');
@@ -4588,7 +4588,7 @@ class Gerke extends hero {
 		for (const i in targets) {
 			healAmount = this.calcHeal(targets[i], this._currentStats['totalAttack'] * 2.65);
 			result += targets[i].getHeal(this, healAmount);
-			result += targets[i].getBuff(this, 'Holy Damage', 15, { holyDamage: 0.25 });
+			result += targets[i].getBuff(this, 'Holy Damage', 127, { holyDamage: 0.25 });
 		}
 
 
@@ -4752,7 +4752,7 @@ class DasMoge extends hero {
 
 	eventSelfActive() {
 		let result = '';
-		result += this.getBuff(this, 'Skill Damage', 15, { skillDamage: 0.20 });
+		result += this.getBuff(this, 'Skill Damage', 127, { skillDamage: 0.20 });
 		result += this.getEnergy(this, 30);
 		return result;
 	}
@@ -4786,7 +4786,7 @@ class DasMoge extends hero {
 			}
 		}
 
-		result += this.getBuff(this, 'Skill Damage', 15, { skillDamage: 0.50 });
+		result += this.getBuff(this, 'Skill Damage', 127, { skillDamage: 0.50 });
 
 		return result;
 	}
@@ -4863,7 +4863,7 @@ class Ignis extends hero {
 			const healAmount = this.calcHeal(targets[i], targets[i]._stats['totalHP']);
 			result += targets[i].getHeal(this, healAmount);
 			result += targets[i].getEnergy(this, energyGained);
-			result += targets[i].getBuff(this, 'Control Immune', 15, { controlImmune: controlImmuneGained });
+			result += targets[i].getBuff(this, 'Control Immune', 127, { controlImmune: controlImmuneGained });
 		}
 
 		return result;
@@ -4983,7 +4983,7 @@ class HeartWatcher extends hero {
 				basicQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 
 				wmAmount = this.getWatcherMarkAmount(targets[i], 0.35);
-				result += targets[i].getDebuff(this, 'Watcher Mark', 15, { allDamageTaken: -wmAmount });
+				result += targets[i].getDebuff(this, 'Watcher Mark', 127, { allDamageTaken: -wmAmount });
 			}
 		}
 
@@ -5012,7 +5012,7 @@ class HeartWatcher extends hero {
 				result += targets[i].getDebuff(this, 'Attack', 2, { attack: reduceAttackAmount });
 
 				wmAmount = this.getWatcherMarkAmount(targets[i], 0.45);
-				result += targets[i].getDebuff(this, 'Watcher Mark', 15, { allDamageTaken: -wmAmount });
+				result += targets[i].getDebuff(this, 'Watcher Mark', 127, { allDamageTaken: -wmAmount });
 			}
 		}
 
@@ -5270,7 +5270,7 @@ class Tix extends hero {
 
 
 	eventSelfDied(target) {
-		return target.getDebuff(this, 'Revenging Wraith', 15, { attackAmount: this._currentStats['totalAttack'] });
+		return target.getDebuff(this, 'Revenging Wraith', 127, { attackAmount: this._currentStats['totalAttack'] });
 	}
 
 
@@ -5746,8 +5746,8 @@ class Morax extends hero {
 
 
 	startOfBattle() {
-		let result = this.getBuff(this, 'Extra Ammo', 15);
-		result += this.getBuff(this, 'Extra Ammo', 15);
+		let result = this.getBuff(this, 'Extra Ammo', 127);
+		result += this.getBuff(this, 'Extra Ammo', 127);
 		result += this.battleFrenzy();
 		return result;
 	}
@@ -5769,9 +5769,9 @@ class Morax extends hero {
 		let extraAmmoChance = 0;
 		if (this._voidLevel >= 2) extraAmmoChance = 0.50;
 
-		result += this.getBuff(this, 'Extra Ammo', 15);
-		result += this.getBuff(this, 'Extra Ammo', 15);
-		if (random() < extraAmmoChance) result += this.getBuff(this, 'Extra Ammo', 15);
+		result += this.getBuff(this, 'Extra Ammo', 127);
+		result += this.getBuff(this, 'Extra Ammo', 127);
+		if (random() < extraAmmoChance) result += this.getBuff(this, 'Extra Ammo', 127);
 
 
 		const listDebuffs = [];
@@ -6022,9 +6022,9 @@ class Phorcys extends hero {
 
 
 				const snapshotDamage = this._currentStats.totalAttack * codPercent;
-				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
-				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
-				result += target.getDebuff(this, 'Curse of Decay', 15, { attackAmount: snapshotDamage });
+				result += target.getDebuff(this, 'Curse of Decay', 127, { attackAmount: snapshotDamage });
+				result += target.getDebuff(this, 'Curse of Decay', 127, { attackAmount: snapshotDamage });
+				result += target.getDebuff(this, 'Curse of Decay', 127, { attackAmount: snapshotDamage });
 
 
 				activeQueue.push([this, target, damageResult.damageAmount, damageResult.critted]);
@@ -6059,12 +6059,12 @@ class SwordFlashXia extends hero {
 
 
 	eventSelfActive() {
-		return this.getBuff(this, 'Sharpness', 15, { dodge: 1 });
+		return this.getBuff(this, 'Sharpness', 127, { dodge: 1 });
 	}
 
 
 	eventEnemyDied() {
-		return this.getBuff(this, 'Impeccable Flow', 15);
+		return this.getBuff(this, 'Impeccable Flow', 127);
 	}
 
 
@@ -6146,7 +6146,7 @@ class SwordFlashXia extends hero {
 
 		while (this._currentStats.blockDodgeCount >= countTrigger) {
 			this._currentStats.blockDodgeCount -= countTrigger;
-			result = this.getBuff(this, 'Impeccable Flow', 15);
+			result = this.getBuff(this, 'Impeccable Flow', 127);
 		}
 
 		return result;
@@ -6402,7 +6402,7 @@ class ScarletQueenHalora extends hero {
 					result += target.getDebuff(this, 'Bleed', 2, { bleed: bleedDamageResult.damageAmount }, undefined, 'active');
 				}
 
-				result += target.getDebuff(this, 'Abyssal Corruption', 15, { critDamage: critDamageLost, critDamageReduce: critDamageReduceLost });
+				result += target.getDebuff(this, 'Abyssal Corruption', 127, { critDamage: critDamageLost, critDamageReduce: critDamageReduceLost });
 
 				activeQueue.push([this, target, damageResult.damageAmount + bleedDamageResult.damageAmount, damageResult.critted]);
 			}
@@ -6463,7 +6463,7 @@ class Tussilago extends hero {
 			const targets = getLowestHPPercentTargets(this, this._enemies, 2);
 
 			for (const t of targets) {
-				result += t.getDebuff(this, 'Sacred Emblem Mark', 15);
+				result += t.getDebuff(this, 'Sacred Emblem Mark', 127);
 			}
 		}
 
@@ -6494,7 +6494,7 @@ class Tussilago extends hero {
 					result += t.takeDamage(this, 'Justice Shall Prevail 2', damageResult2);
 				}
 
-				result += t.getDebuff(this, 'Sacred Emblem Mark', 15);
+				result += t.getDebuff(this, 'Sacred Emblem Mark', 127);
 				basicQueue.push([this, t, damageResult.damageAmount + damageResult2.damageAmount, damageResult.critted || damageResult2.critted]);
 			}
 		}

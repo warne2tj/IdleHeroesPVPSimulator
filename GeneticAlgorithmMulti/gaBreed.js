@@ -351,9 +351,11 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 						child1[g + 12] = 'None';
 					}
 				} else if (currentHero.heroFaction != 'Transcendence' && newHero.heroFaction == 'Transcendence') {
-					child1[g + 10] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
-					child1[g + 11] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
-					child1[g + 12] = voidEnables[Math.floor(Math.random() * voidEnables.length)];
+					const randomVoidEnable = shuffle(voidEnables.filter(i => i != 'damageReduce' && i != 'controlImmune'))[0];
+
+					child1[g + 10] = 'damageReduce';
+					child1[g + 11] = 'controlImmune';
+					child1[g + 12] = randomVoidEnable;
 				}
 
 				currentHero = newHero;
@@ -405,21 +407,21 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 
 			case 10:
 				if (currentHero.heroFaction == 'Transcendence') {
-					const availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g + 10] && e != child1[g + 11] && e != child1[g + 12]));
+					const availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g] && e != child1[g + 1] && e != child1[g + 2]));
 					child1[g] = availableVoidEnables[0];
 				}
 				break;
 
 			case 11:
 				if (currentHero.heroFaction == 'Transcendence') {
-					const availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g + 10] && e != child1[g + 11] && e != child1[g + 12]));
+					const availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g - 1] && e != child1[g] && e != child1[g + 1]));
 					child1[g] = availableVoidEnables[0];
 				}
 				break;
 
 			case 12:
 				if (currentHero.heroFaction == 'Transcendence') {
-					const availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g + 10] && e != child1[g + 11] && e != child1[g + 12]));
+					const availableVoidEnables = shuffle(voidEnables.filter(e => e != child1[g - 2] && e != child1[g - 1] && e != child1[g]));
 					child1[g] = availableVoidEnables[0];
 				}
 				break;
@@ -451,6 +453,10 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 	// check for seeded
 	if (isSeeded) {
 		for (let i = 0; i < 6; i++) {
+			if (baseHeroStats[child1[i * numGenes]].heroFaction == 'Transcendence' && (child1[i * numGenes + 10] == child1[i * numGenes + 11] || child1[i * numGenes + 10] == child1[i * numGenes + 12] || child1[i * numGenes + 11] == child1[i * numGenes + 12])) {
+				throw new Error('same void enables');
+			}
+
 			const g = i * numGenes;
 
 			if (child1[g] in seededHeroes) {
