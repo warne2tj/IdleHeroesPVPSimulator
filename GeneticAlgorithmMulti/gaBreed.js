@@ -216,7 +216,7 @@ function evolve(allTeams, teamKeys) {
 				}
 			}
 
-			if (similarityScore / 6 >= 0.5) {
+			if (similarityScore >= 3) {
 				speciesCount++;
 			}
 		}

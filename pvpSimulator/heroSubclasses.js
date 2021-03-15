@@ -48,7 +48,7 @@ class Aida extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 		let healAmount = 0;
 		let damageResult = {};
 		const targets = getAllTargets(this, this._enemies);
@@ -773,7 +773,7 @@ class Carrie extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 
 		if (this._currentStats['totalHP'] <= 0) {
 			let damageResult = {};
@@ -1161,7 +1161,7 @@ class Delacium extends hero {
 	}
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 		let targets = [];
 		let maxTargets = 3;
 		let maxToCopy = 3;
@@ -1388,7 +1388,7 @@ class Elyvia extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 
 		if (this._currentStats['totalHP'] > 0) {
 			let targets = getRandomTargets(this, this._enemies);
@@ -1851,7 +1851,7 @@ class Gustin extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 		let targets = [];
 		let energyLost = 30;
 		let healPercent = 0.25;
@@ -2523,7 +2523,7 @@ class Michelle extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 
 		if (this._currentStats['totalHP'] <= 0 && this._currentStats['revive'] == 1) {
 			for (const b in this._buffs) {
@@ -3274,7 +3274,7 @@ class Sherlock extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 		let extraLayerChance = 0.50;
 		if (this._voidLevel >= 2) extraLayerChance = 0.50;
 
@@ -3575,7 +3575,7 @@ class UniMax3000 extends hero {
 
 
 	endOfRound(roundNum) {
-		let result = '';
+		let result = super.endOfRound();
 		let healPercent = 1.2;
 		let critDamageGained = 0.50;
 
@@ -3823,7 +3823,8 @@ class Drake extends hero {
 
 
 	endOfRound() {
-		return this.startOfBattle();
+		const result = super.endOfRound();
+		return result + this.startOfBattle();
 	}
 
 
@@ -3993,7 +3994,7 @@ class Russell extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 
 		let dazzleDuration = 1;
 		let healPercent = 4;
@@ -4354,7 +4355,7 @@ class Rogan extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 		const targets = getAllTargets(this, this._allies);
 
 		let attackPercentGained = 0.20;
@@ -4658,7 +4659,7 @@ class Sleepless extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 
 		if (this._currentStats['totalHP'] <= 0 && this._currentStats['revive'] == 1) {
 			for (const b in this._buffs) {
@@ -5275,7 +5276,7 @@ class Tix extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 
 		if (this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
 			const targets = getRandomTargets(this, this._enemies);
@@ -5576,7 +5577,7 @@ class Inosuke extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 		let hpDamagePercent = 0.40;
 		if (this._voidLevel >= 3) hpDamagePercent = 0.50;
 
@@ -5914,7 +5915,7 @@ class Phorcys extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 		const maxDamage = this._currentStats.totalAttack * 15;
 		const targets = getAllTargets(this, this._enemies);
 
@@ -6317,7 +6318,7 @@ class ScarletQueenHalora extends hero {
 
 
 	endOfRound() {
-		let result = '';
+		let result = super.endOfRound();
 		let healPercent = 0.04;
 		let numAlive = 0;
 
@@ -6618,7 +6619,8 @@ class AsmodelTheDauntless extends hero {
 
 
 	endOfRound() {
-		return this.startOfBattle();
+		const result = super.endOfRound();
+		return result + this.startOfBattle();
 	}
 
 
@@ -6757,6 +6759,156 @@ class AsmodelTheDauntless extends hero {
 }
 
 
+class Eloise extends hero {
+	constructor(sHeroName, iHeroPos, attOrDef) {
+		super(sHeroName, iHeroPos, attOrDef);
+		this._stats['blockCount'] = 0;
+	}
+
+
+	passiveStats() {
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.30, hpPercent: 0.40, block: 0.70, controlImmune: 0.30, speed: 50 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.20, hpPercent: 0.30, block: 0.60, controlImmune: 0.30, speed: 40 }, 'PassiveStats');
+		}
+	}
+
+
+	handleTrigger(trigger) {
+		let result = super.handleTrigger(trigger);
+
+		if ((trigger[1] == 'eventEnemyDied' || trigger[1] == 'eventAllyDied') && this._currentStats.totalHP > 0 && this.isNotSealed()) {
+			result += this.eventAllyDied();
+		} else if (trigger[1] == 'eventTookDamage' && this._currentStats.totalHP > 0 && this.isNotSealed() && !this.isUnderStandardControl()) {
+			result += this.eventTookDamage();
+		}
+
+		return result;
+	}
+
+
+	eventAllyDied() {
+		let result = '';
+		const targets = getAllTargets(this, this._enemies);
+		let precisionLost = 0.15;
+
+		if (this._voidLevel >= 2) precisionLost = 0.20;
+
+		for (const t of targets) {
+			result += t.getDebuff(this, 'Precision', 6, { precision: precisionLost });
+		}
+
+
+		result += this.getBuff(this, 'Phantom Shadow', 127);
+		return result;
+	}
+
+
+	eventTookDamage() {
+		let result = '';
+		const maxDamage = this._currentStats.totalAttack * 15;
+		let phantomMultiplier = 1;
+
+		let damagePercent = 4;
+		let scarPercent = 0.03;
+
+		if (this._voidLevel >= 3) {
+			damagePercent = 6;
+			scarPercent = 0.04;
+		}
+
+		if ('Phantom Shadow' in this._buffs) {
+			const stackKey = Object.keys(this._buffs['Phantom Shadow'])[0];
+			result += this.removeBuff('Phantom Shadow', stackKey);
+			phantomMultiplier = 1.5;
+		}
+
+
+		if (this._currentStats.blockCount > 0) {
+			this._currentStats.blockCount = 0;
+
+			const targets = getRandomTargets(this, this._enemies, 3);
+
+			for (const t of targets) {
+				const damageResult = this.calcDamage(t, this._currentStats.totalAttack * damagePercent, 'passive', 'normal');
+				result += t.takeDamage(this, 'Game of Danger', damageResult);
+
+				let attackAmount = t._stats.totalHP * scarPercent;
+				if (attackAmount > maxDamage) attackAmount = maxDamage;
+				const scarDamageResult = this.calcDamage(t, attackAmount * phantomMultiplier, 'passive', 'true');
+
+				result += t.getDebuff(this, 'Scarred Soul', 2, { attackAmount: scarDamageResult });
+				result += t.takeDamage(this, 'Scarred Soul', { ...scarDamageResult });
+			}
+		}
+
+		return result;
+	}
+
+
+	takeDamage(source, strAttackDesc, damageResult) {
+		const result = super.takeDamage(source, strAttackDesc, damageResult);
+
+		if (damageResult.blocked == true) {
+			this._currentStats.blockCount++;
+			triggerQueue.push([this, 'eventTookDamage']);
+		}
+
+		return result;
+	}
+
+
+	doActive() {
+		let result = '';
+		let damageResult;
+		const maxDamage = this._currentStats.totalAttack * 15;
+		const targets = getRandomTargets(this, this._enemies, 3);
+		let phantomMultiplier = 1;
+
+		if ('Phantom Shadow' in this._buffs) {
+			const stackKey = Object.keys(this._buffs['Phantom Shadow'])[0];
+			result += this.removeBuff('Phantom Shadow', stackKey);
+			phantomMultiplier = 1.5;
+		}
+
+		let damagePercent = 8;
+		let scarPercent = 0.12;
+		let attackPercentLost = 0.15;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 10;
+			scarPercent = 0.16;
+			attackPercentLost = 0.20;
+		}
+
+
+		for (const t of targets) {
+			const targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
+				result += t.takeDamage(this, 'Mist Dance', damageResult);
+
+				result += t.getDebuff(this, 'Attack Percent', 2, { attackPercent: attackPercentLost });
+
+				let attackAmount = t._stats.totalHP * scarPercent;
+				if (attackAmount > maxDamage) attackAmount = maxDamage;
+				const scarDamageResult = this.calcDamage(t, attackAmount * phantomMultiplier, 'passive', 'true');
+
+				result += t.getDebuff(this, 'Scarred Soul', 2, { attackAmount: scarDamageResult });
+				result += t.takeDamage(this, 'Scarred Soul', { ...scarDamageResult });
+
+				activeQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+		return result;
+	}
+}
+
+
 const heroMapping = {
 	'hero': hero,
 	'Carrie': Carrie,
@@ -6806,6 +6958,7 @@ const heroMapping = {
 	'ScarletQueenHalora': ScarletQueenHalora,
 	'Tussilago': Tussilago,
 	'AsmodelTheDauntless': AsmodelTheDauntless,
+	'Eloise': Eloise,
 };
 
 

@@ -239,7 +239,7 @@ function processWorker(e) {
 								}
 							}
 
-							if (similarityScore / 6 >= 0.5) {
+							if (similarityScore >= 3) {
 								diffFound = false;
 							}
 						}

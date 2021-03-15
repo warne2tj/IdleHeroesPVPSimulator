@@ -19,7 +19,7 @@ let startMinDrop;
 let startMaxDrop;
 
 let simRunning = false;
-const totalSims = 1000000;
+const totalSims = 100000;
 
 const lsPrefix = 'cd_';
 
@@ -111,7 +111,7 @@ function nextSimBlock() {
 		const dailyAdd = Math.floor((startHoursLeft * 60 * 60 + startMinsLeft * 60 + startSecsLeft + 132) / 60 / 60 / 24) * startDaily;
 
 		// simulate
-		for (let i = 0; i < 1000; i++) {
+		for (let i = 0; i < 100; i++) {
 			// reset starting conditions
 			numDrops = startCurrentNum + dailyAdd;
 

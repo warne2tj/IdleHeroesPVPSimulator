@@ -275,11 +275,16 @@ const skins = {
 	},
 
 	'Tussilago': {
+		'Diamond Band': { attackPercent: 0.03, critDamage: 0.05, speed: 4 },
+		'LegendaryDiamond Band': { attackPercent: 0.06, critDamage: 0.10, speed: 6 },
+	},
+
+	'Asmodel the Dauntless': {
 		'Placeholder': { },
 		'Legendary Placeholder': { },
 	},
 
-	'Asmodel the Dauntless': {
+	'Eloise': {
 		'Placeholder': { },
 		'Legendary Placeholder': { },
 	},

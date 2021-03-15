@@ -1634,9 +1634,28 @@ class hero {
 	eventEnemyDied() { return ''; }
 	eventGotCC() { return ''; }
 	startOfBattle() { return ''; }
-	endOfRound() { return ''; }
 	eventHPlte50() { return ''; }
 	eventHPlte30() { return ''; }
+
+
+	endOfRound() {
+		let result = '';
+
+		if ('Scarred Soul' in this._debuffs) {
+			for (const stack of Object.values(this._debuffs['Scarred Soul'])) {
+				const source = stack.source;
+				const damageResult = { ...stack.effects.attackAmount };
+				result += this.takeDamage(source, 'Scarred Soul', damageResult);
+
+				if (source._currentStats.totalHP > 0) {
+					const healAmount = source.calcHeal(source, damageResult.damageAmount * 0.25);
+					result += source.getHeal(source, healAmount);
+				}
+			}
+		}
+
+		return result;
+	}
 
 
 	handleTrigger(trigger) {
@@ -1746,7 +1765,7 @@ class hero {
 
 
 		// amenra shields
-		if ('Guardian Shadow' in this._buffs && !bypassModifiers && ['active', 'basic'].includes(damageResult['damageSource']) && damageResult['damageAmount'] > 0) {
+		if ('Guardian Shadow' in this._buffs && !bypassModifiers && ['active', 'basic'].includes(damageResult['damageSource']) && damageResult['damageAmount'] > 1) {
 			const keyDelete = Object.keys(this._buffs['Guardian Shadow']);
 
 			result += '<div>Damage prevented by <span class=\'skill\'>Guardian Shadow</span>.</div>';

@@ -282,6 +282,12 @@ const seededHeroes = {
 		allowedEquipments: ['Class Gear'],
 		allowedEnables: ['"Growth", "Shelter", "Purify", "Growth", "UnbendingWill"', '"Vitality", "Shelter", "Purify", "Vitality", "UnbendingWill"'],
 	},
+	'Eloise': {
+		allowedArtifacts: ['Augustus Magic Ball', 'Staff Punisher of Immortal', 'Golden Crown', 'Demon Bell'],
+		allowedStones: ['S3 Speed, HP', 'S3 Speed, Crit', 'S3 Attack, Attack, Holy'],
+		allowedEquipments: ['Class Gear', 'Split Attack'],
+		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"', '"Growth", "Shelter", "Purify", "Vitality", "UnbendingWill"'],
+	},
 };
 
 

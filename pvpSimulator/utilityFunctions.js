@@ -134,7 +134,7 @@ function isDispellable(strName) {
 		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield', 'Battle Frenzy',
 		'Extra Ammo', 'Soul Corruption', 'Golden Crown', 'Impeccable Flow',
 		'Royal Guard', 'Abyssal Corruption', 'Sacred Emblem Mark', 'Revenge',
-		'Glorious Support'].includes(strName)) {
+		'Glorious Support', 'Phantom Shadow', 'Scarred Soul'].includes(strName)) {
 		return false;
 	} else {
 		return true;
