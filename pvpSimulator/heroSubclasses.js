@@ -4829,16 +4829,14 @@ class Ignis extends hero {
 
 
 		const lostAmount = Math.floor(this._currentStats['totalHP'] * 0.25);
-		let healAmount = 0;
-
-		this._currentStats['totalHP'] -= lostAmount;
-		result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Life Breath</span> consumed ' + formatNum(lostAmount) + ' HP.</div>';
+		const damageResult = this.calcDamage(this, lostAmount, 'passive', 'true');
+		result += this.takeDamage(this, 'Life Breath', damageResult);
 
 
 		const targets = getLowestHPTargets(this, this._allies, 3);
 
 		for (const i in targets) {
-			healAmount = this.calcHeal(targets[i], this._stats['totalHP'] * healPercent);
+			const healAmount = this.calcHeal(targets[i], this._stats['totalHP'] * healPercent);
 			result += targets[i].getHeal(this, healAmount);
 			result += targets[i].getBuff(this, 'Damage Reduce', 2, { damageReduce: damageReduceGained });
 		}
@@ -6775,6 +6773,33 @@ class Eloise extends hero {
 	}
 
 
+	endOfRound() {
+		let result = '';
+		let damageDone = 0;
+
+		for (const target of this._enemies) {
+			if (!('Scarred Soul' in target._debuffs)) continue;
+
+			for (const stack of Object.values(target._debuffs['Scarred Soul'])) {
+				if (stack.source._heroPos != this._heroPos) continue;
+				if (target._currentStats.totalHP <= 0) continue;
+
+				const damageResult = { ...stack.effects.attackAmount };
+				result += this.takeDamage(this, 'Scarred Soul', damageResult);
+				damageDone += damageResult.damageAmount;
+			}
+		}
+
+
+		if (this._currentStats.totalHP > 0) {
+			const healAmount = this.calcHeal(this, damageDone * 0.25);
+			result += this.getHeal(this, healAmount);
+		}
+
+		return result;
+	}
+
+
 	handleTrigger(trigger) {
 		let result = super.handleTrigger(trigger);
 
@@ -6809,6 +6834,7 @@ class Eloise extends hero {
 		let result = '';
 		const maxDamage = this._currentStats.totalAttack * 15;
 		let phantomMultiplier = 1;
+		let scarDamageDone = 0;
 
 		let damagePercent = 4;
 		let scarPercent = 0.03;
@@ -6840,8 +6866,13 @@ class Eloise extends hero {
 
 				result += t.getDebuff(this, 'Scarred Soul', 2, { attackAmount: scarDamageResult });
 				result += t.takeDamage(this, 'Scarred Soul', { ...scarDamageResult });
+				scarDamageDone += scarDamageResult.damageAmount;
 			}
 		}
+
+
+		const healAmount = this.calcHeal(this, scarDamageDone * 0.25);
+		result += this.getHeal(this, healAmount);
 
 		return result;
 	}
@@ -6865,6 +6896,7 @@ class Eloise extends hero {
 		const maxDamage = this._currentStats.totalAttack * 15;
 		const targets = getRandomTargets(this, this._enemies, 3);
 		let phantomMultiplier = 1;
+		let scarDamageDone = 0;
 
 		if ('Phantom Shadow' in this._buffs) {
 			const stackKey = Object.keys(this._buffs['Phantom Shadow'])[0];
@@ -6899,10 +6931,15 @@ class Eloise extends hero {
 
 				result += t.getDebuff(this, 'Scarred Soul', 2, { attackAmount: scarDamageResult });
 				result += t.takeDamage(this, 'Scarred Soul', { ...scarDamageResult });
+				scarDamageDone += scarDamageResult.damageAmount;
 
 				activeQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
 			}
 		}
+
+
+		const healAmount = this.calcHeal(this, scarDamageDone * 0.25);
+		result += this.getHeal(this, healAmount);
 
 		return result;
 	}

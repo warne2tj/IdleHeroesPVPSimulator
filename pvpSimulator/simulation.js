@@ -379,7 +379,7 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 
 
 				for (const source of attHeroes) {
-					if ((source._currentStats['totalHP'] > 0 && source.isNotSealed()) || source._currentStats['revive'] == 1) {
+					if ((source._currentStats['totalHP'] > 0 && source.isNotSealed()) || source._currentStats['revive'] == 1 || source._heroName == 'Eloise') {
 						temp += source.endOfRound(roundNum);
 					}
 
@@ -428,7 +428,7 @@ function runSim(arrAttHeroes, arrDefHeroes, attMonsterName, defMonsterName, attF
 				}
 
 				for (const source of defHeroes) {
-					if ((source._currentStats['totalHP'] > 0 && source.isNotSealed()) || source._currentStats['revive'] == 1) {
+					if ((source._currentStats['totalHP'] > 0 && source.isNotSealed()) || source._currentStats['revive'] == 1 || source._heroName == 'Eloise') {
 						temp += source.endOfRound(roundNum);
 					}
 

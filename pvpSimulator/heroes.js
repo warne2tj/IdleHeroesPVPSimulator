@@ -1639,22 +1639,7 @@ class hero {
 
 
 	endOfRound() {
-		let result = '';
-
-		if ('Scarred Soul' in this._debuffs) {
-			for (const stack of Object.values(this._debuffs['Scarred Soul'])) {
-				const source = stack.source;
-				const damageResult = { ...stack.effects.attackAmount };
-				result += this.takeDamage(source, 'Scarred Soul', damageResult);
-
-				if (source._currentStats.totalHP > 0) {
-					const healAmount = source.calcHeal(source, damageResult.damageAmount * 0.25);
-					result += source.getHeal(source, healAmount);
-				}
-			}
-		}
-
-		return result;
+		return '';
 	}
 
 

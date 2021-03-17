@@ -152,13 +152,15 @@ function processWorker(e) {
 	const numSims = parseInt(document.getElementById('numSims').value);
 	const teamKeys = Object.keys(allTeams);
 	const wid = e.data[0];
+
+	// double points for beating a team in the top 10
 	const numAttWins = e.data[3];
-	const numDefWins = numSims - numAttWins;
+	const numDefWins = numSims - e.data[3];
 
 
 	workerStatus[wid][1] = false;
-	allTeams[e.data[1]]['attWins'] += numAttWins;
-	allTeams[e.data[2]]['defWins'] += numDefWins;
+	allTeams[e.data[1]]['attWins'] += numAttWins * (e.data[2] < 10 ? 2 : 1);
+	allTeams[e.data[2]]['defWins'] += numDefWins * (e.data[1] < 10 ? 2 : 1);
 
 	if (numAttWins > allTeams[e.data[2]]['weakAgainstWins']) {
 		allTeams[e.data[2]]['weakAgainst'] = allTeams[e.data[1]]['teamName'];
@@ -185,7 +187,7 @@ function processWorker(e) {
 				oLog.innerHTML = '<p>Loop stopped by user.</p>' + oLog.innerHTML;
 			} else {
 				let summary = '';
-				const totalFights = teamKeys.length * numSims;
+				const totalFights = teamKeys.length * numSims + 10 * numSims;
 
 				teamKeys.sort(function(a, b) {
 					if (allTeams[a]['attWins'] > allTeams[b]['attWins']) {
