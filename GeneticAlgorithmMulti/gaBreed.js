@@ -253,15 +253,21 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 	const parentB = Math.floor(Math.pow(Math.random(), 1.2) * (end - start)) + start;
 	const dna2 = allTeams[teamKeys[parentB]]['dna'];
 
+	const parentC = Math.floor(Math.pow(Math.random(), 1.2) * (end - start)) + start;
+	const dna3 = allTeams[teamKeys[parentC]]['dna'];
+
 
 	// randomly pick one of the heroes from the 2 teams
 	for (let h = 0; h < 6; h++) {
 		let chosenDna;
+		const parentIndex = Math.floor(Math.random() * 3);
 
-		if (Math.random() < 0.50) {
+		if (parentIndex == 0) {
 			chosenDna = dna1;
-		} else {
+		} else if (parentIndex == 1) {
 			chosenDna = dna2;
+		} else {
+			chosenDna = dna3;
 		}
 
 		const chosenHero = chosenDna[h * numGenes];
@@ -301,10 +307,14 @@ function breed(allTeams, teamKeys, start, end, mutationRate, posSwapRate) {
 	}
 
 	// randomly pick one of the pets
-	if (Math.random() < 0.50) {
+	const petIndex = Math.floor(Math.random() * 3);
+
+	if (petIndex == 0) {
 		child1.push(dna1[dnaLength - 1]);
-	} else {
+	} else if (petIndex == 1) {
 		child1.push(dna2[dnaLength - 1]);
+	} else {
+		child1.push(dna3[dnaLength - 1]);
 	}
 
 

@@ -32,10 +32,10 @@ const luckyChoices = [
 const nodeJSMode = typeof window === 'undefined' ? true : false;
 
 if (nodeJSMode) {
-	const startOrdDice = 7;
+	const startOrdDice = 2;
 	const startLuckDice = 1;
-	const startStars = 182;
-	const startPos = 20;
+	const startStars = 221;
+	const startPos = 7;
 	const startMushroom1 = 3;
 	const startMushroom2 = 3;
 	const startMushroom3 = 3;
@@ -393,15 +393,15 @@ function calcTier(stars) {
 	} else if (stars >= 260) {
 		return 7;
 	} else if (stars >= 230) {
-		return 5;
+		return 6;
 	} else if (stars >= 200) {
 		return 5;
 	} else if (stars >= 170) {
 		return 4;
 	} else if (stars >= 140) {
-		return 1;
+		return 3;
 	} else if (stars >= 110) {
-		return 1;
+		return 2;
 	} else if (stars >= 80) {
 		return 1;
 	} else {
