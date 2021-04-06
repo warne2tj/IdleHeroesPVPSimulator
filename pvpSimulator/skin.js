@@ -255,8 +255,8 @@ const skins = {
 	},
 
 	'Morax': {
-		'Placeholder': { },
-		'Legendary Placeholder': { },
+		'Hell Warrior': { attackPercent: 0.03, critDamage: 0.05, controlImmune: 0.05 },
+		'Legendary Hell Warrior': { attackPercent: 0.06, critDamage: 0.10, controlImmune: 0.06 },
 	},
 
 	'Phorcys': {
@@ -285,6 +285,11 @@ const skins = {
 	},
 
 	'Eloise': {
+		'Placeholder': { },
+		'Legendary Placeholder': { },
+	},
+
+	'Fiona': {
 		'Placeholder': { },
 		'Legendary Placeholder': { },
 	},

@@ -288,6 +288,12 @@ const seededHeroes = {
 		allowedEquipments: ['Class Gear', 'Split Attack'],
 		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"', '"Growth", "Shelter", "Purify", "Vitality", "UnbendingWill"'],
 	},
+	'Fiona': {
+		allowedArtifacts: ['The Kiss of Ghost', 'Augustus Magic Ball', 'Golden Crown', 'Magic Stone Sword'],
+		allowedStones: ['S3 Speed, Attack', 'S3 Attack, Attack'],
+		allowedEquipments: ['Class Gear', 'Split Attack'],
+		allowedEnables: ['"Growth", "LethalFightback", "Purify", "Growth", "UnbendingWill"', '"Mightiness", "LethalFightback", "Purify", "Mightiness", "UnbendingWill"'],
+	},
 };
 
 

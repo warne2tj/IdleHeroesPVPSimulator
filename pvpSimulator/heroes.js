@@ -1671,6 +1671,9 @@ class hero {
 		} else if (['eventEnemyBasic', 'eventEnemyActive'].includes(trigger[1]) && 'Glorious Support' in this._buffs && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
 			return this.eventGloriousSupport(trigger[2]);
 
+		} else if (trigger[1] == 'Redemption' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+			return this.eventRedemption(trigger[2]);
+
 		}
 
 		return '';
@@ -1730,6 +1733,32 @@ class hero {
 		}
 
 
+		// Fiona Shield
+		if ('Fiona Shield' in this._buffs && !bypassModifiers && (['basic', 'active', 'passive'].includes(damageResult['damageSource']) || ['bleed', 'burn', 'poison', 'bleedTrue', 'burnTrue', 'poisonTrue'].includes(damageResult.damageType))) {
+			const buffStack = Object.values(this._buffs['Fiona Shield'])[0];
+			let damagePrevented = 0;
+
+			if (damageResult.damageAmount > buffStack.effects.attackAmount) {
+				damagePrevented = buffStack.effects.attackAmount;
+				damageResult.damageAmount -= damagePrevented;
+
+				if ('Redemption' in this._buffs) {
+					result += this.removeBuff('Redemption');
+					triggerQueue.push([this, 'Redemption', buffStack.source]);
+				}
+
+				result += this.removeBuff('Fiona Shield');
+			} else {
+				damagePrevented = Math.floor(damageResult.damageAmount);
+				buffStack.effects.attackAmount -= damagePrevented;
+				damageResult.damageAmount = 0;
+			}
+
+			this._currentStats.damageHealed += damagePrevented;
+			result += `<div><span class='skill'>Fiona Shield</span> prevented <span class='num'>${formatNum(damagePrevented)}</span> damage.</div>`;
+		}
+
+
 		// Inosuke's Swordwind Shield
 		if ('Swordwind Shield' in this._buffs && !bypassModifiers && ['basic', 'active', 'passive'].includes(damageResult['damageSource']) && !['true', 'bleedTrue', 'burnTrue', 'poisonTrue'].includes(damageResult.damageType)) {
 			const buffStack = Object.values(this._buffs['Swordwind Shield'])[0];
@@ -1741,6 +1770,7 @@ class hero {
 				result += this.removeBuff('Swordwind Shield');
 			} else {
 				damagePrevented = Math.floor(damageResult.damageAmount);
+				buffStack.effects.attackAmount -= damagePrevented;
 				damageResult.damageAmount = 0;
 			}
 
@@ -2071,6 +2101,12 @@ class hero {
 		result += source.getDebuff(this, 'Revenge', 127);
 
 		return result;
+	}
+
+
+	eventRedemption(source) {
+		const healAmount = this.calcHeal(this, this._stats.totalHP * 0.15);
+		return this.getHeal(source, healAmount);
 	}
 }
 

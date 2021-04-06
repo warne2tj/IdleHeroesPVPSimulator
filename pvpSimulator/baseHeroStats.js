@@ -285,6 +285,23 @@ const baseHeroStats = {
 		},
 	},
 
+	'Fiona': {
+		className: 'Fiona',
+		heroFaction: 'Fortress',
+		heroClass: 'Priest',
+		voidEnabled: true,
+		stats: {
+			baseHP: 8352,
+			baseAttack: 356,
+			baseArmor: 60,
+			baseSpeed: 235,
+			growHP: 835.2,
+			growAttack: 35.6,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
+
 	'Flora': {
 		className: 'Flora',
 		heroFaction: 'Forest',

@@ -3,7 +3,7 @@ import { triggerQueue, activeQueue, basicQueue } from './simulation.js';
 import {
 	random, formatNum, isDot, isMonster, isControlEffect, isDispellable, isAttribute, getMostSacredEmblemTargets,
 	isFrontLine, isBackLine, getBackTargets, getHighestAttackTargets, getNearestTargets, getFrontTargets,
-	getAllTargets, getHighestHPTargets, getLowestHPTargets, getLowestHPPercentTargets, getRandomTargets,
+	getAllTargets, getHighestHPTargets, getLowestHPTargets, getLowestHPPercentTargets, getRandomTargets, getSanctionTargets,
 } from './utilityFunctions.js';
 
 
@@ -6946,6 +6946,179 @@ class Eloise extends hero {
 }
 
 
+class Fiona extends hero {
+	passiveStats() {
+		if (this._voidLevel >= 1) {
+			this.applyStatChange({ attackPercent: 0.35, hpPercent: 0.50, crit: 0.30, precision: 0.70 }, 'PassiveStats');
+		} else {
+			this.applyStatChange({ attackPercent: 0.25, hpPercent: 0.40, crit: 0.30, precision: 0.50 }, 'PassiveStats');
+		}
+	}
+
+
+	startOfBattle() {
+		let result = '';
+		const targets = getAllTargets(this, this._allies);
+
+		const maxShield = 50 * this._currentStats.totalAttack;
+		let baseShieldAmount = 10 * this._currentStats.totalAttack;
+		if (this._voidLevel >= 3) baseShieldAmount = 15 * this._currentStats.totalAttack;
+
+		for (const t of targets) {
+			if ('Fiona Shield' in t._buffs) {
+				const shieldKey = Object.keys(t._buffs['Fiona Shield'])[0];
+				let newShieldAmount = t._buffs['Fiona Shield'][shieldKey].effects.attackAmount + baseShieldAmount;
+				if (newShieldAmount > maxShield) newShieldAmount = maxShield;
+				t._buffs['Fiona Shield'][shieldKey].effects.attackAmount = newShieldAmount;
+				result += `<div>Fiona Shield increased to ${newShieldAmount}.</div>`;
+			} else {
+				result += t.getBuff(this, 'Fiona Shield', 127, { attackAmount: baseShieldAmount });
+			}
+
+			result += t.getBuff(this, 'Redemption', 127, {}, true);
+		}
+
+		return result;
+	}
+
+
+	endOfRound() {
+		let result = '';
+		const targets = getLowestHPPercentTargets(this, this._allies, 2);
+
+		const maxShield = 50 * this._currentStats.totalAttack;
+		let shieldAmount = 5 * this._currentStats.totalAttack;
+		if (this._voidLevel >= 3) shieldAmount = 7.5 * this._currentStats.totalAttack;
+
+		for (const t of targets) {
+			if ('Fiona Shield' in t._buffs) {
+				const shieldKey = Object.keys(t._buffs['Fiona Shield'])[0];
+				let newShieldAmount = t._buffs['Fiona Shield'][shieldKey].effects.attackAmount + shieldAmount;
+				if (newShieldAmount > maxShield) newShieldAmount = maxShield;
+				t._buffs['Fiona Shield'][shieldKey].effects.attackAmount = newShieldAmount;
+				result += `<div>Fiona Shield increased to ${newShieldAmount}.</div>`;
+			} else {
+				result += t.getBuff(this, 'Fiona Shield', 127, { attackAmount: shieldAmount });
+			}
+
+			result += t.getBuff(this, 'Redemption', 127, {}, true);
+		}
+
+		return result;
+	}
+
+
+	doBasic() {
+		let result = '';
+		let damageResult = {};
+		const targets = getSanctionTargets(this, this._enemies, 1);
+
+		let damagePercent = 3.2;
+		let controlRemovalChance = 0.9;
+
+		if (this._voidLevel >= 2) {
+			damagePercent = 4.8;
+			controlRemovalChance = 1;
+		}
+
+
+		for (const t of targets) {
+			const targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(t, this._currentStats.totalAttack * damagePercent, 'basic', 'normal');
+				result += t.takeDamage(this, 'This is my Goodwill', damageResult);
+				result += t.getDebuff(this, 'Sanction Mark', 127);
+
+				basicQueue.push([this, t, damageResult.damageAmount, damageResult.critted]);
+			}
+		}
+
+
+		if (random() < controlRemovalChance) {
+			const allies = getRandomTargets(this, this._allies);
+
+			for (const a of allies) {
+				if (a.isUnderControl()) {
+					const controlDebuffs = [];
+
+					for (const d of Object.keys(a._debuffs)) {
+						if (isControlEffect(d)) controlDebuffs.push([d]);
+					}
+
+					result += a.removeDebuff(controlDebuffs[Math.floor(random() * controlDebuffs.length)]);
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
+
+
+	doActive() {
+		let result = '';
+		const targets = getSanctionTargets(this, this._enemies, 1);
+		let damagePercent = 6;
+		let shieldMult = 12;
+
+		if (this._voidLevel >= 4) {
+			damagePercent = 8;
+			shieldMult = 20;
+		}
+
+
+		for (const t of targets) {
+			const targetLock = t.getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				let numAttacks = 1;
+				let damageDone = 0;
+				let critted = false;
+
+				if ('Sanction Mark' in t._debuffs) {
+					numAttacks += Object.keys(t._debuffs['Sanction Mark']).length;
+					if (numAttacks > 8) numAttacks = 8;
+				}
+
+				for (let i = 1; i <= numAttacks; i++) {
+					const damageResult = this.calcDamage(t, this._currentStats.totalAttack, 'active', 'normal', damagePercent);
+					result += t.takeDamage(this, 'Taste My Hammer', damageResult);
+					damageDone += damageResult.damageAmount;
+					critted = critted || damageResult.critted;
+				}
+
+				result += t.getDebuff(this, 'Sanction Mark', 127);
+				activeQueue.push([this, t, damageDone, critted]);
+			}
+		}
+
+
+		const allies = getLowestHPPercentTargets(this, this._allies, 3);
+		const maxShield = 50 * this._currentStats.totalAttack;
+		const shieldAmount = shieldMult * this._currentStats.totalAttack;
+
+		for (const a of allies) {
+			if ('Fiona Shield' in a._buffs) {
+				const shieldKey = Object.keys(a._buffs['Fiona Shield'])[0];
+				let newShieldAmount = a._buffs['Fiona Shield'][shieldKey].effects.attackAmount + shieldAmount;
+				if (newShieldAmount > maxShield) newShieldAmount = maxShield;
+				a._buffs['Fiona Shield'][shieldKey].effects.attackAmount = newShieldAmount;
+				result += `<div>Fiona Shield increased to ${newShieldAmount}.</div>`;
+			} else {
+				result += a.getBuff(this, 'Fiona Shield', 127, { attackAmount: shieldAmount });
+			}
+
+			result += a.getBuff(this, 'Redemption', 127, {}, true);
+		}
+
+		return result;
+	}
+}
+
+
 const heroMapping = {
 	'hero': hero,
 	'Carrie': Carrie,
@@ -6996,6 +7169,7 @@ const heroMapping = {
 	'Tussilago': Tussilago,
 	'AsmodelTheDauntless': AsmodelTheDauntless,
 	'Eloise': Eloise,
+	'Fiona': Fiona,
 };
 
 

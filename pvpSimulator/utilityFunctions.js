@@ -134,7 +134,7 @@ function isDispellable(strName) {
 		'Wildfire Torch Dot', 'Revenging Wraith', 'Swordwind Shield', 'Battle Frenzy',
 		'Extra Ammo', 'Soul Corruption', 'Golden Crown', 'Impeccable Flow',
 		'Royal Guard', 'Abyssal Corruption', 'Sacred Emblem Mark', 'Revenge',
-		'Glorious Support', 'Phantom Shadow', 'Scarred Soul'].includes(strName)) {
+		'Glorious Support', 'Phantom Shadow', 'Scarred Soul', 'Fiona Shield', 'Sanction Mark', 'Redemption', 'Sanction Mark'].includes(strName)) {
 		return false;
 	} else {
 		return true;
@@ -720,10 +720,38 @@ function getMostSacredEmblemTargets(source, arrTargets, num = 6) {
 }
 
 
+function getSanctionTargets(source, arrTargets, num = 6) {
+	const randomTargets = getRandomTargets(source, arrTargets);
+	const copyTargets = [];
+	let count = 0;
+
+	randomTargets.sort(function(a, b) {
+		const aMarks = 'Sanction Mark' in a._debuffs ? Object.keys(a._debuffs['Sanction Mark']).length : 0;
+		const bMarks = 'Sanction Mark' in b._debuffs ? Object.keys(b._debuffs['Sanction Mark']).length : 0;
+
+		if (aMarks > bMarks) {
+			return -1;
+		} else if (aMarks < bMarks) {
+			return 1;
+		} else {
+			return 0;
+		}
+	});
+
+	for (const t of randomTargets) {
+		copyTargets.push(t);
+		count++;
+		if (count == num) { break; }
+	}
+
+	return copyTargets;
+}
+
+
 export {
 	getHighestAttackTargets, getHighestHPTargets, getLowestHPPercentTargets, getLowestHPTargets,
 	getRandomTargets, getNearestTargets, getAllTargets, getBackTargets, getFrontTargets,
 	isAttribute, isDot, isBackLine, isFrontLine, isControlEffect, isDispellable, isMonster,
 	slotSort, speedSort, uuid, random, rng, logCombat, formatNum, translate, getHighestSpeedTargets,
-	numGenes, dnaLength, getMostSacredEmblemTargets,
+	numGenes, dnaLength, getMostSacredEmblemTargets, getSanctionTargets,
 };
