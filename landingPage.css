@@ -13,16 +13,15 @@ h1 {
   padding: 2em;
   background-color: #00a0fa;
 	border-radius: 10px;
+  text-align: center;
 }
 
 .banner h1 {
   font-size: 48px;
-  text-align: center;
   font-weight: bold;
   color: #333;
 }
 .banner h4 {
-  text-align: center;
   color: #333;
 }
 
