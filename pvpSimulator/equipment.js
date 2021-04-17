@@ -163,7 +163,7 @@ const armors = {
 		limitStats: { hpPercent: 0.06, damageReduce: 0.05 },
 	},
 
-	'Oracle\'s Cape': {
+	'Oracle\'s Cape SR': {
 		set: '',
 		stats: { hp: 104898, hpPercent: 0.1 },
 		limit: 'Priest',
