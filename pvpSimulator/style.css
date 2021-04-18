@@ -33,7 +33,7 @@ h2, div, p {
 .log {
   height: 400px;
   overflow: scroll;
-  background-color: #f6f6f6;
+  background-color: #5e73a2;
   margin-bottom: 18px;
   color: #000;
   border: 1px solid #000;
@@ -88,7 +88,7 @@ h2, div, p {
 }
 
 .activeC, .colorC:hover {
-  background-color: #bbac8e;
+  background-color: #4e9150;
 }
 
 .activeA:after, .activeB:after, .activeC:after {
@@ -100,13 +100,13 @@ h2, div, p {
 /* Style the accordion panel. Note: hidden by default */
 .panelA {
   padding: 0 18px;
-  background-color: #fae6be;
+  background-color: #1895db;
   overflow: hidden;
   max-height: 0;
   transition: max-height .5s ease;
 }
 
-.panelC {
+.panelB {
   padding: 0 18px;
   background-color: #63a866;
   overflow: hidden;
