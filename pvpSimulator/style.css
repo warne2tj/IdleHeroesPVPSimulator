@@ -76,11 +76,11 @@ h2, div, p {
 
 .colorB {background-color: #ff825f;}
 
-.colorC {background-color: #fae6be;}
+.colorC {background-color: #53a156;}
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
 .activeA, .colorA:hover {
-  background-color: #0078bb;
+  background-color: #0078bb8c;
 }
 
 .activeB, .colorB:hover {
@@ -95,8 +95,10 @@ h2, div, p {
   content: "\2796"; /* Unicode character for "minus" sign (-) */
 }
 
+
+
 /* Style the accordion panel. Note: hidden by default */
-.panel {
+.panelA {
   padding: 0 18px;
   background-color: #fae6be;
   overflow: hidden;
@@ -104,7 +106,21 @@ h2, div, p {
   transition: max-height .5s ease;
 }
 
+.panelC {
+  padding: 0 18px;
+  background-color: #63a866;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .5s ease;
+}
 
+.panelC {
+  padding: 0 18px;
+  background-color: #d4745a;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .5s ease;
+}
 
 /* Responsive stacking columns */
 * {
@@ -158,7 +174,7 @@ h2, div, p {
 input[type=text], select, textarea {
   width: 100%;
   color: #222;
-  background-color: #fff;
+  background-color: #eee;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -175,7 +191,7 @@ label {
 /* Style the submit button */
 input[type=submit] {
   background-color: #53a156;
-  color: white;
+  color: #eee;
   padding: 5px 10px;
   border: none;
   border-radius: 4px;
