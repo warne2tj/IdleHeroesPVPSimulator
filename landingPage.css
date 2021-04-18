@@ -45,7 +45,6 @@ a.card, a:link.card, a:visited.card, a:hover.card, a:active.card {
 .flexbox{
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
 }
 
 .notab {
@@ -110,7 +109,10 @@ div.card:after {
 
 
 @media screen and (max-width: 750px) {
-  div.card .column {
+  a.anchor .column {
     width: 100%;
+  }
+  .flexbox{
+    flex-wrap: wrap;
   }
 }
