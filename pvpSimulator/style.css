@@ -174,7 +174,7 @@ label {
 
 /* Style the submit button */
 input[type=submit] {
-  background-color: #4CAF50;
+  background-color: #53a156;
   color: white;
   padding: 5px 10px;
   border: none;
@@ -215,11 +215,11 @@ input[type=submit]:hover {
 
 /* combat log styles */
 .num {
-  color: #aa0a3c;
+  color: #dfdfdf;
 }
 
 .skill {
-  color: #0089a2;
+  color: #38d2af;
 }
 
 .att {
@@ -229,7 +229,7 @@ input[type=submit]:hover {
 }
 
 .def {
-  color: #ff825f;
+  color: #e78064;
   font-weight: bold;
 }
 
