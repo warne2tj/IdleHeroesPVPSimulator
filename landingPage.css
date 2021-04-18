@@ -10,16 +10,15 @@ h1 {
   font-size: 30px;
 }
 
-
 .banner {
-    box-shadow: 0 0 8px #44444494;
-    background-color: #5e73a2;
-    width: 65%;
-    height: 120px;
-    margin: auto;
-    color: black;
-    border-radius: 20px;
-    text-align: center;
+  box-shadow: 0 0 8px #44444494;
+  background-color: #5e73a2;
+  width: 65%;
+  height: 120px;
+  margin: auto;
+  color: black;
+  border-radius: 20px;
+  text-align: center;
 }
 
 .banner h1 {
