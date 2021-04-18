@@ -106,7 +106,7 @@ h2, div, p {
   transition: max-height .5s ease;
 }
 
-.panelB {
+.panelC {
   padding: 0 18px;
   background-color: #63a866;
   overflow: hidden;
@@ -114,7 +114,7 @@ h2, div, p {
   transition: max-height .5s ease;
 }
 
-.panelC {
+.panelB {
   padding: 0 18px;
   background-color: #d4745a;
   overflow: hidden;
