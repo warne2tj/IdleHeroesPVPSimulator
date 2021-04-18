@@ -16,6 +16,8 @@ h1 {
   height: 120px;
   margin-bottom: 2em;
   padding: 2em;
+  margin-right: auto;
+  margin-left: auto;
   /*background-color: #1A2230;
 	border-radius: 10px;*/
   text-align: center;
@@ -40,6 +42,10 @@ a.card, a:link.card, a:visited.card, a:hover.card, a:active.card {
   text-decoration: none;
 }
 
+.flexbox{
+  display: flex;
+  flex-direction: row;
+}
 
 .notab {
 	margin: 2em;
@@ -51,32 +57,35 @@ a.card, a:link.card, a:visited.card, a:hover.card, a:active.card {
 }
 
 div.card {
-	border: 1px solid #FAFAFA;
-	box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.12);
-	border-radius: 20px;
-
-  background-color: #fae6be;
-  padding: 2em;
-	cursor: pointer;
+    width: 35%;
+    height: 60%;
+    min-width: 160px;
+    min-height: 320px;
+    text-align: center;
+    border: 1px solid #FAFAFA;
+    border-radius: 20px;
+    background-color: #fae6be;
+    padding: 2em;
+    cursor: pointer;
 }
 
 div.card img {
-  float: left;
   width: 150px;
-  margin-right: 1em;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 div.card .column {
-  float: left;
-  width: 75%;
+  margin-right: auto;
+  margin-left: auto;
 }
 
-
+/*
 div.card:after {
   content: "";
   display: table;
   clear: both;
-}
+} */
 
 
 .gray {
