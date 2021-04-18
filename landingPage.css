@@ -80,19 +80,19 @@ div.card {
 
 }
 
-div.card img {
+a.anchor img {
   width: 150px;
   margin-right: auto;
   margin-left: auto;
 }
 
-div.card .column {
+a.anchor .column {
   margin-right: auto;
   margin-left: auto;
   font-size: 12px;
 }
 
-div.card.column .h1{
+a.anchor.column .h1{
   font-size: 18px;
 }
 /*
