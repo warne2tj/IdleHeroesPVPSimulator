@@ -56,15 +56,26 @@ a.card, a:link.card, a:visited.card, a:hover.card, a:active.card {
 	margin-left: 6em;
 }
 
+.anchor{
+  display: block;
+  width: 35%;
+  height: 60%;
+  min-width: 160px;
+  min-height: 320px;
+  text-decoration: none;
+  color: #636B7B;
+}
+
 div.card {
     width: 35%;
     height: 60%;
     min-width: 160px;
     min-height: 320px;
     text-align: center;
-    border: 1px solid #FAFAFA;
+    /* border: 1px solid #FAFAFA; */
     border-radius: 20px;
-    background-color: #fae6be;
+    box-shadow: 0 0 12px #444;
+    background-color: #5e73a2;
     padding: 2em;
     cursor: pointer;
 }
