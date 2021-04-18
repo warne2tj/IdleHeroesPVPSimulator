@@ -16,15 +16,31 @@ h1 {
   box-shadow: 0 0 8px #44444494;
   background-color: #5e73a2;
   width: 65%;
-  height: 120px;
   margin: auto;
   color: black;
   border-radius: 20px;
   text-align: center;
 }
 
+.anchor{
+  margin: auto;
+  display: block;
+  width: 35%;
+  height: 60%;
+  min-width: 160px;
+  min-height: 320px;
+  text-decoration: none;
+  color: black;
+  text-align: center;
+  border-radius: 20px;
+  box-shadow: 0 0 12px #44444494;
+  background-color: #5e73a2;
+  padding: 2em;
+  cursor: pointer;
+}
+
 .banner h1 {
-  font-size: 48px;
+  font-size: 32px;
   font-weight: bold;
 }
 
@@ -48,24 +64,6 @@ a.card, a:link.card, a:visited.card, a:hover.card, a:active.card {
 .tab {
   margin: 2em;
 	margin-left: 6em;
-}
-
-.anchor{
-  margin: auto;
-  display: block;
-  width: 35%;
-  height: 60%;
-  min-width: 160px;
-  min-height: 320px;
-  text-decoration: none;
-  color: black;
-  text-align: center;
-  /* border: 1px solid #FAFAFA; */
-  border-radius: 20px;
-  box-shadow: 0 0 12px #44444494;
-  background-color: #5e73a2;
-  padding: 2em;
-  cursor: pointer;
 }
 
 a.anchor img {
@@ -96,5 +94,8 @@ a.anchor.column .h1{
   }
   .flexbox{
     flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    margin: auto;
   }
 }
