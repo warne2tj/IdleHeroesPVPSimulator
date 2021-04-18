@@ -5,11 +5,16 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   color: #444;
   display: grid;
-  grid-template-rows: 23% 65% 2%;
+  grid-template-rows: 98% 2%;
 }
 
 h1 {
   font-size: 30px;
+}
+
+.main-content{
+  display: flex;
+  flex-direction: column;
 }
 
 .banner {
