@@ -80,7 +80,7 @@ h2, div, p {
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
 .activeA, .colorA:hover {
-  background-color: #0078bb8c;
+  background-color: #0073b4;
 }
 
 .activeB, .colorB:hover {
@@ -100,7 +100,7 @@ h2, div, p {
 /* Style the accordion panel. Note: hidden by default */
 .panelA {
   padding: 0 18px;
-  background-color: #1895db;
+  background-color: #1488e4;
   overflow: hidden;
   max-height: 0;
   transition: max-height .5s ease;
@@ -108,7 +108,7 @@ h2, div, p {
 
 .panelC {
   padding: 0 18px;
-  background-color: #63a866;
+  background-color: #80b482;
   overflow: hidden;
   max-height: 0;
   transition: max-height .5s ease;
