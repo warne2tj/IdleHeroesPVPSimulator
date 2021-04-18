@@ -5,7 +5,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   color: #444;
   display: grid;
-  grid-template-rows: 30% 70%;
+  grid-template-rows: 25% 65% 10%;
 }
 
 h1 {
@@ -37,6 +37,17 @@ h1 {
   background-color: #5e73a2;
   padding: 2em;
   cursor: pointer;
+}
+
+.footer{
+  box-shadow: 0 0 8px #44444494;
+  background-color: #5e73a2;
+  width: 30%;
+  margin: auto;
+  color: black;
+  border-radius: 20px;
+  text-align: center;
+  text-decoration: none;
 }
 
 .banner h1 {
@@ -97,5 +108,6 @@ a.anchor.column .h1{
     display: flex;
     flex-direction: row;
     margin: auto;
+    width: auto;
   }
 }
