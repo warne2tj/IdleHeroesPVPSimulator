@@ -67,8 +67,7 @@ a.card, a:link.card, a:visited.card, a:hover.card, a:active.card {
 .flexbox{
   display: flex;
   flex-direction: row;
-  margin: auto;
-  width: 65%;
+  justify-content: center
 }
 
 .notab {
@@ -111,6 +110,5 @@ a.anchor.column .h1{
     display: flex;
     flex-direction: row;
     margin: auto;
-    width: auto;
   }
 }
