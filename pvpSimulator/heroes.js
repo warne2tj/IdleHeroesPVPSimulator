@@ -1580,6 +1580,7 @@ class hero {
 
 	tickEnable3() {
 		let result = '';
+		let purifies = ['Mark Purify', 'Dot Purify', 'Attribute Reduction Purify', 'Control Purify'];
 
 		if (this._enable3 == 'Resilience') {
 			const healAmount = this.calcHeal(this, 0.15 * (this._stats['totalHP'] - this._currentStats['totalHP']));
@@ -1607,23 +1608,60 @@ class hero {
 				this.getBuff(this, 'Attack Percent', 1, { attackPercent: attBuff });
 			}
 
-		} else if (this._enable3 == 'Purify') {
-			const listDebuffs = [];
+		} else if (purifies.includes(this._enable3)){
+			const dotDebuffs = [];
+			const controlDebuffs = [];
+			const markDebuffs = [];
+			const attributeDebuffs = [];
+			const numDebuffs = this._debuffs.length
 
 			for (const d in this._debuffs) {
 				const firstStack = Object.values(this._debuffs[d])[0];
 
-				if (isDispellable(d) && (isDot(d) || isAttribute(d, firstStack) || d.includes('Mark') || isControlEffect(d))) {
-					listDebuffs.push(d);
+				if (isDispellable(d) && isDot(d)) {
+					dotDebuffs.push(d);
+				}
+				else if (isAttribute(d, firstStack)) {
+					attributeDebuffs.push(d);
+				}
+				else if (d.includes('Mark')) {
+					markDebuffs.push(d);
+				}
+				else if (isControlEffect(d)) {
+					controlDebuffs.push(d);
 				}
 			}
 
-			const rng = Math.floor(random() * listDebuffs.length);
+			if (this._enable3 == 'Mark Purify'){
+				 rng = Math.floor(random() * markDebuffs.length);
+				 if (markDebuffs.length > 0) {
+ 					result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Mark Purify</span> removed debuff.</div>';
+ 					result += this.removeDebuff(markDebuffs[rng]);
+ 				}
 
-			if (listDebuffs.length > 0) {
-				result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Purify</span> removed debuff.</div>';
-				result += this.removeDebuff(listDebuffs[rng]);
-			}
+		 	}
+		 	else if (this._enable3 == 'Dot Purify'){
+	 			rng = Math.floor(random() * dotDebuffs.length);
+				if (dotDebuffs.length > 0) {
+					result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Dot Purify</span> removed debuff.</div>';
+					result += this.removeDebuff(dotDebuffs[rng]);
+				}
+
+		 	}
+		 	else if (this._enable3 == 'Attribute Reduction Purify'){
+	 			rng = Math.floor(random() * attributeDebuffs.length);
+				if (attributeDebuffs.length > 0) {
+					result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Attribute Reduction Purify</span> removed debuff.</div>';
+					result += this.removeDebuff(attributeDebuffs[rng]);
+				}
+		 	}
+		 	else if (this._enable3 == 'Control Purify'){
+	 			rng = Math.floor(random() * controlDebuffs.length);
+				if (controlDebuffs.length > 0) {
+					result += '<div>' + this.heroDesc() + ' <span class=\'skill\'>Control Purify</span> removed debuff.</div>';
+					result += this.removeDebuff(controlDebuffs[rng]);
+				}
+		 	}
 		}
 
 		return result;
