@@ -1977,7 +1977,8 @@ class hero {
 			const key = Object.keys(this._debuffs['Magic Bubble'])[0];
 			const stack = this._debuffs['Magic Bubble'][key];
 
-			let damagePercent = this._debuffs;
+			let markDamage = this._debuffs['Magic Bubble'][key]['effects'].damagePercent;
+			let markAttack = this._debuffs['Magic Bubble'][key]['effects'].attackAmount;
 
 			for (const h in this._enemies) {
 					if(h._heroName == 'Gloria' && h._currentStats['totalHP'] > 0){
@@ -1985,8 +1986,9 @@ class hero {
 					}
 					break;
 			}
+			result += this.removeDebuff('Magic Bubble', key);
 
-			stack.effects.damageAmount += Math.floor(damagePercent * damageResult.damageAmount);
+			stack.effects.damageAmount += Math.floor(markDamage * markAttack + damageResult.damageAmount);
 
 
 		}
