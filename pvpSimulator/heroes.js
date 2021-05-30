@@ -69,7 +69,7 @@ class hero {
 		// dictionary to track buffs and debuffs during combat
 		this._buffs = {};
 		this._debuffs = {};
-
+		this.
 		this._allies = [];
 		this._enemies = [];
 
@@ -1136,6 +1136,16 @@ class hero {
 
 
 	getDebuff(source, debuffName, duration, effects = {}, bypassControlImmune = false, damageSource = 'passive', ccChance = 1, unstackable = false) {
+
+		// if (debuffName =="Magic Bubble"){
+		// 	let bubbles = Object.values(this._debuffs[debuffName]);
+		// 	for (bubble in bubbles){
+		// 		if )bubble['duration'] == 127){
+		// 			return;
+		// 		}
+		// 	}
+		// }
+
 		if (this._currentStats['totalHP'] <= 0) { return ''; }
 
 		let damageResult = {};
@@ -1922,7 +1932,26 @@ class hero {
 			stack.effects.damageAmount += Math.floor(damagePercent * damageResult.damageAmount);
 		}
 
+		//TODO Add Gloria Mark
+		if ('Magic Bubble' in this._debuffs && ['active', 'basic'].includes(damageResult.damageSource)) {
+			result += '<div><span class=\'skill\'>Magic Bubble</span> triggered on basic/active attack.</div>';
 
+			const key = Object.keys(this._debuffs['Magic Bubble'])[0];
+			const stack = this._debuffs['Magic Bubble'][key];
+
+			let damagePercent = this._debuffs;
+
+			for (const h in this._enemies) {
+					if(h._heroName == 'Gloria' && h._currentStats['totalHP'] > 0){
+						result += targets[i].getDebuff(this, 'stun', 2, {}, false, '', 0.25);
+					}
+					break;
+			}
+
+			stack.effects.damageAmount += Math.floor(damagePercent * damageResult.damageAmount);
+
+
+		}
 		// HP threshhold triggers
 		const beforePercent = beforeHP / this._stats['totalHP'];
 		const afterPercent = this._currentStats['totalHP'] / this._stats['totalHP'];

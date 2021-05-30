@@ -502,6 +502,41 @@ function getHighestHPTargets(source, arrTargets, num = 6) {
 	return copyTargets2;
 }
 
+function getHighestCritTargets(source, arrTargets, num = 6) {
+	// get living target with highest current HP
+	let copyTargets = [];
+	const copyTargets2 = [];
+	let count = 0;
+
+	copyTargets = getTauntedTargets(source, arrTargets, num);
+	if (copyTargets.length > 0) { return copyTargets; }
+
+	for (const i in arrTargets) {
+		if (arrTargets[i]._currentStats['crit'] > 0) {
+			copyTargets.push(arrTargets[i]);
+		}
+	}
+
+	copyTargets.sort(function(a, b) {
+		if (a._currentStats['crit'] > b._currentStats['crit']) {
+			return -1;
+		} else if (a._currentStats['crit'] < b._currentStats['crit']) {
+			return 1;
+		} else if (a._heroPos < b._heroPos) {
+			return -1;
+		} else {
+			return 1;
+		}
+	});
+
+	for (const i in copyTargets) {
+		copyTargets2.push(copyTargets[i]);
+		count++;
+		if (count == num) { break; }
+	}
+
+	return copyTargets2;
+}
 
 function getTauntedTargets(source, arrTargets) {
 	const copyTargets = [];

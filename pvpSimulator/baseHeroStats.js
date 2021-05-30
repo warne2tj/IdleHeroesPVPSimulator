@@ -352,6 +352,22 @@ const baseHeroStats = {
 		},
 	},
 
+	'Gloria': {
+		className: 'Gloria',
+		heroFaction: 'Forest',
+		heroClass: 'Priest',
+		stats:{
+			baseHP: 9772,
+			baseAttack: 492,
+			baseArmor: 61,
+			baseSpeed: 244,
+			growHP: 977.2,
+			growAttack: 49.2,
+			growArmor: 9.1,
+			growSpeed: 2,
+		},
+	},
+
 	'Gustin': {
 		className: 'Gustin',
 		heroFaction: 'Shadow',

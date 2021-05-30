@@ -7,6 +7,129 @@ import {
 } from './utilityFunctions.js';
 
 
+class Gloria extends hero {
+	passiveStats(){
+		if (this._voidLevel >= 1){
+			this.applyStatChange({ hpPercent: 0.4, attackPercent: 0.2, controlImmune: 0.3, speed: 40}, 'PassiveStats')
+		} else {
+			this.applyStatChange({ hpPercent: 0.5, attackPercent: 0.3, controlImmune: 0.3, speed: 60}, 'PassiveStats')
+		}
+	}
+
+	handleTrigger(trigger) {
+		let result = super.handleTrigger(trigger);
+		if (['eventEnemyActive', 'eventEnemyBasic'].includes(trigger[1]) && this._currentStats.totalHP > 0 && this.isNotSealed()) {
+			result += this.eventEnemyActive(trigger[2]);
+		}
+
+		return result;
+	}
+
+	eventEnemyActive(){
+		const targets = getRandomTargets(this, this._enemies, 3);
+		let markDamagePercent = 0.34
+		if (this._voidLevel >= 3){
+			markDamagePercent = 0.4
+		}
+
+		for (const i in targets){
+			if (targets[i]._currentStats['totalHP'] > 0) {
+				result += targets[i].getDebuff(this, 'Magic Bubble', 127, { attackAmount: this._currentStats['totalAttack'], damagePercent: markDamagePercent });
+			}
+		}
+	}
+
+	doBasic() {
+		let result = '';
+		let targets;
+		let targetLock
+		let numTargets = 1;
+		let damagePercent = 3.6;
+		let critReduce = 0.2;
+		if (this._voidLevel >= 2) {
+			damagePercent = 4.2;
+			critReduce = 0.25;
+		}
+
+		for (let i = 1; i <= numTargets; i++) {
+			targets = getHighestCritTargets(this, this._enemies, 1)
+			targetLock = targets[0].getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
+				result += targets[0].getDebuff(this, 'Raging Waves', 2, { crit: critReduce });
+				result += targets[0].takeDamage(this, 'Basic Attack', damageResult);
+
+
+				basicQueue.push([this, targets[0], damageResult['damageAmount'], damageResult['critted']]);
+
+			}
+
+		}
+
+		return result;
+	}
+
+	doActive() {
+		let result = '';
+		let damageResult = {};
+		const targets = getRandomTargets(this, this._enemies, 4);
+		let targetLock;
+
+		let damagePercent = 6;
+		let markDamagePercent = 1.2
+		if (this._voidLevel >= 4) {
+			damagePercent = 8;
+			markDamagePercent = 1.44
+		}
+		for (const i in targets) {
+			targetLock = targets[i].getTargetLock(this);
+			result += targetLock;
+
+			if (targetLock == '') {
+				damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
+				result += targets[i].takeDamage(this, 'Rushing Waves', damageResult);
+
+				if (targets[i]._currentStats['totalHP'] > 0) {
+					result += targets[i].getDebuff(this, 'Magic Bubble', 127, { attackAmount: this._currentStats['totalAttack'], damagePercent: markDamagePercent });
+				}
+
+				activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
+			}
+		}
+
+		return result;
+	}
+
+	devouringMark(target, attackAmount, energyAmount) {
+		let result = '';
+		let damageResult = {};
+
+		let damagePercent = 0.10;
+		if (this._voidLevel >= 4) damagePercent = 0.14;
+
+
+		// attack % per energy damage seems to be true damage
+		damageResult = this.calcDamage(target, attackAmount * damagePercent * energyAmount, 'mark', 'energy');
+		result = target.takeDamage(this, 'Devouring Mark', damageResult);
+
+		if (target._currentStats['totalHP'] > 0) {
+			result += '<div>Energy set to ' + formatNum(0) + '.</div>';
+			target._currentStats['energy'] = 0;
+		}
+
+		return result;
+	}
+
+	magicBubble(target, attackAmount, damagePercent){
+				let result = '';
+				let damageResult = {};
+
+
+	}
+
+}
 class Aida extends hero {
 	passiveStats() {
 		if (this._voidLevel >= 1) {
