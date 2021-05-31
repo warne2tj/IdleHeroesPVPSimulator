@@ -852,6 +852,23 @@ const baseHeroStats = {
 			growSpeed: 2,
 		},
 	},
+
+	'Star Wing Jahra': {
+		className: 'StarWingJahra',
+		heroFaction: 'Transcendence',
+		heroClass: 'Mage',
+		voidEnabled: true,
+		stats: {
+			baseHP: 13000,
+			baseAttack: 1000,
+			baseArmor: 60,
+			baseSpeed: 307,
+			growHP: 1300,
+			growAttack: 85,
+			growArmor: 6,
+			growSpeed: 2,
+		},
+	},
 };
 
 

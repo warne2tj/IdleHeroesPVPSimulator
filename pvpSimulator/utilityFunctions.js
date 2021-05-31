@@ -141,9 +141,34 @@ function isDispellable(strName) {
 	}
 }
 
+//For starwing jahra only (doesn't check for taunted targets)
+function getUncontrolledEnemies(source, arrTargets, num = 6){
+	let copyTargets = [];
+	let count = 0;
+
+	for (const i in arrTargets) {
+		if (arrTargets[i]._currentStats['totalHP'] > 0) {
+			copyTargets.push(arrTargets[i]);
+			count++;
+		}
+
+		if (count == num) { break; }
+	}
+
+	return copyTargets;
+}
+
+function isControlled(source){
+	for (const d of source._debuffs){
+		if (isControllEffect(d)){
+			return true;
+		}
+	}
+	return false;
+}
 
 function isControlEffect(strName, effects = {}) {
-	const arrControls = ['stun', 'petrify', 'freeze', 'twine', 'Silence', 'Seal of Light', 'Horrify', 'Shapeshift', 'Taunt', 'Dazzle'];
+	const arrControls = ['stun', 'petrify', 'freeze', 'twine', 'Silence', 'Seal of Light', 'Horrify', 'Shapeshift', 'Taunt', 'Dazzle', 'Freeze - Cold Chill', 'Petrify - Rock Lock'];
 
 	if (arrControls.includes(strName)) {
 		return true;
@@ -788,5 +813,5 @@ export {
 	getRandomTargets, getNearestTargets, getAllTargets, getBackTargets, getFrontTargets,
 	isAttribute, isDot, isBackLine, isFrontLine, isControlEffect, isDispellable, isMonster,
 	slotSort, speedSort, uuid, random, rng, logCombat, formatNum, translate, getHighestSpeedTargets,
-	numGenes, dnaLength, getMostSacredEmblemTargets, getSanctionTargets,
+	numGenes, dnaLength, getMostSacredEmblemTargets, getSanctionTargets, getUncontrolledEnemies, getHighestCritTargets
 };

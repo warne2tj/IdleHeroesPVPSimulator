@@ -3,9 +3,188 @@ import { triggerQueue, activeQueue, basicQueue } from './simulation.js';
 import {
 	random, formatNum, isDot, isMonster, isControlEffect, isDispellable, isAttribute, getMostSacredEmblemTargets,
 	isFrontLine, isBackLine, getBackTargets, getHighestAttackTargets, getNearestTargets, getFrontTargets,
-	getAllTargets, getHighestHPTargets, getLowestHPTargets, getLowestHPPercentTargets, getRandomTargets, getSanctionTargets,
+	getAllTargets, getHighestHPTargets, getLowestHPTargets, getLowestHPPercentTargets, getRandomTargets, getSanctionTargets, getHighestCritTargets,
+	getUncontrolledEnemies
 } from './utilityFunctions.js';
 
+
+class StarWingJahra extends hero {
+		handleTrigger(trigger) {
+			let result = super.handleTrigger(trigger);
+
+			if (['eventAllyActive'].includes(trigger[1]) && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+				result += this.eventAllyActive();
+			} else if (trigger[1] == 'eventFreeze' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+				result += this.eventFreeze();
+			} else if (trigger[1] == 'eventPetrify' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
+				result += this.eventPetrify();
+			}
+
+			return result;
+		}
+
+		eventFreeze(){
+			let healPerecent = 2;
+			if (this._voidLevel >= 3){
+				healPercent = 2.5;
+			}
+			let healAmount = this._currentStats['totalAttack'] * healPercent;
+			healAmount = this.calcHeal(this, healAmount);
+			result += this.getHeal(this, healAmount);
+			let healthRestoreString = "<div><span class=\'skill\'>Apocalypse Vision</span> restored " + formatNum(healAmount) + "health.</div>";
+			result += healthRestoreString;
+
+		}
+
+		eventPetrify(){
+			let energyRestored = 10;
+			if (this._voidLevel >= 3){
+				energyRestored = 15;
+			}
+			result += this.getEnergy(this, energyRestored)
+			result += '<div><span class=\'skill\'>Apocalypse Vision</span> restored energy.</div>';
+		}
+
+		eventAllyActive() {
+			let result = '';
+			let percentControlPrecision = 0.06;
+			let percentControlImmunePen = 0.03;
+			let energyAmount = 15
+
+			if (this._voidLevel >= 2){
+				percentControlPercision = 0.08;
+				percentControlImmunePen = 0.04;
+				energyAmount = 20;
+			}
+
+			result += this.getBuff(this, 'Focus', 126, { controlPrecision: percentControlPrecision, controlImmunePen: percentControlImmunePen })
+			result += this.getEnergy(this, energyAmount);
+
+			return result;
+		}
+
+		doBasic() {
+			let result = '';
+			let damageResult = {};
+			const targets = getLowestHPTargets(this, this._enemies, 1);
+			const targets2 = getHighestAttackTargets(this, this._enemies, 1);
+
+			let damagePercent = 8
+			let percentHPDamage = 0.30
+			let attackStealPercent = 0.30
+			let hpDamage = 0
+
+			if (this._voidLevel >= 1){
+				damagePercent = 10
+				percentHPDamage = 0.40
+				attackStealPercent = 0.35
+			}
+
+			let targetLock;
+
+			if (targets.length > 0) {
+				targetLock = targets[0].getTargetLock(this);
+				result += targetLock;
+
+				if (targetLock == '') {
+
+					hpDamage = hpDamagePercent * (targets[0]._stats['totalHP'] - targets[i]._currentStats['totalHP']);
+					if (hpDamage > this._currentStats['totalAttack'] * 15) { hpDamage = this._currentStats['totalAttack'] * 15; }
+					hpDamageResult = this.calcDamage(targets[0], hpDamage, 'active', 'true');
+					result += targets[i].takeDamage(this, 'Astral Touch HP', hpDamageResult);
+
+
+					if (targets[0]._currentStats['totalHP'] > 0) {
+						damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
+						result += targets[0].takeDamage(this, 'Basic Attack', damageResult);
+					}
+
+
+					basicQueue.push([this, targets[0], damageResult['damageAmount'], damageResult['critted']]);
+				}
+			}
+
+			if (targets2.length > 0){
+				if (targets2[0]._currentStats['totalHP'] > 0) {
+					damageResult = this.calcDamage(targets[0], this._currentStats['totalAttack'] * damagePercent, 'basic', 'normal');
+					result += targets2[0].takeDamage(this, 'Basic Attack', damageResult);
+				}
+
+				if (targets2[0]._currentStats['totalHP'] > 0) {
+					let stolenAttack = targets2[0]._currentStats['currentAttack'] * attackStealPercent;
+					result += '<div><span class=\'skill\'>Astral Touch</span> stole target\'s attack.</div>';
+
+					result += this.getBuff(this, 'Astral Touch', 2, { fixedAttack: stolenAttack });
+					result += targets[0].getDebuff(this, 'Astral Touch', 2, { fixedAttack: stolenAttack });
+				}
+			}
+
+			return result;
+		}
+
+		doActive() {
+			let result = '';
+			let damageResult = {};
+			let targets = getAllTargets(this, this._enemies);
+			let targetLock;
+
+			let damagePercent = 16;
+			let ccChance = 0.25;
+			let overspillHeal = 0.03;
+			if (this._voidLevel >= 4) {
+				damagePercent = 20;
+				ccChance = 0.3;
+				overspillHeal = 0.04;
+			}
+
+			for (const i in targets) {
+				targetLock = targets[i].getTargetLock(this);
+				result += targetLock;
+
+				if (targetLock == '') {
+					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
+					result += targets[i].takeDamage(this, 'Star Stream', damageResult);
+
+					applyPetrifyFreeze(targets[i], ccChance)
+
+					activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
+				}
+
+
+			}
+
+			if (this._currentStats['energy'] >= 150){
+				let energyOverspill = this._currentStats['energy'] - 150;
+				let healAmount = energyOverspill * this._stats['totalHP'] * overspillHeal;
+
+				healAmount = this.calcHeal(this, healAmount);
+				results += this.getHeal(this, healAmount)
+				let healthRestoreString = "<div><span class=\'skill\'>Star Stream</span> restored " + formatNum(healAmount) + " health.</div>";
+				result += healthRestoreString;
+
+				targets = getUncontrolledEnemies(this, this._enemies, 6);
+				for (const t of targets){
+					applyPetrifyFreeze(targets[t], ccChance)
+				}
+
+			}
+
+			this.removeBuff('Focus');
+
+			return result;
+
+		}
+
+		applyPetrifyFreeze(target, ccChance){
+			if (target._currentStats['totalHP'] > 0){
+				if (target._currentStats['totalHP'] (>= targets[i]._stats['totalHP'] / 2.0)) {
+					result += target.getDebuff(this, 'Petrify - Rock Lock', 2, {}, false, '', ccChance);
+				} else {
+					result += target.getDebuff(this, 'Freeze - Cold Chill', 2, {}, false, '', ccChance);
+				}
+			}
+		}
+}
 
 class Gloria extends hero {
 	passiveStats(){
@@ -19,7 +198,7 @@ class Gloria extends hero {
 	handleTrigger(trigger) {
 		let result = super.handleTrigger(trigger);
 		if (['eventEnemyActive', 'eventEnemyBasic'].includes(trigger[1]) && this._currentStats.totalHP > 0 && this.isNotSealed()) {
-			result += this.eventEnemyActive(trigger[2]);
+			result += this.eventEnemyActive();
 		}
 
 		return result;

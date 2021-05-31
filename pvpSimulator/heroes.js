@@ -859,9 +859,14 @@ class hero {
 
 
 	getHeal(source, amountHealed) {
-		if (this._currentStats['totalHP'] <= 0) { return ''; }
-
 		let result = '';
+
+		if (this._currentStats['totalHP'] <= 0) { return ''; }
+		if (!(isMonster(source)) && 'Freeze - Cold Chill' in this._debuffs){
+			result += '<div>Heal from ' + source.heroDesc() + ' blocked by <span class=\'skill\'>Freeze - Cold Chill</span>.</div>';
+			return result;
+		}
+
 		let effectBeingHealed = 1 + this._currentStats['effectBeingHealed'];
 		if (effectBeingHealed < 0) { effectBeingHealed = 0; }
 
@@ -918,9 +923,12 @@ class hero {
 
 
 	getEnergy(source, amount, bypassCurseOfDecay = false) {
-		if (this._currentStats['totalHP'] <= 0) { return ''; }
-
 		let result = '';
+		if (this._currentStats['totalHP'] <= 0) { return ''; }
+		if (if 'Petrify - Rock Lock' in this._debuffs){
+			result += '<div><span class="skill">Rock Lock</span> prevented energy gain.</div>';
+			return result;
+		}
 
 		if ('Curse of Decay' in this._debuffs && !bypassCurseOfDecay) {
 			const curseKeys = Object.keys(this._debuffs['Curse of Decay']);
@@ -954,9 +962,13 @@ class hero {
 
 
 	loseEnergy(source, amount) {
-		if (this._currentStats['totalHP'] <= 0) { return ''; }
-
 		let result = '';
+
+		if (this._currentStats['totalHP'] <= 0) { return ''; }
+		if (if 'Petrify - Rock Lock' in this._debuffs){
+			result += '<div><span class="skill">Rock Lock</span> prevented energy loss.</div>';
+			return result;
+		}
 
 		result = '<div>' + source.heroDesc() + ' drained from ' + this.heroDesc() + ' ' + formatNum(amount) + ' energy. Energy at ';
 
@@ -1276,6 +1288,18 @@ class hero {
 				} else if (debuffName == 'Horrify') {
 					for (const h in this._enemies) {
 						triggerQueue.push([this._enemies[h], 'enemyHorrified']);
+					}
+				} else if (debuffName == 'Freeze' || debuffName == 'Freeze - Cold Chill') {
+					for (const h in source._allies){
+						if (source.allies[h]._heroName == 'StarWingJahra'){
+							triggerQueue.push([source.allies[h], 'eventFreeze']);
+						}
+					}
+				} else if (debuffName == 'Petrify'|| debuffName == 'Petrify - Rock Lock') {
+					for (const h in source._allies){
+						if (source.allies[h]._heroName == 'StarWingJahra'){
+							triggerQueue.push([source.allies[h], 'eventPetrify']);
+						}
 					}
 				}
 			}
@@ -1722,7 +1746,7 @@ class hero {
 		} else if (trigger[1] == 'Redemption' && this._currentStats['totalHP'] > 0 && this.isNotSealed()) {
 			return this.eventRedemption(trigger[2]);
 
-		}
+		} else if ([])
 
 		return '';
 	}
