@@ -925,7 +925,7 @@ class hero {
 	getEnergy(source, amount, bypassCurseOfDecay = false) {
 		let result = '';
 		if (this._currentStats['totalHP'] <= 0) { return ''; }
-		if (if 'Petrify - Rock Lock' in this._debuffs){
+		if ('Petrify - Rock Lock' in this._debuffs){
 			result += '<div><span class="skill">Rock Lock</span> prevented energy gain.</div>';
 			return result;
 		}
