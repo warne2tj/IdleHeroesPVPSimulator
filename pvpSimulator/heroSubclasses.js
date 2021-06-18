@@ -84,6 +84,7 @@ class StarWingJahra extends hero {
 			let percentHPDamage = 0.30
 			let attackStealPercent = 0.30
 			let hpDamage = 0
+			let hpDamageResult = 0
 
 			if (this._voidLevel >= 1){
 				damagePercent = 10
