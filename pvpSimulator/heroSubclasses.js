@@ -72,7 +72,7 @@ class StarWingJahra extends hero {
 				}
 			}
 		}
-		
+
 		doBasic() {
 			let result = '';
 			let damageResult = {};
@@ -155,7 +155,7 @@ class StarWingJahra extends hero {
 					damageResult = this.calcDamage(targets[i], this._currentStats['totalAttack'], 'active', 'normal', damagePercent);
 					result += targets[i].takeDamage(this, 'Star Stream', damageResult);
 
-					applyPetrifyFreeze(targets[i], ccChance)
+					this.applyPetrifyFreeze(targets[i], ccChance)
 
 					activeQueue.push([this, targets[i], damageResult['damageAmount'], damageResult['critted']]);
 				}
@@ -174,7 +174,7 @@ class StarWingJahra extends hero {
 
 				targets = getUncontrolledEnemies(this, this._enemies, 6);
 				for (const t of targets){
-					applyPetrifyFreeze(targets[t], ccChance)
+					this.applyPetrifyFreeze(targets[t], ccChance)
 				}
 
 			}
