@@ -965,7 +965,7 @@ class hero {
 		let result = '';
 
 		if (this._currentStats['totalHP'] <= 0) { return ''; }
-		if (if 'Petrify - Rock Lock' in this._debuffs){
+		if ('Petrify - Rock Lock' in this._debuffs){
 			result += '<div><span class="skill">Rock Lock</span> prevented energy loss.</div>';
 			return result;
 		}
