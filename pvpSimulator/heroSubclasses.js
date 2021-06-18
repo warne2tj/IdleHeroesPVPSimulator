@@ -103,7 +103,7 @@ class StarWingJahra extends hero {
 					hpDamage = percentHPDamage * (targets[0]._stats['totalHP'] - targets[0]._currentStats['totalHP']);
 					if (hpDamage > this._currentStats['totalAttack'] * 15) { hpDamage = this._currentStats['totalAttack'] * 15; }
 					hpDamageResult = this.calcDamage(targets[0], hpDamage, 'active', 'true');
-					result += targets[i].takeDamage(this, 'Astral Touch HP', hpDamageResult);
+					result += targets[0].takeDamage(this, 'Astral Touch HP', hpDamageResult);
 
 
 					if (targets[0]._currentStats['totalHP'] > 0) {
