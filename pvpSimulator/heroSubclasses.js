@@ -63,6 +63,16 @@ class StarWingJahra extends hero {
 			return result;
 		}
 
+		applyPetrifyFreeze(target, ccChance){
+			if (target._currentStats['totalHP'] > 0){
+				if (target._currentStats['totalHP'] >= (targets[i]._stats['totalHP'] / 2.0)) {
+					result += target.getDebuff(this, 'Petrify - Rock Lock', 2, {}, false, '', ccChance);
+				} else {
+					result += target.getDebuff(this, 'Freeze - Cold Chill', 2, {}, false, '', ccChance);
+				}
+			}
+		}
+		
 		doBasic() {
 			let result = '';
 			let damageResult = {};
@@ -175,15 +185,6 @@ class StarWingJahra extends hero {
 
 		}
 
-		applyPetrifyFreeze(target, ccChance){
-			if (target._currentStats['totalHP'] > 0){
-				if (target._currentStats['totalHP'] >= (targets[i]._stats['totalHP'] / 2.0)) {
-					result += target.getDebuff(this, 'Petrify - Rock Lock', 2, {}, false, '', ccChance);
-				} else {
-					result += target.getDebuff(this, 'Freeze - Cold Chill', 2, {}, false, '', ccChance);
-				}
-			}
-		}
 }
 
 class Gloria extends hero {
