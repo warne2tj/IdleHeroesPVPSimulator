@@ -69,7 +69,6 @@ class hero {
 		// dictionary to track buffs and debuffs during combat
 		this._buffs = {};
 		this._debuffs = {};
-		this.
 		this._allies = [];
 		this._enemies = [];
 
