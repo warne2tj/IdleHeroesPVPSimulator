@@ -7472,6 +7472,8 @@ const heroMapping = {
 	'AsmodelTheDauntless': AsmodelTheDauntless,
 	'Eloise': Eloise,
 	'Fiona': Fiona,
+	'StarWingJahra': StarWingJahra,
+	'Gloria': Gloria,
 };
 
 
