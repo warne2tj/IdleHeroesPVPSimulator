@@ -65,6 +65,7 @@ class StarWingJahra extends hero {
 
 		applyPetrifyFreeze(target, ccChance){
 			if (target._currentStats['totalHP'] > 0){
+				let result = '';
 				if (target._currentStats['totalHP'] >= (target._stats['totalHP'] / 2.0)) {
 					result += target.getDebuff(this, 'Petrify - Rock Lock', 2, {}, false, '', ccChance);
 				} else {
